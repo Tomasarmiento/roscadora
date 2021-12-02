@@ -1,0 +1,189 @@
+<div class="row m-auto align-items-center d-flex justify-content-around mx-auto px-0 mb-5" id="sensores">
+    <div class="container-fluid col-md-3 card p-1 border shadow rounded mb-3">
+        <table class="table table-sm table-striped table-borderless" id="tablaSensoresElevador">
+            <thead>
+                <tr>
+                    <th colspan="2" style="text-align: center; background-color: #52D5DA; color:black; border-top-right-radius: 8px; border-top-left-radius: 8px;">Sensores pinzas carga/descarga</th>
+                </tr>
+                <tr>
+                    <th>Sensor</th>
+                    <th class="text-center">Estado</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Gripper carga atras</td>
+                    <td><div class="led led-grey" id="liftRightPos1"></div></td>
+                </tr>
+                <tr>
+                    <td>Gripper carga adelante</td>
+                    <td><div class="led led-grey" id="liftLeftPos1"></div></td>
+                </tr>
+                <tr> 
+                    <td>Gripper carga pinza liberada</td>
+                    <td><div class="led led-grey" id="liftRightPos2"></div></td>
+                </tr>
+                <tr>
+                    <td>Gripper carga pinza accionada</td>
+                    <td><div class="led led-grey" id="liftLeftPos2"></div></td>
+                </tr>
+                <tr>
+                    <td>Gripper carga con cupla</td>
+                    <td><div class="led led-grey" id="liftLeftPos2"></div></td>
+                </tr>
+                <tr>
+                    <td>Gripper descarga atras</td>
+                    <td><div class="led led-grey" id="liftLeftPos2"></div></td>
+                </tr>
+                <tr>
+                    <td>Gripper descarga adelante</td>
+                    <td><div class="led led-grey" id="liftLeftPos2"></div></td>
+                </tr>
+                <tr>
+                    <td>Gripper descarga pinza liberada</td>
+                    <td><div class="led led-grey" id="liftLeftPos2"></div></td>
+                </tr>
+                <tr>
+                    <td>Gripper descarga pinza accionada</td>
+                    <td><div class="led led-grey" id="liftLeftPos2"></div></td>
+                </tr>
+                <tr>
+                    <td>Gripper descarga pinza con cupla</td>
+                    <td><div class="led led-grey" id="liftLeftPos2"></div></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="container-fluid col-md-3 card p-1 border shadow rounded mb-3">
+        <table class="table table-sm table-striped table-borderless" id="tablaSensoresApoyos">
+            <thead>
+                <tr>
+                    <th colspan="2" style="text-align: center; background-color: #52D5DA; color:black; border-top-right-radius: 8px; border-top-left-radius: 8px;">Sensores Servo Motores</th>
+                </tr>
+                <tr>
+                    <th>Sensor</th>
+                    <th class="text-center">Estado</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Eje lineal limite Forward</td>
+                    <td><div class="led led-grey" id="bladeRestRightUp"></div></td>
+                </tr>
+                <tr>
+                    <td>Eje lineal limite Reverse</td>
+                    <td><div class="led led-grey" id="bladeRestRightDown"></div></td>
+                </tr>
+                <tr>
+                    <td>Eje lineal Homing</td>
+                    <td><div class="led led-grey" id="bladeRestLeftUp"></div></td>
+                </tr>
+                <tr>
+                    <td>Eje Rotativo Homing</td>
+                    <td><div class="led led-grey" id="bladeRestLeftDown"></div></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="container-fluid col-md-3 card p-1 border shadow rounded mb-3">
+        <table class="table table-sm table-striped table-borderless" id="tablaSensoresRotador">
+            <thead>
+                <tr>
+                    <th colspan="2" style="text-align: center; background-color: #52D5DA; color:black; border-top-right-radius: 8px; border-top-left-radius: 8px;">Sensores vertical y giro de carga</th>
+                </tr>
+                <tr>
+                    <th>Sensor</th>
+                    <th class="text-center">Estado</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Sensor vertical carga arriba</td>
+                    <td><div class="led led-grey" id="rotRightPos1"></div></td>
+                </tr>
+                <tr>
+                    <td>Sensor vertical carga abajo</td>
+                    <td><div class="led led-grey" id="rotLeftPos1"></div></td>
+                </tr>
+                <tr> 
+                    <td>Sensor giro carga arriba</td>
+                    <td><div class="led led-grey" id="rotRightPos2"></div></td>
+                </tr>
+                <tr>
+                    <td>Sensor giro carga abajo</td>
+                    <td><div class="led led-grey" id="rotLeftPos2"></div></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="row align-items-center d-flex justify-content-around mx-auto px-0 mb-5">
+    <div class="container-fluid col-md-3 card p-1 border shadow rounded mb-3">
+        <table class="table table-sm table-striped table-borderless" id="tablaSensoresAvance">
+            <thead>
+                <tr>
+                    <th colspan="2" style="text-align: center; background-color: #52D5DA; color:black; border-top-right-radius: 8px; border-top-left-radius: 8px;">Sensores gripper 2 descarga</th>
+                </tr>
+                <tr>
+                    <th>Sensor</th>
+                    <th class="text-center">Estado</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Sensor gripper 2 descarga vertical arriba</td>
+                    <td><div class="led led-grey" id="gripperShiftRightPos1"></div></td>
+                </tr>
+                <tr>
+                    <td>Sensor gripper 2 descarga vertical abajo</td>
+                    <td><div class="led led-grey" id="gripperShiftLeftPos1"></div></td>
+                </tr>
+                <tr> 
+                    <td>Sensor gripper 2 descarga horizontal adelante</td>
+                    <td><div class="led led-grey" id="gripperShiftRightPos2"></div></td>
+                </tr>
+                <tr>
+                    <td>Sensor gripper 2 descarga horizontal atras</td>
+                    <td><div class="led led-grey" id="gripperShiftLeftPos2"></div></td>
+                </tr>
+                <tr>
+                    <td>Sensor gripper 2 descarga pinza accionada</td>
+                    <td><div class="led led-grey" id="gripperShiftLeftPos2"></div></td>
+                </tr>
+                <tr>
+                    <td>Sensor gripper 2 descarga pinza liberada</td>
+                    <td><div class="led led-grey" id="gripperShiftLeftPos2"></div></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="container-fluid col-md-3 card p-1 border shadow rounded mb-3">
+        <table class="table table-sm table-striped table-borderless" id="tablaSensoresGrippers">
+            <thead>
+                <tr>
+                    <th colspan="2" style="text-align: center; background-color: #52D5DA; color:black; border-top-right-radius: 8px; border-top-left-radius: 8px;">Sensores giro descarga</th>
+                </tr>
+                <tr>
+                    <th>Sensor</th>
+                    <th class="text-center">Estado</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Sensor giro descarga arriba</td>
+                    <td><div class="led led-grey" id="gripperRightPos1"></div></td>
+                </tr>
+                <tr>
+                    <td>Sensor giro descarga abajo</td>
+                    <td><div class="led led-grey" id="gripperLeftPos1"></div></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+    <div class="row justify-content-center container-fluid">
+        <div class="col-md-12 text-right justify-content-center">
+            <a type="button" class="btn btn-secondary btn-lg" href="#/home">Volver</a>
+        </div>
+    </div>

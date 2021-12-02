@@ -1,0 +1,9 @@
+.indicadorNeu {
+    width: 70%;
+    color: white;
+    text-align: center;
+    margin: 1%;
+    display: inline;
+    border-radius: 25px;
+    min-height: 54px;
+  }
