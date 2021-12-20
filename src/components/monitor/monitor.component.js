@@ -1,32 +1,23 @@
 export function Monitorear(dataWs) {
     const componenteMonitor = document.querySelector("#component-monitor");
     // Indicadores
-    const statusEjeVertical = document.querySelector("#statusVerticalAxis");
-    const statusEjeHorizontal = document.querySelector("#statusFlatAxis");
-    const statusPalpador = document.querySelector("#statusTouchProbe");
-    const statusCeldaCarga = document.querySelector("#statusStrainGauge");
-    const statusGirador = document.querySelector("#statusTurner");
-    const statusPresenciaCuchilla = document.querySelector(
-      "#statusBladePresence"
-    );
-    const statusCondicionesIniciales = document.querySelector(
-      "#statusInitialConditions"
-    );
+    const statusCabezal = document.querySelector("#statusHead");
+    const statusEjeLineal = document.querySelector("#statusLinealAxis");
+    const statusCarga = document.querySelector("#statusLoader");
+    const statusDescarga = document.querySelector("#statusDownloader");
+    const statusCondicionesIniciales = document.querySelector("#statusInitialConditions");
+    const statusCondicionesAutomaticas = document.querySelector("#statusAutomaticConditions");
+   
     const statusSeguroInicial = document.querySelector(
       "#statusSafeInitial"
     );
-    const statusParameter = document.querySelector(
-      "#statusParameter"
-    );
+   
+
     const homeOk = document.querySelector("#homeOk");
     
     // Tabla de datos
-    const fuerzaActual = document.querySelector("#pvFuerza");
-    const palpadorActual = document.querySelector("#pvPalpador");
-  
-    // Maquina de ESTADOS
-    const indEstadosV = document.getElementsByClassName("estadoV");
-    //const indEstadosH = document.getElementsByClassName("estadoH");
+    const rpmActual = document.querySelector("#frRPM");
+    const torqueActual = document.querySelector("#fTorque");
   
     // Datos Eje vertical
     const posicionActualV = document.querySelector("#posVertical");
@@ -40,8 +31,8 @@ export function Monitorear(dataWs) {
   
     if (dataWs) {
       //Monitor
-      fuerzaActual.innerHTML = dataWs.v_fza.toFixed(1);
-      palpadorActual.innerHTML = dataWs.v_strain.toFixed(1);
+      rpmActual.innerHTML = dataWs.v_rpm.toFixed(1);
+      torqueActual.innerHTML = dataWs.v_torque.toFixed(1);
   
       posicionActualV.innerHTML = dataWs.v_pos.toFixed(1);
       velocidadActualV.innerHTML = dataWs.v_vel.toFixed(1);

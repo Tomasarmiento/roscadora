@@ -1,7 +1,6 @@
 import views from "../views/neumaticaManual.html";
 import monitorComponent from "../components/monitor/monitor.component.html";
-
-import { ContinuarDetener } from "../statics/utils/continuarDetener";
+import { ComandosNeumatica } from "../statics/utils/manualNeumatica";
 import { Monitorear } from "../components/monitor/monitor.component";
 
 export default () => {
@@ -12,7 +11,9 @@ export default () => {
   const monitor = divElement.querySelector("#component-monitor");
   monitor.innerHTML = monitorComponent;
 
-  
+  /*const tituloPagina = document.getElementById("tituloPagina");
+  tituloPagina.innerHTML = "MODO MANUAL - Neumatica";
+  tituloPagina.className = "h4";*/
 
   const btns = divElement.querySelector("#contenedorNeumatica");
   const inds = divElement.getElementsByClassName("led");

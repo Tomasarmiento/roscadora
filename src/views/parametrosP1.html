@@ -87,30 +87,6 @@
                         </td>
                         <td>seg</td>
                     </tr>
-                    <!--<tr>
-                        <td>plus_cedencia_factor_iteracion</td>
-                        <td>Factor que aplica a la deformación obtenida para iniciar plus cedencia</td>
-                        <td>
-                            <input class="form-control-xs" type="number" step=0.001 value="" name="plus_cedencia_factor_iteracion">
-                        </td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td>plus_cedencia_delta_aumento</td>
-                        <td>Delta que aumenta la cedencia en cada intevalo dentro de plus cendencia</td>
-                        <td>
-                            <input class="form-control-xs" type="number" step=0.001 value="" name="plus_cedencia_delta_aumento">
-                        </td>
-                        <td>mm</td>
-                    </tr>
-                    <tr>
-                        <td>plus_cedencia_trigger</td>
-                        <td>Valor de cedencia que dispara la plus cedencia</td>
-                        <td>
-                            <input class="form-control-xs" type="number" step=0.001 value="" name="plus_cedencia_trigger">
-                        </td>
-                        <td>mm</td>
-                    </tr>-->
                 </tbody>
             </table>
             <input type="submit" value="" class="d-none">
@@ -138,7 +114,7 @@
                     <td>paso_de_rosca</td>
                     <td>Descripcion</td>
                     <td>
-                        <input class="form-control-xs" type="number" step=0.01 value="" name="t_max_ciclo">
+                        <input class="form-control-xs" type="number" step=0.01 value="" name="paso_de_rosca">
                     </td>
                     <td>mm/v</td>
                 </tr>
@@ -146,7 +122,7 @@
                     <td>posicion_de_aprox</td>
                     <td>Descripcion</td>
                     <td>
-                        <input class="form-control-xs" type="number" step=0.01 value="" name="fza_traba_cuchilla">
+                        <input class="form-control-xs" type="number" step=0.01 value="" name="posicion_de_aprox">
                     </td>
                     <td>mm</td>
                 </tr>
@@ -154,7 +130,7 @@
                     <td>velocidad_de_aprox</td>
                     <td>Descripcion</td>
                     <td>
-                        <input class="form-control-xs" type="number" step=0.01 value="" name="palp_tol_v_iteracion">
+                        <input class="form-control-xs" type="number" step=0.01 value="" name="velocidad_de_aprox">
                     </td>
                     <td>mm/seg</td>
                 </tr>
@@ -162,7 +138,7 @@
                     <td>distancia_de_roscado</td>
                     <td>Descripcion</td>
                     <td>
-                        <input class="form-control-xs" type="number" step=0.01 value="" name="palp_tol_v_LOC">
+                        <input class="form-control-xs" type="number" step=0.01 value="" name="distancia_de_roscado">
                     </td>
                     <td>mm</td>
                 </tr>
@@ -170,7 +146,7 @@
                     <td>velocidad_de_roscado</td>
                     <td>Descripcion</td>
                     <td>
-                        <input class="form-control-xs" type="number" step=0.01 value="" name="palp_tol_v_EXP">
+                        <input class="form-control-xs" type="number" step=0.01 value="" name="velocidad_de_roscado">
                     </td>
                     <td>mm/seg</td>
                 </tr>
@@ -178,7 +154,7 @@
                     <td>velocidad_de_retraccion</td>
                     <td>Descripcion</td>
                     <td>
-                        <input class="form-control-xs" type="number" step=0.01 value="" name="ang_tang_max">
+                        <input class="form-control-xs" type="number" step=0.01 value="" name="velocidad_de_retraccion">
                     </td>
                     <td>mm/seg</td>
                 </tr>
@@ -186,7 +162,7 @@
                     <td>tiempo_de_ciclo</td>
                     <td>Descripcion</td>
                     <td>
-                        <input class="form-control-xs" type="number" step=0.01 value="" name="z_obj_coeficiente">
+                        <input class="form-control-xs" type="number" step=0.01 value="" name="tiempo_de_ciclo">
                     </td>
                     <td>seg</td>
                 </tr>
@@ -194,7 +170,7 @@
                     <td>torque_tolerado</td>
                     <td>Descripcion</td>
                     <td>
-                        <input class="form-control-xs" type="number" step=0.01 value="" name="z_delta_factor_aplicado">
+                        <input class="form-control-xs" type="number" step=0.01 value="" name="torque_tolerado">
                     </td>
                     <td>Nm</td>
                 </tr>
@@ -202,34 +178,10 @@
                     <td>t_inicio_soluble</td>
                     <td>Descripcion</td>
                     <td>
-                        <input class="form-control-xs" type="number" step=0.01 value="" name="cedencia_cte_restada">
+                        <input class="form-control-xs" type="number" step=0.01 value="" name="t_inicio_soluble">
                     </td>
                     <td>seg</td>
                 </tr>
-                <!--<tr>
-                    <td>plus_cedencia_factor_iteracion</td>
-                    <td>Factor que aplica a la deformación obtenida para iniciar plus cedencia</td>
-                    <td>
-                        <input class="form-control-xs" type="number" step=0.001 value="" name="plus_cedencia_factor_iteracion">
-                    </td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>plus_cedencia_delta_aumento</td>
-                    <td>Delta que aumenta la cedencia en cada intevalo dentro de plus cendencia</td>
-                    <td>
-                        <input class="form-control-xs" type="number" step=0.001 value="" name="plus_cedencia_delta_aumento">
-                    </td>
-                    <td>mm</td>
-                </tr>
-                <tr>
-                    <td>plus_cedencia_trigger</td>
-                    <td>Valor de cedencia que dispara la plus cedencia</td>
-                    <td>
-                        <input class="form-control-xs" type="number" step=0.001 value="" name="plus_cedencia_trigger">
-                    </td>
-                    <td>mm</td>
-                </tr>-->
             </tbody>
         </table>
         <input type="submit" value="" class="d-none">
@@ -257,7 +209,7 @@
                     <td>paso_de_rosca</td>
                     <td>Descripcion</td>
                     <td>
-                        <input class="form-control-xs" type="number" step=0.01 value="" name="t_max_ciclo">
+                        <input class="form-control-xs" type="number" step=0.01 value="" name="paso_de_rosca">
                     </td>
                     <td>mm/v</td>
                 </tr>
@@ -265,7 +217,7 @@
                     <td>posicion_de_aprox</td>
                     <td>Descripcion</td>
                     <td>
-                        <input class="form-control-xs" type="number" step=0.01 value="" name="fza_traba_cuchilla">
+                        <input class="form-control-xs" type="number" step=0.01 value="" name="posicion_de_aprox">
                     </td>
                     <td>mm</td>
                 </tr>
@@ -273,7 +225,7 @@
                     <td>velocidad_de_aprox</td>
                     <td>Descripcion</td>
                     <td>
-                        <input class="form-control-xs" type="number" step=0.01 value="" name="palp_tol_v_iteracion">
+                        <input class="form-control-xs" type="number" step=0.01 value="" name="velocidad_de_aprox">
                     </td>
                     <td>mm/seg</td>
                 </tr>
@@ -281,7 +233,7 @@
                     <td>distancia_de_roscado</td>
                     <td>Descripcion</td>
                     <td>
-                        <input class="form-control-xs" type="number" step=0.01 value="" name="palp_tol_v_LOC">
+                        <input class="form-control-xs" type="number" step=0.01 value="" name="distancia_de_roscado">
                     </td>
                     <td>mm</td>
                 </tr>
@@ -289,7 +241,7 @@
                     <td>velocidad_de_roscado</td>
                     <td>Descripcion</td>
                     <td>
-                        <input class="form-control-xs" type="number" step=0.01 value="" name="palp_tol_v_EXP">
+                        <input class="form-control-xs" type="number" step=0.01 value="" name="velocidad_de_roscado">
                     </td>
                     <td>mm/seg</td>
                 </tr>
@@ -297,7 +249,7 @@
                     <td>velocidad_de_retraccion</td>
                     <td>Descripcion</td>
                     <td>
-                        <input class="form-control-xs" type="number" step=0.01 value="" name="ang_tang_max">
+                        <input class="form-control-xs" type="number" step=0.01 value="" name="velocidad_de_retraccion">
                     </td>
                     <td>mm/seg</td>
                 </tr>
@@ -305,7 +257,7 @@
                     <td>tiempo_de_ciclo</td>
                     <td>Descripcion</td>
                     <td>
-                        <input class="form-control-xs" type="number" step=0.01 value="" name="z_obj_coeficiente">
+                        <input class="form-control-xs" type="number" step=0.01 value="" name="tiempo_de_ciclo">
                     </td>
                     <td>seg</td>
                 </tr>
@@ -313,7 +265,7 @@
                     <td>torque_tolerado</td>
                     <td>Descripcion</td>
                     <td>
-                        <input class="form-control-xs" type="number" step=0.01 value="" name="z_delta_factor_aplicado">
+                        <input class="form-control-xs" type="number" step=0.01 value="" name="torque_tolerado">
                     </td>
                     <td>Nm</td>
                 </tr>
@@ -321,34 +273,10 @@
                     <td>t_inicio_soluble</td>
                     <td>Descripcion</td>
                     <td>
-                        <input class="form-control-xs" type="number" step=0.01 value="" name="cedencia_cte_restada">
+                        <input class="form-control-xs" type="number" step=0.01 value="" name="t_inicio_soluble">
                     </td>
                     <td>seg</td>
                 </tr>
-                <!--<tr>
-                    <td>plus_cedencia_factor_iteracion</td>
-                    <td>Factor que aplica a la deformación obtenida para iniciar plus cedencia</td>
-                    <td>
-                        <input class="form-control-xs" type="number" step=0.001 value="" name="plus_cedencia_factor_iteracion">
-                    </td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>plus_cedencia_delta_aumento</td>
-                    <td>Delta que aumenta la cedencia en cada intevalo dentro de plus cendencia</td>
-                    <td>
-                        <input class="form-control-xs" type="number" step=0.001 value="" name="plus_cedencia_delta_aumento">
-                    </td>
-                    <td>mm</td>
-                </tr>
-                <tr>
-                    <td>plus_cedencia_trigger</td>
-                    <td>Valor de cedencia que dispara la plus cedencia</td>
-                    <td>
-                        <input class="form-control-xs" type="number" step=0.001 value="" name="plus_cedencia_trigger">
-                    </td>
-                    <td>mm</td>
-                </tr>-->
             </tbody>
         </table>
         <input type="submit" value="" class="d-none">

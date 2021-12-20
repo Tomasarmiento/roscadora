@@ -1,6 +1,6 @@
-import { env } from "./enviroments";
+//import { env } from "./enviroments";
 
-export async function ContinuarDetener(comando, menu, modo, eje) {
+export async function SemiAutomatico(comando, menu, modo, eje) {
   const continuar = document.getElementById("continue");
   const response = await fetch(env.URL_BASE + "menu/" + modo + "/", {
     method: "post",

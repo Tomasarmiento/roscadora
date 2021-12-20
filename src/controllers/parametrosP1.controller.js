@@ -19,7 +19,7 @@ export default () => {
     }
   }
 
-  function escribirParametros(data) {                                                   //escribe parametros de abajo
+  /*function escribirParametros(data) {                                                   //escribe parametros de abajo
     const response = fetch(`${env.URL_BASE}menu/parametros/`, {
       method: "post",
       headers: {
@@ -27,7 +27,7 @@ export default () => {
       },
       body: data,
     });
-  }
+  }*/
 
   const divElement = document.createElement("div");
   divElement.className = "px-2 container-fluid";
@@ -45,7 +45,7 @@ export default () => {
     escribirParametros(JSON.stringify(dataModelo1));
   });
 
-  const formParamsModelo2= divElement.querySelector(
+  const formParamsModelo2 = divElement.querySelector(
     "#cuplaModelo2"
   );
   formParamsModelo2.addEventListener("submit", (e) => {

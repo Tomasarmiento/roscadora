@@ -1,4 +1,4 @@
-
+//import { env } from "./enviroments";
 
 export async function ContinuarDetener(comando, menu, modo, eje) {
   const continuar = document.getElementById("continue");

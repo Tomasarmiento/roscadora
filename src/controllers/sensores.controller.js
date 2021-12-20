@@ -1,41 +1,49 @@
 import views from "../views/sensores.html";
 
 export function MonitorearSensores(dataWs) {
-  // Indicadores ROTADOR
-  const rotPosDer1 = document.querySelector("#rotRightPos1");
-  const rotPosIzq1 = document.querySelector("#rotLeftPos1");
-  const rotPosDer2 = document.querySelector("#rotRightPos2");
-  const rotPosIzq2 = document.querySelector("#rotLeftPos2");
+  // Indicadores PINZAS CARGA/DESCARGA
+  const grippCarga_atras = document.querySelector("#gripperLoaderBkwrd");
+  const grippCarga_adelante = document.querySelector("#gripperLoaderFwrd");
+  const grippCarga_liberada = document.querySelector("#gripperLoaderReleased");
+  const grippCarga_accionada = document.querySelector("#gripperLoaderActuated");
+  const grippCarga_cupla = document.querySelector("#gripperLoaderCupla");
+  const grippDescarga_atras = document.querySelector("#gripperDownloadBkwrd");
+  const grippDescarga_adelante = document.querySelector("#gripperDownloadFwrd");
+  const grippDescarga_liberada = document.querySelector("#gripperDownloadReleased");
+  const grippDescarga_accionada = document.querySelector("#gripperDownloadActuated");
+  const grippDescarga_cupla = document.querySelector("#gripperDownloadCupla");
 
-  // Indicadores ELEVADOR
-  const liftPosDer1 = document.querySelector("#liftRightPos1");
-  const liftPosIzq1 = document.querySelector("#liftLeftPos1");
-  const liftPosDer2 = document.querySelector("#liftRightPos2");
-  const liftPosIzq2 = document.querySelector("#liftLeftPos2");
+  // Indicadores SERVO MOTORES
+  const ejeLFwrdLim = document.querySelector("#axisLinearFwrd");
+  const ejeLRvrseLim = document.querySelector("#axisLinearRvrse");
+  const ejeLHomming = document.querySelector("#axisLinearHom");
+  const ejeRhomming = document.querySelector("#axisRotativeHom");
 
-  // Indicadores Gripper
-  const grippPosDer1 = document.querySelector("#gripperRightPos1");
-  const grippPosIzq1 = document.querySelector("#gripperLeftPos1");
-  const grippPosDer2 = document.querySelector("#gripperRightPos2");
-  const grippPosIzq2 = document.querySelector("#gripperLeftPos2");
+  // Indicadores VERTICAL Y GIRO DE CARGA
+  const vertCarga_arriba = document.querySelector("#verticalLoadUp");
+  const vertCarga_abajo = document.querySelector("#verticalLoadDown");
+  const giroCarga_arriba = document.querySelector("#turnLoadUp");
+  const giroCarga_abajo = document.querySelector("#turnLoadDown");
 
-  // Indicadores Avance de Grippers
-  const bladeRestRightUp = document.querySelector("#bladeRestRightUp");
-  const bladeRestRightDown = document.querySelector("#bladeRestRightDown");
-  const bladeRestLeftUp = document.querySelector("#bladeRestLeftUp");
-  const bladeRestLeftDown = document.querySelector("#bladeRestLeftDown");
+  // Indicadores GRIPPER 2 DESCARGA
+  const gripp2VDescarga_arriba = document.querySelector("#gripper2VerticalDownloaderUp");
+  const gripp2VDescarga_abajo = document.querySelector("#gripper2VerticalDownloaderDown");
+  const gripp2HDescarga_adelante = document.querySelector("#gripper2HorizontalDownloaderFwrd");
+  const gripp2HDescarga_atras = document.querySelector("#gripper2HorizontalDownloaderBkwrd");
+  const gripp2PDescarga_accionada = document.querySelector("#gripper2DownloaderActuated");
+  const gripp2PDescarga_liberada = document.querySelector("#gripper2DownloaderReleased");
 
-  // Indicadores Avance de Grippers
-  const grippShfPosDer1 = document.querySelector("#gripperShiftRightPos1");
-  const grippShfPosIzq1 = document.querySelector("#gripperShiftLeftPos1");
-  const grippShfPosDer2 = document.querySelector("#gripperShiftRightPos2");
-  const grippShfPosIzq2 = document.querySelector("#gripperShiftLeftPos2");
+  // Indicadores GIRO DESCARGA
+  const giroDescarga_arriba = document.querySelector("#turnDownloadUp");
+  const giroDescarga_abajo = document.querySelector("#turnDownloadDown");
 
-  // Indicadores CUCHILLA
-  const sensorCuchillaDer = document.querySelector("#bladePresenceRight");
-  const sensorCuchillaIZq = document.querySelector("#bladePresenceLeft"); 
 
-  const componenteMonitor = document.getElementsByClassName("sensores");
+
+
+
+
+
+  const componenteMonitor = document.getElementsByClassName(" ");
  //console.log("Flags Fin V: ", dataWs.states.vertical.flags_fin.toString(2).split(''), dataWs.states.vertical.flags_fin) 
  //console.log("Flags Fin H: ", dataWs.states.horizontal.flags_fin.toString(2).split(''), dataWs.states.horizontal.flags_fin)
  console.log("Estado VER: ", dataWs.states.vertical.estado.toString(2).split(''), dataWs.states.vertical.estado) 
