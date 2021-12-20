@@ -20,40 +20,40 @@ export default () => {
 
   btns.addEventListener("click", (e) => {
     switch (e.target.id) {
-      case "horizontalOnOff":
-        if (inds.horizontalOk.className === "led led-grey") {
+      case "horizontalCargaOnOff":
+        if (inds.horizontalCargaOk.className === "led led-grey") {
           ComandosNeumatica("horizontal", "on");
-          inds.horizontalOk.className = "led led-green";
-        } else if (inds.horizontalOk.className === "led led-green") {
+          inds.horizontalCargaOk.className = "led led-green";
+        } else if (inds.horizontalCargaOk.className === "led led-green") {
           ComandosNeumatica("horizontal", "off");
-          inds.horizontalOk.className = "led led-grey";
+          inds.horizontalCargaOk.className = "led led-grey";
         }
         break;
-      case "pinzaOnOff":
-        if (inds.pinzaOk.className === "led led-grey") {
+      case "pinzaCargaOnOff":
+        if (inds.pinzaCargaOk.className === "led led-grey") {
           ComandosNeumatica("pinza", "on");
-          inds.pinzaOk.className = "led led-green";
-        } else if (inds.pinzaOk.className === "led led-green") {
+          inds.pinzaCargaOk.className = "led led-green";
+        } else if (inds.pinzaCargaOk.className === "led led-green") {
           ComandosNeumatica("pinza", "off");
-          inds.pinzaOk.className = "led led-grey";
+          inds.pinzaCargaOk.className = "led led-grey";
         }
         break;
-      case "verticalOnOff":
-        if (inds.verticalOk.className === "led led-grey") {
+      case "verticalCargaOnOff":
+        if (inds.verticalCargaOk.className === "led led-grey") {
           ComandosNeumatica("vertical", "on");
-          inds.verticalOk.className = "led led-green";
-        } else if (inds.verticalOk.className === "led led-green") {
+          inds.verticalCargaOk.className = "led led-green";
+        } else if (inds.verticalCargaOk.className === "led led-green") {
           ComandosNeumatica("vertical", "off");
-          inds.verticalOk.className = "led led-grey";
+          inds.verticalCargaOk.className = "led led-grey";
         }
         break;
-      case "giroOnOff":
-        if (inds.giroOk.className === "led led-grey") {
+      case "giroCargaOnOff":
+        if (inds.giroCargaOk.className === "led led-grey") {
           ComandosNeumatica("giro", "on");
-          inds.giroOk.className = "led led-green";
-        } else if (inds.giroOk.className === "led led-green") {
+          inds.giroCargaOk.className = "led led-green";
+        } else if (inds.giroCargaOk.className === "led led-green") {
           ComandosNeumatica("giro", "off");
-          inds.giroOk.className = "led led-grey";
+          inds.giroCargaOk.className = "led led-grey";
         }
         break;
       case "liberarOnOff":
@@ -65,18 +65,116 @@ export default () => {
           inds.liberarOk.className = "led led-grey";
         }
         break;
-        
-      case "giroCuchilla":
-        ComandosNeumatica("secuencia_giro", "giro");
+        case "horizontalDescOnOff":
+        if (inds.horizontalDescOk.className === "led led-grey") {
+          ComandosNeumatica("liberar", "on");
+          inds.horizontalDescOk.className = "led led-green";
+        } else if (inds.horizontalDescOk.className === "led led-green") {
+          ComandosNeumatica("liberar", "off");
+          inds.horizontalDescOk.className = "led led-grey";
+        }
         break;
-        
-      case "stop":
-        ContinuarDetener(
-          "detener",
-          window.location.hash.split("#/")[1].split("A")[0],
-          "automatico"
-        );
+        case "pinzaDescOnOff":
+        if (inds.pinzaDescOk.className === "led led-grey") {
+          ComandosNeumatica("liberar", "on");
+          inds.pinzaDescOk.className = "led led-green";
+        } else if (inds.pinzaDescOk.className === "led led-green") {
+          ComandosNeumatica("liberar", "off");
+          inds.pinzaDescOk.className = "led led-grey";
+        }
         break;
+        case "verticalBrOnOff":
+        if (inds.verticalBrOk.className === "led led-grey") {
+          ComandosNeumatica("liberar", "on");
+          inds.verticalBrOk.className = "led led-green";
+        } else if (inds.verticalBrOk.className === "led led-green") {
+          ComandosNeumatica("liberar", "off");
+          inds.verticalBrOk.className = "led led-grey";
+        }
+        break;
+        case "giroDescOnOff":
+        if (inds.giroDescOk.className === "led led-grey") {
+          ComandosNeumatica("liberar", "on");
+          inds.giroDescOk.className = "led led-green";
+        } else if (inds.giroDescOk.className === "led led-green") {
+          ComandosNeumatica("liberar", "off");
+          inds.giroDescOk.className = "led led-grey";
+        }
+        break;
+        case "horizontalBrOnOff":
+        if (inds.horizontalBrOk.className === "led led-grey") {
+          ComandosNeumatica("liberar", "on");
+          inds.horizontalBrOk.className = "led led-green";
+        } else if (inds.horizontalBrOk.className === "led led-green") {
+          ComandosNeumatica("liberar", "off");
+          inds.horizontalBrOk.className = "led led-grey";
+        }
+        break;
+        case "pinzaBrOnOff":
+        if (inds.pinzaBrOk.className === "led led-grey") {
+          ComandosNeumatica("liberar", "on");
+          inds.pinzaBrOk.className = "led led-green";
+        } else if (inds.pinzaBrOk.className === "led led-green") {
+          ComandosNeumatica("liberar", "off");
+          inds.pinzaBrOk.className = "led led-grey";
+        }
+        break;
+        case "clampeoOnOff":
+        if (inds.clampeoOk.className === "led led-grey") {
+          ComandosNeumatica("liberar", "on");
+          inds.clampeoOk.className = "led led-green";
+        } else if (inds.clampeoOk.className === "led led-green") {
+          ComandosNeumatica("liberar", "off");
+          inds.clampeoOk.className = "led led-grey";
+        }
+        break;
+        case "boquilla1OnOff":
+        if (inds.boquilla1Ok.className === "led led-grey") {
+          ComandosNeumatica("liberar", "on");
+          inds.boquilla1Ok.className = "led led-green";
+        } else if (inds.boquilla1Ok.className === "led led-green") {
+          ComandosNeumatica("liberar", "off");
+          inds.boquilla1Ok.className = "led led-grey";
+        }
+        break;
+        case "boquilla2OnOff":
+        if (inds.boquilla2Ok.className === "led led-grey") {
+          ComandosNeumatica("liberar", "on");
+          inds.boquilla2Ok.className = "led led-green";
+        } else if (inds.boquilla2Ok.className === "led led-green") {
+          ComandosNeumatica("liberar", "off");
+          inds.boquilla2Ok.className = "led led-grey";
+        }
+        break;
+        case "boquilla3OnOff":
+        if (inds.boquilla3Ok.className === "led led-grey") {
+          ComandosNeumatica("liberar", "on");
+          inds.boquilla3Ok.className = "led led-green";
+        } else if (inds.boquilla3Ok.className === "led led-green") {
+          ComandosNeumatica("liberar", "off");
+          inds.boquilla3Ok.className = "led led-grey";
+        }
+        break;
+        case "acoplaSolOnOff":
+        if (inds.acoplaSolOk.className === "led led-grey") {
+          ComandosNeumatica("liberar", "on");
+          inds.acoplaSolOk.className = "led led-green";
+        } else if (inds.acoplaSolOk.className === "led led-green") {
+          ComandosNeumatica("liberar", "off");
+          inds.acoplaSolOk.className = "led led-grey";
+        }
+        break;
+        case "bombaSolOnOff":
+        if (inds.bombaSolOk.className === "led led-grey") {
+          ComandosNeumatica("liberar", "on");
+          inds.bombaSolOk.className = "led led-green";
+        } else if (inds.bombaSolOk.className === "led led-green") {
+          ComandosNeumatica("liberar", "off");
+          inds.bombaSolOk.className = "led led-grey";
+        }
+        break;
+
+
     }
   });
 
