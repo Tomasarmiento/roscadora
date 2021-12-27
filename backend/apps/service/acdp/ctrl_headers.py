@@ -1,5 +1,6 @@
 import struct, ctypes
 from ctypes import Structure, Union, c_uint16, c_uint32, c_float, c_bool, c_ulong
+from apps.service.acdp.messages_base import BaseStructure
 
 ACDP_CTRLADDR_MTR = 1
 ACDP_CTRLADDR_PC  = 254
@@ -10,7 +11,7 @@ class CtrlHeaderEnums:
     FLAG_ECHO_TIMEOUT   = 1 << 15
 
 
-class CtrlHeader(Structure):
+class CtrlHeader(BaseStructure):
     _fields_ = [
         ('device_type', c_uint16),  # Tipo de dispositivo que emite el mensaje (DARX, SACX, ASIX, etc)
         ('firmware_version', c_uint16), # Version del firmware
@@ -26,7 +27,7 @@ class CtrlHeader(Structure):
         ('data_len8', c_uint16) # Longitud de los datos en bytes.
     ]
 
-class IpcHeader(Structure):
+class IpcHeader(BaseStructure):
     _fields_ = [
         ('src_addr', c_uint16), # Emisor del mensaje (0: cuando no se utiliza)
         ('dst_addr', c_uint16), # Destinatario del mensaje (0: no se reenvia a ningun dispositivo externo)
