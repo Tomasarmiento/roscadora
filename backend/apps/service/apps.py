@@ -7,4 +7,5 @@ class ServiceConfig(AppConfig):
     name = 'apps.service'
 
     def ready(self):
-        start_service()
+        # start_service()
+        pass
