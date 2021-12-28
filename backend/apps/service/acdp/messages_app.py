@@ -679,11 +679,26 @@ class AcdpPcDataCtrlRemIODO16(BaseUnion):
     ]
 
 
+class AcdpPcDataCtrlRemIODI16Array(ctypes.Array):
+    _length_ = AcdpPcDataCtrlRemIODI16Enums.CANT_DIS
+    _type_ = AcdpPcDataCtrlRemIODI16
+
+
+class AcdpPcDataCtrlRemIODO16Array(ctypes.Array):
+    _length_ = AcdpPcDataCtrlRemIODO16Enums.CANT_DOS
+    _type_ = AcdpPcDataCtrlRemIODO16
+
+
 class AcdpPcDataCtrlRemIO(BaseStructure):
     _fields_ = [
-        ('di16', AcdpPcDataCtrlRemIODI16 * AcdpPcDataCtrlRemIODI16Enums.CANT_DIS),
-        ('do16', AcdpPcDataCtrlRemIODO16 * AcdpPcDataCtrlRemIODO16Enums.CANT_DOS)
+        ('di16', AcdpPcDataCtrlRemIODI16Array),
+        ('do16', AcdpPcDataCtrlRemIODO16Array)
     ]
+
+
+class AcdpAxisMovementsMovEjeDataArray(ctypes.Array):
+    _length_ = AcdpAxisMovementEnums.CANT_EJES
+    _type_ = AcdpAxisMovementsMovEjeData
 
 
 class AcdpPcDataCtrl(BaseStructure):
@@ -692,7 +707,7 @@ class AcdpPcDataCtrl(BaseStructure):
         ('loc_io', AcdpPcDataCtrlLocIO),    # Local Inputs/Outpus
         ('rem_io', AcdpPcDataCtrlRemIO),    # Remote Inputs/Outputs
 
-        ('eje', AcdpAxisMovementsMovEjeData * AcdpAxisMovementEnums.CANT_EJES)
+        ('eje', AcdpAxisMovementsMovEjeDataArray)
     ]
 
 

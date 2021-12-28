@@ -54,33 +54,36 @@ class BaseStructure(Structure):
         return len(self.get_values())
 
     def store_values(self, values):     # Receives values in tuple to store
-
+        
         i = 0
-
+        
         for field in self._fields_:
             field_type = field[1]
             field_name = field[0]
-
+            
             if issubclass(field_type, ctypes._SimpleCData):
                 value = values[i]
                 setattr(self, field_name, value)
                 i = i + 1
+            
+            elif issubclass(field_type, ctypes.Array):
+                print("FIELD TYPE: ", field_type)
+                arr = getattr(self, field_name)
+                arr_len = arr._length_
+                vals = arr._type_().get_values()
+                for j in range(arr_len):
+                    vals = values[i:(i+len(vals))]
+                    i = i + len(vals)
+                    print("ARRAY")
+                    arr[j].store_values(vals)
+                setattr(self, field_name, arr)
 
             elif field_type:
-                if issubclass(field_type, ctypes.Array):
-                    aux = getattr(self, field[0])
-                    for aux_field in aux:
-                        value = aux_field()
-                        field_len = value.get_len()
-                        value.store_values(values[i:(i+field_len)])
-                        setattr(self, field_name, value)
-                        i = i + field_len
-                else:
-                    vals = field_type()
-                    field_len = vals.get_len()
-                    vals.store_values(vals[i:(i+field_len)])
-                    setattr(self, field_name, vals)
-                    i = i + field_len
+                value = field_type()
+                field_len = value.get_len()
+                value.store_values(values[i:(i+field_len)])
+                setattr(self, field_name, value)
+                i = i + field_len
 
     def pacself(self):    # Returns structure in bytes format
         frm = self.get_format()
@@ -117,6 +120,7 @@ class BaseStructure(Structure):
 
 
 class BaseUnion(Union):     # Mostly used for flags
+
     def get_format(self, field_name=''):    # Get string format for pack/unpack
         fields = self._fields_
 
@@ -150,13 +154,18 @@ class BaseUnion(Union):     # Mostly used for flags
                 field[1].get_values()
     
     def store_values(self, values, field_name=''):     # Receives values in tuple to store
-
         if field_name:
-            getattr(self, field_name).store_values(values)
+            attr = getattr(self.__class__, field_name)
+            
+            if issubclass(attr, ctypes._SimpleCData):
+                setattr(self, field_name, values(0))
+            else:
+                getattr(self, field_name).store_values(values)
 
         else:
             field = self._fields_[0]
             if issubclass(field[1], ctypes._SimpleCData):
+                print("CLASS: ", self.__class__, "FIELD NAME: ", field[0], "\nValues: ", values)
                 setattr(self, field[0], values[0])
             else:
                 field[1].store_values(values)
