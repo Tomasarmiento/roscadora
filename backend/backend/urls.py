@@ -21,4 +21,14 @@ from apps.service.api.service import start_service
 urlpatterns = [
     path('front/', include('apps.front.urls')),
     path('admin/', admin.site.urls),
+    path('home/', include('apps.front.urls')),
+    path('referenciar/', include('apps.front.urls')),
+    path('automatico/', include('apps.front.urls')),
+    path('neumaticaManual/', include('apps.front.urls')),
+    path('motoresManual/', include('apps.front.urls')),
+    path('sensores/', include('apps.front.urls')),
+    path('monitorEstados/', include('apps.front.urls')),
+    path('semiAutomatico/', include('apps.front.urls')),
+    path('parametrosPagina1/', include('apps.front.urls')),
+    path('parametrosPagina2/', include('apps.front.urls')),
 ]

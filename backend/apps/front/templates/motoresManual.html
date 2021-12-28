@@ -1,0 +1,160 @@
+{% load static %}}
+<link href="{% static 'bootstrap/bootstrap.min.css' %}" rel="stylesheet">
+<link href="{% static 'css/main.css' %}" rel="stylesheet">
+
+<div class="col-md-10 col-12 container-fluid">
+	<div id="contenedorEjeHorizontal" class="col-md-5 col-12 mb-5 float-left ml-md-2 border shadow rounded bg-white p-2" style="height: auto;">
+		<div class="container-fluid">
+			<div class="row justify-content-center" style="color: black;">
+				<h4>Eje Lineal</h4>
+			</div>
+			<div class="row justify-content-center mb-3">
+				<div id="accordionHorizontal" class="w-100">
+					<div class="card">
+						<div class="card-header" id="headingOneHorizontal">
+							<h5 class="mb-0">
+								<button class="btn btn-link font-weight-bold" data-toggle="collapse" data-target="#collapseOneHorizontal" aria-expanded="true" aria-controls="collapseOneHorizontal">
+									Posición RELATIVA
+								</button>
+							</h5>
+						</div>
+						<div id="collapseOneHorizontal" class="collapse" aria-labelledby="headingOneHorizontal" data-parent="#accordionHorizontal" style="color: black;">
+							<div class="card-body mb-1">
+								<div class="form-inline mb-3">
+									<label class="col-md-3"><FONT SIZE=4>Posición:</FONT></label>
+									<input type="number" class="col-md-8" id="relPos" value=0.00>
+								</div>
+								<div class="form-inline">
+									<label class="col-md-3"><FONT SIZE=4>Velocidad:</FONT></label>
+									<input type="number" class="col-md-8" id="relSpd" value=0.00>
+								</div>		
+							</div>
+							<div class="align-self-center text-center mb-3">
+								<button class="btn btn-primary btn-lg" id="relFwdH">Adelante</button>
+								<button class="btn btn-secondary btn-lg" id="relBwdH">Atrás</button>
+							</div>
+						</div>
+					</div>
+					<div class="card">
+						<div class="card-header" id="headingTwoHorizontal">
+							<h5 class="mb-0">
+								<button class="btn btn-link font-weight-bold" data-toggle="collapse" data-target="#collapseTwoHorizontal" aria-expanded="false" aria-controls="collapseTwoHorizontal">
+									Posición ABSOLUTA
+								</button>
+							</h5>
+						</div>
+						<div id="collapseTwoHorizontal" class="collapse " aria-labelledby="headingTwoHorizontal" data-parent="#accordionHorizontal" style="color: black;">
+							<div class="card-body mb-1">
+								<div class="form-inline mb-3">
+									<label class="col-md-3"><FONT SIZE=4>Posición:</FONT></label>
+									<input type="number" class="col-md-8" value=0.00 id="absPos">
+								</div>
+								<div class="form-inline">
+									<label class="col-md-3"><FONT SIZE=4>Velocidad:</FONT></label>
+									<input type="number" class="col-md-8" value=0.00 id="absSpd">
+								</div>		
+							</div>
+							<div class="align-self-center text-center mb-3">
+								<button class="btn btn-primary btn-lg" id="absMoveH">Mover</button>
+							</div>
+						</div>
+					</div>
+                    <div class="card">
+						<div class="card-header" id="headingTwoHorizontal">
+							<h5 class="mb-0">
+								<button class="btn btn-link collapsed font-weight-bold" data-toggle="collapse" data-target="#collapseTwoHorizontal" aria-expanded="false" aria-controls="collapseTwoHorizontal">
+									Husillo
+								</button>
+							</h5>
+						</div>
+						<div id="collapseTwoHorizontal" class="collapse show" aria-labelledby="headingTwoHorizontal" data-parent="#accordionHorizontal" style="color: black;">
+							<div class="card-body mb-1">
+								<div class="form-inline mb-3">
+									<label class="col-md-3"><FONT SIZE=4>RPM:</FONT></label>
+									<input type="number" class="col-md-8" value=0.00 id="absPos">
+								</div>		
+							</div>
+							<div class="align-self-center text-center mb-3">
+								<button class="btn btn-primary btn-lg" id="absMoveH">Mover</button>
+							</div>
+						</div>
+					</div>
+                    
+				</div>
+			</div>
+		</div>
+	</div>
+	<div id="contenedorEjeVertical" class="col-md-5 col-12 mb-5 float-left ml-md-2 border shadow rounded bg-white p-2">
+		<div class="container-fluid">
+			<div class="row justify-content-center" style="color: black;">
+				<h4>Cabezal</h4>
+			</div>
+			<div class="row justify-content-center mb-3">
+				<div id="accordionVertical" class="w-100">
+					<div class="card">
+						<div class="card-header" id="headingOne">
+							<h5 class="mb-0">
+								<button class="btn btn-link font-weight-bold" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+									Posición RELATIVA
+								</button>
+							</h5>
+						</div>
+						<div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordionVertical" style="color: black;">
+							<div class="card-body mb-1">
+								<div class="form-inline mb-3">
+									<label class="col-md-3"><FONT SIZE=4>Posición:</FONT></label>
+									<input type="number" class="col-md-8" id="relPosV" value=0.00>
+								</div>
+								<div class="form-inline">
+									<label class="col-md-3"><FONT SIZE=4>Velocidad:</FONT></label>
+									<input type="number" class="col-md-8" id="relSpdV" value=0.00>
+								</div>		
+							</div>
+							<div class="align-self-center text-center mb-3">
+								<button class="btn btn-primary btn-lg" id="upRel">Subir</button>
+								<button class="btn btn-secondary btn-lg" id="downRel">Bajar</button>
+							</div>
+						</div>
+					</div>
+					<div class="card">
+						<div class="card-header" id="headingTwo">
+							<h5 class="mb-0">
+								<button class="btn btn-link collapsed font-weight-bold" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+									Posición ABSOLUTA
+								</button>
+							</h5>
+						</div>
+						<div id="collapseTwo" class="collapse show" aria-labelledby="headingTwo" data-parent="#accordionVertical" style="color: black;">
+							<div class="card-body mb-1">
+								<div class="form-inline mb-3">
+									<label class="col-md-3"><FONT SIZE=4>Posición:</FONT></label>
+									<input type="number" class="col-md-8" value=0.00 id="absPosV">
+								</div>
+								<div class="form-inline">
+									<label class="col-md-3"><FONT SIZE=4>Velocidad:</FONT></label>
+									<input type="number" class="col-md-8" value=0.00 id="absSpdV">
+								</div>		
+							</div>
+							<div class="col align-self-center text-center mb-3">
+								<button class="btn btn-primary btn-lg" id="absMoveV">Mover</button>
+							</div>
+						</div>		
+					</div>
+				</div>
+			</div>
+			<div class="row d-flex justify-content-around mb-3">
+				<button class="btn btn-primary mb-3 text-center" style="min-width: 185px" id="loadPos">Posición 1</button>
+				<button class="btn btn-primary mb-3 text-center" style="min-width: 185px" id="touchProbePress">Posición 2</button>
+				<button class="btn btn-primary text-center" style="min-width: 185px" id="unloadPos">Posición 3</button>
+			</div>
+			<div class="row d-flex justify-content-around form-inline" style="color: black;">
+				<label><FONT SIZE=4>Velocidad:</FONT></label>
+				<input type="number" style="min-width: 250px" value=0.00 id="movPosSpd">
+				<button class="btn btn-danger" id="verStop">Detener</button>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="col-md-2 col-12 mb-5 float-right border shadow rounded bg-white px-1 py-1">
+	<div id="component-monitor"></div>
+</div>

@@ -7,7 +7,6 @@ const router = (route) => {
   switch (route) {
     case "#/home":
       return content.appendChild(pages.home());
-
     case "#/referenciar":
       return content.appendChild(pages.referenciar());
     case "#/automatico":

@@ -1,0 +1,19 @@
+{% load static %}
+<link href="{% static 'bootstrap/bootstrap.min.css' %}" rel="stylesheet">
+<link href="{% static 'css/main.css' %}" rel="stylesheet">
+
+<div class="row align-items-center d-flex justify-content-around mx-auto px-0">
+    <div id="controlesLiberar" class="col-md-4 col-12 mb-5 card rounded p-2 mx-auto bg-c-grey2 shadow-sm">
+        <div class="card card-cate container-fluid" style="border: ridge #141414 1px;">
+			<p class="font-weight-bold h2 text-secondary text-center"><FONT COLOR="#009AED">Atención, antes de cerar:</FONT></p>
+            <p class="text-warning h2 text-center"><FONT COLOR="red">LA MESA DEBE ESTAR LIBRE DE OBJETOS</FONT></p>
+		</div>   
+        <div class="row-col-12 mt-3 d-flex justify-content-around p-1">
+			<button type="button" class="btn btn-primary btn-lg w-50" id="homeExec">Referenciar EJES</button>
+			<article class="bg-secondary rounded-pill text-white w-25 text-center p-3" id="homeOk">HOME OK</article>
+		</div>  
+    </div>
+    <div class="col-md-2 col-12 justify-content-around mb-5 float-right border shadow my-auto rounded bg-white px-1 py-1">
+        <div id="component-monitor"></div>
+    </div>
+</div>
