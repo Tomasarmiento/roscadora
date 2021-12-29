@@ -1,0 +1,42 @@
+.indicadorMon {
+    width: 45%;
+    color: white;
+    text-align: center;
+    margin: 1%;
+    display: inline;
+    border-radius: 10px;
+    min-height: 54px;
+  }
+  
+  .indicadorMonSafe {
+    width: 45%;
+    color: white;
+    text-align: center;
+    margin: 1%;
+    display: inline;
+    border-radius: 10px;
+    min-height: 54px;
+    min-width: 92%
+  }
+  
+  
+  .bg-c-pink {
+    background: linear-gradient(45deg, #ff5370, #ff869a);
+  }
+  
+  .bg-c-blue {
+    background: linear-gradient(45deg, #4099ff, #73b4ff);
+  }
+  
+  .bg-c-grey {
+    background: linear-gradient(45deg, #8d8d90, #cbcbcd);
+  }
+  
+  .bg-c-grey2 {
+    background: linear-gradient(45deg, #b7b7ba, #cbcbcd);
+  }
+  
+  article[title] {
+    background-color: black;
+  }
+  
