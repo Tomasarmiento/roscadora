@@ -41,9 +41,13 @@ class UDPProtocol(asyncio.DatagramProtocol):
         
     def datagram_received(self, data, addr):    # addr is tuple (IP, PORT), example ('192.168.0.28', 54208)
         rx_msg = AcdpMessage()
-        print(rx_msg.get_bytes_size())
+        f = rx_msg.get_format()
+        if len(data) == 820:
+            print("DATA LEN:", len(struct.unpack(f,data)))
+            print("STRUCT LEN:",rx_msg.data_length)
+            rx_msg.store_from_raw(data)
+        # print(rx_msg.get_bytes_size())
         # rx_msg.store_from_raw(data)
-        print(len(data))
         # if not MicroWSHandler.micro_connected:
         #     MicroWSHandler.micro_connected = True
         #     MicroWSHandler.code = WS_CODES['connected']
