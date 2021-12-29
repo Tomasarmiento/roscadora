@@ -1,7 +1,7 @@
-{% load static %}}
-<link href="{% static 'bootstrap/bootstrap.min.css' %}" rel="stylesheet">
-<link href="{% static 'css/main.css' %}" rel="stylesheet">
-
+{% extends 'index.html'%}
+{% load static %}
+{% block content %}
+ 
 <div class="col-md-10 col-12 container-fluid">
 	<div id="contenedorEjeHorizontal" class="col-md-5 col-12 mb-5 float-left ml-md-2 border shadow rounded bg-white p-2" style="height: auto;">
 		<div class="container-fluid">
@@ -158,3 +158,4 @@
 <div class="col-md-2 col-12 mb-5 float-right border shadow rounded bg-white px-1 py-1">
 	<div id="component-monitor"></div>
 </div>
+{% endblock %}

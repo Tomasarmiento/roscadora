@@ -1,8 +1,6 @@
+{% extends 'index.html'%}
 {% load static %}
-
-<link href="{% static 'bootstrap/bootstrap.min.css' %}" rel="stylesheet">
-<link href="{% static 'css/main.css' %}" rel="stylesheet">
-
+{% block content %}
 
 <div class="row align-items-center d-flex mx-auto px-0">  
     <div class="container-fluid col-md-9 col-12 mb-3 mx-auto">
@@ -25,8 +23,8 @@
                 <button type="button" class="btn-warning btn-lg" id="reiniciar">Reiniciar</button>        
             </div>
             <div class="col-md-4 col-12 border shadow rounded p-2 card bg-light mt-3 text-white p-3">
-                <a type="button" class="btn-grad btn-lg" href="sensores">SENSORES</a>
-                <a type="button" class="btn-grad btn-lg" href="parametrosPagina1">PARAMETROS</a>
+                <a type="button" class="btn-grad btn-lg" href="{% url 'sensores' %}">SENSORES</a>
+                <a type="button" class="btn-grad btn-lg" href="{% url 'parametrosPagina1' %}">PARAMETROS</a>
             </div>
         </div>
     </div> 
@@ -35,3 +33,4 @@
         <div class="monitor" id="component-monitor"></div>
     </div>
 </div>
+{% endblock %}

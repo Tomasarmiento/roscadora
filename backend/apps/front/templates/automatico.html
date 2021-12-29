@@ -1,6 +1,6 @@
+{% extends 'index.html'%}
 {% load static %}
-<link href="{% static 'bootstrap/bootstrap.min.css' %}" rel="stylesheet">
-<link href="{% static 'css/main.css' %}" rel="stylesheet">
+{% block content %}
 
 <div class="row col-md-12 text-center mx-auto px-0">
 	<div id="component-grafico-roscado" class="col-md-12 col-12 border shadow rounded bg-white p-5"></div>
@@ -117,6 +117,7 @@
 	
 	
 </div>
+{% endblock %}
  
 <!--<div class="col-md-4 mb-2 float-left justify-content-around px-1">
 	<div id="contenedor-terminal-texto" class="card col-md-12 text-left my-4 mx-auto border shadow rounded bg-white p-1" style="height: auto;">

@@ -1,7 +1,7 @@
+{% extends 'index.html'%}
 {% load static %}
-<link href="{% static 'bootstrap/bootstrap.min.css' %}" rel="stylesheet">
-<link href="{% static 'css/main.css' %}" rel="stylesheet">
-
+{% block content %}
+ 
 <div class="col-md-5 col-12 container-fluid float-left justify-content-around"> 
     <div class="card p-1 mb-3">
         <form action="" method="post" id="cuplaModelo1">
@@ -291,3 +291,5 @@
         <a type="button" class="btn btn-secondary btn-lg" href="#/home">Volver</a>
     </div>
 </div>
+
+{% endblock %}

@@ -2,8 +2,7 @@ from django.urls import path, re_path
 from . import views
 
 urlpatterns = [
-    path('', views.index, name="index"),
-    path('home/', views.home, name="home"),
+    path('', views.home, name="home"),
     path('referenciar/', views.referenciar, name="referenciar"),
     path('automatico/', views.automatico, name="automatico"),
     path('neumaticaManual/', views.neumaticaManual, name="neumaticaManual"),

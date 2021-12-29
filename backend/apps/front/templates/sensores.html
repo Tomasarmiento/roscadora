@@ -1,10 +1,10 @@
+{% extends 'index.html'%}
 {% load static %}
-<link href="{% static 'bootstrap/bootstrap.min.css' %}" rel="stylesheet">
-<link href="{% static 'css/main.css' %}" rel="stylesheet">
-
+{% block content %}
+ 
 <div class="row m-auto align-items-center d-flex justify-content-around mx-auto px-0 mb-5" id="sensores">
     <div class="container-fluid col-md-3 card p-1 border shadow rounded mb-3">
-        <table class="table table-sm table-striped table-borderless" id="tablaSensoresPinzasCargaDescarga">
+        <table class="table table-sm table-striped table-borderless" style="color: black;" id="tablaSensoresPinzasCargaDescarga">
             <thead>
                 <tr>
                     <th colspan="2" style="text-align: center; background-color: #52D5DA; color:black; border-top-right-radius: 8px; border-top-left-radius: 8px;">Sensores pinzas carga/descarga</th>
@@ -59,7 +59,7 @@
         </table>
     </div>
     <div class="container-fluid col-md-3 card p-1 border shadow rounded mb-3">
-        <table class="table table-sm table-striped table-borderless" id="tablaSensoresServoMotores">
+        <table class="table table-sm table-striped table-borderless" style="color: black;" id="tablaSensoresServoMotores">
             <thead>
                 <tr>
                     <th colspan="2" style="text-align: center; background-color: #52D5DA; color:black; border-top-right-radius: 8px; border-top-left-radius: 8px;">Sensores Servo Motores</th>
@@ -90,7 +90,7 @@
         </table>
     </div>
     <div class="container-fluid col-md-3 card p-1 border shadow rounded mb-3">
-        <table class="table table-sm table-striped table-borderless" id="tablaSensoresVerticalGiroCarga">
+        <table class="table table-sm table-striped table-borderless" style="color: black;" id="tablaSensoresVerticalGiroCarga">
             <thead>
                 <tr>
                     <th colspan="2" style="text-align: center; background-color: #52D5DA; color:black; border-top-right-radius: 8px; border-top-left-radius: 8px;">Sensores vertical y giro de carga</th>
@@ -124,7 +124,7 @@
 
 <div class="row align-items-center d-flex justify-content-around mx-auto px-0 mb-5">
     <div class="container-fluid col-md-3 card p-1 border shadow rounded mb-3">
-        <table class="table table-sm table-striped table-borderless" id="tablaSensoresGripper2Descarga">
+        <table class="table table-sm table-striped table-borderless" style="color: black;" id="tablaSensoresGripper2Descarga">
             <thead>
                 <tr>
                     <th colspan="2" style="text-align: center; background-color: #52D5DA; color:black; border-top-right-radius: 8px; border-top-left-radius: 8px;">Sensores gripper 2 descarga</th>
@@ -164,7 +164,7 @@
     </div>
     
     <div class="container-fluid col-md-3 card p-1 border shadow rounded mb-3">
-        <table class="table table-sm table-striped table-borderless" id="tablaSensoresGiroDescarga">
+        <table class="table table-sm table-striped table-borderless" style="color: black;" id="tablaSensoresGiroDescarga">
             <thead>
                 <tr>
                     <th colspan="2" style="text-align: center; background-color: #52D5DA; color:black; border-top-right-radius: 8px; border-top-left-radius: 8px;">Sensores giro descarga</th>
@@ -192,3 +192,5 @@
             <a type="button" class="btn btn-secondary btn-lg" href="#/home">Volver</a>
         </div>
     </div>
+
+{% endblock %}
