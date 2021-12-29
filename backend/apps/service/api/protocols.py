@@ -1,5 +1,4 @@
-import asyncio
-import json
+import asyncio, json, struct
 from collections import deque
 
 from django.http import response
@@ -11,7 +10,7 @@ import websockets
 # from apps.service.acdp.messages import ACDPDataEnums
 # from apps.service.acdp.messages_base import DrviverFlags
 from apps.service.acdp.acdp import ACDP_UDP_PORT
-from apps.service.acdp.handlers import AcdpMessage
+from apps.service.acdp.handlers import AcdpMessage, build_header
 
 TIME_TO_SEC = 150 * 1000000
 HOST = '127.0.0.1'
@@ -37,12 +36,14 @@ class UDPProtocol(asyncio.DatagramProtocol):
     def connection_made(self, transport):       # Used by asyncio
         self.transport = transport
         UDPProtocol.transport = transport
-        # send_header = build_header(COMMANDS['connect'], host_ip=HOST, dest_ip=ACDP_IP)
-        # self.transport.sendto(send_header.pack_self(),(ACDP_IP, PORT))
+        send_header = build_header('open_com', host_ip=HOST, dest_ip=ACDP_IP)
+        self.transport.sendto(send_header.pacself(),(ACDP_IP, PORT))
         
     def datagram_received(self, data, addr):    # addr is tuple (IP, PORT), example ('192.168.0.28', 54208)
         rx_msg = AcdpMessage()
-        rx_msg.store_from_raw(data)
+        print(rx_msg.get_bytes_size())
+        # rx_msg.store_from_raw(data)
+        print(len(data))
         # if not MicroWSHandler.micro_connected:
         #     MicroWSHandler.micro_connected = True
         #     MicroWSHandler.code = WS_CODES['connected']

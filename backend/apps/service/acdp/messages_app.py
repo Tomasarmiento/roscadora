@@ -1,10 +1,10 @@
 # coding=utf-8
 import struct, ctypes
-from ctypes import c_uint16, c_uint32, c_float, c_bool, c_ulong
+from ctypes import c_long, c_uint16, c_uint32, c_float, c_bool, c_ulong
 
 from .messages_base import AcdpAvi, AcdpMsgType, AcdpMsgLevel, AcdpPiT0Config, AcdpPiT0Data,\
     AcdpPidT1Config, AcdpPidT1Data, BaseStructure, BaseUnion, AcdpDrvFbkData, AcdpEncData,\
-        AcdpDrvCmdData
+        AcdpDrvCmdData, AcdpAviData
 
 # --------------------------------------------------------------------------------------------#
 # --------------------- Códigos de Mensajes propios de la aplicación -------------------------#
@@ -250,7 +250,7 @@ class AcdpAxisMovementsMovPosConfigFlagsBits(BaseStructure):
 
 class AcdpAxisMovementsMovPosConfigFlags(BaseUnion):
     _fields_ = [
-        ('all', c_uint32),
+        ('all', c_ulong),
         ('bits', AcdpAxisMovementsMovPosConfigFlagsBits)
     ]
 
@@ -303,7 +303,7 @@ class AcdpAxisMovementsMovPosDataFlagsBits(BaseStructure):
 
 class AcdpAxisMovementsMovPosDataFlags(BaseUnion):
     _fields_ = [
-        ('all', c_uint32),
+        ('all', c_ulong),
         ('bits', AcdpAxisMovementsMovPosDataFlagsBits)
     ]
 
@@ -311,7 +311,7 @@ class AcdpAxisMovementsMovPosDataFlags(BaseUnion):
 class AcdpAxisMovementsMovPosDataHoming(BaseStructure):
     _fields_ = [
         # Maquina de Estados Secuencia de cerado. Estaods en AcdpAxisMovementsMovPosDataHomingStates
-        ('estado', c_uint32)
+        ('estado', c_long)
     ]
 
 
@@ -371,7 +371,7 @@ class AcdpAxisMovementsMovFzaConfigFlagsBits(BaseStructure):
 
 class AcdpAxisMovementsMovFzaConfigFlags(BaseUnion):
     _fields_ = [
-        ('all', c_uint32),
+        ('all', c_ulong),
         ('bits', AcdpAxisMovementsMovFzaConfigFlagsBits)
     ]
 
@@ -423,14 +423,14 @@ class AcdpAxisMovementsMovFzaDataFlagsBits(BaseStructure):
 
 class AcdpAxisMovementsMovFzaDataFlags(BaseUnion):
     _fields_ = [
-        ('all', c_uint32),
+        ('all', c_ulong),
         ('bits', AcdpAxisMovementsMovFzaDataFlagsBits)
     ]
 
 
 class AcdpAxisMovementsMovFzaDataMed(BaseStructure):
     _fields_ = [
-        ('cel', AcdpAvi),
+        ('cel', AcdpAviData),
         ('fza_fil', c_float),   # [kgf]
 
         ('rigidez_drive', c_float),     # [kgf/mm]
@@ -475,15 +475,15 @@ class AcdpAxisMovementsMovEjeDataFlagsBits(BaseStructure):
 
 class AcdpAxisMovementsMovEjeDataFlags(BaseUnion):
     _fields_ = [
-        ('all', c_uint32),
+        ('all', c_ulong),
         ('flags', AcdpAxisMovementsMovEjeDataFlagsBits)
     ]
 
 
 class AcdpAxisMovementsMovEjeDataMaqEst(BaseStructure):
     _fields_ = [
-        ('flags_fin', c_uint32),    # Flags FinEstado. Ver AcdpAxisMovementsMovEjeDataMaqEstFlagsFin
-        ('estado', c_uint32)        # Maquina de Estados General. Ver AcdpAxisMovementsMovEjeDataMaqEstEstado
+        ('flags_fin', c_ulong),    # Flags FinEstado. Ver AcdpAxisMovementsMovEjeDataMaqEstFlagsFin
+        ('estado', c_long)        # Maquina de Estados General. Ver AcdpAxisMovementsMovEjeDataMaqEstEstado
     ]
 
 
@@ -583,7 +583,7 @@ class AcdpPcDataFlagsBits(BaseStructure):
 
 class AcdpPcDataFlags(BaseUnion):
     _fields_ = [
-        ('all', c_uint32),
+        ('all', c_ulong),
         ('bits', AcdpPcDataFlagsBits)
     ]
 
@@ -597,7 +597,7 @@ class AcdpPcDataCtrlFlagsBits(BaseStructure):
 
 class AcdpPcDataCtrlFlags(BaseUnion):
     _fields_ = [
-        ('all', c_uint32),
+        ('all', c_ulong),
         ('bits', AcdpPcDataFlagsBits)
     ]
 
@@ -679,26 +679,11 @@ class AcdpPcDataCtrlRemIODO16(BaseUnion):
     ]
 
 
-class AcdpPcDataCtrlRemIODI16Array(ctypes.Array):
-    _length_ = AcdpPcDataCtrlRemIODI16Enums.CANT_DIS
-    _type_ = AcdpPcDataCtrlRemIODI16
-
-
-class AcdpPcDataCtrlRemIODO16Array(ctypes.Array):
-    _length_ = AcdpPcDataCtrlRemIODO16Enums.CANT_DOS
-    _type_ = AcdpPcDataCtrlRemIODO16
-
-
 class AcdpPcDataCtrlRemIO(BaseStructure):
     _fields_ = [
-        ('di16', AcdpPcDataCtrlRemIODI16Array),
-        ('do16', AcdpPcDataCtrlRemIODO16Array)
+        ('di16', AcdpPcDataCtrlRemIODI16 * AcdpPcDataCtrlRemIODI16Enums.CANT_DIS),
+        ('do16', AcdpPcDataCtrlRemIODO16 * AcdpPcDataCtrlRemIODO16Enums.CANT_DOS)
     ]
-
-
-class AcdpAxisMovementsMovEjeDataArray(ctypes.Array):
-    _length_ = AcdpAxisMovementEnums.CANT_EJES
-    _type_ = AcdpAxisMovementsMovEjeData
 
 
 class AcdpPcDataCtrl(BaseStructure):
@@ -707,7 +692,7 @@ class AcdpPcDataCtrl(BaseStructure):
         ('loc_io', AcdpPcDataCtrlLocIO),    # Local Inputs/Outpus
         ('rem_io', AcdpPcDataCtrlRemIO),    # Remote Inputs/Outputs
 
-        ('eje', AcdpAxisMovementsMovEjeDataArray)
+        ('eje', AcdpAxisMovementsMovEjeData * AcdpAxisMovementEnums.CANT_EJES)
     ]
 
 
