@@ -1,3 +1,4 @@
+from apps.service.api.constants import COMMANDS
 from .acdp import ACDP_VERSION, ACDP_UDP_PORT, ACDP_IP_ADDR
 from .acdp import AcdpHeader
 from .messages_app import AcdpPc
@@ -13,22 +14,25 @@ class AcdpMessage(BaseStructure):
     ]
 
 
-def build_header(command, host_ip="192.168.0.100", dest_ip=ACDP_IP_ADDR, *args, **kwargs):
+def build_header(code, host_ip="192.168.0.100", dest_ip=ACDP_IP_ADDR, *args, **kwargs):
+
     tx_header = AcdpHeader()
-    tx_header.version = ACDP_VERSION
-    tx_header.channel = 0
-    tx_header.ip_addr.store_from_string(host_ip)
-    tx_header.dest_addr.store_from_string(dest_ip)
+    tx_header.ctrl.msg_code = code
 
-    tx_header.ctrl.device_type = 0
-    tx_header.ctrl.firmware_version = 0
-    tx_header.ctrl.object = 0
-    tx_header.ctrl.flags = 0
-    tx_header.ctrl.msg_id = 0
-    tx_header.ctrl.timestamp = 0
-    tx_header.ctrl.data_len8 = 0
+    if code == COMMANDS['open_connection'] or code == COMMANDS['close_connection']:
+        tx_header.ctrl.msg_code = code
+        tx_header.version = ACDP_VERSION
+        tx_header.channel = 0
+        tx_header.ip_addr.store_from_string(host_ip)
+        tx_header.dest_addr.store_from_string(dest_ip)
 
-    if command == 'open_com':
-        tx_header.ctrl.msg_code = AcdpMsgCxn.CD_FORCE_CONNECT
+        tx_header.ctrl.device_type = 0
+        tx_header.ctrl.firmware_version = 0
+        tx_header.ctrl.object = 0
+        tx_header.ctrl.flags = 0
+        tx_header.ctrl.msg_id = 0
+        tx_header.ctrl.timestamp = 0
+        tx_header.ctrl.data_len8 = 0
+    
     
     return tx_header
