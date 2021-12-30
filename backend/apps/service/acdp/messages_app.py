@@ -707,7 +707,7 @@ class AcdpPcDataCtrl(BaseStructure):
         ('loc_io', AcdpPcDataCtrlLocIO),    # Local Inputs/Outpus
         ('rem_io', AcdpPcDataCtrlRemIO),    # Remote Inputs/Outputs
 
-        ('eje', AcdpAxisMovementsMovEjeData)
+        ('eje', AcdpAxisMovementsMovEjeDataArray)
     ]
 
 

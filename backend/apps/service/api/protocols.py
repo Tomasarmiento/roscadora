@@ -31,7 +31,6 @@ class UDPProtocol(asyncio.DatagramProtocol):
     transport = ''
 
     def __init__(self):
-        print("UDP INIT")
         super().__init__()
 
     def connection_made(self, transport):       # Used by asyncio
@@ -42,9 +41,26 @@ class UDPProtocol(asyncio.DatagramProtocol):
         
     def datagram_received(self, data, addr):    # addr is tuple (IP, PORT), example ('192.168.0.28', 54208)
         rx_msg = AcdpMessage()
-        len(data)
-        # len(rx_msg.pacself())
+        f = rx_msg.get_format()
+        if len(data) == 820:
+            print("DATA LEN:", len(struct.unpack(f,data)))
+            print("STRUCT LEN:",rx_msg.data_length)
+            rx_msg.store_from_raw(data)
+            print("DATA: ", rx_msg.get_values())
+        # print(rx_msg.get_bytes_size())
         # rx_msg.store_from_raw(data)
+        # if not MicroWSHandler.micro_connected:
+        #     MicroWSHandler.micro_connected = True
+        #     MicroWSHandler.code = WS_CODES['connected']
+        #     MicroWSHandler.pending_msg = True
+        
+        # process_rx_message(
+        #     transport = self.transport,
+        #     rx_message = data,
+        #     HOST = HOST,
+        #     addr = addr,
+        #     buffer = Buffer
+        #     )
 
     def error_received(self, exc: Exception) -> None:
         return super().error_received(exc)
