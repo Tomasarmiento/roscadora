@@ -60,33 +60,31 @@ class BaseStructure(Structure):
         return len(self.get_values())
 
     def store_values(self, values):     # Receives values in tuple to store
-
         i = 0
-
         for field in self._fields_:
-            field_type = field[1]
+            field_value = field[1]
             field_name = field[0]
 
-            if issubclass(field_type, ctypes._SimpleCData):
+            if issubclass(field_value, ctypes._SimpleCData):
                 value = values[i]
                 setattr(self, field_name, value)
                 i = i + 1
 
-            elif field_type:
-                if issubclass(field_type, ctypes.Array):
-                    aux = getattr(self, field[0])
-                    for aux_field in aux:
-                        value = aux_field()
-                        field_len = value.get_len()
-                        value.store_values(values[i:(i+field_len)])
-                        setattr(self, field_name, value)
-                        i = i + field_len
-                else:
-                    vals = field_type()
-                    field_len = vals.get_len()
-                    vals.store_values(values[i:(i+field_len)])
-                    setattr(self, field_name, vals)
-                    i = i + field_len
+            elif issubclass(field_value, ctypes.Array):
+                arr = getattr(self, field_name)
+                arr_len = field_value._length_
+                arr_type = arr._type_()
+                arr_type_len = arr_type.get_len()
+                for j in range(arr_len):
+                    arr[j].store_values(values[i:(i+arr_type_len)])
+                    i = i + j * arr_type_len
+            
+            else:
+                vals = field_value()
+                vals_len = vals.get_len()
+                vals.store_values(values[i:(i+vals_len)])
+                i = i + vals_len
+                setattr(self, field_name, vals)
 
     def pacself(self):    # Returns structure in bytes format
         frm = self.get_format()
