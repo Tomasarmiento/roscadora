@@ -4,21 +4,16 @@ from collections import deque
 from django.http import response
 import websockets
 
-# from apps.service.acdp.handlers import send_command, process_rx_message, build_header
-# from apps.service.acdp.handlers import IPAddress, ACDPMessage, MicroWSHandler
-# from apps.service.acdp.commands import WS_CODES, COMMANDS, ROUTINE_COMMANDS
-# from apps.service.acdp.messages import ACDPDataEnums
-# from apps.service.acdp.messages_base import DrviverFlags
-from apps.service.acdp.acdp import ACDP_UDP_PORT
+from apps.service.acdp.acdp import ACDP_UDP_PORT, ACDP_IP_ADDR
 from apps.service.acdp.handlers import AcdpMessage, build_header
+
+from .functions import open_connection
 
 TIME_TO_SEC = 150 * 1000000
 HOST = '127.0.0.1'
-ACDP_IP = '192.168.0.101'
+ACDP_IP = ACDP_IP_ADDR
 PORT = ACDP_UDP_PORT
 URI = "ws://localhost:8000/ws/micro/"
-HOR_GRAPH_STEP = 0.1
-REFRESH_TIME = 0.1          # Time to refresh states on frontend in seconds
 
 
 class Buffer():
@@ -36,8 +31,9 @@ class UDPProtocol(asyncio.DatagramProtocol):
     def connection_made(self, transport):       # Used by asyncio
         self.transport = transport
         UDPProtocol.transport = transport
-        send_header = build_header('open_com', host_ip=HOST, dest_ip=ACDP_IP)
-        self.transport.sendto(send_header.pacself(),(ACDP_IP, PORT))
+        open_connection(self.transport)
+        # send_header = build_header('open_com', host_ip=HOST, dest_ip=ACDP_IP)
+        # self.transport.sendto(send_header.pacself(),(ACDP_IP, PORT))
         
     def datagram_received(self, data, addr):    # addr is tuple (IP, PORT), example ('192.168.0.28', 54208)
         rx_msg = AcdpMessage()
@@ -46,7 +42,6 @@ class UDPProtocol(asyncio.DatagramProtocol):
             print("DATA LEN:", len(struct.unpack(f,data)))
             print("STRUCT LEN:",rx_msg.data_length)
             rx_msg.store_from_raw(data)
-            print("DATA: ", rx_msg.get_values())
         # print(rx_msg.get_bytes_size())
         # rx_msg.store_from_raw(data)
         # if not MicroWSHandler.micro_connected:
