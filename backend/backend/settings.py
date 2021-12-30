@@ -32,6 +32,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'apps.service',
+    'apps.front',
 
     'corsheaders',
     'channels',
