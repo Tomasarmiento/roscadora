@@ -1,4 +1,17 @@
-PARAMS_DEFAULT_VALUES = {
+PARAM_NAMES = [
+    'paso_de_rosca',
+    'posicion_de_aprox',
+    'velocidad_de_aprox',
+    'distancia_de_roscado',
+    'velocidad_de_roscado',
+    'velocidad_de_retraccion',
+    'tiempo_de_ciclo',
+    'torque_tolerado',
+    't_inicio_soluble'
+]
+
+
+PARAM_DEFAULT_VALUES_1 = {
     'paso_de_rosca': 0.0,
     'posicion_de_aprox': 0.0,
     'velocidad_de_aprox': 0.0,
@@ -8,6 +21,36 @@ PARAMS_DEFAULT_VALUES = {
     'tiempo_de_ciclo': 0.0,
     'torque_tolerado': 0.0,
     't_inicio_soluble': 0.0,
+}
+
+PARAM_DEFAULT_VALUES_2 = {
+    'paso_de_rosca': 0.0,
+    'posicion_de_aprox': 0.0,
+    'velocidad_de_aprox': 0.0,
+    'distancia_de_roscado': 0.0,
+    'velocidad_de_roscado': 0.0,
+    'velocidad_de_retraccion': 0.0,
+    'tiempo_de_ciclo': 0.0,
+    'torque_tolerado': 0.0,
+    't_inicio_soluble': 0.0,
+}
+
+PARAM_DEFAULT_VALUES_3 = {
+    'paso_de_rosca': 0.0,
+    'posicion_de_aprox': 0.0,
+    'velocidad_de_aprox': 0.0,
+    'distancia_de_roscado': 0.0,
+    'velocidad_de_roscado': 0.0,
+    'velocidad_de_retraccion': 0.0,
+    'tiempo_de_ciclo': 0.0,
+    'torque_tolerado': 0.0,
+    't_inicio_soluble': 0.0,
+}
+
+PARAM_DEFAULT_VALUES = {
+    1: PARAM_DEFAULT_VALUES_1,
+    2: PARAM_DEFAULT_VALUES_2,
+    3: PARAM_DEFAULT_VALUES_3
 }
 
 PARAMS_UNITS = {
@@ -23,5 +66,6 @@ PARAMS_UNITS = {
 }
 
 SELECTED_MODEL = 1
+PART_MODEL_OPTIONS = (1, 2, 3)
 
 PARAMS = {}

@@ -1,4 +1,5 @@
-from apps.parameters.utils.variables import PARAMS, PARAMS_DEFAULT_VALUES, PARAMS_UNITS, SELECTED_MODEL
+from apps.parameters.utils.variables import PARAMS, PARAM_DEFAULT_VALUES, PARAMS_UNITS, SELECTED_MODEL,\
+    PART_MODEL_OPTIONS
 from django.apps import AppConfig
 
 
@@ -12,10 +13,15 @@ class ParametersConfig(AppConfig):
         saved_params = dict([(param.name, param.value) for param in params])
         saved_keys = saved_params.keys()
 
-        for key, value in PARAMS_DEFAULT_VALUES.items():           
-            if key not in saved_keys:
-                PARAMS[key] = value
-                new_param = Parameter(name=key, value=value, part_model=SELECTED_MODEL, unit=PARAMS_UNITS[key])
-                new_param.save()
-            else:
-                PARAMS[key] = saved_params[key]
+        for option in PART_MODEL_OPTIONS:
+            for key, value in PARAM_DEFAULT_VALUES[option].items():           
+                if key not in saved_keys:
+                    new_param = Parameter(
+                        name = key,
+                        value = value,
+                        part_model = option,
+                        unit = PARAMS_UNITS[key]
+                        )
+                    new_param.save()
+                if option == SELECTED_MODEL:
+                    PARAMS[key] = value
