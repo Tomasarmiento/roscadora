@@ -43,6 +43,12 @@ class AcdpHeader(BaseStructure):
         ('ctrl', CtrlHeader)
     ]
 
+    def set_msg_id(self, msg_id):
+        setattr(self.ctrl, 'msg_id', msg_id)
+    
+    def get_msg_code(self):         # Used on rx msg
+        return self.ctrl.msg_code
+
 
 class NetRoute(BaseStructure):
     _fields_ = [

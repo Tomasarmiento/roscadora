@@ -225,15 +225,15 @@ class AcdpControlEnums:
 
 class AcdpAxisMovementEnums:
     ID_X_EJE_FIRSTROSCADO   = 0
-    IDX_EJE_PREV_ROSCADO    = ID_X_EJE_FIRSTROSCADO - 1
-    ID_X_EJE_GIRO           = IDX_EJE_PREV_ROSCADO + 1
+    ID_X_EJE_PREV_ROSCADO   = ID_X_EJE_FIRSTROSCADO - 1
+    ID_X_EJE_GIRO           = ID_X_EJE_PREV_ROSCADO + 1
     ID_X_EJE_AVANCE         = ID_X_EJE_GIRO + 1
     ID_X_EJE_POST_ROSCADO   = ID_X_EJE_AVANCE + 1
     ID_X_EJE_LAST_ROSCADO   = ID_X_EJE_POST_ROSCADO - 1
 
-    ID_X_EJE_FIRST_CARGA    = ID_X_EJE_LAST_ROSCADO +1
+    ID_X_EJE_FIRST_CARGA    = ID_X_EJE_LAST_ROSCADO + 1
     ID_X_EJE_PREV_CARGA     = ID_X_EJE_FIRST_CARGA - 1
-    ID_X_EJE_CARGA          = ID_X_EJE_PREV_CARGA +1
+    ID_X_EJE_CARGA          = ID_X_EJE_PREV_CARGA + 1
     ID_X_EJE_POST_CARGA     = ID_X_EJE_CARGA + 1
     ID_X_EJE_LAST_CARGA     = ID_X_EJE_POST_CARGA - 1
 
@@ -722,3 +722,34 @@ class AcdpPc(BaseStructure):
     _fields_ = [
         ('data', AcdpPcData)
     ]
+
+    def get_load_axis(self):
+        return self.data.ctrl.eje[AcdpAxisMovementEnums.ID_X_EJE_CARGA]
+    
+    def get_turn_axis(self):
+        return self.data.ctrl.eje[AcdpAxisMovementEnums.ID_X_EJE_GIRO]
+    
+    def get_thrust_axis(self):
+        return self.data.ctrl.eje[AcdpAxisMovementEnums.ID_X_EJE_AVANCE]
+    
+    def get_axis(self, axis):
+        if axis == AcdpAxisMovementEnums.ID_X_EJE_CARGA:
+            return self.get_load_axis()
+
+        elif axis == AcdpAxisMovementEnums.ID_X_EJE_GIRO:
+            return self.get_turn_axis()
+        
+        elif axis == AcdpAxisMovementEnums.ID_X_EJE_AVANCE:
+            return self.get_thrust_axis()
+        
+        else:
+            print("Eje no encontrado")
+            return False
+    
+    def get_axis_states(self, axis):
+        states = self.get_axis(axis).maq_est
+        return states
+    
+    def get_axis_flags(self, axis):
+        flags = self.get_axis(axis).flags
+        return flags

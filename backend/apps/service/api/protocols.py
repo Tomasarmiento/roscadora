@@ -1,13 +1,13 @@
-import asyncio, json, struct
+import asyncio, json, struct, datetime
 from collections import deque
 
 from django.http import response
 import websockets
 
 from apps.service.acdp.acdp import ACDP_UDP_PORT, ACDP_IP_ADDR
-from apps.service.acdp.handlers import AcdpMessage, build_header
+from apps.service.acdp.handlers import AcdpMessage, process_rx_msg
 
-from .functions import open_connection
+from .functions import force_connection, open_connection
 
 TIME_TO_SEC = 150 * 1000000
 HOST = '127.0.0.1'
@@ -27,36 +27,30 @@ class UDPProtocol(asyncio.DatagramProtocol):
 
     def __init__(self):
         super().__init__()
+        self.echo1 = datetime.datetime.now()
+        self.echo2 = datetime.datetime.now()
 
     def connection_made(self, transport):       # Used by asyncio
         self.transport = transport
         UDPProtocol.transport = transport
-        open_connection(self.transport)
-        # send_header = build_header('open_com', host_ip=HOST, dest_ip=ACDP_IP)
-        # self.transport.sendto(send_header.pacself(),(ACDP_IP, PORT))
+        force_connection(self.transport)
         
     def datagram_received(self, data, addr):    # addr is tuple (IP, PORT), example ('192.168.0.28', 54208)
+        bytes_len = len(data)
+        # print(bytes_len)
         rx_msg = AcdpMessage()
-        f = rx_msg.get_format()
-        if len(data) == 820:
-            print("DATA LEN:", len(struct.unpack(f,data)))
-            print("STRUCT LEN:",rx_msg.data_length)
+        if bytes_len < 820:
+            self.echo1 = self.echo2
+            self.echo2 = datetime.datetime.now()
+            print("ECHO:", self.echo2-self.echo1)
+            
+        if bytes_len == rx_msg.header.get_bytes_size():
+            rx_msg.header.store_from_raw(data)
+        else:
             rx_msg.store_from_raw(data)
-        # print(rx_msg.get_bytes_size())
-        # rx_msg.store_from_raw(data)
-        # if not MicroWSHandler.micro_connected:
-        #     MicroWSHandler.micro_connected = True
-        #     MicroWSHandler.code = WS_CODES['connected']
-        #     MicroWSHandler.pending_msg = True
+        process_rx_msg(rx_msg, transport=self.transport)
         
-        # process_rx_message(
-        #     transport = self.transport,
-        #     rx_message = data,
-        #     HOST = HOST,
-        #     addr = addr,
-        #     buffer = Buffer
-        #     )
-
+        
     def error_received(self, exc: Exception) -> None:
         return super().error_received(exc)
 
