@@ -1,6 +1,6 @@
 # coding=utf-8
 import struct, ctypes
-from ctypes import Structure, Union, c_uint32, c_float, c_bool, c_long, c_ulong
+from ctypes import addressof, Structure, Union, c_uint32, c_float, c_bool, c_long, c_ulong
 
 
 class BaseStructure(Structure):
@@ -32,7 +32,11 @@ class BaseStructure(Structure):
 
     def get_bytes_size(self):
         # return ctypes.sizeof(self)
-        return struct.calcsize(self.get_format())
+        # return struct.calcsize(self.get_format())
+        view = memoryview(self)
+        size = view.itemsize
+        view.release()
+        return size
 
     def get_values(self):   # Returns a tuple with structure values
         values = ()
@@ -87,21 +91,26 @@ class BaseStructure(Structure):
                 setattr(self, field_name, vals)
 
     def pacself(self):    # Returns structure in bytes format
-        frm = self.get_format()
-        values = self.get_values()
-        data = b''
-        for i in range(0, len(frm)):
-            f = frm[i]
-            value = values[i]
-            data = b''.join([data, struct.pack(f, value)])
-        return data
+        # frm = self.get_format()
+        # values = self.get_values()
+        # data = b''
+        # for i in range(0, len(frm)):
+        #     f = frm[i]
+        #     value = values[i]
+        #     data = b''.join([data, struct.pack(f, value)])
+        # return data
+        view = memoryview(self)
+        raw_data = view.tobytes()
+        view.release()
+        return raw_data
 
     def unpacdata(self, raw_data):
         unpacked_data = struct.unpack(self.get_format(), raw_data)
         return unpacked_data
 
     def store_from_raw(self, raw_values):
-        self.store_values(self.unpacdata(raw_data=raw_values))
+        # self.store_values(self.unpacdata(raw_data=raw_values))
+        ctypes.memmove(addressof(self), raw_values, len(raw_values))
 
     def to_dict(self):
 
