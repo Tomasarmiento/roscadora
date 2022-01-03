@@ -48,6 +48,15 @@ class AcdpHeader(BaseStructure):
     
     def get_msg_code(self):         # Used on rx msg
         return self.ctrl.msg_code
+    
+    def store_from_raw(self, raw_values):
+        super().store_from_raw(raw_values)
+        
+        self.flags = self.ctrl.flags
+        self.msg_id = self.ctrl.msg_id
+        self.timestamp = self.ctrl.timestamp
+        self.msg_code = self.ctrl.msg_code
+        self.data_len = self.ctrl.data_len8
 
 
 class NetRoute(BaseStructure):

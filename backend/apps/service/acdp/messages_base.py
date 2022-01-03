@@ -91,14 +91,6 @@ class BaseStructure(Structure):
                 setattr(self, field_name, vals)
 
     def pacself(self):    # Returns structure in bytes format
-        # frm = self.get_format()
-        # values = self.get_values()
-        # data = b''
-        # for i in range(0, len(frm)):
-        #     f = frm[i]
-        #     value = values[i]
-        #     data = b''.join([data, struct.pack(f, value)])
-        # return data
         view = memoryview(self)
         raw_data = view.tobytes()
         view.release()
@@ -109,7 +101,6 @@ class BaseStructure(Structure):
         return unpacked_data
 
     def store_from_raw(self, raw_values):
-        # self.store_values(self.unpacdata(raw_data=raw_values))
         ctypes.memmove(addressof(self), raw_values, len(raw_values))
 
     def to_dict(self):

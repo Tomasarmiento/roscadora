@@ -1,6 +1,6 @@
 # coding=utf-8
 import struct, ctypes
-from ctypes import c_long, c_uint16, c_uint32, c_float, c_bool, c_ulong
+from ctypes import c_int, c_long, c_uint16, c_uint32, c_float, c_bool, c_ulong
 
 from .messages_base import AcdpAvi, AcdpMsgType, AcdpMsgLevel, AcdpPiT0Config, AcdpPiT0Data,\
     AcdpPidT1Config, AcdpPidT1Data, BaseStructure, BaseUnion, AcdpDrvFbkData, AcdpEncData,\
@@ -590,15 +590,17 @@ class AcdpPcDataFlags(BaseUnion):
 
 class AcdpPcDataCtrlFlagsBits(BaseStructure):
     _fields_ = [
-        ('cmd_toggle', c_bool),     # 0
-        ('cmd_received', c_bool)    # 1
+        ('ctrl_ok', c_bool),      # 0
+        ('running', c_bool),      # 1
+        ('em_stop', c_bool),      # 2
+        ('fast_stop', c_bool),    # 3
     ]
 
 
 class AcdpPcDataCtrlFlags(BaseUnion):
     _fields_ = [
         ('all', c_ulong),
-        ('bits', AcdpPcDataFlagsBits)
+        ('bits', AcdpPcDataCtrlFlagsBits)
     ]
 
 
@@ -722,6 +724,60 @@ class AcdpPc(BaseStructure):
     _fields_ = [
         ('data', AcdpPcData)
     ]
+
+    def store_from_raw(self, raw_values):
+        super().store_from_raw(raw_values)
+        
+        # Command flags
+        self.cmd_toggle = self.data.flags.bits.cmd_toggle
+        self.cmd_received = self.data.flags.bits.cmd_received
+        
+        # self.cmd_flags = {
+        #     'cmd_toggle':   self.data.flags.bits.cmd_toggle,
+        #     'cmd_received': self.data.flags.bits.cmd_received
+        # }
+
+        # Control flags
+        self.ctrl_ok = self.data.ctrl.flags.bits.ctrl_ok
+        self.running = self.data.ctrl.flags.bits.running
+        self.em_stop = self.data.ctrl.flags.bits.em_stop
+        self.fast_stop = self.data.ctrl.flags.bits.fast_stop
+        
+        # self.ctrl_flags = {
+        #     'ctrl_ok': self.data.ctrl.flags.bits.ctrl_ok,
+        #     'running': self.data.ctrl.flags.bits.running,
+        #     'em_stop': self.data.ctrl.flags.bits.em_stop,
+        #     'fast_stop': self.data.ctrl.flags.bits.fast_stop
+        # }
+
+        # Local digital inpunts/outputs
+        self.run_test = self.data.ctrl.loc_io.di16.pins.run_test,
+        self.move_up_crossbar = self.data.ctrl.loc_io.di16.pins.move_up_crossbar,
+        self.move_down_crossbar = self.data.ctrl.loc_io.di16.pins.move_down_crossbar,
+        self.move_to_start = self.data.ctrl.loc_io.di16.pins.move_to_start
+        
+        self.test_cancelled_ind = self.data.ctrl.loc_io.do16.pins.test_cancelled_ind,
+        self.test_out_of_tolerance_ind = self.data.ctrl.loc_io.do16.pins.test_out_of_tolerance_ind,
+        self.test_ok_ind = self.data.ctrl.loc_io.do16.pins.test_ok_ind,
+        self.test_running_ind = self.data.ctrl.loc_io.do16.pinstest_running_ind
+        # self.local_din = {
+        #     'run_test': self.data.ctrl.loc_io.di16.pins.run_test,
+        #     'move_up_crossbar': self.data.ctrl.loc_io.di16.pins.move_up_crossbar,
+        #     'move_down_crossbar': self.data.ctrl.loc_io.di16.pins.move_down_crossbar,
+        #     'move_to_start': self.data.ctrl.loc_io.di16.pins.move_to_start
+        # }
+        # self.local_dout = {
+        #     'test_cancelled_ind': self.data.ctrl.loc_io.do16.pins.test_cancelled_ind,
+        #     'test_out_of_tolerance_ind': self.data.ctrl.loc_io.do16.pins.test_out_of_tolerance_ind,
+        #     'test_ok_ind': self.data.ctrl.loc_io.do16.pins.test_ok_ind,
+        #     'test_running_ind': self.data.ctrl.loc_io.do16.pinstest_running_ind
+        # }
+
+        # Remote digital inputs/outputs
+        self.rem_di = []
+        for i in range(self.data.ctrl.rem_io.di16._length_):
+            self.rem_di.append(self.ctrl.rem_io.di16.)
+        self.rem_do = []
 
     def get_load_axis(self):
         return self.data.ctrl.eje[AcdpAxisMovementEnums.ID_X_EJE_CARGA]
