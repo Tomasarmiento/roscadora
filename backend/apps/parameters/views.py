@@ -7,7 +7,7 @@ class ParameterListView(ListView):
 
     model = Parameter
     # paginate_by = 3  # if pagination is desired
-    template_name = 'parameter_list.html'
+    template_name = 'parametrosP1.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
