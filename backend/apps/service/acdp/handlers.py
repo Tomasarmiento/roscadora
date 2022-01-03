@@ -15,6 +15,20 @@ class AcdpMessage(BaseStructure):
     def get_msg_id(self):
         return self.header.ctrl.msg_id
 
+    def store_from_raw(self, raw_values):
+        bytes_len = len(raw_values)
+        if bytes_len == self.header.get_bytes_size():
+            self.header.store_from_raw(raw_values)
+        else:
+            super().store_from_raw(raw_values)
+    
+    def process_rx_msg(self, addr=(ACDP_IP_ADDR, ACDP_UDP_PORT), transport=None):
+        msg_code = self.header.get_msg_code()
+        
+        if msg_code == AcdpMsgCxn.CD_ECHO_REQ:
+            tx_header = build_header(AcdpMsgCxn.CD_ECHO_REPLY)
+            transport.sendto(tx_header.pacself(), addr)
+
 
 def build_header(code, host_ip="192.168.0.100", dest_ip=ACDP_IP_ADDR, *args, **kwargs):
 
@@ -42,13 +56,4 @@ def build_header(code, host_ip="192.168.0.100", dest_ip=ACDP_IP_ADDR, *args, **k
         tx_header.set_msg_id(msg_id=kwargs['msg_id'])
 
     return tx_header
-
-
-def process_rx_msg(rx_msg, addr=('192.168.0.100', ACDP_IP_ADDR), transport=None):
-    msg_code = rx_msg.header.get_msg_code
-    
-    if msg_code == AcdpMsgCxn.CD_ECHO_REQ:
-        print("ECHO REQ")
-        tx_header = build_header(AcdpMsgCxn.CD_ECHO_REPLY)
-        transport.sendto(tx_header.pacself(), addr)
         

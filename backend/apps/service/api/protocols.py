@@ -5,7 +5,7 @@ from django.http import response
 import websockets
 
 from apps.service.acdp.acdp import ACDP_UDP_PORT, ACDP_IP_ADDR
-from apps.service.acdp.handlers import AcdpMessage, process_rx_msg
+from apps.service.acdp.handlers import AcdpMessage
 
 from .functions import force_connection, open_connection
 
@@ -27,8 +27,7 @@ class UDPProtocol(asyncio.DatagramProtocol):
 
     def __init__(self):
         super().__init__()
-        self.echo1 = datetime.datetime.now()
-        self.echo2 = datetime.datetime.now()
+        self.rx_msg = AcdpMessage()
 
     def connection_made(self, transport):       # Used by asyncio
         self.transport = transport
@@ -36,20 +35,8 @@ class UDPProtocol(asyncio.DatagramProtocol):
         force_connection(self.transport)
         
     def datagram_received(self, data, addr):    # addr is tuple (IP, PORT), example ('192.168.0.28', 54208)
-        bytes_len = len(data)
-        # print(bytes_len)
-        rx_msg = AcdpMessage()
-        if bytes_len < 820:
-            self.echo1 = self.echo2
-            self.echo2 = datetime.datetime.now()
-            print("ECHO:", self.echo2-self.echo1)
-            
-        if bytes_len == rx_msg.header.get_bytes_size():
-            rx_msg.header.store_from_raw(data)
-        else:
-            rx_msg.store_from_raw(data)
-        process_rx_msg(rx_msg, transport=self.transport)
-        
+        self.rx_msg.store_from_raw(data)
+        self.rx_msg.process_rx_msg(transport=self.transport)
         
     def error_received(self, exc: Exception) -> None:
         return super().error_received(exc)
