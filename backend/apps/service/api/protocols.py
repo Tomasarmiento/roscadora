@@ -46,7 +46,7 @@ class UDPProtocol(asyncio.DatagramProtocol):
         return super().connection_lost(exc)
 
 
-async def ws_data_client():
+async def ws_graphs_client():
     uri = "ws://localhost:8000/ws/graphs/"
     while True:
         await asyncio.sleep(10)
@@ -100,15 +100,15 @@ async def ws_client():
     uri = "ws://localhost:8000/ws/micro/"
     while True:
         await asyncio.sleep(10)
-    #     try:
-    #         async with websockets.connect(uri) as websocket:
-    #             await ws_handler(websocket)
-    #             while websocket.open:
-    #                 await asyncio.sleep(1)
+        try:
+            async with websockets.connect(uri) as websocket:
+                await ws_handler(websocket)
+                while websocket.open:
+                    await asyncio.sleep(1)
 
-    #     except ConnectionRefusedError:
-    #         # print('CONNECTION REFUSED (SERVICE)')
-    #         await asyncio.sleep(1)
+        except ConnectionRefusedError:
+            # print('CONNECTION REFUSED (SERVICE)')
+            await asyncio.sleep(1)
 
 
 async def ws_handler(ws):
@@ -202,20 +202,21 @@ async def ws_consumer(websocket):
 
 async def ws_msg_response(websocket):
     while True:
-        try:
-            while MicroWSHandler.pending_msg == False:
-                await asyncio.sleep(0.01)
+        await asyncio.sleep(5)
+        # try:
+        #     while MicroWSHandler.pending_msg == False:
+        #         await asyncio.sleep(0.01)
             
-            MicroWSHandler.pending_msg = False
-            msg = {
-                "code": MicroWSHandler.code,
-                "message": MicroWSHandler.message
-            }
+        #     MicroWSHandler.pending_msg = False
+        #     msg = {
+        #         "code": MicroWSHandler.code,
+        #         "message": MicroWSHandler.message
+        #     }
 
-            await websocket.send(json.dumps(msg))
+        #     await websocket.send(json.dumps(msg))
 
-        except websockets.exceptions.ConnectionClosed:
-            break
+        # except websockets.exceptions.ConnectionClosed:
+        #     break
 
 
 def get_states_msg():
