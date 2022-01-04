@@ -1,10 +1,11 @@
 {% extends 'index.html'%}
 {% load static %}
 {% block content %}
- 
+
 <div class="col-md-5 col-12 container-fluid float-left justify-content-around"> 
     <div class="card p-1 mb-3">
-        <form action="" method="post" id="cuplaModelo1">
+        <form action="{% url 'parameters-update' %}" method="POST" id="cuplaModelo1">
+            {% csrf_token%}
             <table class="table table-sm table-striped table-borderless" style="color: black;" id="tablatablaCuplaModelo1">
                 <thead>
                     <tr>
@@ -24,8 +25,8 @@
                         <td>Descripcion</td>
                         <td>
                             {% with object_list|first as parameter %}
-                            <input class="form-control-xs" type="number" step=0.01 value="{{ parameter.value}}" name="fza_traba_cuchilla">
-                             {% endwith %}
+                            <input class="form-control-xs" type="number" step=0.01 value="" name="paso_de_rosca" placeholder="{{ parameter.value }}">
+                            {% endwith %}
                         </td>
                         <td>mm/v</td>
                     </tr>
@@ -33,7 +34,7 @@
                         <td>posicion_de_aprox</td>
                         <td>Descripcion</td>
                         <td>
-                            <input class="form-control-xs" type="number" step=0.01 value="" name="fza_traba_cuchilla">
+                            <input class="form-control-xs" type="number" step=0.01 value="" name="posicion_de_aprox">
                         </td>
                         <td>mm</td>
                     </tr>
@@ -41,7 +42,7 @@
                         <td>velocidad_de_aprox</td>
                         <td>Descripcion</td>
                         <td>
-                            <input class="form-control-xs" type="number" step=0.01 value="" name="palp_tol_v_iteracion">
+                            <input class="form-control-xs" type="number" step=0.01 value="" name="velocidad_de_aprox">
                         </td>
                         <td>mm/seg</td>
                     </tr>
@@ -49,7 +50,7 @@
                         <td>distancia_de_roscado</td>
                         <td>Descripcion</td>
                         <td>
-                            <input class="form-control-xs" type="number" step=0.01 value="" name="palp_tol_v_LOC">
+                            <input class="form-control-xs" type="number" step=0.01 value="" name="distancia_de_roscado">
                         </td>
                         <td>mm</td>
                     </tr>
@@ -57,7 +58,7 @@
                         <td>velocidad_de_roscado</td>
                         <td>Descripcion</td>
                         <td>
-                            <input class="form-control-xs" type="number" step=0.01 value="" name="palp_tol_v_EXP">
+                            <input class="form-control-xs" type="number" step=0.01 value="" name="velocidad_de_roscado">
                         </td>
                         <td>mm/seg</td>
                     </tr>
@@ -65,7 +66,7 @@
                         <td>velocidad_de_retraccion</td>
                         <td>Descripcion</td>
                         <td>
-                            <input class="form-control-xs" type="number" step=0.01 value="" name="ang_tang_max">
+                            <input class="form-control-xs" type="number" step=0.01 value="" name="velocidad_de_retraccion">
                         </td>
                         <td>mm/seg</td>
                     </tr>
@@ -73,7 +74,7 @@
                         <td>tiempo_de_ciclo</td>
                         <td>Descripcion</td>
                         <td>
-                            <input class="form-control-xs" type="number" step=0.01 value="" name="z_obj_coeficiente">
+                            <input class="form-control-xs" type="number" step=0.01 value="" name="tiempo_de_ciclo">
                         </td>
                         <td>seg</td>
                     </tr>
@@ -81,7 +82,7 @@
                         <td>torque_tolerado</td>
                         <td>Descripcion</td>
                         <td>
-                            <input class="form-control-xs" type="number" step=0.01 value="" name="z_delta_factor_aplicado">
+                            <input class="form-control-xs" type="number" step=0.01 value="" name="torque_tolerado">
                         </td>
                         <td>Nm</td>
                     </tr>
@@ -89,7 +90,7 @@
                         <td>t_inicio_soluble</td>
                         <td>Descripcion</td>
                         <td>
-                            <input class="form-control-xs" type="number" step=0.01 value="" name="cedencia_cte_restada">
+                            <input class="form-control-xs" type="number" step=0.01 value="" name="t_inicio_soluble">
                         </td>
                         <td>seg</td>
                     </tr>
@@ -101,7 +102,8 @@
 
 
     <div class="card p-1 mb-3">
-    <form action="" method="post" id="cuplaModelo2">
+    <form action="{% url 'parameters-update' %}" method="post" id="cuplaModelo2">
+        {% csrf_token%}
         <table class="table table-sm table-striped table-borderless" style="color: black;" id="tablaCuplaModelo2">
             <thead>
                 <tr>
@@ -196,7 +198,8 @@
     
 
 <div class="card p-1 mb-3">
-    <form action="" method="post" id="cuplaModelo3">
+    <form action="{% url 'parameters-update' %}" method="post" id="cuplaModelo3">
+        {% csrf_token%}
         <table class="table table-sm table-striped table-borderless" style="color: black;" id="tablaCuplaModelo3">
             <thead>
                 <tr>
