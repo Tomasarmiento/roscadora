@@ -46,6 +46,9 @@ class AcdpHeader(BaseStructure):
     def set_msg_id(self, msg_id):
         setattr(self.ctrl, 'msg_id', msg_id)
     
+    def set_data_len(self, data_len):
+        setattr(self.ctrl, 'data_len8', data_len)
+    
     def get_msg_code(self):         # Used on rx msg
         return self.ctrl.msg_code
     

@@ -173,7 +173,7 @@ class AcdpMsgParams(BaseStructure):
         # ------------------------------------------------
         ('mov_to_pos_load', AcdpMsgParamsMovToPosLoad),
         ('set_ref_pos_load', AcdpMsgParamsSetRefPosLoad),
-        ('mov_to_pos_load', AcdpMsgParamsMovToPosLoad),
+        ('mov_to_pos_load_yield', AcdpMsgParamsMovToPosLoadYield),
 
         # Movimiento en fuerza
         # ------------------------------------------------
