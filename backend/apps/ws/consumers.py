@@ -22,8 +22,8 @@ class MicroConsumer(WebsocketConsumer):
         data = json.loads(text_data)
         code = data['code']
 
-    def micro_request(self, event):
-        code = event['code']
+    def micro_command(self, event):
+        self.send(bytes_data=event['bytes_data'])
 
     def disconnect(self, close_code):
         print("DISCONNECED CODE: ", close_code)

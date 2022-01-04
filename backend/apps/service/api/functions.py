@@ -11,34 +11,34 @@ def send_message(bytes_msg, transport, addr=(ACDP_IP_ADDR, ACDP_UDP_PORT)):
 
 
 def open_connection(transport):
-    header = build_header(Commands.open_connection)
+    header = build_header(Commands.open_connection[0])
     send_message(header.pacself(), transport)
 
 
 def force_connection(transport):
-    header = build_header(Commands.force_connection)
+    header = build_header(Commands.force_connection[0])
     send_message(header.pacself(), transport)
 
 
 def close_connection(transport):
-    header = build_header(Commands.close_connection)
+    header = build_header(Commands.close_connection[0])
     send_message(header.pacself(), transport)
 
 
 def stop(transport):
     msg_id = last_rx_msg.get_msg_id() + 1
-    header = build_header(Commands.stop, msg_id = msg_id)
+    header = build_header(Commands.stop[0], msg_id = msg_id)
     send_message(header.pacself(), transport)
 
 def echo_reply(transport):
     msg_id = last_rx_msg.get_msg_id() + 1
-    header = build_header(Commands.echo_reply, msg_id = msg_id)
+    header = build_header(Commands.echo_reply[0], msg_id = msg_id)
     send_message(header.pacself(), transport)
 
 
 def sync_on(transport, paso):
     msg_id = last_rx_msg.get_msg_id() + 1
-    header = build_header(Commands.echo_reply, msg_id = msg_id, paso=paso)
+    header = build_header(Commands.sync_on[0], msg_id = msg_id, paso=paso)
     send_message(header.pacself(), transport)
 
 

@@ -4,7 +4,7 @@ from collections import deque
 from django.http import response
 import websockets
 
-from apps.service.acdp.acdp import ACDP_UDP_PORT, ACDP_IP_ADDR
+from apps.service.acdp.acdp import ACDP_UDP_PORT, ACDP_IP_ADDR, AcdpHeader
 from apps.service.acdp.handlers import AcdpMessage
 
 from .functions import force_connection, open_connection
@@ -50,56 +50,10 @@ async def ws_graphs_client():
     uri = "ws://localhost:8000/ws/graphs/"
     while True:
         await asyncio.sleep(10)
-    #     try:
-    #         async with websockets.connect(uri) as websocket:
-    #             while websocket.open:
-
-    #                 while not Buffer.send_data and not Buffer.reset_data:
-    #                     await asyncio.sleep(0.5)
-
-    #                 msg = {}
-                    
-    #                 if Buffer.send_data:
-    #                     msg = {
-    #                         'data_start': True
-    #                     }
-    #                     await websocket.send(json.dumps(msg))
-    #                     msg = {}
-    #                     # await asyncio.sleep(0.1)
-    #                     while Buffer.send_data:
-    #                         while Buffer.buffer:
-    #                             val = Buffer.buffer.popleft()
-    #                             msg['v_pos'] = val.ctrl.eje.vertical.med.pos_fil
-    #                             msg['v_vel'] = val.ctrl.eje.vertical.med.vel_fil
-    #                             msg['v_fza'] = val.ctrl.eje.vertical.med.fza_fil
-    #                             msg['v_strain'] = val.ctrl.eje.vertical.med.strain_fil
-    #                             msg['v_strain_rate'] = val.ctrl.eje.vertical.med.strain_rate_fil
-    #                             msg['v_yield'] = val.ctrl.eje.vertical.med.rigidez_probeta
-    #                             msg['h_pos'] = val.ctrl.eje.horizontal.med.pos_fil
-    #                             msg['h_vel'] = val.ctrl.eje.horizontal.med.vel_fil
-    #                             msg['cedencia'] = val.ctrl.eje.vertical.med.cedencia
-    #                             await websocket.send(json.dumps(msg))
-    #                         await asyncio.sleep(0.001)
-    #                     msg = {'data_end': True}
-    #                     await websocket.send(json.dumps(msg))
-    #                     # Buffer.send_data = False
-    #                     Buffer.buffer.clear()
-                    
-    #                 elif Buffer.reset_data:
-    #                     Buffer.reset_data = False
-    #                     msg = {
-    #                         'data_reset': True
-    #                     }
-    #                     await websocket.send(json.dumps(msg))
-        
-    #     except ConnectionRefusedError:
-    #         # print('CONNECTION REFUSED (SERVICE)')
-    #         await asyncio.sleep(2)
 
 async def ws_client():
     uri = "ws://localhost:8000/ws/micro/"
     while True:
-        await asyncio.sleep(10)
         try:
             async with websockets.connect(uri) as websocket:
                 await ws_handler(websocket)
@@ -107,8 +61,10 @@ async def ws_client():
                     await asyncio.sleep(1)
 
         except ConnectionRefusedError:
-            # print('CONNECTION REFUSED (SERVICE)')
             await asyncio.sleep(1)
+
+        except KeyboardInterrupt:
+            break
 
 
 async def ws_handler(ws):
@@ -146,58 +102,19 @@ async def ws_states_update(websocket):
 
 async def ws_consumer(websocket):
     while True:
-        await asyncio.sleep(10)
-        # try:
-        #     rx_msg = await websocket.recv()
-        # except websockets.exceptions.ConnectionClosed:
-        #     break
+        try:
+            rx_msg = await websocket.recv()
+        except websockets.exceptions.ConnectionClosed:
+            break
         # rx_msg = json.loads(rx_msg)
+        header = AcdpHeader()
+        if len(rx_msg) > header.bytes_length:
+            pass
+        else:
+            header.store_from_raw(rx_msg)
+        
+        print(header.get_values())
         # rx_command = int(rx_msg['command'])
-        
-        # if MicroWSHandler.micro_connected:
-            
-        #     if rx_command in COMMANDS.values() or rx_command in ROUTINE_COMMANDS.values():
-                
-        #         if rx_command != COMMANDS['monitor']:
-        #             print('Comando valido PROTOCOLS: ', rx_command)
-        #             print('RX CMD PROTOCOLS: ', rx_command)
-        #             print('RX MSG PROTOCOLS: ', rx_msg)
-        #             MicroWSHandler.wait_ok = True
-
-        #         transport = UDPProtocol.transport
-        #         response = send_command(message=rx_msg, transport=transport)
-
-        #         if response:    # only for monitor command
-        #             msg = {
-        #                 "code": WS_CODES['states'],
-        #                 "states": response
-        #             }
-        #             await websocket.send(json.dumps(msg))
-
-        #         if rx_command in ROUTINE_COMMANDS.values():
-        #             if rx_command == ROUTINE_COMMANDS['start_data_adq']:
-        #                 Buffer.buffer.clear()
-        #                 Buffer.add_to_buffer = True
-        #                 Buffer.send_data = True
-                    
-        #             if rx_command == ROUTINE_COMMANDS['stop_data_adq']:
-        #                 Buffer.add_to_buffer = False
-        #                 Buffer.send_data = False
-                    
-        #             if rx_command == ROUTINE_COMMANDS['reset_data_adq']:
-        #                 Buffer.add_to_buffer = False
-        #                 Buffer.send_data = False
-        #                 Buffer.buffer.clear()
-        #                 Buffer.reset_data = True
-        
-        # elif rx_command == COMMANDS['connect']:
-        #     transport = UDPProtocol.transport
-        #     send_header = build_header(COMMANDS['connect'], host_ip=HOST, dest_ip=ACDP_IP)
-        #     transport.sendto(send_header.pack_self(),(ACDP_IP, PORT))
-        
-        # else:
-        #     MicroWSHandler.code = WS_CODES['disconnected']
-        #     MicroWSHandler.pending_msg = True
 
 
 async def ws_msg_response(websocket):

@@ -21,5 +21,6 @@ from apps.service.api.service import start_service
 urlpatterns = [
     path('', include('apps.front.urls')),
     path('parametros/', include('apps.parameters.urls')),
+    path('control/', include('apps.control.urls')),
     path('admin/', admin.site.urls),
 ]
