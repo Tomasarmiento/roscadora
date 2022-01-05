@@ -13,3 +13,13 @@ class ParameterListView(ListView):
         context = super().get_context_data(**kwargs)
         # context['now'] = timezone.now()
         return context
+
+
+def update(request, part_model):
+    params = Parameter.objects.filter(part_model=part_model)
+    print(request.POST)
+    print(params)
+    for param in params:
+        # p = request.POST[param.name]
+        # param.value = request.POST
+        pass

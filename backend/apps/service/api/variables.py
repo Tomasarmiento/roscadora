@@ -64,6 +64,7 @@ COMMANDS = {
     'run_positioning': AcdpMsgCodes.Cmd.Cd_MovEje_RunPositioning,
 
     'mov_to_vel': AcdpMsgCodes.Cmd.Cd_MovEje_MovToVel,
+    'mov_to_pos': AcdpMsgCodes.Cmd.Cd_MovEje_MovToPos,
     'mov_to_pos_yield': AcdpMsgCodes.Cmd.Cd_MovEje_MovToPos_Yield,
     'mov_to_pos_load': AcdpMsgCodes.Cmd.Cd_MovEje_MovToPosLoad,
     'mov_to_pos_load_yield': AcdpMsgCodes.Cmd.Cd_MovEje_MovToPosLoad_Yield,
