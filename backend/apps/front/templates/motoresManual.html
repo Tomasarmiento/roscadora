@@ -1,8 +1,15 @@
 {% extends 'index.html'%}
 {% load static %}
 {% block content %}
+
+
+<div class="col-md-2 col-12 mb-5 float-right border shadow rounded bg-white px-1 py-1">
+	{% include 'monitor.component.html' %}
+	<div id="component-monitor"></div>
+</div>
  
-<div class="col-md-10 col-12 container-fluid">
+
+<div class="col-md-7 d-flex justify-content-around mx-auto my-3 px-0" style="color: black;">
 	<div id="contenedorEjeLineal" class="col-md-5 col-12 mb-5 float-left ml-md-2 border shadow rounded bg-white p-2" style="height: auto;">
 		<div class="container-fluid">
 			<div class="row justify-content-center" style="color: black;">
@@ -20,11 +27,11 @@
 						</div>
 						<div id="collapseOneRelativa" class="collapse" aria-labelledby="headingOneLineal" data-parent="#accordionLineal" style="color: black;">
 							<div class="card-body mb-1">
-								<div class="form-inline mb-3">
+								<div class="form-inline d-flex justify-content-around mb-3 mx-auto">
 									<label class="col-md-3"><FONT SIZE=4>Posición:</FONT></label>
 									<input type="number" class="col-md-8" id="linealRelPosValue" value=0.00>
 								</div>
-								<div class="form-inline">
+								<div class="form-inline d-flex justify-content-around mx-auto">
 									<label class="col-md-3"><FONT SIZE=4>Velocidad:</FONT></label>
 									<input type="number" class="col-md-8" id="linealRelVelocityValue" value=0.00>
 								</div>		
@@ -45,12 +52,12 @@
 							</h5>
 						</div>
 						<div id="collapseOneAbsoluta" class="collapse show" aria-labelledby="headingTwoLineal" data-parent="#accordionLineal" style="color: black;">
-							<div class="card-body mb-1">
-								<div class="form-inline mb-3">
+							<div class="card-body">
+								<div class="form-inline d-flex justify-content-around mx-auto mb-3">
 									<label class="col-md-3"><FONT SIZE=4>Posición:</FONT></label>
-									<input type="number" class="col-md-8" value=0.00 id="linealAbsPosValue">
+									<input type="number" class="col-md-8 " value=0.00 id="linealAbsPosValue">
 								</div>
-								<div class="form-inline">
+								<div class="form-inline d-flex justify-content-around mx-auto">
 									<label class="col-md-3"><FONT SIZE=4>Velocidad:</FONT></label>
 									<input type="number" class="col-md-8" value=0.00 id="linealAbsVelocityValue">
 								</div>			
@@ -61,6 +68,9 @@
 						</div>		
 					</div>
 				</div>
+			</div>
+			<div class="col align-self-center text-center mb-3">
+				<button class="btn btn-danger" style="height: 55px" id="linealStop"><FONT SIZE=5>Detener</FONT></button>
 			</div>
 		</div>
 	</div>
@@ -87,11 +97,11 @@
 						</div>
 						<div id="collapseTwoRelativa" class="collapse" aria-labelledby="headingOneCabezal" data-parent="#accordionCabezal" style="color: black;">
 							<div class="card-body mb-1">
-								<div class="form-inline mb-3">
-									<label class="col-md-3"><FONT SIZE=4>Posición:</FONT></label>
+								<div class="form-inline d-flex justify-content-around mb-3 mx-auto">
+									<label class="col-md-3"><FONT SIZE=4>Ángulo:</FONT></label>
 									<input type="number" class="col-md-8" id="cabezalRelPosValue" value=0.00>
 								</div>
-								<div class="form-inline">
+								<div class="form-inline d-flex justify-content-around mx-auto">
 									<label class="col-md-3"><FONT SIZE=4>Velocidad:</FONT></label>
 									<input type="number" class="col-md-8" id="cabezalRelVelocityValue" value=0.00>
 								</div>		
@@ -111,24 +121,26 @@
 							</h5>
 						</div>
 						<div id="collapseTwoAbsoluta" class="collapse show" aria-labelledby="headingTwoCabezal" data-parent="#accordionCabezal" style="color: black;">
-							<div class="card-body mb-1">
-								<div class="form-inline mb-3">
+							<div class="card-body">
+								<div class="form-inline d-flex justify-content-around mb-3 mx-auto">
 									<label class="col-md-3"><FONT SIZE=4>Ángulo:</FONT></label>
 									<input type="number" class="col-md-8" value=0.00 id="cabezalAbsAngleValue">
 								</div>
-								<div class="form-inline">
+								<div class="form-inline d-flex justify-content-around mx-auto">
 									<label class="col-md-3"><FONT SIZE=4>Velocidad:</FONT></label>
 									<input type="number" class="col-md-8" value=0.00 id="cabezalAbsVelocityValue">
 								</div>		
 							</div>
 							<div class="col align-self-center text-center mb-3">
-								<button class="btn btn-primary btn-lg" id="cabezalAbsMove">Mover</button>
+								<button class="btn btn-primary btn-lg" id="cabezalAbsMove">Girar</button>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
-			<button class="btn btn-danger mx-5 px-5" id="stop">Detener</button>
+				<div class="col align-self-center text-center mb-3">
+					<button class="btn btn-danger" style="height: 55px" id="cabezalStop"><FONT SIZE=5>Detener</FONT></button>
+				</div>
 		</div>
 	</div>
 
@@ -143,16 +155,16 @@
 			<div class="row justify-content-center mb-3">
 				<div id="accordionHusillo" class="w-100">
 					<div class="card">
-						<!--<div class="card-header" id="headingOne">
+							<div class="card-header" id="headingOne">
 							<h5 class="mb-0">
-								<button class="btn btn-link font-weight-bold" data-toggle="collapse" data-target="#collapseOneHusillo" aria-expanded="false" aria-controls="collapseOneHusillo">
+								<button class="btn btn-link collapsed font-weight-bold" data-toggle="collapse" data-target="#collapseOneHusillo" aria-expanded="false" aria-controls="collapseOneHusillo">
 									HUSILLO
 								</button>
 							</h5>
-						</div>-->
-						<div id="collapseOneHusillo" class="collapse show" aria-labelledby="headingOneHusillo" data-parent="#accordionHusillo" style="color: black;">
+						</div>
+						<div id="collapseOneHusillo" class="collapse show" aria-labelledby="headingOneHusillo" data-parent="#accordionHusillo" style="color: black;"></div>
 							<div class="card-body mb-1">
-								<div class="form-inline mb-3">
+								<div class="form-inline d-flex justify-content-around mb-3 mx-auto">
 									<label class="col-md-3"><FONT SIZE=4>RPM:</FONT></label>
 									<input type="number" class="col-md-8" id="rpmValue" value=0.00>
 								</div>
@@ -164,26 +176,25 @@
 									  </label>
 								</div>
 
-								<div class="form-inline mb-3">
+								<div class="form-inline d-flex justify-content-around mb-3 mx-auto">
 									<label class="col-md-3"><FONT SIZE=4>PASO:</FONT></label>
 									<input type="number" class="col-md-8" id="pasoValue" value=0.00>
 								</div>	
 							</div>
 							<div class="col align-self-center text-center mb-3">
-								<button class="btn btn-primary btn-lg" id="husilloMove">Mover</button>
+								<button class="btn btn-primary btn-lg" id="husilloMove">Girar</button>
 							</div>
 						</div>
 					</div>
 				</div>
-				<button class="btn btn-danger px-5" id="stop">Detener</button>
+			</div>
+			<div class="col align-self-center text-center my-4 mb-3">
+				<button class="btn btn-danger" style="height: 55px" id="husilloStop"><FONT SIZE=5>Detener</FONT></button>
 			</div>
 		</div>	
 	</div>
 
 </div>
 
-<div class="col-md-2 col-12 mb-5 float-right border shadow rounded bg-white px-1 py-1">
-	{% include 'monitor.component.html' %}
-	<div id="component-monitor"></div>
-</div>
+
 {% endblock %}
