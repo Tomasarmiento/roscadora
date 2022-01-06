@@ -1,5 +1,4 @@
 document.addEventListener("DOMContentLoaded", (e) => {
-    
     let btn_mov_husillo = document.getElementById('husilloMove');
     let btn_mov_abs = document.getElementById('linealAbsMove');
     let btn_mov_rel_lin_fwd = document.getElementById('linealRelFwd');

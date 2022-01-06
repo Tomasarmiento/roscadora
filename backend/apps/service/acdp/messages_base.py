@@ -1,6 +1,6 @@
 # coding=utf-8
 import struct, ctypes
-from ctypes import addressof, Structure, Union, c_uint32, c_float, c_bool, c_long, c_ulong
+from ctypes import addressof, Structure, Union, c_uint32, c_float, c_bool, c_int32
 
 
 class BaseStructure(Structure):
@@ -349,7 +349,7 @@ class AcdpAviConfigFlagsBits(BaseStructure):
 
 class AcdpAviConfigFlags(BaseUnion):
     _fields_ = [
-        ('all', c_ulong),
+        ('all', c_uint32),
         ('flags', AcdpAviConfigFlagsBits)
     ]
 
@@ -389,17 +389,17 @@ class AcdpAvi(BaseStructure):
 
 class AcdpEncConfigFlagsBits(BaseStructure):
     _fields_ = [
-        ('inv_med', c_ulong),
-        ('modulo', c_ulong),
-        ('absolute', c_ulong),
-        ('non_volatile_zero', c_ulong),
-        ('absolute_zero_settled', c_ulong)
+        ('inv_med', c_uint32),
+        ('modulo', c_uint32),
+        ('absolute', c_uint32),
+        ('non_volatile_zero', c_uint32),
+        ('absolute_zero_settled', c_uint32)
     ]
 
 
 class AcdpEncConfigFlags(BaseUnion):
     _fields_ = [
-        ('all', c_ulong),
+        ('all', c_uint32),
         ('bits', AcdpEncConfigFlagsBits)
     ]
 
@@ -407,7 +407,7 @@ class AcdpEncConfigFlags(BaseUnion):
 class AcdpEncConfig(BaseStructure):
     _fields_ = [
         ('flags', AcdpEncConfigFlags),
-        ('resolution', c_ulong),
+        ('resolution', c_uint32),
         ('range', c_float),
         ('zero', c_float),
         ('offset', c_float)
@@ -432,7 +432,7 @@ class AcdpEncDataFlagsBits(BaseStructure):
 
 class AcdpEncDataFlags(BaseUnion):
     _fields_ = [
-        ('all', c_ulong),
+        ('all', c_uint32),
         ('bits', AcdpEncDataFlagsBits)
     ]
 
@@ -440,9 +440,9 @@ class AcdpEncData(BaseStructure):
     _fields_ = [
         ('flags', AcdpEncDataFlags),
 
-        ('int_stamp', c_ulong),
-        ('int_pos_abs', c_long),
-        ('int_pos_abs_cross', c_long),
+        ('int_stamp', c_uint32),
+        ('int_pos_abs', c_int32),
+        ('int_pos_abs_cross', c_int32),
 
         ('config', AcdpEncConfig),
         ('pos_abs', c_float),
@@ -475,14 +475,14 @@ class AcdpDrvFbkConfigFlagsBits(BaseStructure):
 
 class AcdpDrvFbkConfigFlags(BaseUnion):
     _fields_ = [
-        ('all', c_ulong),
+        ('all', c_uint32),
         ('bits', AcdpDrvFbkConfigFlagsBits)
     ]
 
 
 class AcdpDrvFbkConfigPos(BaseStructure):
     _fields_ = [
-        ('rsl', c_long),        # Resolution
+        ('rsl', c_int32),        # Resolution
         ('range', c_float),
         ('zero', c_float),
         ('offset', c_float)
@@ -491,7 +491,7 @@ class AcdpDrvFbkConfigPos(BaseStructure):
 
 class AcdpDrvFbkConfigVel(BaseStructure):
     _fields_ = [
-        ('rsl', c_ulong),      # Resolution
+        ('rsl', c_uint32),      # Resolution
         ('range', c_float)
     ]
 
@@ -521,7 +521,7 @@ class AcdpDrvFbkDataFlagsBits(BaseStructure):
 
 class AcdpDrvFbkDataFlags(BaseUnion):
     _fields_ = [
-        ('all', c_ulong),
+        ('all', c_uint32),
         ('bits', AcdpDrvFbkDataFlagsBits)
     ]
 
@@ -560,7 +560,7 @@ class AcdpDrvCmdConfigFlagsBits(BaseStructure):
 
 class AcdpDrvCmdConfigFlags(BaseUnion):
     _fields_ = [
-        ('all', c_ulong),
+        ('all', c_uint32),
         ('bits', AcdpDrvCmdConfigFlagsBits)
     ]
 
@@ -580,7 +580,7 @@ class AcdpDrvCmdConfigUnionPulse(BaseStructure):
 
 class AcdpDrvCmdConfigUnionEcatVel(BaseStructure):
     _fields_ = [
-        ('rsl', c_ulong),
+        ('rsl', c_uint32),
         ('range', c_float)
     ]
 
@@ -627,7 +627,7 @@ class AcdpDrvCmdDataFlagsBits(BaseStructure):
 
 class AcdpDrvCmdDataFlags(BaseUnion):
     _fields_ = [
-        ('all', c_ulong),
+        ('all', c_uint32),
         ('bits', AcdpDrvCmdDataFlagsBits)
     ]
 

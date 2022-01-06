@@ -1,6 +1,6 @@
 # coding=utf-8
 import struct, ctypes
-from ctypes import c_int, c_long, c_uint16, c_uint32, c_float, c_ulong
+from ctypes import c_int, c_int32, c_uint16, c_uint32, c_float
 
 from .messages_base import AcdpAvi, AcdpMsgType, AcdpMsgLevel, AcdpPiT0Config, AcdpPiT0Data,\
     AcdpPidT1Config, AcdpPidT1Data, BaseStructure, BaseUnion, AcdpDrvFbkData, AcdpEncData,\
@@ -248,7 +248,7 @@ class AcdpAxisMovementsMovPosConfigFlagsBits(BaseStructure):
 
 class AcdpAxisMovementsMovPosConfigFlags(BaseUnion):
     _fields_ = [
-        ('all', c_ulong),
+        ('all', c_uint32),
         ('bits', AcdpAxisMovementsMovPosConfigFlagsBits)
     ]
 
@@ -301,7 +301,7 @@ class AcdpAxisMovementsMovPosDataFlagsBits(BaseStructure):
 
 class AcdpAxisMovementsMovPosDataFlags(BaseUnion):
     _fields_ = [
-        ('all', c_ulong),
+        ('all', c_uint32),
         ('bits', AcdpAxisMovementsMovPosDataFlagsBits)
     ]
 
@@ -309,7 +309,7 @@ class AcdpAxisMovementsMovPosDataFlags(BaseUnion):
 class AcdpAxisMovementsMovPosDataHoming(BaseStructure):
     _fields_ = [
         # Maquina de Estados Secuencia de cerado. Estados en AcdpAxisMovementsMovPosDataHomingStates
-        ('estado', c_long)
+        ('estado', c_int32)
     ]
 
 
@@ -369,7 +369,7 @@ class AcdpAxisMovementsMovFzaConfigFlagsBits(BaseStructure):
 
 class AcdpAxisMovementsMovFzaConfigFlags(BaseUnion):
     _fields_ = [
-        ('all', c_ulong),
+        ('all', c_uint32),
         ('bits', AcdpAxisMovementsMovFzaConfigFlagsBits)
     ]
 
@@ -421,7 +421,7 @@ class AcdpAxisMovementsMovFzaDataFlagsBits(BaseStructure):
 
 class AcdpAxisMovementsMovFzaDataFlags(BaseUnion):
     _fields_ = [
-        ('all', c_ulong),
+        ('all', c_uint32),
         ('bits', AcdpAxisMovementsMovFzaDataFlagsBits)
     ]
 
@@ -473,15 +473,15 @@ class AcdpAxisMovementsMovEjeDataFlagsBits(BaseStructure):
 
 class AcdpAxisMovementsMovEjeDataFlags(BaseUnion):
     _fields_ = [
-        ('all', c_ulong),
+        ('all', c_uint32),
         ('flags', AcdpAxisMovementsMovEjeDataFlagsBits)
     ]
 
 
 class AcdpAxisMovementsMovEjeDataMaqEst(BaseStructure):
     _fields_ = [
-        ('flags_fin', c_ulong),    # Flags FinEstado. Ver AcdpAxisMovementsMovEjeDataMaqEstFlagsFin
-        ('estado', c_long)        # Maquina de Estados General. Ver AcdpAxisMovementsMovEjeDataMaqEstEstado
+        ('flags_fin', c_uint32),    # Flags FinEstado. Ver AcdpAxisMovementsMovEjeDataMaqEstFlagsFin
+        ('estado', c_int32)        # Maquina de Estados General. Ver AcdpAxisMovementsMovEjeDataMaqEstEstado
     ]
 
 
@@ -581,7 +581,7 @@ class AcdpPcDataFlagsBits(BaseStructure):
 
 class AcdpPcDataFlags(BaseUnion):
     _fields_ = [
-        ('all', c_ulong),
+        ('all', c_uint32),
         ('bits', AcdpPcDataFlagsBits)
     ]
 
@@ -597,7 +597,7 @@ class AcdpPcDataCtrlFlagsBits(BaseStructure):
 
 class AcdpPcDataCtrlFlags(BaseUnion):
     _fields_ = [
-        ('all', c_ulong),
+        ('all', c_uint32),
         ('bits', AcdpPcDataCtrlFlagsBits)
     ]
 
@@ -778,34 +778,13 @@ class AcdpPc(BaseStructure):
                 'state': axis.maq_est.estado,
 
                 # Position movement
-                'mov_pos_homing_states': axis.mov_pos.homing.estado,
                 'pos_flags': axis.mov_pos.flags,
-                'pos_pos_fil': axis.mov_pos.med_drv.pos_fil,
-                'pos_vel_fil': axis.mov_pos.med_drv.vel_fil,
-
+                'pos_homing_states': axis.mov_pos.homing.estado,
+                'pos_fil': axis.mov_pos.med_drv.pos_fil,
+                'vel_fil': axis.mov_pos.med_drv.vel_fil,
                 # Load
-                'load_flags': axis.mov_pos.med_load.enc.flags.all,
                 'load_pos_fil': axis.mov_pos.med_load.pos_fil,
                 'load_vel_fil': axis.mov_pos.med_load.vel_fil,
-
-                # Sincro
-                'rel_master': axis.sincro.rel_master,
-                'set_point_dif': axis.sincro.set_point_dif,
-                'med_drv_modulo': axis.sincro.med_drv.modulo,
-                'pos_dif': axis.sincro.med_drv.pos_dif,
-                'vel_dif': axis.sincro.med_drv.vel_dif,
-
-                # Force
-                'fza_flags': axis.mov_fza.flags.all,
-                'fza_fil': axis.mov_fza.med.fza_fil,
-                'rigidez_drive': axis.mov_fza.med.rigidez_drive,
-                'rigidez_load': axis.mov_fza.med.rigidez_load,
-                'cedencia': axis.mov_fza.med.cedencia,
-                'rel_fza_pos_uns': axis.mov_fza.rel_fza_pos_uns,
-
-                # Drive
-                'drv_flags': axis.drive.flags.all,
-                'actuacion': axis.drive.actuacion
             })
     
     def get_states(self):
@@ -860,34 +839,13 @@ class AcdpPc(BaseStructure):
                 'state': axis.maq_est.estado,
 
                 # Position movement
-                'mov_pos_homing_states': axis.mov_pos.homing.estado,
                 'pos_flags': axis.mov_pos.flags,
-                'pos_pos_fil': axis.mov_pos.med_drv.pos_fil,
-                'pos_vel_fil': axis.mov_pos.med_drv.vel_fil,
-
+                'pos_homing_states': axis.mov_pos.homing.estado,
+                'pos_fil': axis.mov_pos.med_drv.pos_fil,
+                'vel_fil': axis.mov_pos.med_drv.vel_fil,
                 # Load
-                'load_flags': axis.mov_pos.med_load.enc.flags.all,
                 'load_pos_fil': axis.mov_pos.med_load.pos_fil,
                 'load_vel_fil': axis.mov_pos.med_load.vel_fil,
-
-                # Sincro
-                'rel_master': axis.sincro.rel_master,
-                'set_point_dif': axis.sincro.set_point_dif,
-                'med_drv_modulo': axis.sincro.med_drv.modulo,
-                'pos_dif': axis.sincro.med_drv.pos_dif,
-                'vel_dif': axis.sincro.med_drv.vel_dif,
-
-                # Force
-                'fza_flags': axis.mov_fza.flags.all,
-                'fza_fil': axis.mov_fza.med.fza_fil,
-                'rigidez_drive': axis.mov_fza.med.rigidez_drive,
-                'rigidez_load': axis.mov_fza.med.rigidez_load,
-                'cedencia': axis.mov_fza.med.cedencia,
-                'rel_fza_pos_uns': axis.mov_fza.rel_fza_pos_uns,
-
-                # Drive
-                'drv_flags': axis.drive.flags.all,
-                'actuacion': axis.drive.actuacion
             })
         states['axis'] = axis_arr
         return states

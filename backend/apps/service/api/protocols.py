@@ -71,7 +71,7 @@ async def ws_client():
 
 
 class WsStates:
-    REFRESH_TIME = 0.01
+    REFRESH_TIME = 0.2
     update_front = False
     micro_connected = False
     updata_front = False
