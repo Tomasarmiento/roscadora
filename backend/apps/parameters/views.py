@@ -1,5 +1,3 @@
-from asyncio.windows_events import NULL
-from django.db.models.expressions import Value
 from django.views.generic.list import ListView
 from django.shortcuts import render
 from apps.parameters.models import Parameter
@@ -31,8 +29,7 @@ def update_parameters(request):
                 param.value = post_req[param.name]
                 param.save()
         response = HttpResponse()
-        response.status_code = 200
-        
+        response.status_code = 200  
     return render(request, 'parametrosP1.html')
 
 

@@ -24,18 +24,6 @@
             <hr size="100px" style="width: 100%;" color="grey">
             <div class="row mt-3">
                 <div class="col text-center">
-                    <p style="display: inline;">Pinza</p>
-                </div>
-                <div class="col text-center">
-                    <button class="btn btn-primary" id="pinzaCargaOnOff"> ON/OFF </button>
-                </div>
-                <div class="col text-center">
-                    <article class="led led-grey" id="pinzaCargaOk"></article>
-                </div>
-            </div>
-            <hr size="100px" style="width: 98%;" color="grey">
-            <div class="row mt-3">
-                <div class="col text-center">
                     <p style="display: inline;">Vertical</p>
                 </div>
                 <div class="col text-center">
@@ -43,6 +31,18 @@
                 </div>
                 <div class="col text-center">
                     <article class="led led-grey" id="verticalCargaOk"></article>
+                </div>
+            </div>
+            <hr size="100px" style="width: 100%;" color="grey">
+            <div class="row mt-3">
+                <div class="col text-center">
+                    <p style="display: inline;">Boquilla Carga</p>
+                </div>
+                <div class="col text-center">
+                    <button class="btn btn-primary" id="BoquillaCargaOnOff"> ON/OFF </button>
+                </div>
+                <div class="col text-center">
+                    <article class="led led-grey" id="boquillaCargaOk"></article>
                 </div>
             </div>
             <hr size="100px" style="width: 98%;" color="grey">
@@ -82,30 +82,6 @@
                     <hr size="100px" style="width: 98%;" color="grey">
                     <div class="row mt-3">
                         <div class="col text-center">
-                            <p style="display: inline;">Pinza</p>
-                        </div>
-                        <div class="col text-center">
-                            <button class="btn btn-primary" id="pinzaDescOnOff"> ON/OFF </button>
-                        </div>
-                        <div class="col text-center">
-                            <article class="led led-grey" id="pinzaDescOk"></article>
-                        </div>
-                    </div>
-                    <hr size="100px" style="width: 98%;" color="grey">
-                    <div class="row mt-3">
-                        <div class="col text-center">
-                            <p style="display: inline;">Vertical Br</p>
-                        </div>
-                        <div class="col text-center">
-                            <button class="btn btn-primary" id="verticalBrOnOff"> ON/OFF </button>
-                        </div>
-                        <div class="col text-center">
-                            <article class="led led-grey" id="verticalBrOk"></article>
-                        </div>
-                    </div>
-                    <hr size="100px" style="width: 98%;" color="grey">
-                    <div class="row mt-3">
-                        <div class="col text-center">
                             <p style="display: inline;">Giro</p>
                         </div>
                         <div class="col text-center">
@@ -118,28 +94,51 @@
                     <hr size="100px" style="width: 98%;" color="grey">
                     <div class="row mt-3">
                         <div class="col text-center">
-                            <p style="display: inline;">Horizon Br</p>
+                            <p style="display: inline;">Horizon Gripper</p>
                         </div>
                         <div class="col text-center">
-                            <button class="btn btn-primary" id="horizontalBrOnOff"> ON/OFF </button>
+                            <button class="btn btn-primary" id="horizontalGrOnOff"> ON/OFF </button>
                         </div>
                         <div class="col text-center">
-                            <article class="led led-grey" id="horizontalBrOk"></article>
+                            <article class="led led-grey" id="horizontalGrOk"></article>
                         </div>
                     </div>
                     <hr size="100px" style="width: 98%;" color="grey">
                     <div class="row mt-3">
                         <div class="col text-center">
-                            <p style="display: inline;">Pinza Br</p>
+                            <p style="display: inline;">Vertical Gripper</p>
                         </div>
                         <div class="col text-center">
-                            <button class="btn btn-primary" id="pinzaBrOnOff"> ON/OFF </button>
+                            <button class="btn btn-primary" id="verticalGrOnOff"> ON/OFF </button>
                         </div>
                         <div class="col text-center">
-                            <article class="led led-grey" id="pinzaBrOk"></article>
+                            <article class="led led-grey" id="verticalGrOk"></article>
                         </div>
                     </div>
-                   
+                    <hr size="100px" style="width: 98%;" color="grey">
+                    <div class="row mt-3">
+                        <div class="col text-center">
+                            <p style="display: inline;">Boquilla Descarga</p>
+                        </div>
+                        <div class="col text-center">
+                            <button class="btn btn-primary" id="BoquillaDescOnOff"> ON/OFF </button>
+                        </div>
+                        <div class="col text-center">
+                            <article class="led led-grey" id="BoquillaDescOk"></article>
+                        </div>
+                    </div>
+                    <hr size="100px" style="width: 98%;" color="grey">
+                    <div class="row mt-3">
+                        <div class="col text-center">
+                            <p style="display: inline;">Gripper Descarga</p>
+                        </div>
+                        <div class="col text-center">
+                            <button class="btn btn-primary" id="gripperDescOnOff"> ON/OFF </button>
+                        </div>
+                        <div class="col text-center">
+                            <article class="led led-grey" id="gripperDescOk"></article>
+                        </div>
+                    </div>
                 </div>  
             </div>
             <div id="contenedorNeumatica" class="col-md-3 col-12 mb-5 card rounded p-2 mx-auto shadow-sm text-black">
@@ -158,6 +157,18 @@
                         </div>
                         <div class="col text-center">
                             <article class="led led-grey" id="clampeoOk"></article>
+                        </div>
+                    </div>
+                    <hr size="100px" style="width: 98%;" color="grey">
+                    <div class="row mt-3">
+                        <div class="col text-center">
+                            <p style="display: inline;">Presión</p>
+                        </div>
+                        <div class="col text-center">
+                            <button class="btn btn-primary" id="presionOnOff"> ON/OFF </button>
+                        </div>
+                        <div class="col text-center">
+                            <article class="led led-grey" id="presionOk"></article>
                         </div>
                     </div>
                     <hr size="100px" style="width: 98%;" color="grey">
@@ -220,7 +231,18 @@
                             <article class="led led-grey" id="bombaSolOk"></article>
                         </div>
                     </div>
-                   
+                    <hr size="100px" style="width: 98%;" color="grey">
+                    <div class="row mt-3">
+                        <div class="col text-center">
+                            <p style="display: inline;">Bomba Hidraulica</p>
+                        </div>
+                        <div class="col text-center">
+                            <button class="btn btn-primary" id="bombaHidrOnOff"> ON/OFF </button>
+                        </div>
+                        <div class="col text-center">
+                            <article class="led led-grey" id="bombaHidrOk"></article>
+                        </div>
+                    </div>   
                 </div>  
             </div>
       

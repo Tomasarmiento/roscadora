@@ -33,6 +33,3 @@ def semiAutomatico(request):
 
 def parametrosPagina1(request):
     return render(request, "parametrosP1.html")
-
-def parametrosPagina2(request):
-    return render(request, "parametrosP2.html")
