@@ -19,16 +19,6 @@ class ParameterListView(ListView):
         return context
 
 
-<<<<<<< HEAD
-def update(request, part_model):
-    params = Parameter.objects.filter(part_model=part_model)
-    print(request.POST)
-    print(params)
-    for param in params:
-        # p = request.POST[param.name]
-        # param.value = request.POST
-        pass
-=======
 def update_parameters(request):
     if request.method == 'POST':
         post_req = request.POST
@@ -44,4 +34,3 @@ def update_parameters(request):
 
 
     
->>>>>>> parameters
