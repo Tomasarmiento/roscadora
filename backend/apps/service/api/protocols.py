@@ -38,7 +38,7 @@ class UDPProtocol(asyncio.DatagramProtocol):
         
     def datagram_received(self, data, addr):    # addr is tuple (IP, PORT), example ('192.168.0.28', 54208)
         self.rx_msg.store_from_raw(data)
-        self.rx_msg.process_rx_msg(transport=self.transport)
+        WsStates.updata_front = self.rx_msg.process_rx_msg(transport=self.transport)
         
     def error_received(self, exc: Exception) -> None:
         return super().error_received(exc)
@@ -70,10 +70,18 @@ async def ws_client():
             break
 
 
-async def ws_handler(ws):
-    consumer_task = asyncio.ensure_future(ws_consumer(ws))
-    producer_task_1 = asyncio.ensure_future(ws_states_update(ws))
-    producer_task_2 = asyncio.ensure_future(ws_msg_response(ws))
+class WsStates:
+    REFRESH_TIME = 0.01
+    update_front = False
+    micro_connected = False
+    updata_front = False
+    timestamp = 0
+
+
+async def ws_handler(websocket):
+    consumer_task = asyncio.ensure_future(ws_consumer(websocket))
+    producer_task_1 = asyncio.ensure_future(ws_states_update(websocket))
+    producer_task_2 = asyncio.ensure_future(ws_msg_response(websocket))
     done, pending = await asyncio.wait(
         [consumer_task, producer_task_1, producer_task_2],
         return_when = asyncio.FIRST_COMPLETED
@@ -82,46 +90,34 @@ async def ws_handler(ws):
         task.cancel()
 
 
-async def ws_states_update(websocket):
-    while True:
-        await asyncio.sleep(10)
-        # try:
-        #     if MicroWSHandler.timestamp != ACDPMessage.last_rx_header.ctrl.timestamp:
-        #         MicroWSHandler.timestamp = ACDPMessage.last_rx_header.ctrl.timestamp
-        #         msg = get_states_msg()
-        #         await websocket.send(json.dumps(msg))
-            
-        #     elif MicroWSHandler.micro_connected:
-        #         print('ws_consumer - micro desconectado')
-        #         MicroWSHandler.micro_connected = False
-        #         MicroWSHandler.code = WS_CODES['disconnected']
-        #         MicroWSHandler.pending_msg = True
-            
-        #     await asyncio.sleep(REFRESH_TIME)
-
-        # except websockets.exceptions.ConnectionClosed:
-        #     break
-
-
-async def ws_consumer(websocket):       # Fordwards message to micro.
+async def ws_consumer(websocket):       # Fordwards message to micro. Message is already in bytes format
     while True:
         try:
             rx_msg = await websocket.recv()
         except websockets.exceptions.ConnectionClosed:
             break
-        # rx_msg = json.loads(rx_msg)
-        # header = AcdpHeader()
-        # msg = ''
-        # if len(rx_msg) > header.bytes_length:
-        #     header.store_from_raw(rx_msg[:header.bytes_length])
-        #     msg = header.pacself().join(rx_msg[header.bytes_length:])
-        # else:
-        #     header.store_from_raw(rx_msg)
-        #     msg = header.pacself()
-        # print(header.get_values())
-        print(rx_msg)
         if UDPProtocol.connected:
+            print("Sending msg")
             send_message(rx_msg, UDPProtocol.transport)
+
+
+async def ws_states_update(websocket):
+    while True:
+        try:
+            if WsStates.timestamp != AcdpMessage.last_rx_header.ctrl.timestamp:
+                WsStates.timestamp = AcdpMessage.last_rx_header.ctrl.timestamp
+                if WsStates.updata_front:
+                    await websocket.send(AcdpMessage.last_rx_header.pacself())
+                    WsStates.updata_front = False
+            
+            elif WsStates.micro_connected:
+                print('ws_consumer - micro desconectado')
+                WsStates.micro_connected = False
+            
+            await asyncio.sleep(WsStates.REFRESH_TIME)
+
+        except websockets.exceptions.ConnectionClosed:
+            break
 
 
 async def ws_msg_response(websocket):

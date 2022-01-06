@@ -30,8 +30,8 @@
 								</div>		
 							</div>
 							<div class="align-self-center text-center mb-3">
-								<button class="btn btn-primary btn-lg" id="relFwdH">Adelante</button>
-								<button class="btn btn-secondary btn-lg" id="relBwdH">Atrás</button>
+								<button class="btn btn-primary btn-lg" id="relFwdH" cmd={{ mov_to_pos }} eje={{ id_eje_avance }}>Adelante</button>
+								<button class="btn btn-secondary btn-lg" id="relBwdH" cmd={{ mov_to_pos }} eje={{ id_eje_avance }}>Atrás</button>
 							</div>
 						</div>
 					</div>
@@ -55,7 +55,7 @@
 								</div>		
 							</div>
 							<div class="align-self-center text-center mb-3">
-								<button class="btn btn-primary btn-lg" id="absMoveH">Mover</button>
+								<button class="btn btn-primary btn-lg" id="absMoveH" cmd={{ mov_to_pos }} eje={{ id_eje_avance }}>Mover</button>
 							</div>
 						</div>
 					</div>
@@ -71,11 +71,11 @@
 							<div class="card-body mb-1">
 								<div class="form-inline mb-3">
 									<label class="col-md-3"><FONT SIZE=4>RPM:</FONT></label>
-									<input type="number" step="2" class="col-md-8" value=0.00 id="absPosV">
+									<input type="number" step="2" class="col-md-8" value=0.00 id="rpm">
 								</div>		
 							</div>
 							<div class="col align-self-center text-center mb-3">
-								<button class="btn btn-primary btn-lg" id="absMoveV" cmd={{ mov_to_vel }}>Mover</button>
+								<button class="btn btn-primary btn-lg" id="husilloBtn" cmd={{ mov_to_vel }} eje={{ id_eje_giro }}>Mover</button>
 							</div>
 						</div>		
 					</div>

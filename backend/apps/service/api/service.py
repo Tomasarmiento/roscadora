@@ -12,7 +12,7 @@ from .protocols import UDPProtocol, ws_client, ws_graphs_client
 
 TIME_TO_SEC = 150 * 1000000
 HOST = '192.168.0.100'
-HOST = '127.0.0.1'
+# HOST = '127.0.0.1'
 
 PORT = ACDP_UDP_PORT
 WS_URI = "ws://localhost:8000/ws/micro/"
@@ -26,7 +26,6 @@ async def service():
         lambda: UDPProtocol(),
         local_addr=(HOST,PORT)
     )
-    print("TRANSPORT", transport)
     asyncio.ensure_future(ws_client())
     asyncio.ensure_future(ws_graphs_client())
 

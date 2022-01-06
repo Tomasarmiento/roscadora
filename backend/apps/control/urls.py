@@ -3,5 +3,5 @@ from django.urls.conf import include
 from . import views
 
 urlpatterns = [
-    path('', views.manual, name="manual"),
+    path('manual/lineal/', views.manual_lineal, name="manual"),
 ]

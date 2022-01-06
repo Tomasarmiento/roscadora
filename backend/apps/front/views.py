@@ -5,6 +5,7 @@ from django.shortcuts import redirect, reverse
 
 from apps.service.api.variables import COMMANDS
 from apps.parameters.utils.variables import PART_MODEL_OPTIONS
+from apps.service.acdp.messages_app import AcdpAxisMovementEnums
 
 # Create your views here.
 def index(request):
@@ -23,7 +24,11 @@ def neumaticaManual(request):
     return render(request, "neumaticaManual.html")
 
 def motoresManual(request):
-    return render(request, "motoresManual.html", context=COMMANDS)
+    context = COMMANDS
+    context['id_eje_avance'] = AcdpAxisMovementEnums.ID_X_EJE_AVANCE
+    context['id_eje_carga'] = AcdpAxisMovementEnums.ID_X_EJE_CARGA
+    context['id_eje_giro'] = AcdpAxisMovementEnums.ID_X_EJE_GIRO
+    return render(request, "motoresManual.html", context=context)
 
 def sensores(request):
     return render(request, "sensores.html")

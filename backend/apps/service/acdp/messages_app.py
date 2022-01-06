@@ -1,6 +1,6 @@
 # coding=utf-8
 import struct, ctypes
-from ctypes import c_int, c_long, c_uint16, c_uint32, c_float, c_bool, c_ulong
+from ctypes import c_int, c_long, c_uint16, c_uint32, c_float, c_ulong
 
 from .messages_base import AcdpAvi, AcdpMsgType, AcdpMsgLevel, AcdpPiT0Config, AcdpPiT0Data,\
     AcdpPidT1Config, AcdpPidT1Data, BaseStructure, BaseUnion, AcdpDrvFbkData, AcdpEncData,\
@@ -25,34 +25,32 @@ class AcdpMsgCodes:
         CD_MOV_FZA = AcdpMsgType.CFG_DAT + AcdpMsgLevel.APPLICATION + 0x02
     
     class Cmd:          # Comandos
-        Cd_MovEje_Stop               = AcdpMsgType.CMD + AcdpMsgLevel.APPLICATION + 0x01
-        Cd_MovEje_FastStop           = AcdpMsgType.CMD + AcdpMsgLevel.APPLICATION + 0x02
-        Cd_MovEje_PowerOn            = AcdpMsgType.CMD + AcdpMsgLevel.APPLICATION + 0x03
-        Cd_MovEje_PowerOff           = AcdpMsgType.CMD + AcdpMsgLevel.APPLICATION + 0x04
-        Cd_MovEje_SyncOn             = AcdpMsgType.CMD + AcdpMsgLevel.APPLICATION + 0x05  # Parametro: Param::tSyncOn
-        Cd_MovEje_SyncOff            = AcdpMsgType.CMD + AcdpMsgLevel.APPLICATION + 0x06
-        Cd_MovEje_RunZeroing         = AcdpMsgType.CMD + AcdpMsgLevel.APPLICATION + 0x07
-        Cd_MovEje_RunPositioning     = AcdpMsgType.CMD + AcdpMsgLevel.APPLICATION + 0x08
-        Cd_MovEje_MovToVel           = AcdpMsgType.CMD + AcdpMsgLevel.APPLICATION + 0x09  # Parametro: Param::tMovToVel
-        Cd_MovEje_SetRefVel          = AcdpMsgType.CMD + AcdpMsgLevel.APPLICATION + 0x0a  # Parametro: Param::tSetRefVel
-        Cd_MovEje_MovToPos           = AcdpMsgType.CMD + AcdpMsgLevel.APPLICATION + 0x0b  # Parametro: Param::tMovToPos
-        Cd_MovEje_SetRefPos          = AcdpMsgType.CMD + AcdpMsgLevel.APPLICATION + 0x0c  # Parametro: Param::tSetRefPos
-        Cd_MovEje_MovToPos_Yield     = AcdpMsgType.CMD + AcdpMsgLevel.APPLICATION + 0x0d  # Parametro: Param::tMovToPos_Yield
-        Cd_MovEje_MovToPosLoad       = AcdpMsgType.CMD + AcdpMsgLevel.APPLICATION + 0x0e  # Parametro: Param::tMovToPosLoad
-        Cd_MovEje_SetRefPosLoad      = AcdpMsgType.CMD + AcdpMsgLevel.APPLICATION + 0x0f  # Parametro: Param::tSetRefPosLoad
-        Cd_MovEje_MovToPosLoad_Yield = AcdpMsgType.CMD + AcdpMsgLevel.APPLICATION + 0x10  # Parametro: Param::tMovToPosLoad_Yield
-        Cd_MovEje_MovToFza           = AcdpMsgType.CMD + AcdpMsgLevel.APPLICATION + 0x11  # Parametro: Param::tMovToFza
-        Cd_MovEje_SetRefFza          = AcdpMsgType.CMD + AcdpMsgLevel.APPLICATION + 0x12  # Parametro: Param::tSetRefFza
-        Cd_MovEje_MovToFza_Yield     = AcdpMsgType.CMD + AcdpMsgLevel.APPLICATION + 0x13  # Parametro: Param::tMovToFza_Yield
+        Cd_MovEje_EnterSafeMode         = AcdpMsgType.CMD + AcdpMsgLevel.APPLICATION + 0x01
+        Cd_MovEje_ExitSafeMode          = AcdpMsgType.CMD + AcdpMsgLevel.APPLICATION + 0x02
+        Cd_MovEje_PowerOn               = AcdpMsgType.CMD + AcdpMsgLevel.APPLICATION + 0x03
+        Cd_MovEje_PowerOff              = AcdpMsgType.CMD + AcdpMsgLevel.APPLICATION + 0x04
+        Cd_MovEje_SyncOn                = AcdpMsgType.CMD + AcdpMsgLevel.APPLICATION + 0x05     # Parametro: Param::tSyncOn
+        Cd_MovEje_SyncOff               = AcdpMsgType.CMD + AcdpMsgLevel.APPLICATION + 0x06
+        
+        Cd_MovEje_Stop                  = AcdpMsgType.CMD + AcdpMsgLevel.APPLICATION + 0x07
+        Cd_MovEje_FastStop              = AcdpMsgType.CMD + AcdpMsgLevel.APPLICATION + 0x08
 
-        Cd_BalizaEnsayo_ApagarCancelado    = AcdpMsgType.CMD + AcdpMsgLevel.APPLICATION + 0x21
-        Cd_BalizaEnsayo_EncenderCancelado  = AcdpMsgType.CMD + AcdpMsgLevel.APPLICATION + 0x22
-        Cd_BalizaEnsayo_ApagarNoPasa       = AcdpMsgType.CMD + AcdpMsgLevel.APPLICATION + 0x23
-        Cd_BalizaEnsayo_EncenderNoPasa     = AcdpMsgType.CMD + AcdpMsgLevel.APPLICATION + 0x24
-        Cd_BalizaEnsayo_ApagarPasa         = AcdpMsgType.CMD + AcdpMsgLevel.APPLICATION + 0x25
-        Cd_BalizaEnsayo_EncenderPasa       = AcdpMsgType.CMD + AcdpMsgLevel.APPLICATION + 0x26
-        Cd_BalizaEnsayo_ApagarEnsayando    = AcdpMsgType.CMD + AcdpMsgLevel.APPLICATION + 0x27
-        Cd_BalizaEnsayo_EncenderEnsayando  = AcdpMsgType.CMD + AcdpMsgLevel.APPLICATION + 0x28
+        Cd_MovEje_RunZeroing            = AcdpMsgType.CMD + AcdpMsgLevel.APPLICATION + 0x09
+        Cd_MovEje_RunPositioning        = AcdpMsgType.CMD + AcdpMsgLevel.APPLICATION + 0x0a
+        Cd_MovEje_MovToVel              = AcdpMsgType.CMD + AcdpMsgLevel.APPLICATION + 0x0b     # Parametro: Param::tMovToVel
+        Cd_MovEje_SetRefVel             = AcdpMsgType.CMD + AcdpMsgLevel.APPLICATION + 0x0c     # Parametro: Param::tSetRefVel
+        Cd_MovEje_MovToPos              = AcdpMsgType.CMD + AcdpMsgLevel.APPLICATION + 0x0d     # Parametro: Param::tMovToPos
+        Cd_MovEje_SetRefPos             = AcdpMsgType.CMD + AcdpMsgLevel.APPLICATION + 0x0e     # Parametro: Param::tSetRefPos
+        Cd_MovEje_MovToPos_Yield        = AcdpMsgType.CMD + AcdpMsgLevel.APPLICATION + 0x0f     # Parametro: Param::tMovToPos_Yield
+        Cd_MovEje_MovToPosLoad          = AcdpMsgType.CMD + AcdpMsgLevel.APPLICATION + 0x10     # Parametro: Param::tMovToPosLoad
+        Cd_MovEje_SetRefPosLoad         = AcdpMsgType.CMD + AcdpMsgLevel.APPLICATION + 0x11     # Parametro: Param::tSetRefPosLoad
+        Cd_MovEje_MovToPosLoad_Yield    = AcdpMsgType.CMD + AcdpMsgLevel.APPLICATION + 0x12     # Parametro: Param::tMovToPosLoad_Yield
+        Cd_MovEje_MovToFza              = AcdpMsgType.CMD + AcdpMsgLevel.APPLICATION + 0x13     # Parametro: Param::tMovToFza
+        Cd_MovEje_SetRefFza             = AcdpMsgType.CMD + AcdpMsgLevel.APPLICATION + 0x14     # Parametro: Param::tSetRefFza
+        Cd_MovEje_MovToFza_Yield        = AcdpMsgType.CMD + AcdpMsgLevel.APPLICATION + 0x15     # Parametro: Param::tMovToFza_Yield
+
+        Cd_LocDO_Set                    = AcdpMsgType.CMD + AcdpMsgLevel.APPLICATION + 0x21     # Parametro: Param::tDO_Set
+        Cd_RemDO_Set                    = AcdpMsgType.CMD + AcdpMsgLevel.APPLICATION + 0x22     # Parametro: Param::tDO_Set
 
 
 # --------------------------------------------------------------------------------------------#
@@ -242,9 +240,9 @@ class AcdpAxisMovementEnums:
 
 class AcdpAxisMovementsMovPosConfigFlagsBits(BaseStructure):
     _fields_ = [
-        ('limit_pos_enab', c_bool),
-        ('homing_sw_positive', c_bool),
-        ('homing_with_index', c_bool)
+        ('limit_pos_enab', c_int, 1),
+        ('homing_sw_positive', c_int, 1),
+        ('homing_with_index', c_int, 1)
     ]
 
 
@@ -292,12 +290,12 @@ class AcdpAxisMovementsMovPosConfig(BaseStructure):
 
 class AcdpAxisMovementsMovPosDataFlagsBits(BaseStructure):
     _fields_ = [
-        ('zero_switch_on', c_bool),
-        ('pos_min_switch_on', c_bool),
-        ('pos_max_switch_on', c_bool),
-        ('pos_min_limit', c_bool),
-        ('pos_max_limit', c_bool),
-        ('vel_limit', c_bool)
+        ('zero_switch_on', c_int, 1),
+        ('pos_min_switch_on', c_int, 1),
+        ('pos_max_switch_on', c_int, 1),
+        ('pos_min_limit', c_int, 1),
+        ('pos_max_limit', c_int, 1),
+        ('vel_limit', c_int, 1)
     ]
 
 
@@ -363,9 +361,9 @@ class AcdpAxisMovementsMovPos(BaseStructure):
 
 class AcdpAxisMovementsMovFzaConfigFlagsBits(BaseStructure):
     _fields_ = [
-        ('limit_pos_enab', c_bool),
-        ('rel_fza_pos_fija', c_bool),
-        ('rel_fza_pos_negativa', c_bool)
+        ('limit_pos_enab', c_int, 1),
+        ('rel_fza_pos_fija', c_int, 1),
+        ('rel_fza_pos_negativa', c_int, 1)
     ]
 
 
@@ -415,9 +413,9 @@ class AcdpAxisMovementsMovFzaConfig(BaseStructure):
 
 class AcdpAxisMovementsMovFzaDataFlagsBits(BaseStructure):
     _fields_ = [
-        ('fza_min_limit', c_bool),  # 0
-        ('fza_max_limit', c_bool),  # 1
-        ('cedencia', c_bool)        # 2
+        ('fza_min_limit', c_int, 1),  # 0
+        ('fza_max_limit', c_int, 1),  # 1
+        ('cedencia', c_int, 1)        # 2
     ]
 
 
@@ -467,9 +465,9 @@ class AcdpAxisMovementsMovEjeConfig(BaseStructure):
 
 class AcdpAxisMovementsMovEjeDataFlagsBits(BaseStructure):
     _fields_ = [
-        ('em_stop', c_bool),    # 0
-        ('disabled', c_bool),   # 1
-        ('sync_on', c_bool)     # 2
+        ('em_stop', c_int, 1),    # 0
+        ('disabled', c_int, 1),   # 1
+        ('sync_on', c_int, 1)     # 2
     ]
 
 
@@ -576,8 +574,8 @@ class AcdpAxisMovements(BaseStructure):
 
 class AcdpPcDataFlagsBits(BaseStructure):
     _fields_ = [
-        ('cmd_toggle', c_bool),     # 0
-        ('cmd_received', c_bool)    # 1
+        ('cmd_toggle', c_int, 1),     # 0
+        ('cmd_received', c_int, 1)    # 1
     ]
 
 
@@ -590,10 +588,10 @@ class AcdpPcDataFlags(BaseUnion):
 
 class AcdpPcDataCtrlFlagsBits(BaseStructure):
     _fields_ = [
-        ('ctrl_ok', c_bool),      # 0
-        ('running', c_bool),      # 1
-        ('em_stop', c_bool),      # 2
-        ('fast_stop', c_bool),    # 3
+        ('ctrl_ok', c_int, 1),      # 0
+        ('running', c_int, 1),      # 1
+        ('em_stop', c_int, 1),      # 2
+        ('fast_stop', c_int, 1),    # 3
     ]
 
 
@@ -606,10 +604,10 @@ class AcdpPcDataCtrlFlags(BaseUnion):
 
 class AcdpPcDataCtrlLocIODI16Pins(BaseStructure):
     _fields_ = [
-        ('run_test', c_bool),
-        ('move_up_crossbar', c_bool),
-        ('move_down_crossbar', c_bool),
-        ('move_to_start', c_bool)
+        ('run_test', c_int, 1),
+        ('move_up_crossbar', c_int, 1),
+        ('move_down_crossbar', c_int, 1),
+        ('move_to_start', c_int, 1)
     ]
 
 
@@ -622,10 +620,10 @@ class AcdpPcDataCtrlLocIODI16(BaseUnion):
 
 class AcdpPcDataCtrlLocIODO16Pins(BaseStructure):
     _fields_ = [
-        ('test_cancelled_ind', c_bool),
-        ('test_out_of_tolerance_ind', c_bool),
-        ('test_ok_ind', c_bool),
-        ('test_running_ind', c_bool)
+        ('test_cancelled_ind', c_int, 1),
+        ('test_out_of_tolerance_ind', c_int, 1),
+        ('test_ok_ind', c_int, 1),
+        ('test_running_ind', c_int, 1)
     ]
 
 
@@ -651,7 +649,7 @@ class AcdpPcDataCtrlRemIODI16Enums:     # Remote Digital Inputs
 
 class AcdpPcDataCtrlRemIODI16Inputs(BaseStructure):
     _fields_ = [
-        ('i0', c_bool)  # 0
+        ('i0', c_int, 1)  # 0
     ]
 
 
@@ -670,7 +668,7 @@ class AcdpPcDataCtrlRemIODO16Enums:     # Remote Digital Outputs
 
 class AcdpPcDataCtrlRemIODO16DO(BaseStructure):
     _fields_ = [
-        ('o0', c_bool)  # 0
+        ('o0', c_int, 1)  # 0
     ]
 
 
@@ -724,10 +722,16 @@ class AcdpPc(BaseStructure):
     _fields_ = [
         ('data', AcdpPcData)
     ]
+    
+    def __init__(self, *args, **kw):
+        super().__init__(*args, **kw)
+        self.set_states()
 
     def store_from_raw(self, raw_values):
         super().store_from_raw(raw_values)
-        
+        self.set_states()
+    
+    def set_states(self):
         # Command flags
         self.cmd_toggle = self.data.flags.bits.cmd_toggle
         self.cmd_received = self.data.flags.bits.cmd_received
@@ -747,16 +751,16 @@ class AcdpPc(BaseStructure):
         self.test_cancelled_ind = self.data.ctrl.loc_io.do16.pins.test_cancelled_ind,
         self.test_out_of_tolerance_ind = self.data.ctrl.loc_io.do16.pins.test_out_of_tolerance_ind,
         self.test_ok_ind = self.data.ctrl.loc_io.do16.pins.test_ok_ind,
-        self.test_running_ind = self.data.ctrl.loc_io.do16.pinstest_running_ind
+        self.test_running_ind = self.data.ctrl.loc_io.do16.pins.test_running_ind
 
         # Remote digital inputs/outputs
         self.rem_di = []
         for i in range(self.data.ctrl.rem_io.di16._length_):
-            self.rem_di.append(self.ctrl.rem_io.di16[i].all)
+            self.rem_di.append(self.data.ctrl.rem_io.di16[i].all)
         
         self.rem_do = []
         for i in range(self.data.ctrl.rem_io.do16._length_):
-            self.rem_do.append(self.ctrl.rem_io.do16[i].all)
+            self.rem_do.append(self.data.ctrl.rem_io.do16[i].all)
 
         # Axis
         self.axis = []
@@ -780,8 +784,8 @@ class AcdpPc(BaseStructure):
                 'pos_vel_fil': axis.mov_pos.med_drv.vel_fil,
 
                 # Load
-                'load_flags': axis.mov_pos.mead_load.enc.flags.all,
-                'load_pos_fil': axis.mov_pos.med_load.pos_vil,
+                'load_flags': axis.mov_pos.med_load.enc.flags.all,
+                'load_pos_fil': axis.mov_pos.med_load.pos_fil,
                 'load_vel_fil': axis.mov_pos.med_load.vel_fil,
 
                 # Sincro
@@ -793,17 +797,100 @@ class AcdpPc(BaseStructure):
 
                 # Force
                 'fza_flags': axis.mov_fza.flags.all,
-                'fza_fil': axis.mov_fza.fza_fil,
-                'rigidez_drive': axis.mov_fza.rigidez_drive,
-                'rigidez_load': axis.mov_fza.rigidez_load,
-                'cedencia': axis.mov_fza.cedencia,
+                'fza_fil': axis.mov_fza.med.fza_fil,
+                'rigidez_drive': axis.mov_fza.med.rigidez_drive,
+                'rigidez_load': axis.mov_fza.med.rigidez_load,
+                'cedencia': axis.mov_fza.med.cedencia,
                 'rel_fza_pos_uns': axis.mov_fza.rel_fza_pos_uns,
 
                 # Drive
                 'drv_flags': axis.drive.flags.all,
-                'actuacion': axis.drive.actiacion
+                'actuacion': axis.drive.actuacion
             })
+    
+    def get_states(self):
+        states = {}
+        # Command flags
+        states['cmd_toggle'] = self.data.flags.bits.cmd_toggle
+        states['cmd_received'] = self.data.flags.bits.cmd_received
 
+        # Control flags
+        states['ctrl_ok'] = self.data.ctrl.flags.bits.ctrl_ok
+        states['running'] = self.data.ctrl.flags.bits.running
+        states['em_stop'] = self.data.ctrl.flags.bits.em_stop
+        states['fast_stop'] = self.data.ctrl.flags.bits.fast_stop
+
+        # Local digital inpunts/outputs
+        states['run_test'] = self.data.ctrl.loc_io.di16.pins.run_test,
+        states['move_up_crossbar'] = self.data.ctrl.loc_io.di16.pins.move_up_crossbar,
+        states['move_down_crossbar'] = self.data.ctrl.loc_io.di16.pins.move_down_crossbar,
+        states['move_to_start'] = self.data.ctrl.loc_io.di16.pins.move_to_start
+        
+        states['test_cancelled_ind'] = self.data.ctrl.loc_io.do16.pins.test_cancelled_ind,
+        states['test_out_of_tolerance_ind'] = self.data.ctrl.loc_io.do16.pins.test_out_of_tolerance_ind,
+        states['test_ok_ind'] = self.data.ctrl.loc_io.do16.pins.test_ok_ind,
+        states['test_running_ind'] = self.data.ctrl.loc_io.do16.pins.test_running_ind
+
+        # Remote digital inputs/outputs
+        rem_di = []
+        rem_do = []
+
+        for i in range(self.data.ctrl.rem_io.di16._length_):
+            rem_di.append(self.data.ctrl.rem_io.di16[i].all)
+        
+        for i in range(self.data.ctrl.rem_io.do16._length_):
+            rem_do.append(self.data.ctrl.rem_io.do16[i].all)
+
+        states['rem_di'] = rem_di
+        states['rem_do'] = rem_do
+
+        # Axis
+        axis_arr = []
+        for i in range(self.data.ctrl.eje._length_):
+            axis = self.get_axis(i)
+            axis_arr.append({
+                # Flags
+                'flags': axis.flags.all,
+                'em_stop_flag': axis.flags.flags.em_stop,
+                'disabled_flag': axis.flags.flags.disabled,
+                'sync_on_flag': axis.flags.flags.sync_on,
+                
+                # States machine
+                'flags_fin': axis.maq_est.flags_fin,
+                'state': axis.maq_est.estado,
+
+                # Position movement
+                'mov_pos_homing_states': axis.mov_pos.homing.estado,
+                'pos_flags': axis.mov_pos.flags,
+                'pos_pos_fil': axis.mov_pos.med_drv.pos_fil,
+                'pos_vel_fil': axis.mov_pos.med_drv.vel_fil,
+
+                # Load
+                'load_flags': axis.mov_pos.med_load.enc.flags.all,
+                'load_pos_fil': axis.mov_pos.med_load.pos_fil,
+                'load_vel_fil': axis.mov_pos.med_load.vel_fil,
+
+                # Sincro
+                'rel_master': axis.sincro.rel_master,
+                'set_point_dif': axis.sincro.set_point_dif,
+                'med_drv_modulo': axis.sincro.med_drv.modulo,
+                'pos_dif': axis.sincro.med_drv.pos_dif,
+                'vel_dif': axis.sincro.med_drv.vel_dif,
+
+                # Force
+                'fza_flags': axis.mov_fza.flags.all,
+                'fza_fil': axis.mov_fza.med.fza_fil,
+                'rigidez_drive': axis.mov_fza.med.rigidez_drive,
+                'rigidez_load': axis.mov_fza.med.rigidez_load,
+                'cedencia': axis.mov_fza.med.cedencia,
+                'rel_fza_pos_uns': axis.mov_fza.rel_fza_pos_uns,
+
+                # Drive
+                'drv_flags': axis.drive.flags.all,
+                'actuacion': axis.drive.actuacion
+            })
+        states['axis'] = axis_arr
+        return states
 
     def get_load_axis(self):
         return self.data.ctrl.eje[AcdpAxisMovementEnums.ID_X_EJE_CARGA]
@@ -811,7 +898,7 @@ class AcdpPc(BaseStructure):
     def get_turn_axis(self):
         return self.data.ctrl.eje[AcdpAxisMovementEnums.ID_X_EJE_GIRO]
     
-    def get_thrust_axis(self):
+    def get_lineal_axis(self):
         return self.data.ctrl.eje[AcdpAxisMovementEnums.ID_X_EJE_AVANCE]
     
     def get_axis(self, axis):
@@ -822,7 +909,7 @@ class AcdpPc(BaseStructure):
             return self.get_turn_axis()
         
         elif axis == AcdpAxisMovementEnums.ID_X_EJE_AVANCE:
-            return self.get_thrust_axis()
+            return self.get_lineal_axis()
         
         else:
             print("Eje no encontrado")

@@ -11,10 +11,12 @@ from apps.ws.utils.functions import get_ch_info
 from apps.ws.utils.variables import MicroState
 from apps.ws.models import ChannelInfo
 
-# Create your views here.
+from apps.control.utils.variables import COMMAND_DEFAULT_VALUES
+from apps.service.acdp.messages_app import AcdpAxisMovementEnums
+
 
 @csrf_exempt
-def manual(request):
+def manual_lineal(request):
     post_req = request.POST
     ch_info = get_ch_info(ChannelInfo, 'micro')
     req_data = []
@@ -26,12 +28,27 @@ def manual(request):
         req_data.append(item)
 
     command = int(req_data[0][1])
-    for item in req_data[1:]:
-        params[item[0]] = float(item[1])
-
-    header, data = service_handlers.build_msg(command, params=params, msg_id=msg_id)
-    # msg = header.pacself() + data.pacself()
+    axis = int(req_data[1][1])
+    ref_rate = None
+    
+    for item in req_data[2:]:
+        key = item[0]
+        value = item[1]
+        if key != 'abs':
+            params[key] = float(value)
+        else:
+            params[key] = bool(value)
+    
+    if axis == AcdpAxisMovementEnums.ID_X_EJE_AVANCE:
+        ref_rate = COMMAND_DEFAULT_VALUES['vel_eje_avance']
+    elif axis == AcdpAxisMovementEnums.ID_X_EJE_CARGA:
+        ref_rate = COMMAND_DEFAULT_VALUES['vel_eje_carga']
+    if ref_rate:
+        params['ref_rate'] = ref_rate
+        if not params['abs']:
+            pass
+    header, data = service_handlers.build_msg(command, params=params, msg_id=msg_id, eje=axis)
+    print(command, axis, params)
     if ch_info:
-        print(ch_info)
         send_message(header, ch_info, data)
     return JsonResponse({'resp': 'ok'})

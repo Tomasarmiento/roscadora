@@ -19,15 +19,21 @@ class AcdpMessage(BaseStructure):
         bytes_len = len(raw_values)
         if bytes_len == self.header.get_bytes_size():
             self.header.store_from_raw(raw_values)
+            AcdpMessage.last_rx_header = self.header
         else:
             super().store_from_raw(raw_values)
+            AcdpMessage.last_rx_data = self.data
     
     def process_rx_msg(self, addr=(ACDP_IP_ADDR, ACDP_UDP_PORT), transport=None):
         msg_code = self.header.get_msg_code()
+        update_front = True
         
         if msg_code == AcdpMsgCxn.CD_ECHO_REQ:
             tx_header = build_msg(AcdpMsgCxn.CD_ECHO_REPLY)
             transport.sendto(tx_header.pacself(), addr)
+            update_front = False
+        
+        return update_front
 
 
 def build_msg(code, host_ip="192.168.0.100", dest_ip=ACDP_IP_ADDR, params={}, *args, **kwargs):
@@ -63,7 +69,8 @@ def build_msg(code, host_ip="192.168.0.100", dest_ip=ACDP_IP_ADDR, params={}, *a
     
     else:
         tx_header.set_msg_id(msg_id=kwargs['msg_id'])
-        tx_header.ctrl.object = AcdpAxisMovementEnums.ID_X_EJE_AVANCE
+        # tx_header.ctrl.object = AcdpAxisMovementEnums.ID_X_EJE_AVANCE
+        tx_header.ctrl.object = kwargs['eje']
         param = None
 
         if code == AcdpMsgCodes.Cmd.Cd_MovEje_SyncOn:
@@ -87,7 +94,10 @@ def build_msg(code, host_ip="192.168.0.100", dest_ip=ACDP_IP_ADDR, params={}, *a
             else:
                 ref = kwargs['ref']
                 ref_rate = kwargs['ref_rate']
+            print('ref:', ref, 'ref_rate', ref_rate)
             param =  DataBuilder.build_mov_to_pos_data(ref, ref_rate)
+            print(param)
+            print("REF:",param.reference,"REF_RATE:", param.ref_rate)
 
         elif code == AcdpMsgCodes.Cmd.Cd_MovEje_MovToPos_Yield:
             if params:

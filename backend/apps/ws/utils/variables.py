@@ -1,9 +1,12 @@
-# from apps.service.acdp.acdp import AcdpHeader
+from apps.service.acdp.acdp import AcdpHeader
+from apps.service.acdp.messages_app import AcdpPc
 
 class MicroState:
     msg_id          = 0
     cmd_rejected    = False
     cmd_ok          = True
+    last_rx_header  = AcdpHeader()
+    last_rx_data    = AcdpPc()
 
 
 class WsCodes:
