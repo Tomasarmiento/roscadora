@@ -107,7 +107,8 @@ async def ws_states_update(websocket):
             if WsStates.timestamp != AcdpMessage.last_rx_header.ctrl.timestamp:
                 WsStates.timestamp = AcdpMessage.last_rx_header.ctrl.timestamp
                 if WsStates.updata_front:
-                    await websocket.send(AcdpMessage.last_rx_header.pacself())
+                    msg = AcdpMessage.last_rx_header.pacself() + AcdpMessage.last_rx_data.pacself()
+                    await websocket.send(msg)
                     WsStates.updata_front = False
             
             elif WsStates.micro_connected:
