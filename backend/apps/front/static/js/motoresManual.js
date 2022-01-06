@@ -1,33 +1,33 @@
 document.addEventListener("DOMContentLoaded", (e) => {
     
-    let btn_mov_husillo = document.getElementById('husilloBtn');
-    let btn_mov_abs = document.getElementById('absMoveH');
-    let btn_mov_rel_lin_fwd = document.getElementById('relFwdH');
-    let btn_mov_rel_lin_bwd = document.getElementById('relBwdH');
+    let btn_mov_husillo = document.getElementById('husilloMove');
+    let btn_mov_abs = document.getElementById('linealAbsMove');
+    let btn_mov_rel_lin_fwd = document.getElementById('linealRelFwd');
+    let btn_mov_rel_lin_bwd = document.getElementById('linealRelBwd');
 
     btn_mov_husillo.addEventListener("click", (e) => {
-        let rpm = document.getElementById('rpm').value;
+        let rpm = document.getElementById('rpmValue').value;
         cmd = btn_mov_husillo.getAttribute('cmd');
         eje = parseInt(btn_mov_husillo.getAttribute('eje'));
         sendCommand(cmd, eje, {'ref': parseFloat(rpm)});
     });
 
     btn_mov_abs.addEventListener("click", (e) => {
-        let ref = document.getElementById('absPos').value;
+        let ref = document.getElementById('linealAbsPosValue').value;
         cmd = btn_mov_abs.getAttribute('cmd');
         eje = parseInt(btn_mov_abs.getAttribute('eje'));
         sendCommand(cmd, eje, {'ref': parseFloat(ref), 'abs': true});
     });
     
     btn_mov_rel_lin_fwd.addEventListener("click", (e) => {
-        let pos = document.getElementById('relPos').value;
+        let pos = document.getElementById('linealRelPosValue').value;
         cmd = btn_mov_rel_lin_fwd.getAttribute('cmd');
         eje = parseInt(btn_mov_rel_lin_fwd.getAttribute('eje'));
         sendCommand(cmd, eje,{'ref': parseFloat(pos), 'abs': false});
     });
 
     btn_mov_rel_lin_bwd.addEventListener("click", (e) => {
-        let pos = document.getElementById('relPos').value;
+        let pos = document.getElementById('linealRelPosValue').value;
         cmd = btn_mov_rel_lin_bwd.getAttribute('cmd');
         eje = parseInt(btn_mov_rel_lin_bwd.getAttribute('eje'));
         sendCommand(cmd, eje, {'ref': parseFloat(pos), 'abs': false});

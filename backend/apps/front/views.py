@@ -40,6 +40,7 @@ def semiAutomatico(request):
     return render(request, "semiautomatico.html")
 
 def parametrosPagina1(request):
+<<<<<<< HEAD
     d = {}
     for i in range(len(PART_MODEL_OPTIONS)):
         d[i+1] = PART_MODEL_OPTIONS[0]
@@ -47,3 +48,6 @@ def parametrosPagina1(request):
 
 def parametrosPagina2(request):
     return render(request, "parametrosP2.html")
+=======
+    return render(request, "parametrosP1.html")
+>>>>>>> parameters
