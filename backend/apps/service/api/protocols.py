@@ -39,8 +39,6 @@ class UDPProtocol(asyncio.DatagramProtocol):
         rx_msg = AcdpMessage()
         f = rx_msg.get_format()
         if len(data) == 820:
-            print("DATA LEN:", len(struct.unpack(f,data)))
-            print("STRUCT LEN:",rx_msg.data_length)
             rx_msg.store_from_raw(data)
         # print(rx_msg.get_bytes_size())
         # rx_msg.store_from_raw(data)
