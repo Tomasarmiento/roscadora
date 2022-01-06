@@ -7,7 +7,7 @@ import websockets
 from apps.service.acdp.acdp import ACDP_UDP_PORT, ACDP_IP_ADDR, AcdpHeader
 from apps.service.acdp.handlers import AcdpMessage
 
-from .functions import force_connection, open_connection
+from apps.service.api.functions import force_connection, open_connection, send_message
 
 TIME_TO_SEC = 150 * 1000000
 HOST = '127.0.0.1'
@@ -24,6 +24,7 @@ class Buffer():
 
 class UDPProtocol(asyncio.DatagramProtocol):
     transport = ''
+    connected = False
 
     def __init__(self):
         super().__init__()
@@ -32,6 +33,7 @@ class UDPProtocol(asyncio.DatagramProtocol):
     def connection_made(self, transport):       # Used by asyncio
         self.transport = transport
         UDPProtocol.transport = transport
+        UDPProtocol.connected = True
         force_connection(self.transport)
         
     def datagram_received(self, data, addr):    # addr is tuple (IP, PORT), example ('192.168.0.28', 54208)
@@ -43,6 +45,7 @@ class UDPProtocol(asyncio.DatagramProtocol):
 
     def connection_lost(self, exc):     # exc: (self, exc: Optional[Exception]) -> None
         # ACDPMessage.connected = False
+        UDPProtocol.connected = False
         return super().connection_lost(exc)
 
 
@@ -100,21 +103,25 @@ async def ws_states_update(websocket):
         #     break
 
 
-async def ws_consumer(websocket):
+async def ws_consumer(websocket):       # Fordwards message to micro.
     while True:
         try:
             rx_msg = await websocket.recv()
         except websockets.exceptions.ConnectionClosed:
             break
         # rx_msg = json.loads(rx_msg)
-        header = AcdpHeader()
-        if len(rx_msg) > header.bytes_length:
-            pass
-        else:
-            header.store_from_raw(rx_msg)
-        
-        print(header.get_values())
-        # rx_command = int(rx_msg['command'])
+        # header = AcdpHeader()
+        # msg = ''
+        # if len(rx_msg) > header.bytes_length:
+        #     header.store_from_raw(rx_msg[:header.bytes_length])
+        #     msg = header.pacself().join(rx_msg[header.bytes_length:])
+        # else:
+        #     header.store_from_raw(rx_msg)
+        #     msg = header.pacself()
+        # print(header.get_values())
+        print(rx_msg)
+        if UDPProtocol.connected:
+            send_message(rx_msg, UDPProtocol.transport)
 
 
 async def ws_msg_response(websocket):

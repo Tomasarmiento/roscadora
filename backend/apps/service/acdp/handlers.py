@@ -1,7 +1,7 @@
-from .acdp import ACDP_VERSION, ACDP_UDP_PORT, ACDP_IP_ADDR
-from .acdp import AcdpHeader
-from .messages_app import AcdpPc, AcdpMsgCodes, AcdpMsgParams, AcdpAxisMovementEnums
-from .messages_base import AcdpMsgCmdParam, BaseStructure, AcdpMsgCxn
+from apps.service.acdp.acdp import ACDP_VERSION, ACDP_UDP_PORT, ACDP_IP_ADDR
+from apps.service.acdp.acdp import AcdpHeader
+from apps.service.acdp.messages_app import AcdpPc, AcdpMsgCodes, AcdpMsgParams, AcdpAxisMovementEnums
+from apps.service.acdp.messages_base import AcdpMsgCmdParam, BaseStructure, AcdpMsgCxn
 
 class AcdpMessage(BaseStructure):
     last_rx_data = AcdpPc()
@@ -26,13 +26,15 @@ class AcdpMessage(BaseStructure):
         msg_code = self.header.get_msg_code()
         
         if msg_code == AcdpMsgCxn.CD_ECHO_REQ:
-            tx_header = build_header(AcdpMsgCxn.CD_ECHO_REPLY)
+            tx_header = build_msg(AcdpMsgCxn.CD_ECHO_REPLY)
             transport.sendto(tx_header.pacself(), addr)
 
 
-def build_header(code, host_ip="192.168.0.100", dest_ip=ACDP_IP_ADDR, *args, **kwargs):
+def build_msg(code, host_ip="192.168.0.100", dest_ip=ACDP_IP_ADDR, params={}, *args, **kwargs):
 
     tx_header = AcdpHeader()
+    tx_data = None
+
     tx_header.ctrl.msg_code = code
 
     tx_header.ctrl.msg_code = code
@@ -62,72 +64,134 @@ def build_header(code, host_ip="192.168.0.100", dest_ip=ACDP_IP_ADDR, *args, **k
     else:
         tx_header.set_msg_id(msg_id=kwargs['msg_id'])
         tx_header.ctrl.object = AcdpAxisMovementEnums.ID_X_EJE_AVANCE
-        params = AcdpMsgParams()
+        param = None
 
         if code == AcdpMsgCodes.Cmd.Cd_MovEje_SyncOn:
-            param = params.sync_on
+            if params:
+                paso = params['paso']
+            else:
+                paso = kwargs['paso']
+            param = DataBuilder.build_sync_on_data(paso)
         
         elif code == AcdpMsgCodes.Cmd.Cd_MovEje_MovToVel:
-            param = params.mov_to_vel
+            if params:
+                ref = params['ref']
+            else:
+                ref = kwargs['ref']
+            param = DataBuilder.build_mov_to_vel_data(ref)
 
         elif code == AcdpMsgCodes.Cmd.Cd_MovEje_MovToPos:
-            param =  params.mov_to_pos
+            if params:
+                ref = params['ref']
+                ref_rate = params['ref_rate']
+            else:
+                ref = kwargs['ref']
+                ref_rate = kwargs['ref_rate']
+            param =  DataBuilder.build_mov_to_pos_data(ref, ref_rate)
 
         elif code == AcdpMsgCodes.Cmd.Cd_MovEje_MovToPos_Yield:
-            param =  params.mov_to_pos_yield
+            if params:
+                ref = params['ref']
+                ref_rate = params['ref_rate']
+                yield_vals = params['yield_vals']
+            else:
+                ref = kwargs['ref']
+                ref_rate = kwargs['ref_rate']
+                yield_vals = kwargs['yield_vals']
+            param =  DataBuilder.build_mov_to_pos_yield_data(ref, ref_rate, yield_vals)
 
         elif code == AcdpMsgCodes.Cmd.Cd_MovEje_MovToPosLoad:
-            param =  params.mov_to_pos_load
+            if params:
+                ref = params['ref']
+            else:
+                ref = kwargs['ref']
+            param =  DataBuilder.build_mov_to_pos_load_data(ref)
 
         elif code == AcdpMsgCodes.Cmd.Cd_MovEje_MovToPosLoad_Yield:
-            param =  params.mov_to_pos_load_yield
+            if params:
+                ref = params['ref']
+                ref_rate = params['ref_rate']
+                yield_vals = params['yield_vals']
+            else:
+                ref = kwargs['ref']
+                ref_rate = kwargs['ref_rate']
+                yield_vals = kwargs['yield_vals']
+            param =  DataBuilder.build_mov_to_pos_load_yield_data(ref, ref_rate, yield_vals)
 
         elif code == AcdpMsgCodes.Cmd.Cd_MovEje_MovToFza:
-            param =  params.mov_to_fza
+            if params:
+                ref = params['ref']
+                ref_rate = params['ref_rate']
+                vel_uns_max = params['vel_uns_max']
+            else:
+                ref = kwargs['ref']
+                ref_rate = kwargs['ref_rate']
+                vel_uns_max = kwargs['vel_uns_max']
+            param =  DataBuilder.build_mov_to_fza_data(ref, ref_rate, vel_uns_max)
 
         elif code == AcdpMsgCodes.Cmd.Cd_MovEje_MovToFza_Yield:
-            param =  params.mov_to_fza_yield
+            if params:
+                ref = params['ref']
+                ref_rate = params['ref_rate']
+                yield_vals = params['yield_vals']
+                vel_uns_max = params['vel_uns_max']
+            else:
+                ref = kwargs['ref']
+                ref_rate = kwargs['ref_rate']
+                yield_vals = kwargs['yield_vals']
+                vel_uns_max = kwargs['vel_uns_max']
+            param =  DataBuilder.build_mov_to_fza_yield_data(ref, ref_rate, yield_vals, vel_uns_max)
         
-        tx_header.set_data_len(param.get_bytes_size())
-
+        if param:
+            tx_data = param
+            tx_header.set_data_len(param.get_bytes_size())
+            return tx_header, tx_data
     return tx_header
 
 
 class DataBuilder:
     
-    def buid_sync_on_data(paso):
+    def build_sync_on_data(paso):
         param = AcdpMsgParams().sync_on
         setattr(param, 'paso_eje_lineal', paso)
+        return param
 
-
-    def build_yield_data(factor_limite_elastico, correccion_pendiente, cedencia):
+    def build_yield_data(yield_vals):
+        factor_limite_elastico = yield_vals['factor_limite_elastico']
+        correccion_pendiente = yield_vals['correccion_pendiente']
+        cedencia = yield_vals['cedencia']
         param = getattr(AcdpMsgParams(), 'yield')
         setattr(param, 'factor_limite_elastico', factor_limite_elastico)
         setattr(param, 'correccion_pendiente', correccion_pendiente)
         setattr(param, 'cedencia', cedencia)
         return param
     
-    def build_mov_to_pos(ref, ref_rate):
+    def build_mov_to_vel_data(ref):
+        param = AcdpMsgParams().mov_to_vel
+        param.reference = ref
+        return param
+
+    def build_mov_to_pos_data(ref, ref_rate):
         param = AcdpMsgParams().mov_to_pos
         param.reference = ref
         param.ref_rate = ref_rate
         return param
 
-    def build_mov_to_pos_yield(ref, ref_rate, factor_limite_elastico, correccion_pendiente, cedencia):
+    def build_mov_to_pos_yield_data(ref, ref_rate, yield_vals):
         param = AcdpMsgParams().mov_to_pos_load_yield
         setattr(param, 'mov_to_pos', DataBuilder.build_mov_to_pos(ref, ref_rate))
-        setattr(param, 'yield', DataBuilder.build_yield_data(factor_limite_elastico, correccion_pendiente, cedencia))
+        setattr(param, 'yield', DataBuilder.build_yield_data(yield_vals))
         return param
 
-    def build_mov_to_pos_load(ref):
+    def build_mov_to_pos_load_data(ref):
         param = AcdpMsgParams().mov_to_pos_load
         param.reference = ref
         return param
 
-    def build_mov_to_pos_load_yield(ref, factor_limite_elastico, correccion_pendiente, cedencia):
+    def build_mov_to_pos_load_yield_data(ref, yield_vals):
         param = AcdpMsgParams().mov_to_pos_load_yield
         setattr(param, 'mov_to_pos_load', DataBuilder.build_mov_to_pos_load(ref))
-        setattr(param, 'yield', DataBuilder.build_yield_data(factor_limite_elastico, correccion_pendiente, cedencia))
+        setattr(param, 'yield', DataBuilder.build_yield_data(yield_vals))
         return param
 
     def build_mov_to_fza_data(ref, ref_rate, vel_uns_max=0.0):        # REVISAR valor de vel_uns_max
@@ -137,8 +201,8 @@ class DataBuilder:
         setattr(param, 'vel_uns_max', vel_uns_max)
         return param
 
-    def build_mov_to_fza_yield_data(ref, ref_rate, factor_limite_elastico, correccion_pendiente, cedencia, vel_uns_max=0.0):        # REVISAR valor de vel_uns_max
+    def build_mov_to_fza_yield_data(ref, ref_rate, yield_vals, vel_uns_max=0.0):        # REVISAR valor de vel_uns_max
         param = AcdpMsgParams().mov_to_fza_yield
         setattr(param, 'mov_to_fza', DataBuilder.build_mov_to_fza_data(ref, ref_rate, vel_uns_max))
-        setattr(param, 'yield', DataBuilder.build_yield_data(factor_limite_elastico, correccion_pendiente, cedencia))
+        setattr(param, 'yield', DataBuilder.build_yield_data(yield_vals))
         return param

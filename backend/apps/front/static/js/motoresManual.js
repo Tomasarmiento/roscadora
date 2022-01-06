@@ -4,17 +4,23 @@ document.addEventListener("DOMContentLoaded", (e) => {
 
     btn.addEventListener("click", (e) => {
         let rpm = document.getElementById('absPosV').value;
-        send_command(btn.getAttribute('cmd'), {'rpm': rpm});
+        sendCommand(btn.getAttribute('cmd'), {'ref': parseFloat(rpm)});
     })
 });
 
-function send_command(cmd, values){
-    let data = {
-        'command': cmd
-    };
-    if(values.pos) data.pos = values.pos;
-    if(values.vel) data.vel = values.vel;
-    if(values.rpm) data.rpm = values.rpm;
 
-    $.post("http://localhost:8000/control/", data, function(resp){console.log(resp);});
+function sendCommand(cmd, args){
+    let url = "http://localhost:8000/control/";
+    let params = "command=" + cmd;
+    // var params = "lorem=ipsum&name=alpha";
+    let xhr = new XMLHttpRequest();
+    Object.entries(args).forEach(([key, value]) => {
+        params += "&" + key + "=" + value;
+    });
+    xhr.open("POST", url, true);
+
+    //Send the proper header information along with the request
+    xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+    xhr.send(params);
 }

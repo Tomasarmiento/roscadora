@@ -2,20 +2,18 @@ from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 
 
-def send_message(header, ch_info, msg=None):
+def send_message(header, ch_info, data=None):        # Converts msg to bytes and sends it to ws micro connection
     
-    ws_data = b''
+    msg = header.pacself()
 
-    if msg:
-        ws_data = msg.pacself()
-    else:
-        ws_data = header.pacself()
+    if data:
+        msg += data.pacself()
     
     try:
         ch_layer = get_channel_layer()
         payload = {
             'type': 'micro.command',
-            'bytes_data': ws_data
+            'bytes_data': msg
         }
         async_to_sync(ch_layer.send)(
             ch_info.name,
