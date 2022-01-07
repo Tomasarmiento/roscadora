@@ -65,9 +65,6 @@ def build_msg(code, host_ip="192.168.0.100", dest_ip=ACDP_IP_ADDR, params={}, *a
     elif code == AcdpMsgCodes.Cmd.Cd_MovEje_RunZeroing:
         axis = kwargs['eje']
         tx_header.ctrl.object = axis
-
-    elif code == AcdpMsgCodes.Cmd.Cd_MovEje_Stop:
-        tx_header.set_msg_id(msg_id=kwargs['msg_id'])
     
     else:
         tx_header.set_msg_id(msg_id=kwargs['msg_id'])
@@ -80,6 +77,7 @@ def build_msg(code, host_ip="192.168.0.100", dest_ip=ACDP_IP_ADDR, params={}, *a
 
         else:
             tx_header.ctrl.object = kwargs['eje']
+
             if code == AcdpMsgCodes.Cmd.Cd_MovEje_SyncOn:
                 if params:
                     paso = params['paso']
@@ -87,6 +85,9 @@ def build_msg(code, host_ip="192.168.0.100", dest_ip=ACDP_IP_ADDR, params={}, *a
                     paso = kwargs['paso']
                 param = DataBuilder.build_sync_on_data(paso)
             
+            elif code == AcdpMsgCodes.Cmd.Cd_MovEje_Stop:
+                tx_header.set_msg_id(msg_id=kwargs['msg_id'])
+                
             elif code == AcdpMsgCodes.Cmd.Cd_MovEje_MovToVel:
                 if params:
                     ref = params['ref']

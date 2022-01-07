@@ -7,6 +7,11 @@ class MicroState:
     cmd_ok          = True
     last_rx_header  = AcdpHeader()
     last_rx_data    = AcdpPc()
+    rem_i_states    = []
+    rem_o_states    = []
+    loc_i_states    = None
+    loc_o_states    = None
+    micro_flags     = {}
 
 
 class WsCodes:

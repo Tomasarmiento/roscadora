@@ -1,8 +1,15 @@
 document.addEventListener("DOMContentLoaded", (e) => {
     let btn_mov_husillo = document.getElementById('husilloMove');
-    let btn_mov_abs = document.getElementById('linealAbsMove');
+
+    let btn_mov_abs_lin = document.getElementById('linealAbsMove');
     let btn_mov_rel_lin_fwd = document.getElementById('linealRelFwd');
     let btn_mov_rel_lin_bwd = document.getElementById('linealRelBwd');
+
+    let btn_mov_abs_lin_cabezal = document.getElementById('cabezalAbsMove');
+    let btn_mov_rel_fwd_cabezal = document.getElementById('cabezalAdd');
+    let btn_mov_rel_bwd_cabezal = document.getElementById('cabezalSubtract');
+
+    let btns_stop = document.getElementsByClassName('detener');
 
     btn_mov_husillo.addEventListener("click", (e) => {
         let rpm = document.getElementById('rpmValue').value;
@@ -11,26 +18,61 @@ document.addEventListener("DOMContentLoaded", (e) => {
         sendCommand(cmd, eje, {'ref': parseFloat(rpm)});
     });
 
-    btn_mov_abs.addEventListener("click", (e) => {
+    btn_mov_abs_lin.addEventListener("click", (e) => {
         let ref = document.getElementById('linealAbsPosValue').value;
-        cmd = btn_mov_abs.getAttribute('cmd');
-        eje = parseInt(btn_mov_abs.getAttribute('eje'));
-        sendCommand(cmd, eje, {'ref': parseFloat(ref), 'abs': true});
+        let ref_rate = document.getElementById('linealAbsVelocityValue').value;
+        cmd = btn_mov_abs_lin.getAttribute('cmd');
+        eje = parseInt(btn_mov_abs_lin.getAttribute('eje'));
+        sendCommand(cmd, eje, {'ref': parseFloat(ref), 'ref_rate': parseFloat(ref_rate), 'abs': true});
     });
     
     btn_mov_rel_lin_fwd.addEventListener("click", (e) => {
         let pos = document.getElementById('linealRelPosValue').value;
+        let ref_rate = document.getElementById('linealRelVelocityValue').value;
         cmd = btn_mov_rel_lin_fwd.getAttribute('cmd');
         eje = parseInt(btn_mov_rel_lin_fwd.getAttribute('eje'));
-        sendCommand(cmd, eje,{'ref': parseFloat(pos), 'abs': false});
+        sendCommand(cmd, eje,{'ref': parseFloat(pos), 'ref_rate': parseFloat(ref_rate), 'abs': false});
     });
 
     btn_mov_rel_lin_bwd.addEventListener("click", (e) => {
         let pos = document.getElementById('linealRelPosValue').value;
+        let ref_rate = document.getElementById('linealRelVelocityValue').value;
         cmd = btn_mov_rel_lin_bwd.getAttribute('cmd');
         eje = parseInt(btn_mov_rel_lin_bwd.getAttribute('eje'));
-        sendCommand(cmd, eje, {'ref': parseFloat(pos), 'abs': false});
+        sendCommand(cmd, eje, {'ref': parseFloat(pos), 'ref_rate': parseFloat(ref_rate), 'abs': false});
     });
+
+    btn_mov_abs_lin_cabezal.addEventListener("click", (e) => {
+        let ref = document.getElementById('cabezalAbsAngleValue').value;
+        let ref_rate = document.getElementById('cabezalAbsVelocityValue').value;
+        cmd = btn_mov_abs_lin_cabezal.getAttribute('cmd');
+        eje = parseInt(btn_mov_abs_lin_cabezal.getAttribute('eje'));
+        sendCommand(cmd, eje, {'ref': parseFloat(ref), 'ref_rate': parseFloat(ref_rate), 'abs': true});
+    });
+    
+    btn_mov_rel_fwd_cabezal.addEventListener("click", (e) => {
+        let pos = document.getElementById('cabezalRelPosValue').value;
+        let ref_rate = document.getElementById('cabezalRelVelocityValue').value;
+        cmd = btn_mov_rel_fwd_cabezal.getAttribute('cmd');
+        eje = parseInt(btn_mov_rel_fwd_cabezal.getAttribute('eje'));
+        sendCommand(cmd, eje,{'ref': parseFloat(pos), 'ref_rate': parseFloat(ref_rate), 'abs': true});
+    });
+
+    btn_mov_rel_bwd_cabezal.addEventListener("click", (e) => {
+        let pos = document.getElementById('cabezalRelPosValue').value;
+        let ref_rate = document.getElementById('cabezalRelVelocityValue').value;
+        cmd = btn_mov_rel_bwd_cabezal.getAttribute('cmd');
+        eje = parseInt(btn_mov_rel_bwd_cabezal.getAttribute('eje'));
+        sendCommand(cmd, eje, {'ref': parseFloat(pos), 'ref_rate': parseFloat(ref_rate), 'abs': true});
+    });
+    
+    for(let i=0; i < btns_stop.length; i++){
+        btns_stop[i].addEventListener('click', (e) => {
+            let cmd = btns_stop[i].getAttribute('cmd');
+            let eje = btns_stop[i].getAttribute('eje');
+            sendCommand(cmd, eje);
+        });
+    }
 });
 
 
@@ -40,9 +82,11 @@ function sendCommand(cmd, eje, args){
 
     // var params = "lorem=ipsum&name=alpha";
     let xhr = new XMLHttpRequest();
-    Object.entries(args).forEach(([key, value]) => {
-        params += "&" + key + "=" + value;
-    });
+    if(args){
+        Object.entries(args).forEach(([key, value]) => {
+            params += "&" + key + "=" + value;
+        });
+    }
     xhr.open("POST", url, true);
 
     //Send the proper header information along with the request

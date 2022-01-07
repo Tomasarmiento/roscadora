@@ -1,10 +1,14 @@
 from apps.service.acdp.handlers import build_msg
 from apps.service.api.variables import Commands, COMMANDS
+from apps.service.acdp import messages_app as msg_app
 from apps.control.utils import variables as ctrl_vars
 from apps.ws.utils.handlers import send_message
 from apps.ws.utils import variables as ws_vars
-from apps.service.acdp import messages_app as msg_app
 
+
+# -------------------------------------------------------------------------------------------- #
+# ----------------------------------- Initialization ----------------------------------------- #
+# -------------------------------------------------------------------------------------------- #
 
 def init_rem_io():
     for i in range(len(ctrl_vars.REM_DI_G1_ARR)):
@@ -23,6 +27,31 @@ def init_loc_io():
         ctrl_vars.LOC_DI_STATES[key] = None
     for key in ctrl_vars.LOC_DO_ARR:
         ctrl_vars.LOC_DO_STATES[key] = None
+
+
+# -------------------------------------------------------------------------------------------- #
+# -------------------------------- Update/Get States ----------------------------------------- #
+# -------------------------------------------------------------------------------------------- #
+
+
+def update_data_flags(micro_data):
+    cmd_toggle_bit = 1 << 0
+    cmd_received_bit = 1 << 1
+    
+    em_stop_bit = 1 << 0
+    ctrl_ok_bit = 1 << 1
+    running_bit = 1 << 2
+
+    micro_flags = {
+        'cmd_toggle':   not (ws_vars.MicroState.last_rx_data.data.flags & cmd_toggle_bit == micro_data.data.flags & cmd_toggle_bit),
+        'cmd_received': (micro_data.data.flags & cmd_received_bit == cmd_received_bit),
+        'em_stop':      micro_data.data.ctrl.flags & em_stop_bit == em_stop_bit,
+        'ctrl_ok':      micro_data.data.ctrl.flags & ctrl_ok_bit == ctrl_ok_bit,
+        'running':      micro_data.data.ctrl.flags & running_bit == running_bit
+    }
+
+    ws_vars.MicroState.micro_flags = micro_flags
+    return micro_flags
 
 
 def update_rem_io_states(micro_data):
@@ -56,6 +85,10 @@ def update_rem_io_states(micro_data):
         'o1': g_1_o,
         'o2': g_2_o
     }
+    ws_vars.MicroState.rem_i_states.append(g_1_i)
+    ws_vars.MicroState.rem_i_states.append(g_2_i)
+    ws_vars.MicroState.rem_o_states.append(g_1_o)
+    ws_vars.MicroState.rem_o_states.append(g_2_o)
     return states
 
 
@@ -78,12 +111,29 @@ def update_loc_io_states(micro_data):
         'i': loc_in,
         'o': loc_out
     }
+    ws_vars.MicroState.loc_i_states = loc_in
+    ws_vars.MicroState.loc_o_states = loc_out
     return states
 
 
 def update_io_states(micro_data):
     update_rem_io_states(micro_data)
     update_loc_io_states(micro_data)
+
+
+def update_states(micro_data):
+    update_io_states(micro_data)
+    update_data_flags(micro_data)
+
+
+################################################################################################
+######################################## COMMANDS ##############################################
+################################################################################################
+
+
+# -------------------------------------------------------------------------------------------- #
+# ------------------------------ Set remote/local outputs ------------------------------------ #
+# -------------------------------------------------------------------------------------------- #
 
 
 def set_rem_do(out_name, out_id, out_value):

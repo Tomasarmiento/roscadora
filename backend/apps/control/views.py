@@ -30,25 +30,38 @@ def manual_lineal(request):
     command = int(req_data[0][1])
     axis = int(req_data[1][1])
     ref_rate = None
-    
-    for item in req_data[2:]:
-        key = item[0]
-        value = item[1]
-        if key != 'abs':
-            params[key] = float(value)
-        else:
-            params[key] = bool(value)
-    
-    if axis == AcdpAxisMovementEnums.ID_X_EJE_AVANCE:
-        ref_rate = COMMAND_DEFAULT_VALUES['vel_eje_avance']
-    elif axis == AcdpAxisMovementEnums.ID_X_EJE_CARGA:
-        ref_rate = COMMAND_DEFAULT_VALUES['vel_eje_carga']
-    if ref_rate:
-        params['ref_rate'] = ref_rate
-        if not params['abs']:
-            pass
-    header, data = service_handlers.build_msg(command, params=params, msg_id=msg_id, eje=axis)
+    print(params)
+    if command != Commands.stop[0]:
+        for item in req_data[2:]:
+            key = item[0]
+            value = item[1]
+            if key != 'abs':
+                params[key] = float(value)
+            else:
+                params[key] = bool(value)
+        
+        if axis == AcdpAxisMovementEnums.ID_X_EJE_AVANCE:
+            if 'ref_rate' in params.keys():
+                ref_rate = params['ref_rate']
+            else:
+                ref_rate = COMMAND_DEFAULT_VALUES['vel_eje_avance']
+        elif axis == AcdpAxisMovementEnums.ID_X_EJE_CARGA:
+            if 'ref_rate' in params.keys():
+                ref_rate = params['ref_rate']
+            else:
+                ref_rate = COMMAND_DEFAULT_VALUES['vel_eje_carga']
+        if ref_rate:
+            params['ref_rate'] = ref_rate
+            if not params['abs']:
+                pass
+        
+        header, data = service_handlers.build_msg(command, params=params, msg_id=msg_id, eje=axis)
+    else:
+        header = service_handlers.build_msg(command, msg_id=msg_id, eje=axis)
+        data = None
     print(command, axis, params)
+
     if ch_info:
         send_message(header, ch_info, data)
+    
     return JsonResponse({'resp': 'ok'})

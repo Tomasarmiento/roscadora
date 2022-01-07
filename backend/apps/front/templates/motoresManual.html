@@ -70,7 +70,7 @@
 				</div>
 			</div>
 			<div class="col align-self-center text-center mb-3">
-				<button class="btn btn-danger" style="height: 55px" id="linealStop"><FONT SIZE=5>Detener</FONT></button>
+				<button class="btn btn-danger detener" style="height: 55px" id="linealStop" cmd={{ stop }} eje={{ id_eje_avance }}><FONT SIZE=5>Detener</FONT></button>
 			</div>
 		</div>
 	</div>
@@ -107,8 +107,8 @@
 								</div>		
 							</div>
 							<div class="align-self-center text-center mb-3">
-								<button class="btn btn-primary btn-lg" id="cabezalAdd">+</button>
-								<button class="btn btn-secondary btn-lg" id="cabezalSubtract">-</button>
+								<button class="btn btn-primary btn-lg" id="cabezalAdd" eje={{ id_eje_carga }} cmd={{ mov_to_pos }}>+</button>
+								<button class="btn btn-secondary btn-lg" id="cabezalSubtract" eje={{ id_eje_carga }} cmd={{ mov_to_pos }}>-</button>
 							</div>
 						</div>
 					</div>
@@ -132,14 +132,14 @@
 								</div>		
 							</div>
 							<div class="col align-self-center text-center mb-3">
-								<button class="btn btn-primary btn-lg" id="cabezalAbsMove">Girar</button>
+								<button class="btn btn-primary btn-lg" id="cabezalAbsMove" cmd={{ mov_to_pos }} eje={{ id_eje_carga }}>Girar</button>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
 				<div class="col align-self-center text-center mb-3">
-					<button class="btn btn-danger" style="height: 55px" id="cabezalStop"><FONT SIZE=5>Detener</FONT></button>
+					<button class="btn btn-danger detener" style="height: 55px" id="cabezalStop" cmd={{ stop }} eje={{ id_eje_carga }}><FONT SIZE=5>Detener</FONT></button>
 				</div>
 		</div>
 	</div>
@@ -182,14 +182,14 @@
 								</div>	
 							</div>
 							<div class="col align-self-center text-center mb-3">
-								<button class="btn btn-primary btn-lg" id="husilloMove">Girar</button>
+								<button class="btn btn-primary btn-lg" id="husilloMove" cmd={{ mov_to_vel }} eje={{ id_eje_giro }}>Girar</button>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
 			<div class="col align-self-center text-center my-4 mb-3">
-				<button class="btn btn-danger" style="height: 55px" id="husilloStop"><FONT SIZE=5>Detener</FONT></button>
+				<button class="btn btn-danger detener" style="height: 55px" id="husilloStop" cmd={{ stop }} eje={{ id_eje_giro }}><FONT SIZE=5>Detener</FONT></button>
 			</div>
 		</div>	
 	</div>
