@@ -2,7 +2,7 @@
 {% load static %}
 {% block content %}
 
-<div class="col-md-5 col-12 container-fluid float-left justify-content-around"> 
+<div class="col-md-10 d-flex justify-content-around mx-auto my-3 px-0" style="color: black;"> 
     <div class="card p-1 mb-3">
         <form action="{% url 'parameters-update' %}" method="POST" id={{1}}>
             {% csrf_token%}
@@ -197,9 +197,9 @@
         <input type="submit" value="" class="d-none">
     </form>
     </div>
-    
+</div>   
 
-<div class="card p-1 mb-3">
+<div class="card col-md-5 mx-auto my-3 py-1 px-1 float-left" style="color: black;">
     <form action="{% url 'parameters-update' %}" method="post" id="{{3}}">
         {% csrf_token%}
         <table class="table table-sm table-striped table-borderless" style="color: black;" id="tablaCuplaModelo3">

@@ -1,7 +1,4 @@
 from django.shortcuts import render
-from django.shortcuts import redirect
-from django.shortcuts import HttpResponse
-from django.shortcuts import redirect, reverse
 
 # Create your views here.
 def index(request):
@@ -21,6 +18,9 @@ def neumaticaManual(request):
 
 def motoresManual(request):
     return render(request, "motoresManual.html")
+
+def sensoresPagina2(request):
+    return render(request, "sensoresP2.html")
 
 def sensores(request):
     return render(request, "sensores.html")
