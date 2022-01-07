@@ -3,7 +3,7 @@ import struct, ctypes
 from ctypes import c_int, c_int32, c_uint16, c_uint32, c_float
 
 from .messages_base import AcdpAvi, AcdpMsgType, AcdpMsgLevel, AcdpPiT0Config, AcdpPiT0Data,\
-    AcdpPidT1Config, AcdpPidT1Data, BaseStructure, BaseUnion, AcdpDrvFbkData, AcdpEncData,\
+    AcdpPidT1Config, AcdpPidT1Data, BaseStructure, AcdpDrvFbkData, AcdpEncData,\
         AcdpDrvCmdData, AcdpAviData
 
 # --------------------------------------------------------------------------------------------#
@@ -246,11 +246,11 @@ class AcdpAxisMovementsMovPosConfigFlagsBits(BaseStructure):
     ]
 
 
-class AcdpAxisMovementsMovPosConfigFlags(BaseUnion):
-    _fields_ = [
-        ('all', c_uint32),
-        ('bits', AcdpAxisMovementsMovPosConfigFlagsBits)
-    ]
+# class AcdpAxisMovementsMovPosConfigFlags(BaseUnion):
+#     _fields_ = [
+#         ('all', c_uint32),
+#         ('bits', AcdpAxisMovementsMovPosConfigFlagsBits)
+#     ]
 
 
 class AcdpAxisMovementsMovPosConfigHoming(BaseStructure):
@@ -276,7 +276,8 @@ class AcdpAxisMovementsMovPosConfigMed(BaseStructure):
 
 class AcdpAxisMovementsMovPosConfig(BaseStructure):
     _fields_ = [
-        ('flags', AcdpAxisMovementsMovPosConfigFlags),
+        # ('flags', AcdpAxisMovementsMovPosConfigFlags),
+        ('flags', c_uint32),
         ('homing', AcdpAxisMovementsMovPosConfigHoming),
         ('limites', AcdpAxisMovementsMovPosConfigLimites),
         ('med', AcdpAxisMovementsMovPosConfigMed),
@@ -299,11 +300,11 @@ class AcdpAxisMovementsMovPosDataFlagsBits(BaseStructure):
     ]
 
 
-class AcdpAxisMovementsMovPosDataFlags(BaseUnion):
-    _fields_ = [
-        ('all', c_uint32),
-        ('bits', AcdpAxisMovementsMovPosDataFlagsBits)
-    ]
+# class AcdpAxisMovementsMovPosDataFlags(BaseUnion):
+#     _fields_ = [
+#         ('all', c_uint32),
+#         ('bits', AcdpAxisMovementsMovPosDataFlagsBits)
+#     ]
 
 
 class AcdpAxisMovementsMovPosDataHoming(BaseStructure):
@@ -339,7 +340,8 @@ class AcdpAxisMovementsMovPosDataMedLoad(BaseStructure):
 
 class AcdpAxisMovementsMovPosData(BaseStructure):
     _fields_ = [
-        ('flags', AcdpAxisMovementsMovPosDataFlags),
+        # ('flags', AcdpAxisMovementsMovPosDataFlags),
+        ('flags', c_uint32),
         ('homing', AcdpAxisMovementsMovPosDataHoming),
         ('med_drv', AcdpAxisMovementsMovPosDataMedDrv),
         ('med_load', AcdpAxisMovementsMovPosDataMedLoad),
@@ -367,11 +369,11 @@ class AcdpAxisMovementsMovFzaConfigFlagsBits(BaseStructure):
     ]
 
 
-class AcdpAxisMovementsMovFzaConfigFlags(BaseUnion):
-    _fields_ = [
-        ('all', c_uint32),
-        ('bits', AcdpAxisMovementsMovFzaConfigFlagsBits)
-    ]
+# class AcdpAxisMovementsMovFzaConfigFlags(BaseUnion):
+#     _fields_ = [
+#         ('all', c_uint32),
+#         ('bits', AcdpAxisMovementsMovFzaConfigFlagsBits)
+#     ]
 
 
 class AcdpAxisMovementsMovFzaConfigLimites(BaseStructure):
@@ -402,7 +404,8 @@ class AcdpAxisMovementsMovFzaConfigYield(BaseStructure):
 
 class AcdpAxisMovementsMovFzaConfig(BaseStructure):
     _fields_ = [
-        ('flags', AcdpAxisMovementsMovFzaConfigFlags),
+        # ('flags', AcdpAxisMovementsMovFzaConfigFlags),
+        ('flags', c_uint32),
         ('limites', AcdpAxisMovementsMovFzaConfigLimites),
         ('med', AcdpAxisMovementsMovFzaConfigMed),
         ('yield', AcdpAxisMovementsMovFzaConfigYield),
@@ -419,11 +422,11 @@ class AcdpAxisMovementsMovFzaDataFlagsBits(BaseStructure):
     ]
 
 
-class AcdpAxisMovementsMovFzaDataFlags(BaseUnion):
-    _fields_ = [
-        ('all', c_uint32),
-        ('bits', AcdpAxisMovementsMovFzaDataFlagsBits)
-    ]
+# class AcdpAxisMovementsMovFzaDataFlags(BaseUnion):
+#     _fields_ = [
+#         ('all', c_uint32),
+#         ('bits', AcdpAxisMovementsMovFzaDataFlagsBits)
+#     ]
 
 
 class AcdpAxisMovementsMovFzaDataMed(BaseStructure):
@@ -439,7 +442,8 @@ class AcdpAxisMovementsMovFzaDataMed(BaseStructure):
 
 class AcdpAxisMovementsMovFzaData(BaseStructure):
     _fields_ = [
-        ('flags', AcdpAxisMovementsMovFzaDataFlags),
+        # ('flags', AcdpAxisMovementsMovFzaDataFlags),
+        ('flags', c_uint32),
         ('med', AcdpAxisMovementsMovFzaDataMed),
         ('ctrl_fza', AcdpPidT1Data),
         ('rel_fza_pos_uns', c_float)    # [kgf/mm]
@@ -471,11 +475,11 @@ class AcdpAxisMovementsMovEjeDataFlagsBits(BaseStructure):
     ]
 
 
-class AcdpAxisMovementsMovEjeDataFlags(BaseUnion):
-    _fields_ = [
-        ('all', c_uint32),
-        ('flags', AcdpAxisMovementsMovEjeDataFlagsBits)
-    ]
+# class AcdpAxisMovementsMovEjeDataFlags(BaseUnion):
+#     _fields_ = [
+#         ('all', c_uint32),
+#         ('flags', AcdpAxisMovementsMovEjeDataFlagsBits)
+#    ]
 
 
 class AcdpAxisMovementsMovEjeDataMaqEst(BaseStructure):
@@ -538,7 +542,8 @@ class AcdpAxisMovementsMovEjeDataSincro(BaseStructure):
 
 class AcdpAxisMovementsMovEjeData(BaseStructure):
     _fields_ = [
-        ('flags', AcdpAxisMovementsMovEjeDataFlags),
+        # ('flags', AcdpAxisMovementsMovEjeDataFlags),
+        ('flags', c_uint32),
         ('maq_est', AcdpAxisMovementsMovEjeDataMaqEst),
 
         ('mov_pos', AcdpAxisMovementsMovPosData),
@@ -579,11 +584,11 @@ class AcdpPcDataFlagsBits(BaseStructure):
     ]
 
 
-class AcdpPcDataFlags(BaseUnion):
-    _fields_ = [
-        ('all', c_uint32),
-        ('bits', AcdpPcDataFlagsBits)
-    ]
+# class AcdpPcDataFlags(BaseUnion):
+#     _fields_ = [
+#         ('all', c_uint32),
+#         ('bits', AcdpPcDataFlagsBits)
+#     ]
 
 
 class AcdpPcDataCtrlFlagsBits(BaseStructure):
@@ -595,11 +600,11 @@ class AcdpPcDataCtrlFlagsBits(BaseStructure):
     ]
 
 
-class AcdpPcDataCtrlFlags(BaseUnion):
-    _fields_ = [
-        ('all', c_uint32),
-        ('bits', AcdpPcDataCtrlFlagsBits)
-    ]
+# class AcdpPcDataCtrlFlags(BaseUnion):
+#     _fields_ = [
+#         ('all', c_uint32),
+#         ('bits', AcdpPcDataCtrlFlagsBits)
+#     ]
 
 
 class AcdpPcDataCtrlLocIODI16Pins(BaseStructure):
@@ -611,11 +616,11 @@ class AcdpPcDataCtrlLocIODI16Pins(BaseStructure):
     ]
 
 
-class AcdpPcDataCtrlLocIODI16(BaseUnion):
-    _fields_ = [
-        ('all', c_uint16),
-        ('pins', AcdpPcDataCtrlLocIODI16Pins)
-    ]
+# class AcdpPcDataCtrlLocIODI16(BaseUnion):
+#     _fields_ = [
+#         ('all', c_uint16),
+#         ('pins', AcdpPcDataCtrlLocIODI16Pins)
+#     ]
 
 
 class AcdpPcDataCtrlLocIODO16Pins(BaseStructure):
@@ -627,17 +632,19 @@ class AcdpPcDataCtrlLocIODO16Pins(BaseStructure):
     ]
 
 
-class AcdpPcDataCtrlLocIODO16(BaseUnion):
-    _fields_ = [
-        ('all', c_uint16),
-        ('pins', AcdpPcDataCtrlLocIODO16Pins)
-    ]
+# class AcdpPcDataCtrlLocIODO16(BaseUnion):
+#     _fields_ = [
+#         ('all', c_uint16),
+#         ('pins', AcdpPcDataCtrlLocIODO16Pins)
+#     ]
 
 
 class AcdpPcDataCtrlLocIO(BaseStructure):
     _fields_ = [
-        ('di16', AcdpPcDataCtrlLocIODI16),
-        ('do16', AcdpPcDataCtrlLocIODO16)
+        # ('di16', AcdpPcDataCtrlLocIODI16),
+        ('di16', c_uint16),
+        # ('do16', AcdpPcDataCtrlLocIODO16)
+        ('do16', c_uint16)
     ]
 
 
@@ -653,11 +660,11 @@ class AcdpPcDataCtrlRemIODI16Inputs(BaseStructure):
     ]
 
 
-class AcdpPcDataCtrlRemIODI16(BaseUnion):
-    _fields_ = [
-        ('all', c_uint16),
-        ('di', AcdpPcDataCtrlRemIODI16Inputs)
-    ]
+# class AcdpPcDataCtrlRemIODI16(BaseUnion):
+#     _fields_ = [
+#         ('all', c_uint16),
+#         ('di', AcdpPcDataCtrlRemIODI16Inputs)
+#     ]
 
 
 class AcdpPcDataCtrlRemIODO16Enums:     # Remote Digital Outputs
@@ -672,27 +679,31 @@ class AcdpPcDataCtrlRemIODO16DO(BaseStructure):
     ]
 
 
-class AcdpPcDataCtrlRemIODO16(BaseUnion):
-    _fields_ = [
-        ('all', c_uint16),
-        ('do', AcdpPcDataCtrlRemIODO16DO)
-    ]
+# class AcdpPcDataCtrlRemIODO16(BaseUnion):
+#     _fields_ = [
+#         ('all', c_uint16),
+#         ('do', AcdpPcDataCtrlRemIODO16DO)
+#     ]
 
 
 class AcdpPcDataCtrlRemIODI16Array(ctypes.Array):
     _length_ = AcdpPcDataCtrlRemIODI16Enums.CANT_DIS
-    _type_ = AcdpPcDataCtrlRemIODI16
+    # _type_ = AcdpPcDataCtrlRemIODI16
+    _type_ = c_uint16
 
 
 class AcdpPcDataCtrlRemIODO16Array(ctypes.Array):
     _length_ = AcdpPcDataCtrlRemIODO16Enums.CANT_DOS
-    _type_ = AcdpPcDataCtrlRemIODO16
+    # _type_ = AcdpPcDataCtrlRemIODO16
+    _type_ = c_uint16
 
 
 class AcdpPcDataCtrlRemIO(BaseStructure):
     _fields_ = [
-        ('di16', AcdpPcDataCtrlRemIODI16Array),
-        ('do16', AcdpPcDataCtrlRemIODO16Array)
+        # ('di16', AcdpPcDataCtrlRemIODI16Array),
+        # ('do16', AcdpPcDataCtrlRemIODO16Array)
+        ('di16', c_uint16 * AcdpPcDataCtrlRemIODI16Enums.CANT_DIS),
+        ('do16', c_uint16 * AcdpPcDataCtrlRemIODO16Enums.CANT_DOS)
     ]
 
 
@@ -703,7 +714,8 @@ class AcdpAxisMovementsMovEjeDataArray(ctypes.Array):
 
 class AcdpPcDataCtrl(BaseStructure):
     _fields_ = [
-        ('flags', AcdpPcDataCtrlFlags),
+        # ('flags', AcdpPcDataCtrlFlags),
+        ('flags', c_uint32),
         ('loc_io', AcdpPcDataCtrlLocIO),    # Local Inputs/Outpus
         ('rem_io', AcdpPcDataCtrlRemIO),    # Remote Inputs/Outputs
 
@@ -713,7 +725,7 @@ class AcdpPcDataCtrl(BaseStructure):
 
 class AcdpPcData(BaseStructure):
     _fields_ = [
-        ('flags', AcdpPcDataFlags),
+        ('flags', c_uint32),
         ('ctrl', AcdpPcDataCtrl)
     ]
 
@@ -729,38 +741,38 @@ class AcdpPc(BaseStructure):
 
     def store_from_raw(self, raw_values):
         super().store_from_raw(raw_values)
-        self.set_states()
+        # self.set_states()
     
     def set_states(self):
         # Command flags
-        self.cmd_toggle = self.data.flags.bits.cmd_toggle
-        self.cmd_received = self.data.flags.bits.cmd_received
+        self.cmd_toggle = self.data.flags
+        self.cmd_received = self.data.flags
 
         # Control flags
-        self.ctrl_ok = self.data.ctrl.flags.bits.ctrl_ok
-        self.running = self.data.ctrl.flags.bits.running
-        self.em_stop = self.data.ctrl.flags.bits.em_stop
-        self.fast_stop = self.data.ctrl.flags.bits.fast_stop
+        self.ctrl_ok = self.data.ctrl.flags
+        self.running = self.data.ctrl.flags
+        self.em_stop = self.data.ctrl.flags
+        self.fast_stop = self.data.ctrl.flags
 
         # Local digital inpunts/outputs
-        self.run_test = self.data.ctrl.loc_io.di16.pins.run_test,
-        self.move_up_crossbar = self.data.ctrl.loc_io.di16.pins.move_up_crossbar,
-        self.move_down_crossbar = self.data.ctrl.loc_io.di16.pins.move_down_crossbar,
-        self.move_to_start = self.data.ctrl.loc_io.di16.pins.move_to_start
+        self.run_test = self.data.ctrl.loc_io.di16
+        self.move_up_crossbar = self.data.ctrl.loc_io.di16
+        self.move_down_crossbar = self.data.ctrl.loc_io.di16
+        self.move_to_start = self.data.ctrl.loc_io.di16
         
-        self.test_cancelled_ind = self.data.ctrl.loc_io.do16.pins.test_cancelled_ind,
-        self.test_out_of_tolerance_ind = self.data.ctrl.loc_io.do16.pins.test_out_of_tolerance_ind,
-        self.test_ok_ind = self.data.ctrl.loc_io.do16.pins.test_ok_ind,
-        self.test_running_ind = self.data.ctrl.loc_io.do16.pins.test_running_ind
+        self.test_cancelled_ind = self.data.ctrl.loc_io.do16
+        self.test_out_of_tolerance_ind = self.data.ctrl.loc_io.do16
+        self.test_ok_ind = self.data.ctrl.loc_io.do16
+        self.test_running_ind = self.data.ctrl.loc_io.do16
 
         # Remote digital inputs/outputs
         self.rem_di = []
         for i in range(self.data.ctrl.rem_io.di16._length_):
-            self.rem_di.append(self.data.ctrl.rem_io.di16[i].all)
+            self.rem_di.append(self.data.ctrl.rem_io.di16[i])
         
         self.rem_do = []
         for i in range(self.data.ctrl.rem_io.do16._length_):
-            self.rem_do.append(self.data.ctrl.rem_io.do16[i].all)
+            self.rem_do.append(self.data.ctrl.rem_io.do16[i])
 
         # Axis
         self.axis = []
@@ -768,10 +780,7 @@ class AcdpPc(BaseStructure):
             axis = self.get_axis(i)
             self.axis.append({
                 # Flags
-                'flags': axis.flags.all,
-                'em_stop_flag': axis.flags.flags.em_stop,
-                'disabled_flag': axis.flags.flags.disabled,
-                'sync_on_flag': axis.flags.flags.sync_on,
+                'flags': axis.flags,
                 
                 # States machine
                 'flags_fin': axis.maq_est.flags_fin,
@@ -790,25 +799,25 @@ class AcdpPc(BaseStructure):
     def get_states(self):
         states = {}
         # Command flags
-        states['cmd_toggle'] = self.data.flags.bits.cmd_toggle
-        states['cmd_received'] = self.data.flags.bits.cmd_received
+        states['cmd_toggle'] = self.data.flags
+        states['cmd_received'] = self.data.flags
 
         # Control flags
-        states['ctrl_ok'] = self.data.ctrl.flags.bits.ctrl_ok
-        states['running'] = self.data.ctrl.flags.bits.running
-        states['em_stop'] = self.data.ctrl.flags.bits.em_stop
-        states['fast_stop'] = self.data.ctrl.flags.bits.fast_stop
+        states['ctrl_ok'] = self.data.ctrl.flags
+        states['running'] = self.data.ctrl.flags
+        states['em_stop'] = self.data.ctrl.flags
+        states['fast_stop'] = self.data.ctrl.flags
 
         # Local digital inpunts/outputs
-        states['run_test'] = self.data.ctrl.loc_io.di16.pins.run_test,
-        states['move_up_crossbar'] = self.data.ctrl.loc_io.di16.pins.move_up_crossbar,
-        states['move_down_crossbar'] = self.data.ctrl.loc_io.di16.pins.move_down_crossbar,
-        states['move_to_start'] = self.data.ctrl.loc_io.di16.pins.move_to_start
+        states['run_test'] = self.data.ctrl.loc_io.di16
+        states['move_up_crossbar'] = self.data.ctrl.loc_io.di16
+        states['move_down_crossbar'] = self.data.ctrl.loc_io.di16
+        states['move_to_start'] = self.data.ctrl.loc_io.di16
         
-        states['test_cancelled_ind'] = self.data.ctrl.loc_io.do16.pins.test_cancelled_ind,
-        states['test_out_of_tolerance_ind'] = self.data.ctrl.loc_io.do16.pins.test_out_of_tolerance_ind,
-        states['test_ok_ind'] = self.data.ctrl.loc_io.do16.pins.test_ok_ind,
-        states['test_running_ind'] = self.data.ctrl.loc_io.do16.pins.test_running_ind
+        states['test_cancelled_ind'] = self.data.ctrl.loc_io.do16
+        states['test_out_of_tolerance_ind'] = self.data.ctrl.loc_io.do16
+        states['test_ok_ind'] = self.data.ctrl.loc_io.do16
+        states['test_running_ind'] = self.data.ctrl.loc_io.do16
 
         # Remote digital inputs/outputs
         rem_di = []
@@ -830,9 +839,9 @@ class AcdpPc(BaseStructure):
             axis_arr.append({
                 # Flags
                 'flags': axis.flags.all,
-                'em_stop_flag': axis.flags.flags.em_stop,
-                'disabled_flag': axis.flags.flags.disabled,
-                'sync_on_flag': axis.flags.flags.sync_on,
+                'em_stop_flag': axis.flags.flags,
+                'disabled_flag': axis.flags.flags,
+                'sync_on_flag': axis.flags.flags,
                 
                 # States machine
                 'flags_fin': axis.maq_est.flags_fin,

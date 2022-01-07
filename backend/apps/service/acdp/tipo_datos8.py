@@ -1,7 +1,7 @@
 import struct, ctypes
 from ctypes import c_ushort, c_uint16, c_uint32, c_ulong, c_ulonglong, c_long, c_longlong, c_float, c_double, c_ubyte, Union
 
-from .messages_base import BaseStructure, BaseUnion
+from .messages_base import BaseStructure
 
 
 class BaseDouble(BaseStructure):

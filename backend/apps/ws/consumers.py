@@ -26,7 +26,7 @@ class MicroConsumer(WebsocketConsumer):
         if len(bytes_data) > h_bytes_len:
             MicroState.last_rx_header.store_from_raw(bytes_data[:h_bytes_len])
             MicroState.last_rx_data.store_from_raw(bytes_data[h_bytes_len:])
-            show_states(MicroState.last_rx_header, MicroState.last_rx_data)
+            # show_states(MicroState.last_rx_header, MicroState.last_rx_data)
         else:
             MicroState.last_rx_header.store_from_raw(bytes_data)
 

@@ -51,7 +51,10 @@ class BaseStructure(Structure):
             elif issubclass(field_value, ctypes.Array):
                 arr = getattr(self, field_name)
                 for j in range(field_value._length_):
-                    value = sum((value, arr[j].get_values()), ())
+                    if issubclass(arr[j].__class__, ctypes.Structure):
+                        value = sum((value, arr[j].get_values()), ())
+                    else:
+                        value = sum((value, (arr[j],)), ())
             
             else:       # BaseStructure
                 value = getattr(self, field_name).get_values()
@@ -94,6 +97,21 @@ class BaseStructure(Structure):
         view = memoryview(self)
         raw_data = view.tobytes()
         view.release()
+        # raw_data = b''
+        # fields = self._fields_
+        # for field in fields:
+        #     if issubclass(field[1], ctypes._SimpleCData):
+        #         atr = getattr(self, field[0])
+        #         raw_data += struct.pack(field[1]._type_, atr)
+        #     elif issubclass(field[1], ctypes.Array):
+        #         arr = getattr(self, field[0])
+        #         for i in range(field[1]._length_):
+        #             if issubclass(arr[i].__class__, ctypes.Structure):
+        #                 raw_data += arr[i].pacself()
+        #             else:
+        #                 raw_data += struct.pack(arr._type_._type_, arr[i])
+        #     else:
+        #         raw_data += getattr(self, field[0]).pacself()
         return raw_data
 
     def unpacdata(self, raw_data):
@@ -120,89 +138,89 @@ class BaseStructure(Structure):
         return dict
 
 
-class BaseUnion(Union):     # Mostly used for flags
-    def get_format(self, field_name=''):    # Get string format for pack/unpack
-        fields = self._fields_
+# class BaseUnion(Union):     # Mostly used for flags
+#     def get_format(self, field_name=''):    # Get string format for pack/unpack
+#         fields = self._fields_
 
-        if field_name:      # Only used on AcdpDrvCmdConfigUnion
-            index = self.get_field_index(field_name)
-            return self._fields_[index][1].get_format()
+#         if field_name:      # Only used on AcdpDrvCmdConfigUnion
+#             index = self.get_field_index(field_name)
+#             return self._fields_[index][1].get_format()
         
-        else:
-            field_type = fields[0][1]   # First always indicates the union size
-            if issubclass(field_type, ctypes._SimpleCData):
-                return field_type._type_
-            else:
-                field_type.get_format()
+#         else:
+#             field_type = fields[0][1]   # First always indicates the union size
+#             if issubclass(field_type, ctypes._SimpleCData):
+#                 return field_type._type_
+#             else:
+#                 field_type.get_format()
 
 
-    def get_bytes_size(self):
-        return struct.calcsize(self.get_format())
+#     def get_bytes_size(self):
+#         return struct.calcsize(self.get_format())
 
-    def get_len(self):
-        return len(self.get_values())
+#     def get_len(self):
+#         return len(self.get_values())
 
-    def get_values(self, field_name=''):   # Returns a tuple with values
-        if field_name:
-            value = getattr(self, field_name)
-            return value.get_values()
-        else:
-            field = self._fields_[0]
-            if issubclass(field[1], ctypes._SimpleCData):
-                return (getattr(self, field[0]),)
-            else:
-                field[1].get_values()
+#     def get_values(self, field_name=''):   # Returns a tuple with values
+#         if field_name:
+#             value = getattr(self, field_name)
+#             return value.get_values()
+#         else:
+#             field = self._fields_[0]
+#             if issubclass(field[1], ctypes._SimpleCData):
+#                 return (getattr(self, field[0]),)
+#             else:
+#                 field[1].get_values()
     
-    def store_values(self, values, field_name=''):     # Receives values in tuple to store
+#     def store_values(self, values, field_name=''):     # Receives values in tuple to store
 
-        if field_name:
-            getattr(self, field_name).store_values(values)
+#         if field_name:
+#             getattr(self, field_name).store_values(values)
 
-        else:
-            field = self._fields_[0]
-            if issubclass(field[1], ctypes._SimpleCData):
-                setattr(self, field[0], values[0])
-            else:
-                field[1].store_values(values)
+#         else:
+#             field = self._fields_[0]
+#             if issubclass(field[1], ctypes._SimpleCData):
+#                 setattr(self, field[0], values[0])
+#             else:
+#                 field[1].store_values(values)
 
-    def pacself(self):    # Returns structure in bytes format
-        frm = self.get_format()
-        values = self.get_values()
-        data = b''
-        for i in range(0, len(frm)):
-            f = frm[i]
-            value = values[i]
-            data = b''.join([data, struct.pack(f, value)])
-        return data
+#     def pacself(self):    # Returns structure in bytes format
+#         frm = self.get_format()
+#         values = self.get_values()
+#         data = b''
+#         for i in range(0, len(frm)):
+#             f = frm[i]
+#             value = values[i]
+#             data = b''.join([data, struct.pack(f, value)])
+#         return data
 
-    def unpacdata(self, raw_data):
-        unpacked_data = struct.unpack(self.get_format(), raw_data)
-        return unpacked_data
+#     def unpacdata(self, raw_data):
+#         unpacked_data = struct.unpack(self.get_format(), raw_data)
+#         return unpacked_data
 
-    def store_from_raw(self, raw_values):
-        self.store_values(self.unpacdata(raw_data=raw_values))
+#     def store_from_raw(self, raw_values):
+#         self.store_values(self.unpacdata(raw_data=raw_values))
 
-    def to_dict(self):
-        dict = {}
-        for field in self._fields_:
-            field_type = field[1]
-            key = field[0]
-            value = getattr(self, key)
+#     def to_dict(self):
+#         dict = {}
+#         for field in self._fields_:
+#             field_type = field[1]
+#             key = field[0]
+#             value = getattr(self, key)
 
-            if not issubclass(field_type, ctypes._SimpleCData):
-                aux_dict = value.to_dict()
-                value = aux_dict
+#             if not issubclass(field_type, ctypes._SimpleCData):
+#                 aux_dict = value.to_dict()
+#                 value = aux_dict
 
-            dict[key] = value
+#             dict[key] = value
 
-        return dict
+#         return dict
     
-    def get_field_index(self, field_name):
-        index = [i for i, tupl in enumerate(self._fields_) if tupl[0] == field_name]
-        if len(index) > 0:
-            return index[0]
-        else:
-            raise Exception('Field name not found.')
+#     def get_field_index(self, field_name):
+#         index = [i for i, tupl in enumerate(self._fields_) if tupl[0] == field_name]
+#         if len(index) > 0:
+#             return index[0]
+#         else:
+#             raise Exception('Field name not found.')
 
 
 # --------------------------------------------------------------------------------------------#
@@ -347,11 +365,11 @@ class AcdpAviConfigFlagsBits(BaseStructure):
         ('inv_sign', c_bool)
     ]
 
-class AcdpAviConfigFlags(BaseUnion):
-    _fields_ = [
-        ('all', c_uint32),
-        ('flags', AcdpAviConfigFlagsBits)
-    ]
+# class AcdpAviConfigFlags(BaseUnion):
+#     _fields_ = [
+#         ('all', c_uint32),
+#         ('flags', AcdpAviConfigFlagsBits)
+#     ]
 
 
 class AcdpAviConfigCalib(BaseStructure):
@@ -363,7 +381,8 @@ class AcdpAviConfigCalib(BaseStructure):
 
 class AcdpAviConfig(BaseStructure):
     _fields_ = [
-        ('flags', AcdpAviConfigFlags),
+        # ('flags', AcdpAviConfigFlags),
+        ('flags', c_uint32),
         ('calib', AcdpAviConfigCalib)
     ]
 
@@ -397,16 +416,17 @@ class AcdpEncConfigFlagsBits(BaseStructure):
     ]
 
 
-class AcdpEncConfigFlags(BaseUnion):
-    _fields_ = [
-        ('all', c_uint32),
-        ('bits', AcdpEncConfigFlagsBits)
-    ]
+# class AcdpEncConfigFlags(BaseUnion):
+#     _fields_ = [
+#         ('all', c_uint32),
+#         ('bits', AcdpEncConfigFlagsBits)
+#     ]
 
 
 class AcdpEncConfig(BaseStructure):
     _fields_ = [
-        ('flags', AcdpEncConfigFlags),
+        # ('flags', AcdpEncConfigFlags),
+        ('flags', c_uint32),
         ('resolution', c_uint32),
         ('range', c_float),
         ('zero', c_float),
@@ -430,15 +450,16 @@ class AcdpEncDataFlagsBits(BaseStructure):
         ('time_0v_pulso', c_bool),
     ]
 
-class AcdpEncDataFlags(BaseUnion):
-    _fields_ = [
-        ('all', c_uint32),
-        ('bits', AcdpEncDataFlagsBits)
-    ]
+# class AcdpEncDataFlags(BaseUnion):
+#     _fields_ = [
+#         ('all', c_uint32),
+#         ('bits', AcdpEncDataFlagsBits)
+#     ]
 
 class AcdpEncData(BaseStructure):
     _fields_ = [
-        ('flags', AcdpEncDataFlags),
+        # ('flags', AcdpEncDataFlags),
+        ('flags', c_uint32),
 
         ('int_stamp', c_uint32),
         ('int_pos_abs', c_int32),
@@ -473,11 +494,11 @@ class AcdpDrvFbkConfigFlagsBits(BaseStructure):
     ]
 
 
-class AcdpDrvFbkConfigFlags(BaseUnion):
-    _fields_ = [
-        ('all', c_uint32),
-        ('bits', AcdpDrvFbkConfigFlagsBits)
-    ]
+# class AcdpDrvFbkConfigFlags(BaseUnion):
+#     _fields_ = [
+#         ('all', c_uint32),
+#         ('bits', AcdpDrvFbkConfigFlagsBits)
+#     ]
 
 
 class AcdpDrvFbkConfigPos(BaseStructure):
@@ -498,7 +519,8 @@ class AcdpDrvFbkConfigVel(BaseStructure):
 
 class AcdpDrvFbkConfig(BaseStructure):
     _fields_ = [
-        ('flags', AcdpDrvFbkConfigFlags),
+        # ('flags', AcdpDrvFbkConfigFlags),
+        ('flags', c_uint32),
         ('pos', AcdpDrvFbkConfigPos),
         ('vel', AcdpDrvFbkConfigVel)
     ]
@@ -519,16 +541,17 @@ class AcdpDrvFbkDataFlagsBits(BaseStructure):
     ]
 
 
-class AcdpDrvFbkDataFlags(BaseUnion):
-    _fields_ = [
-        ('all', c_uint32),
-        ('bits', AcdpDrvFbkDataFlagsBits)
-    ]
+# class AcdpDrvFbkDataFlags(BaseUnion):
+#     _fields_ = [
+#         ('all', c_uint32),
+#         ('bits', AcdpDrvFbkDataFlagsBits)
+#     ]
 
 
 class AcdpDrvFbkData(BaseStructure):
     _fields_ = [
-        ('flags', AcdpDrvFbkDataFlags),
+        # ('flags', AcdpDrvFbkDataFlags),
+        ('flags', c_uint32),
 
         ('config', AcdpDrvFbkConfig),
         ('pos_abs', c_float),           # Pos sin cerar
@@ -558,11 +581,11 @@ class AcdpDrvCmdConfigFlagsBits(BaseStructure):
     ]
 
 
-class AcdpDrvCmdConfigFlags(BaseUnion):
-    _fields_ = [
-        ('all', c_uint32),
-        ('bits', AcdpDrvCmdConfigFlagsBits)
-    ]
+# class AcdpDrvCmdConfigFlags(BaseUnion):
+#     _fields_ = [
+#         ('all', c_uint32),
+#         ('bits', AcdpDrvCmdConfigFlagsBits)
+#     ]
 
 
 class AcdpDrvCmdConfigUnionAna(BaseStructure):
@@ -591,11 +614,16 @@ class AcdpDrvCmdUnionEcat(BaseStructure):
     ]
 
 
-class AcdpDrvCmdConfigUnion(BaseUnion):
+# class AcdpDrvCmdConfigUnion(BaseUnion):
+#     _fields_ = [
+#         ('ana', AcdpDrvCmdConfigUnionAna),
+#         ('pulse', AcdpDrvCmdConfigUnionPulse),
+#         ('vel', AcdpDrvCmdUnionEcat)
+#     ]
+class AcdpDrvCmdConfigUnion(BaseStructure):
     _fields_ = [
-        ('ana', AcdpDrvCmdConfigUnionAna),
-        ('pulse', AcdpDrvCmdConfigUnionPulse),
-        ('vel', AcdpDrvCmdUnionEcat)
+        ('float', c_float),
+        ('float_2', c_float)
     ]
 
 
@@ -608,7 +636,8 @@ class AcdpDrvCmdConfigChkFbk(BaseStructure):
 
 class AcdpDrvCmdConfig(BaseStructure):      # Configuracion Drive
     _fields_ = [
-        ('flags', AcdpDrvCmdConfigFlags),
+        # ('flags', AcdpDrvCmdConfigFlags),
+        ('flags', c_uint32),
         ('union', AcdpDrvCmdConfigUnion),
         ('chk_fbk', AcdpDrvCmdConfigChkFbk),
         ('tau_filtro', c_float)
@@ -625,16 +654,17 @@ class AcdpDrvCmdDataFlagsBits(BaseStructure):
     ]
 
 
-class AcdpDrvCmdDataFlags(BaseUnion):
-    _fields_ = [
-        ('all', c_uint32),
-        ('bits', AcdpDrvCmdDataFlagsBits)
-    ]
+# class AcdpDrvCmdDataFlags(BaseUnion):
+#     _fields_ = [
+#         ('all', c_uint32),
+#         ('bits', AcdpDrvCmdDataFlagsBits)
+#     ]
 
 
 class AcdpDrvCmdData(BaseStructure):        # Datos Drive
     _fields_ = [
-        ('flags', AcdpDrvCmdDataFlags),
+        # ('flags', AcdpDrvCmdDataFlags),
+        ('flags', c_uint32),
         ('actuacion', c_float)
     ]
 
