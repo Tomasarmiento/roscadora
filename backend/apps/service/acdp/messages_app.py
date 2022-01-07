@@ -824,10 +824,10 @@ class AcdpPc(BaseStructure):
         rem_do = []
 
         for i in range(self.data.ctrl.rem_io.di16._length_):
-            rem_di.append(self.data.ctrl.rem_io.di16[i].all)
+            rem_di.append(self.data.ctrl.rem_io.di16[i])
         
         for i in range(self.data.ctrl.rem_io.do16._length_):
-            rem_do.append(self.data.ctrl.rem_io.do16[i].all)
+            rem_do.append(self.data.ctrl.rem_io.do16[i])
 
         states['rem_di'] = rem_di
         states['rem_do'] = rem_do
@@ -838,10 +838,10 @@ class AcdpPc(BaseStructure):
             axis = self.get_axis(i)
             axis_arr.append({
                 # Flags
-                'flags': axis.flags.all,
-                'em_stop_flag': axis.flags.flags,
-                'disabled_flag': axis.flags.flags,
-                'sync_on_flag': axis.flags.flags,
+                'flags': axis.flags,
+                'em_stop_flag': axis.flags,
+                'disabled_flag': axis.flags,
+                'sync_on_flag': axis.flags,
                 
                 # States machine
                 'flags_fin': axis.maq_est.flags_fin,

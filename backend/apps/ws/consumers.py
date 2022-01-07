@@ -8,7 +8,8 @@ from channels.layers import get_channel_layer
 
 from apps.ws.models import ChannelInfo
 from apps.ws.utils.variables import MicroState
-from apps.control.utils.variables import AXIS_IDS
+from apps.control.utils import variables as ctrl_var
+from apps.control.utils import functions as ctrl_fun
 
 
 class MicroConsumer(WebsocketConsumer):
@@ -26,6 +27,7 @@ class MicroConsumer(WebsocketConsumer):
         if len(bytes_data) > h_bytes_len:
             MicroState.last_rx_header.store_from_raw(bytes_data[:h_bytes_len])
             MicroState.last_rx_data.store_from_raw(bytes_data[h_bytes_len:])
+            ctrl_fun.update_rem_io_states(micro_data=MicroState.last_rx_data)
             # show_states(MicroState.last_rx_header, MicroState.last_rx_data)
         else:
             MicroState.last_rx_header.store_from_raw(bytes_data)
@@ -43,10 +45,12 @@ class MicroConsumer(WebsocketConsumer):
 
 
 def show_states(header, data):
-    print("-"*50, '\nEje avance')
-    # axis = data.axis[AXIS_IDS['avance']]
-    axis = data.data.ctrl.eje[1]
-    print(axis.get_values())
+    print("-"*50,)
+    # print('REM IO:', data.data.ctrl.rem_io.di16[0])
+    for key, val in ctrl_var.REM_DO_G1_DICT.items():
+        print(key, val)
+    # axis = data.get_states()['axis'][i]
+    # # print(axis.get_values())
     # print('Flags:', axis['flags'],
     #     '\nFlags fin de estado:', axis['flags_fin'],
     #     '\nMaquina de estados:', axis['state'],
@@ -57,30 +61,4 @@ def show_states(header, data):
     #     '\nVel carga:', axis['load_vel_fil'],
     #     '\nRem do:', data.rem_do,
     #     '\nRem_di', data.rem_di
-    # )
-    print("-"*50, '\nEje giro')
-    # axis = data.axis[AXIS_IDS['giro']]
-    axis = data.data.ctrl.eje[0]
-    print(axis.get_values())
-    # print('Flags:', axis['flags'],
-    #     '\nFlags fin de estado:', axis['flags_fin'],
-    #     '\nMaquina de estados:', axis['state'],
-    #     '\nHoming states:', axis['pos_homing_states'],
-    #     '\nPosicion:', axis['pos_fil'],
-    #     '\nVelocidad:', axis['vel_fil'],
-    #     '\nPos carga:', axis['load_pos_fil'],
-    #     '\nVel carga:', axis['load_vel_fil']
-    # )
-    print("-"*50, '\nEje carga')
-    # axis = data.axis[AXIS_IDS['carga']]
-    axis = data.data.ctrl.eje[2]
-    print(axis.get_values())
-    # print('Flags:', axis['flags'],
-        # '\nFlags fin de estado:', axis['flags_fin'],
-        # '\nMaquina de estados:', axis['state'],
-        # '\nHoming states:', axis['pos_homing_states'],
-        # '\nPosicion:', axis['pos_fil'],
-        # '\nVelocidad:', axis['vel_fil'],
-        # '\nPos carga:', axis['load_pos_fil'],
-        # '\nVel carga:', axis['load_vel_fil']
     # )
