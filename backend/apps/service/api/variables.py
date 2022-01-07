@@ -40,9 +40,13 @@ class Commands:
     set_ref_fza = AcdpMsgCodes.Cmd.Cd_MovEje_SetRefFza,
 
     #Sync
-    sync_on = AcdpMsgCodes.Cmd.Cd_MovEje_SyncOn,       # Se usa para sincronizar el movimiento del eje lineal con el de rotacion
+    sync_on = AcdpMsgCodes.Cmd.Cd_MovEje_SyncOn,        # Se usa para sincronizar el movimiento del eje lineal con el de rotacion
                                                         # Se manda sync on antes de empezar el movimiento y se setea el paso. Despues solo se comanda el lineal
     sync_off = AcdpMsgCodes.Cmd.Cd_MovEje_SyncOff,
+
+    # IO
+    loc_do_set = AcdpMsgCodes.Cmd.Cd_LocDO_Set
+    rem_do_set = AcdpMsgCodes.Cmd.Cd_RemDO_Set
 
 COMMANDS = {
     'power_on': AcdpMsgCodes.Cmd.Cd_MovEje_PowerOn,

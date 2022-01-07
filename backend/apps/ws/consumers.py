@@ -27,7 +27,7 @@ class MicroConsumer(WebsocketConsumer):
         if len(bytes_data) > h_bytes_len:
             MicroState.last_rx_header.store_from_raw(bytes_data[:h_bytes_len])
             MicroState.last_rx_data.store_from_raw(bytes_data[h_bytes_len:])
-            ctrl_fun.update_rem_io_states(micro_data=MicroState.last_rx_data)
+            ctrl_fun.update_io_states(micro_data=MicroState.last_rx_data)
             # show_states(MicroState.last_rx_header, MicroState.last_rx_data)
         else:
             MicroState.last_rx_header.store_from_raw(bytes_data)
@@ -47,7 +47,7 @@ class MicroConsumer(WebsocketConsumer):
 def show_states(header, data):
     print("-"*50,)
     # print('REM IO:', data.data.ctrl.rem_io.di16[0])
-    for key, val in ctrl_var.REM_DO_G1_DICT.items():
+    for key, val in ctrl_var.LOC_DO_STATES.items():
         print(key, val)
     # axis = data.get_states()['axis'][i]
     # # print(axis.get_values())

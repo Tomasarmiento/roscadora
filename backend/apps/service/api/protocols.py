@@ -8,6 +8,7 @@ from apps.service.acdp.acdp import ACDP_UDP_PORT, ACDP_IP_ADDR, AcdpHeader
 from apps.service.acdp.handlers import AcdpMessage
 
 from apps.service.api.functions import force_connection, open_connection, send_message
+from apps.service.api.variables import last_rx_msg
 
 TIME_TO_SEC = 150 * 1000000
 HOST = '127.0.0.1'
@@ -38,6 +39,7 @@ class UDPProtocol(asyncio.DatagramProtocol):
         
     def datagram_received(self, data, addr):    # addr is tuple (IP, PORT), example ('192.168.0.28', 54208)
         self.rx_msg.store_from_raw(data)
+        last_rx_msg = self.rx_msg
         WsStates.updata_front = self.rx_msg.process_rx_msg(transport=self.transport)
         
     def error_received(self, exc: Exception) -> None:

@@ -43,6 +43,9 @@ class AcdpHeader(BaseStructure):
         ('ctrl', CtrlHeader)
     ]
 
+    def get_msg_id(self):
+        return self.ctrl.msg_id
+
     def set_msg_id(self, msg_id):
         setattr(self.ctrl, 'msg_id', msg_id)
     

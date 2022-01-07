@@ -13,13 +13,119 @@ AXIS_IDS = {
     'giro': AcdpAxisMovementEnums.ID_X_EJE_GIRO
 }
 
-REM_DO_G1_DICT = {}
+LOC_DI_STATES = {}
 
-REM_DO_G2_DICT = {}
+LOC_DO_STATES = {}
 
-REM_DI_G1_DICT = {}
+REM_DO_G1_STATES = {}
 
-REM_DI_G2_DICT = {}
+REM_DO_G2_STATES = {}
+
+REM_DI_G1_STATES = {}
+
+REM_DI_G2_STATES = {}
+
+
+LOC_DI_BITS = {
+    'em_stop':      0,
+    'fast_stop':    1
+}
+
+LOC_DO_BITS = {
+    'em_stop':      0,
+    'mask_ctrl_ok': 1,
+    'mask_running': 2
+}
+
+
+REM_DO_G1_BITS = {
+    'contraer_cargador_sup_tras':   0,
+    'expandir_cargador_sup_tras':   1,
+    'contraer_cargador_inf_tras':   2,
+    'expandir_cargador_inf_tras':   3,
+    'contraer_brazo_cargador':      4,
+    'expandir_brazo_cargador':      5,
+    'contraer_brazo_descargador':   6,
+    'expandir_brazo_descargador':   7,
+    'cerrar_pinza_descargadora':    8,
+    'abrir_pinza_descargadora':     9,
+    'contraer_cargador_sup_del':    10,
+                                    # 11 not implemented
+    'contraer_cargador_inf_del':    12,
+                                    # 13 not implemented
+    'expandir_vertical_carga':      14,
+                                    # 15 not implemented
+}
+
+REM_DO_G2_BITS = {
+    'expandir_horiz_pinza_desc':    0,
+                                    # 1 not implemented
+    'contraer_vert_pinza_desc':     2,
+                                    # 3 not implemented
+    'expandir_acople_libric':       4,
+    'contraer_clampeo_plato':       5,
+    'expandir_clampeo_plato':       6,
+    'encender_bomba_hidraulica':    7,
+    'encender_bomba_soluble':       8,
+    'presurizar':                   9,
+    'cerrar_boquilla_1':            10,
+    'abrir_boquilla_1':             11,
+    'cerrar_boquilla_2':            12,
+    'abrir_boquilla_2':             13,
+    'cerrar_boquilla_3':            14,
+    'abrir_boquilla_3':             15
+}
+
+REM_DI_G1_BITS = {
+    'cargador_sup_tras_contraido':  0,
+    'cargador_sup_tras_expandido':  1,
+    'cargador_inf_tras_contraido':  2,
+    'cargador_inf_tras_expandido':  3,
+    'brazo_cargador_contraido':     4,
+    'brazo_cargador_expandido':     5,
+    'brazo_descarga_contraido':     6,
+    'brazo_descarga_expandido':     7,
+    'pinza_descargadora_cerrada':   8,
+    'pinza_descargadora_abierta':   9,
+    'cargadora_sup_del_contraido':  10,
+    'cargadora_sup_del_expandido':  11,
+    'cargadora_inf_del_contraido':  12,
+    'cargadora_inf_del_expandido':  13,
+    'vertical_carga_contraido':     14,
+    'vertical_carga_expandido':     15,
+}
+
+REM_DI_G2_BITS = {
+    'horiz_pinza_desc_contraido':   0,
+    'horiz_pinza_desc_expandido':   1,
+    'vert_pinza_desc_contraido':    2,
+    'vert_pinza_desc_expandido':    3,
+    'acople_lubric_contraido':      4,
+    'acople_lubric_expandido':      5,
+    'clampeo_plato_contraido':      6,
+    'clampeo_plato_expandido':      7,
+    'pieza_en_boquilla_1':          8,
+    'pieza_en_boquilla_2':          9,
+    'contador_inferior':            10,
+                                    # 11 not implemented
+    'contador_superior':            12,
+                                    # 13 not implemented
+                                    # 14 not implemented
+    'baja_presion':                 15,
+}
+
+
+LOC_DI_ARR = [
+    'em_stop',
+    'fast_stop'
+]
+
+LOC_DO_ARR = [
+    'em_stop',
+    'mask_ctrl_ok',
+    'mask_running'
+]
+
 
 REM_DO_G1_ARR = [
     'contraer_cargador_sup_tras',   # 1 - 0

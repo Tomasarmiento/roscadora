@@ -145,6 +145,13 @@ class AcdpMsgParamsMovToFzaYield(BaseStructure):
     ]
 
 
+class AcdpMsgParamsDoSet(BaseStructure):
+    _fields_ = [
+        ('value', c_uint16),
+        ('mask', c_uint16)
+    ]
+
+
 class AcdpMsgParams(BaseStructure):
     _fields_ = [
         
@@ -177,7 +184,11 @@ class AcdpMsgParams(BaseStructure):
         # ------------------------------------------------
         ('mov_to_fza', AcdpMsgParamsMovToFza),
         ('set_ref_fza', AcdpMsgParamsSetRefFza),
-        ('mov_to_fza_yield', AcdpMsgParamsMovToFzaYield)
+        ('mov_to_fza_yield', AcdpMsgParamsMovToFzaYield),
+
+        # Escritura salidas digitales
+        # ------------------------------------------------
+        ('do_set', AcdpMsgParamsDoSet)
     ]
 
 
