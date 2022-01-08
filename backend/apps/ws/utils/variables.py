@@ -9,8 +9,12 @@ class MicroState:
     last_rx_data    = AcdpPc()
     rem_i_states    = []
     rem_o_states    = []
+    rem_i           = []
+    rem_o           = []
     loc_i_states    = None
     loc_o_states    = None
+    loc_i           = None
+    loc_o           = None
     micro_flags     = {}
 
 

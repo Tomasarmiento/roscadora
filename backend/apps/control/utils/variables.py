@@ -39,58 +39,58 @@ LOC_DO_BITS = {
 
 
 REM_DO_G1_BITS = {
-    'contraer_cargador_sup_tras':   0,
-    'expandir_cargador_sup_tras':   1,
-    'contraer_cargador_inf_tras':   2,
-    'expandir_cargador_inf_tras':   3,
-    'contraer_brazo_cargador':      4,
-    'expandir_brazo_cargador':      5,
-    'contraer_brazo_descargador':   6,
-    'expandir_brazo_descargador':   7,
-    'cerrar_pinza_descargadora':    8,
-    'abrir_pinza_descargadora':     9,
-    'contraer_cargador_sup_del':    10,
-                                    # 11 not implemented
-    'contraer_cargador_inf_del':    12,
-                                    # 13 not implemented
-    'expandir_vertical_carga':      14,
-                                    # 15 not implemented
+    'contraer_puntera_descarga':    0,      # Horizontal descarga (Atras: 2-off y 1-on / Adelante: 2-on y 1-off)
+    'expandir_puntera_descarga':    1,      # Horizontal descarga (Atras: 2-off y 1-on / Adelante: 2-on y 1-off)
+    'contraer_puntera_carga':       2,      # Horizontal carga (Atras: 4-off y 3-on / Adelante: 4-on y 3-off)
+    'expandir_puntera_carga':       3,      # Horizontal carga
+    'contraer_brazo_cargador':      4,      # Giro carga (Arriba: 6-off y 5-on / Abajo: 6-on y 5-off)
+    'expandir_brazo_cargador':      5,      # Giro carga (Arriba: 6-off y 5-on / Abajo: 6-on y 5-off)
+    'contraer_brazo_descargador':   6,      # Giro descarga (Arriba: 8-off y 7-on / Abajo: 8-on y 7-off)
+    'expandir_brazo_descargador':   7,      # Giro descarga (Arriba: 8-off y 7-on / Abajo: 8-on y 7-off)
+    'cerrar_pinza_descargadora':    8,      # Gripper Descarga (Cierra: 10-off y 9-on / Abre: 10-on y 9-off)
+    'abrir_pinza_descargadora':     9,      # Gripper Descarga (Cierra: 10-off y 9-on / Abre: 10-on y 9-off)
+    'contraer_boquilla_descarga':   10,     # Boquilla Descarga (Cierra: 11-on / Abre: 11-off)
+                                            # 11 not implemented
+    'contraer_boquilla_carga':      12,     # Boquilla Carga (Cierra: 13-on / Abre: 13-off)
+                                            # 13 not implemented
+    'expandir_vertical_carga':      14,     # Vertical Carga (Arriba: 15-on / Abajo: 15-off)
+                                            # 15 not implemented
 }
 
 REM_DO_G2_BITS = {
-    'expandir_horiz_pinza_desc':    0,
-                                    # 1 not implemented
-    'contraer_vert_pinza_desc':     2,
-                                    # 3 not implemented
-    'expandir_acople_libric':       4,
-    'contraer_clampeo_plato':       5,
-    'expandir_clampeo_plato':       6,
-    'encender_bomba_hidraulica':    7,
-    'encender_bomba_soluble':       8,
-    'presurizar':                   9,
-    'cerrar_boquilla_1':            10,
-    'abrir_boquilla_1':             11,
-    'cerrar_boquilla_2':            12,
-    'abrir_boquilla_2':             13,
-    'cerrar_boquilla_3':            14,
-    'abrir_boquilla_3':             15
+    'expandir_horiz_pinza_desc':    0,      # Horizon Gripper descarga (Adelante: 17-off / Atras: 17-on)
+                                            # 1 not implemented
+    'expandir_vert_pinza_desc':     2,      # Vertical Gripper descarga (Arriba: 19-off / Abajo: 19-on)
+                                            # 3 not implemented
+    'expandir_acople_lubric':       4,      # Acopla Soluble (SI: 21-on / NO: 21-off)
+    'contraer_clampeo_plato':       5,      # Clampeo (SI: 22-off y 23-on / NO: 22-on y 23-off)
+    'expandir_clampeo_plato':       6,      # Clampeo (SI: 22-off y 23-on / NO: 22-on y 23-off)
+    'encender_bomba_hidraulica':    7,      # Bomba Hidraulica (ON: 24-on / OFF: 24-off)
+    'encender_bomba_soluble':       8,      # Bomba Soluble (ON: 25-on / OFF: 25-off)
+    'presurizar':                   9,      # Presión (SI: 26-on / NO: 26-off)
+    'cerrar_boquilla_1':            10,     # Boquilla 1 (Cierra: 28-off y 27-on / Abre: 28-on y 27-off)
+    'abrir_boquilla_1':             11,     # Boquilla 1 (Cierra: 28-off y 27-on / Abre: 28-on y 27-off)
+    'cerrar_boquilla_2':            12,     # Boquilla 2 (Cierra: 30-off y 29-on / Abre: 30-on y 29-off)
+    'abrir_boquilla_2':             13,     # Boquilla 2 (Cierra: 30-off y 29-on / Abre: 30-on y 29-off)
+    'cerrar_boquilla_3':            14,     # Boquilla 3 (Cierra: 32-off y 31-on / Abre: 32-on y 31-off)
+    'abrir_boquilla_3':             15      # Boquilla 3 (Cierra: 32-off y 31-on / Abre: 32-on y 31-off)
 }
 
 REM_DI_G1_BITS = {
-    'cargador_sup_tras_contraido':  0,
-    'cargador_sup_tras_expandido':  1,
-    'cargador_inf_tras_contraido':  2,
-    'cargador_inf_tras_expandido':  3,
+    'puntera_descarga_contraida':   0,
+    'puntera_descarga_expandida':   1,
+    'puntera_carga_contraida':      2,
+    'puntera_carga_expandida':      3,
     'brazo_cargador_contraido':     4,
     'brazo_cargador_expandido':     5,
     'brazo_descarga_contraido':     6,
     'brazo_descarga_expandido':     7,
     'pinza_descargadora_cerrada':   8,
     'pinza_descargadora_abierta':   9,
-    'cargadora_sup_del_contraido':  10,
-    'cargadora_sup_del_expandido':  11,
-    'cargadora_inf_del_contraido':  12,
-    'cargadora_inf_del_expandido':  13,
+    'boquilla_descarga_contraida':  10,
+    'boquilla_descarga_expandida':  11,
+    'boquilla_carga_contraida':     12,
+    'boquilla_carga_expandida':     13,
     'vertical_carga_contraido':     14,
     'vertical_carga_expandido':     15,
 }
@@ -104,11 +104,11 @@ REM_DI_G2_BITS = {
     'acople_lubric_expandido':      5,
     'clampeo_plato_contraido':      6,
     'clampeo_plato_expandido':      7,
-    'pieza_en_boquilla_1':          8,
-    'pieza_en_boquilla_2':          9,
-    'contador_inferior':            10,
+    'pieza_en_boquilla_descarga':   8,
+    'pieza_en_boquilla_carga':      9,
+    'presencia_cupla_en_cargador':  10,
                                     # 11 not implemented
-    'contador_superior':            12,
+    'cupla_por_tobogan_descarga':   12,
                                     # 13 not implemented
                                     # 14 not implemented
     'baja_presion':                 15,
@@ -128,19 +128,19 @@ LOC_DO_ARR = [
 
 
 REM_DO_G1_ARR = [
-    'contraer_cargador_sup_tras',   # 1 - 0
-    'expandir_cargador_sup_tras',   # 2 - 1
-    'contraer_cargador_inf_tras',   # 3 - 2
-    'expandir_cargador_inf_tras',   # 4 - 3
+    'contraer_puntera_descarga',   # 1 - 0
+    'expandir_puntera_descarga',   # 2 - 1
+    'contraer_puntera_carga',   # 3 - 2
+    'expandir_puntera_carga',   # 4 - 3
     'contraer_brazo_cargador',      # 5 - 4
     'expandir_brazo_cargador',      # 6 - 5
     'contraer_brazo_descargador',   # 7 - 6
     'expandir_brazo_descargador',   # 8 - 7
     'cerrar_pinza_descargadora',    # 9 - 8
     'abrir_pinza_descargadora',     # 10 - 9
-    'contraer_cargador_sup_del',    # 11 - 10
+    'contraer_boquilla_descarga',    # 11 - 10
     '',                             # 12 - 11
-    'contraer_cargador_inf_del',    # 13 - 12
+    'contraer_boquilla_carga',    # 13 - 12
     '',                             # 14 - 13
     'expandir_vertical_carga',      # 15 - 14
     '',                             # 16 - 15
@@ -149,9 +149,9 @@ REM_DO_G1_ARR = [
 REM_DO_G2_ARR = [
     'expandir_horiz_pinza_desc',    #17 - 0
     '',                             #18 - 1
-    'contraer_vert_pinza_desc',     #19 - 2
+    'expandir_vert_pinza_desc',     #19 - 2
     '',                             #20 - 3
-    'expandir_acople_libric',       #21 - 4
+    'expandir_acople_lubric',       #21 - 4
     'contraer_clampeo_plato',       #22 - 5
     'expandir_clampeo_plato',       #23 - 6
     'encender_bomba_hidraulica',    #24 - 7
@@ -166,10 +166,10 @@ REM_DO_G2_ARR = [
 ]
 
 REM_DI_G1_ARR = [
-    'cargador_sup_tras_contraido',  # 1 - 0
-    'cargador_sup_tras_expandido',  # 2 - 1
-    'cargador_inf_tras_contraido',  # 3 - 2
-    'cargador_inf_tras_expandido',  # 4 - 3
+    'puntera_descarga_contraida',  # 1 - 0
+    'puntera_descarga_expandida',  # 2 - 1
+    'puntera_carga_contraida',  # 3 - 2
+    'puntera_carga_expandida',  # 4 - 3
     'brazo_cargador_contraido',     # 5 - 4
     'brazo_cargador_expandido',     # 6 - 5
     'brazo_descarga_contraido',     # 7 - 6
@@ -193,11 +193,11 @@ REM_DI_G2_ARR = [
     'acople_lubric_expandido',      # 22 - 5
     'clampeo_plato_contraido',      # 23 - 6
     'clampeo_plato_expandido',      # 24 - 7
-    'pieza_en_boquilla_1',          # 25 - 8
-    'pieza_en_boquilla_2',          # 26 - 9
-    'contador_inferior',            # 27 - 10
+    'pieza_en_boquilla_descarga',          # 25 - 8
+    'pieza_en_boquilla_carga',          # 26 - 9
+    'presencia_cupla_en_cargador',            # 27 - 10
     '',                             # 28 - 11
-    'contador_superior',            # 29 - 12
+    'cupla_por_tobogan_descarga',            # 29 - 12
     '',                             # 30 - 13
     '',                             # 31 - 14
     'baja_presion',                 # 32 - 15

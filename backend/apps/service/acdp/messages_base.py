@@ -97,21 +97,6 @@ class BaseStructure(Structure):
         view = memoryview(self)
         raw_data = view.tobytes()
         view.release()
-        # raw_data = b''
-        # fields = self._fields_
-        # for field in fields:
-        #     if issubclass(field[1], ctypes._SimpleCData):
-        #         atr = getattr(self, field[0])
-        #         raw_data += struct.pack(field[1]._type_, atr)
-        #     elif issubclass(field[1], ctypes.Array):
-        #         arr = getattr(self, field[0])
-        #         for i in range(field[1]._length_):
-        #             if issubclass(arr[i].__class__, ctypes.Structure):
-        #                 raw_data += arr[i].pacself()
-        #             else:
-        #                 raw_data += struct.pack(arr._type_._type_, arr[i])
-        #     else:
-        #         raw_data += getattr(self, field[0]).pacself()
         return raw_data
 
     def unpacdata(self, raw_data):
@@ -136,91 +121,6 @@ class BaseStructure(Structure):
             dict[key] = value
 
         return dict
-
-
-# class BaseUnion(Union):     # Mostly used for flags
-#     def get_format(self, field_name=''):    # Get string format for pack/unpack
-#         fields = self._fields_
-
-#         if field_name:      # Only used on AcdpDrvCmdConfigUnion
-#             index = self.get_field_index(field_name)
-#             return self._fields_[index][1].get_format()
-        
-#         else:
-#             field_type = fields[0][1]   # First always indicates the union size
-#             if issubclass(field_type, ctypes._SimpleCData):
-#                 return field_type._type_
-#             else:
-#                 field_type.get_format()
-
-
-#     def get_bytes_size(self):
-#         return struct.calcsize(self.get_format())
-
-#     def get_len(self):
-#         return len(self.get_values())
-
-#     def get_values(self, field_name=''):   # Returns a tuple with values
-#         if field_name:
-#             value = getattr(self, field_name)
-#             return value.get_values()
-#         else:
-#             field = self._fields_[0]
-#             if issubclass(field[1], ctypes._SimpleCData):
-#                 return (getattr(self, field[0]),)
-#             else:
-#                 field[1].get_values()
-    
-#     def store_values(self, values, field_name=''):     # Receives values in tuple to store
-
-#         if field_name:
-#             getattr(self, field_name).store_values(values)
-
-#         else:
-#             field = self._fields_[0]
-#             if issubclass(field[1], ctypes._SimpleCData):
-#                 setattr(self, field[0], values[0])
-#             else:
-#                 field[1].store_values(values)
-
-#     def pacself(self):    # Returns structure in bytes format
-#         frm = self.get_format()
-#         values = self.get_values()
-#         data = b''
-#         for i in range(0, len(frm)):
-#             f = frm[i]
-#             value = values[i]
-#             data = b''.join([data, struct.pack(f, value)])
-#         return data
-
-#     def unpacdata(self, raw_data):
-#         unpacked_data = struct.unpack(self.get_format(), raw_data)
-#         return unpacked_data
-
-#     def store_from_raw(self, raw_values):
-#         self.store_values(self.unpacdata(raw_data=raw_values))
-
-#     def to_dict(self):
-#         dict = {}
-#         for field in self._fields_:
-#             field_type = field[1]
-#             key = field[0]
-#             value = getattr(self, key)
-
-#             if not issubclass(field_type, ctypes._SimpleCData):
-#                 aux_dict = value.to_dict()
-#                 value = aux_dict
-
-#             dict[key] = value
-
-#         return dict
-    
-#     def get_field_index(self, field_name):
-#         index = [i for i, tupl in enumerate(self._fields_) if tupl[0] == field_name]
-#         if len(index) > 0:
-#             return index[0]
-#         else:
-#             raise Exception('Field name not found.')
 
 
 # --------------------------------------------------------------------------------------------#

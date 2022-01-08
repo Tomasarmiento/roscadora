@@ -3,6 +3,7 @@ from apps.service.api.variables import Commands, COMMANDS
 from apps.service.acdp import messages_app as msg_app
 from apps.control.utils import variables as ctrl_vars
 from apps.ws.utils.handlers import send_message
+from apps.ws.utils.functions import get_ch_info
 from apps.ws.utils import variables as ws_vars
 
 
@@ -59,6 +60,10 @@ def update_rem_io_states(micro_data):
     g_2_i = {}
     g_1_o = {}
     g_2_o = {}
+    ws_vars.MicroState.rem_i_states = []
+    ws_vars.MicroState.rem_o_states = []
+    ws_vars.MicroState.rem_i = []
+    ws_vars.MicroState.rem_o = []
     for i in range(len(ctrl_vars.REM_DI_G1_STATES)):
         keys = (
             ctrl_vars.REM_DI_G1_ARR[i],
@@ -89,6 +94,10 @@ def update_rem_io_states(micro_data):
     ws_vars.MicroState.rem_i_states.append(g_2_i)
     ws_vars.MicroState.rem_o_states.append(g_1_o)
     ws_vars.MicroState.rem_o_states.append(g_2_o)
+    ws_vars.MicroState.rem_i.append(micro_data.data.ctrl.rem_io.di16[0])
+    ws_vars.MicroState.rem_i.append(micro_data.data.ctrl.rem_io.di16[1])
+    ws_vars.MicroState.rem_o.append(micro_data.data.ctrl.rem_io.do16[0])
+    ws_vars.MicroState.rem_o.append(micro_data.data.ctrl.rem_io.do16[1])
     return states
 
 
@@ -136,14 +145,45 @@ def update_states(micro_data):
 # -------------------------------------------------------------------------------------------- #
 
 
-def set_rem_do(out_name, out_id, out_value):
-    bit = None
+def set_rem_do(command, keys, group):
     msg_id = ws_vars.MicroState.last_rx_header.get_msg_id() + 1
     ws_vars.MicroState.msg_id = msg_id
-    bit = ctrl_vars.REM_DO_G2_BITS[out_name]
-    header, data = build_msg(Commands.rem_do_set, bit=bit, msg_id=msg_id, out_value=out_value)
-    msg = header.pacself() + data.pacself()
-    send_message(msg)
+
+    mask = None
+    out_value = None
+    
+    if type(keys) == type([]):
+        key_1 = keys[0]
+        key_2 = keys[1]
+
+        if group == 0:
+            bit_1 = 0x0000 + 1 << ctrl_vars.REM_DO_G1_BITS[key_1]
+            bit_2 = 0x0000 + 1 << ctrl_vars.REM_DO_G1_BITS[key_2]
+        elif group == 1:
+            bit_1 = 0x0000 + 1 << ctrl_vars.REM_DO_G2_BITS[key_1]
+            bit_2 = 0x0000 + 1 << ctrl_vars.REM_DO_G2_BITS[key_2]
+
+        mask = bit_1 + bit_2
+        state_1 = ws_vars.MicroState.rem_o_states[group][key_1]
+        state_2 = ws_vars.MicroState.rem_o_states[group][key_2]
+        print(bit_1)
+        print(bit_2)
+        if not state_1:
+            out_value = bit_1
+        elif not state_2:
+            out_value = bit_2
+    else:
+        if group == 0:
+            bit = 0x0000 + 1 << ctrl_vars.REM_DO_G1_BITS[keys]
+        elif group == 1:
+            bit = 0x0000 + 1 << ctrl_vars.REM_DO_G2_BITS[keys]
+        mask = bit
+        state = ws_vars.MicroState.rem_o_states[group][keys]
+        if not state:
+            out_value = bit
+        else:
+            out_value = 0
+    return build_msg(command, msg_id=msg_id, mask=mask, out_value=out_value, group=group)
 
 
 def set_loc_do(out_name, out_id, out_value):

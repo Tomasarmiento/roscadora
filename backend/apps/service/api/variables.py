@@ -45,7 +45,7 @@ class Commands:
     sync_off = AcdpMsgCodes.Cmd.Cd_MovEje_SyncOff,
 
     # IO
-    loc_do_set = AcdpMsgCodes.Cmd.Cd_LocDO_Set
+    loc_do_set = AcdpMsgCodes.Cmd.Cd_LocDO_Set,
     rem_do_set = AcdpMsgCodes.Cmd.Cd_RemDO_Set
 
 COMMANDS = {
@@ -85,6 +85,10 @@ COMMANDS = {
     'sync_on': AcdpMsgCodes.Cmd.Cd_MovEje_SyncOn,       # Se usa para sincronizar el movimiento del eje lineal con el de rotacion
                                                         # Se manda sync on antes de empezar el movimiento y se setea el paso. Despues solo se comanda el lineal
     'sync_off': AcdpMsgCodes.Cmd.Cd_MovEje_SyncOff,
+
+    # Loc/Rem I/O
+    'loc_do_set': AcdpMsgCodes.Cmd.Cd_LocDO_Set,
+    'rem_do_set': AcdpMsgCodes.Cmd.Cd_RemDO_Set
 }
 
 

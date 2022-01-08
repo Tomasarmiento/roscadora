@@ -71,9 +71,11 @@ def build_msg(code, host_ip="192.168.0.100", dest_ip=ACDP_IP_ADDR, params={}, *a
         param = None
 
         if code == AcdpMsgCodes.Cmd.Cd_RemDO_Set or code == AcdpMsgCodes.Cmd.Cd_LocDO_Set:
-            bit = kwargs['bit']
+            if code == AcdpMsgCodes.Cmd.Cd_RemDO_Set:
+                tx_header.ctrl.object = kwargs['group']
+            mask = kwargs['mask']
             out_value = kwargs['out_value']
-            param = DataBuilder.build_set_do(bit, out_value)
+            param = DataBuilder.build_set_do(mask, out_value)
 
         else:
             tx_header.ctrl.object = kwargs['eje']
@@ -160,10 +162,10 @@ def build_msg(code, host_ip="192.168.0.100", dest_ip=ACDP_IP_ADDR, params={}, *a
                     vel_uns_max = kwargs['vel_uns_max']
                 param =  DataBuilder.build_mov_to_fza_yield_data(ref, ref_rate, yield_vals, vel_uns_max)
             
-            if param:
-                tx_data = param
-                tx_header.set_data_len(param.get_bytes_size())
-                return tx_header, tx_data
+        if param:
+            tx_data = param
+            tx_header.set_data_len(param.get_bytes_size())
+            return tx_header, tx_data
     return tx_header
 
 
@@ -225,7 +227,14 @@ class DataBuilder:
         setattr(param, 'yield', DataBuilder.build_yield_data(yield_vals))
         return param
     
-    def build_set_do(out_bit, out_value):
+    def build_set_do(mask, out_value):
         param = AcdpMsgParams().do_set
         setattr(param, 'value', out_value)
-        setattr(param, 'mask', 1 << out_bit)
+        setattr(param, 'mask', mask)
+        return param
+    
+    def build_set_multiple_do(value, mask):
+        param = AcdpMsgParams().do_set
+        setattr(param, 'mask', mask)
+        setattr(param, 'value', value)
+        return param

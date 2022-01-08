@@ -18,7 +18,8 @@ def automatico(request):
     return render(request, "automatico.html")
 
 def neumaticaManual(request):
-    return render(request, "neumaticaManual.html")
+    context = COMMANDS
+    return render(request, "neumaticaManual.html", context)
 
 def motoresManual(request):
     context = COMMANDS

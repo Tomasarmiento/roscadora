@@ -4,12 +4,8 @@
 
 <div class="col-md-10 d-flex justify-content-around mx-auto my-3 px-0" style="color: black;"> 
     <div class="card p-1 mb-3">
-<<<<<<< HEAD
-        <form action="http://localhost:8000/parameter/update/1/" method="post" id={{1}}>
-=======
         <form action="{% url 'parameters-update' %}" method="POST" id={{1}}>
             {% csrf_token%}
->>>>>>> parameters
             <table class="table table-sm table-striped table-borderless" style="color: black;" id="tablatablaCuplaModelo1">
                 <thead>
                     <tr>
@@ -107,12 +103,8 @@
 
 
     <div class="card p-1 mb-3">
-<<<<<<< HEAD
-    <form action="http://localhost:8000/parameter/update/2/" method="post" id="cuplaModelo2">
-=======
     <form action="{% url 'parameters-update' %}" method="post" id="{{2}}">
         {% csrf_token%}
->>>>>>> parameters
         <table class="table table-sm table-striped table-borderless" style="color: black;" id="tablaCuplaModelo2">
             <thead>
                 <tr>

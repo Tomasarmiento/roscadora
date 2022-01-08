@@ -15,7 +15,7 @@
                     <p style="display: inline;">Horizontal</p>
                 </div>
                 <div class="col text-center">
-                    <button class="btn btn-primary" id="horizontalCargaOnOff"> ON/OFF </button>
+                    <button class="btn btn-primary" id="horizontalCargaOnOff" menu="carga" cmd= {{ rem_do_set }}> ON/OFF </button>
                 </div>
                 <div class="col text-center">
                     <article class="led led-grey" id="horizontalCargaOk"></article>
@@ -27,7 +27,7 @@
                     <p style="display: inline;">Vertical</p>
                 </div>
                 <div class="col text-center">
-                    <button class="btn btn-primary" id="verticalCargaOnOff"> ON/OFF </button>
+                    <button class="btn btn-primary" id="verticalCargaOnOff" menu="carga" cmd= {{ rem_do_set }}> ON/OFF </button>
                 </div>
                 <div class="col text-center">
                     <article class="led led-grey" id="verticalCargaOk"></article>
@@ -39,7 +39,7 @@
                     <p style="display: inline;">Boquilla Carga</p>
                 </div>
                 <div class="col text-center">
-                    <button class="btn btn-primary" id="BoquillaCargaOnOff"> ON/OFF </button>
+                    <button class="btn btn-primary" id="BoquillaCargaOnOff" menu="carga" cmd= {{ rem_do_set }}> ON/OFF </button>
                 </div>
                 <div class="col text-center">
                     <article class="led led-grey" id="boquillaCargaOk"></article>
@@ -51,7 +51,7 @@
                     <p style="display: inline;">Giro</p>
                 </div>
                 <div class="col text-center">
-                    <button class="btn btn-primary" id="giroCargaOnOff"> ON/OFF </button>
+                    <button class="btn btn-primary" id="giroCargaOnOff" menu="carga" cmd= {{ rem_do_set }}> ON/OFF </button>
                 </div>
                 <div class="col text-center">
                     <article class="led led-grey" id="giroCargaOk"></article>
@@ -73,7 +73,7 @@
                             <p style="display: inline;">Horizontal</p>
                         </div>
                         <div class="col text-center">
-                            <button class="btn btn-primary" id="horizontalDescOnOff"> ON/OFF </button>
+                            <button class="btn btn-primary" id="horizontalDescOnOff"  menu="descarga" cmd= {{ rem_do_set }}> ON/OFF </button>
                         </div>
                         <div class="col text-center">
                             <article class="led led-grey" id="horizontalDescOk"></article>
@@ -85,7 +85,7 @@
                             <p style="display: inline;">Giro</p>
                         </div>
                         <div class="col text-center">
-                            <button class="btn btn-primary" id="giroDescOnOff"> ON/OFF </button>
+                            <button class="btn btn-primary" id="giroDescOnOff"  menu="descarga" cmd= {{ rem_do_set }}> ON/OFF </button>
                         </div>
                         <div class="col text-center">
                             <article class="led led-grey" id="giroDescOk"></article>
@@ -97,7 +97,7 @@
                             <p style="display: inline;">Horizon Gripper</p>
                         </div>
                         <div class="col text-center">
-                            <button class="btn btn-primary" id="horizontalGrOnOff"> ON/OFF </button>
+                            <button class="btn btn-primary" id="horizontalGrOnOff"  menu="descarga" cmd= {{ rem_do_set }}> ON/OFF </button>
                         </div>
                         <div class="col text-center">
                             <article class="led led-grey" id="horizontalGrOk"></article>
@@ -109,7 +109,7 @@
                             <p style="display: inline;">Vertical Gripper</p>
                         </div>
                         <div class="col text-center">
-                            <button class="btn btn-primary" id="verticalGrOnOff"> ON/OFF </button>
+                            <button class="btn btn-primary" id="verticalGrOnOff"   menu="descarga" cmd= {{ rem_do_set }}> ON/OFF </button>
                         </div>
                         <div class="col text-center">
                             <article class="led led-grey" id="verticalGrOk"></article>
@@ -121,7 +121,7 @@
                             <p style="display: inline;">Boquilla Descarga</p>
                         </div>
                         <div class="col text-center">
-                            <button class="btn btn-primary" id="BoquillaDescOnOff"> ON/OFF </button>
+                            <button class="btn btn-primary" id="BoquillaDescOnOff"  menu="descarga" cmd= {{ rem_do_set }}> ON/OFF </button>
                         </div>
                         <div class="col text-center">
                             <article class="led led-grey" id="BoquillaDescOk"></article>
@@ -133,7 +133,7 @@
                             <p style="display: inline;">Gripper Descarga</p>
                         </div>
                         <div class="col text-center">
-                            <button class="btn btn-primary" id="gripperDescOnOff"> ON/OFF </button>
+                            <button class="btn btn-primary" id="gripperDescOnOff"  menu="descarga" cmd= {{ rem_do_set }}> ON/OFF </button>
                         </div>
                         <div class="col text-center">
                             <article class="led led-grey" id="gripperDescOk"></article>
@@ -153,7 +153,7 @@
                             <p style="display: inline;">Clampeo</p>
                         </div>
                         <div class="col text-center">
-                            <button class="btn btn-primary" id="clampeoOnOff"> ON/OFF </button>
+                            <button class="btn btn-primary" id="clampeoOnOff" menu="cabezal" cmd= {{ rem_do_set }}> ON/OFF </button>
                         </div>
                         <div class="col text-center">
                             <article class="led led-grey" id="clampeoOk"></article>
@@ -165,7 +165,7 @@
                             <p style="display: inline;">Presión</p>
                         </div>
                         <div class="col text-center">
-                            <button class="btn btn-primary" id="presionOnOff"> ON/OFF </button>
+                            <button class="btn btn-primary" id="presionOnOff" menu="cabezal" cmd= {{ rem_do_set }}> ON/OFF </button>
                         </div>
                         <div class="col text-center">
                             <article class="led led-grey" id="presionOk"></article>
@@ -177,7 +177,7 @@
                             <p style="display: inline;">Boquilla 1</p>
                         </div>
                         <div class="col text-center">
-                            <button class="btn btn-primary" id="boquilla1OnOff"> ON/OFF </button>
+                            <button class="btn btn-primary" id="boquilla1OnOff" menu="cabezal" cmd= {{ rem_do_set }}> ON/OFF </button>
                         </div>
                         <div class="col text-center">
                             <article class="led led-grey" id="boquilla1Ok"></article>
@@ -189,7 +189,7 @@
                             <p style="display: inline;">Boquilla 2</p>
                         </div>
                         <div class="col text-center">
-                            <button class="btn btn-primary" id="boquilla2OnOff"> ON/OFF </button>
+                            <button class="btn btn-primary" id="boquilla2OnOff" menu="cabezal" cmd= {{ rem_do_set }}> ON/OFF </button>
                         </div>
                         <div class="col text-center">
                             <article class="led led-grey" id="boquilla2Ok"></article>
@@ -201,7 +201,7 @@
                             <p style="display: inline;">Boquilla 3</p>
                         </div>
                         <div class="col text-center">
-                            <button class="btn btn-primary" id="boquilla3OnOff"> ON/OFF </button>
+                            <button class="btn btn-primary" id="boquilla3OnOff" menu="cabezal" cmd= {{ rem_do_set }}> ON/OFF </button>
                         </div>
                         <div class="col text-center">
                             <article class="led led-grey" id="boquilla3Ok"></article>
@@ -213,7 +213,7 @@
                             <p style="display: inline;">Acopla Soluble</p>
                         </div>
                         <div class="col text-center">
-                            <button class="btn btn-primary" id="acoplaSolOnOff"> ON/OFF </button>
+                            <button class="btn btn-primary" id="acoplaSolOnOff" menu="cabezal" cmd= {{ rem_do_set }}> ON/OFF </button>
                         </div>
                         <div class="col text-center">
                             <article class="led led-grey" id="acoplaSolOk"></article>
@@ -225,7 +225,7 @@
                             <p style="display: inline;">Bomba Soluble</p>
                         </div>
                         <div class="col text-center">
-                            <button class="btn btn-primary" id="bombaSolOnOff"> ON/OFF </button>
+                            <button class="btn btn-primary" id="bombaSolOnOff" menu="cabezal" cmd= {{ rem_do_set }}> ON/OFF </button>
                         </div>
                         <div class="col text-center">
                             <article class="led led-grey" id="bombaSolOk"></article>
@@ -237,7 +237,7 @@
                             <p style="display: inline;">Bomba Hidraulica</p>
                         </div>
                         <div class="col text-center">
-                            <button class="btn btn-primary" id="bombaHidrOnOff"> ON/OFF </button>
+                            <button class="btn btn-primary" id="bombaHidrOnOff" menu="cabezal" cmd= {{ rem_do_set }}> ON/OFF </button>
                         </div>
                         <div class="col text-center">
                             <article class="led led-grey" id="bombaHidrOk"></article>
@@ -252,4 +252,5 @@
     <div id="component-monitor"></div>
 </div>
 </div>
+<script src="{% static 'js/neumaticaManual.js' %}"></script>
 {% endblock %}
