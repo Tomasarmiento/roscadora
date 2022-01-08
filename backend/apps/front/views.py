@@ -1,7 +1,4 @@
 from django.shortcuts import render
-from django.shortcuts import redirect
-from django.shortcuts import HttpResponse
-from django.shortcuts import redirect, reverse
 
 from apps.service.api.variables import COMMANDS
 from apps.parameters.utils.variables import PART_MODEL_OPTIONS
@@ -29,6 +26,9 @@ def motoresManual(request):
     context['id_eje_carga'] = AXIS_IDS['carga']
     context['id_eje_giro'] = AXIS_IDS['giro']
     return render(request, "motoresManual.html", context=context)
+
+def sensoresPagina2(request):
+    return render(request, "sensoresP2.html")
 
 def sensores(request):
     return render(request, "sensores.html")
