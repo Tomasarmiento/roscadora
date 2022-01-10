@@ -186,26 +186,33 @@ def set_rem_do(command, keys, group):
     return build_msg(command, msg_id=msg_id, mask=mask, out_value=out_value, group=group)
 
 
-def set_loc_do(out_name, out_id, out_value):
+def set_loc_do(command, out_name, out_value):
     bit = None
     msg_id = ws_vars.MicroState.last_rx_header.get_msg_id() + 1
     ws_vars.MicroState.msg_id = msg_id
-    if out_id > 16: bit = ctrl_vars.REM_DO_G2_BITS[out_name]
-    else:   bit = ctrl_vars.REM_DO_G1_BITS[out_name]
-    header, data = build_msg(Commands.rem_do_set, bit=bit, msg_id=msg_id, out_value=out_value)
-    msg = header.pacself() + data.pacself()
-    send_message(msg)
+    bit = ctrl_vars.LOC_DO_BITS[out_name]
+    mask = bit
+    if ctrl_vars.LOC_DI_STATES[out_name]:
+        out_value = 0
+    else:
+        out_value = bit
+    return build_msg(Commands.loc_do_set, msg_id=msg_id, out_value=out_value, mask=mask)
+
+
+# -------------------------------------------------------------------------------------------- #
+# -------------------------------------- General --------------------------------------------- #
+# -------------------------------------------------------------------------------------------- #
 
 
 def sync_on(paso):
     msg_id = ws_vars.MicroState.last_rx_header.get_msg_id() + 1
     ws_vars.MicroState.msg_id = msg_id
-    header = build_msg(Commands.sync_on[0], msg_id = msg_id, paso=paso)
+    header = build_msg(Commands.sync_on, msg_id = msg_id, paso=paso)
     send_message(header.pacself())
 
 
 def stop():
     msg_id = ws_vars.MicroState.last_rx_header.get_msg_id() + 1
     ws_vars.MicroState.msg_id = msg_id
-    header = build_msg(Commands.stop[0], msg_id = msg_id)
+    header = build_msg(Commands.stop, msg_id = msg_id)
     send_message(header.pacself())

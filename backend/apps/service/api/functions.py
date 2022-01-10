@@ -12,20 +12,20 @@ def send_message(bytes_msg, transport, addr=(ACDP_IP_ADDR, ACDP_UDP_PORT)):
 
 def echo_reply(transport):
     msg_id = last_rx_msg.get_msg_id() + 1
-    header = build_msg(Commands.echo_reply[0], msg_id = msg_id)
+    header = build_msg(Commands.echo_reply, msg_id = msg_id)
     send_message(header.pacself(), transport)
 
 
 def open_connection(transport):
-    header = build_msg(Commands.open_connection[0])
+    header = build_msg(Commands.open_connection)
     send_message(header.pacself(), transport)
 
 
 def force_connection(transport):
-    header = build_msg(Commands.force_connection[0])
+    header = build_msg(Commands.force_connection)
     send_message(header.pacself(), transport)
 
 
 def close_connection(transport):
-    header = build_msg(Commands.close_connection[0])
+    header = build_msg(Commands.close_connection)
     send_message(header.pacself(), transport)
