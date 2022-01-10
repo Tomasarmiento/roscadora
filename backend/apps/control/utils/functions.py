@@ -55,6 +55,15 @@ def update_data_flags(micro_data):
     return micro_flags
 
 
+def updata_axis_flags(micro_data, axis):
+
+    ws_vars.MicroState.axis_flags[axis]['slave']        = micro_data.data.ctrl.eje.flags & msg_app.AcdpAxisMovementsMovEjeDataFlagsBits.slave
+    ws_vars.MicroState.axis_flags[axis]['sync_on']      = micro_data.data.ctrl.eje.flags & msg_app.AcdpAxisMovementsMovEjeDataFlagsBits.sync_on
+    ws_vars.MicroState.axis_flags[axis]['em_stop']      = micro_data.data.ctrl.eje.flags & msg_app.AcdpAxisMovementsMovEjeDataFlagsBits.em_stop
+    ws_vars.MicroState.axis_flags[axis]['maq_est']      = micro_data.data.ctrl.eje.maq_est.estado
+    ws_vars.MicroState.axis_flags[axis]['flags_fin']    = micro_data.data.ctrl.eje.maq_est.flags_fin
+
+
 def update_rem_io_states(micro_data):
     g_1_i = {}
     g_2_i = {}

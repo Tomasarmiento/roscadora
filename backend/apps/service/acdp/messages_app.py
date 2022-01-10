@@ -478,31 +478,16 @@ class AcdpAxisMovementsMovEjeConfig(BaseStructure):
     ]
 
 
-class AcdpAxisMovementsMovEjeDataFlagsBits(BaseStructure):
-    _fields_ = [
-        ('em_stop', c_int, 1),    # 0
-        ('disabled', c_int, 1),   # 1
-        ('sync_on', c_int, 1)     # 2
-    ]
-
-
-# class AcdpAxisMovementsMovEjeDataFlags(BaseUnion):
-#     _fields_ = [
-#         ('all', c_uint32),
-#         ('flags', AcdpAxisMovementsMovEjeDataFlagsBits)
-#    ]
-
-
 class AcdpAxisMovementsMovEjeDataMaqEst(BaseStructure):
     _fields_ = [
-        ('flags_fin', c_uint32),    # Flags FinEstado. Ver AcdpAxisMovementsMovEjeDataMaqEstFlagsFin
-        ('estado', c_int32)        # Maquina de Estados General. Ver AcdpAxisMovementsMovEjeDataMaqEstEstado
+        ('flags_fin', c_uint32),    # Flags FinEstado. Ver AxisFlagsFin
+        ('estado', c_int32)        # Maquina de Estados General. Ver StateMachine
     ]
 
 
-class AcdpAxisMovementsMovEjeDataMaqEstFlagsFin:
+class AxisFlagsFin:
     FLGFIN_OK                   = 1 << 0
-    FLGFIN_CANCELED             = 1 << 1
+    FLGFIN_CANCELLED            = 1 << 1
     FLGFIN_EM_STOP              = 1 << 2
     FLGFIN_DRV_HOMING_ERROR     = 1 << 3
     FLGFIN_ECHO_TIMEOUT         = 1 << 4
@@ -518,7 +503,7 @@ class AcdpAxisMovementsMovEjeDataMaqEstFlagsFin:
     FLGFIN_AXIS_DISABLED        = 1 << 14
 
 
-class AcdpAxisMovementsMovEjeDataMaqEstEstado:
+class StateMachine:
     EST_SAFE                = 0
     EST_PRE_INITIAL         = 1
     EST_INITIAL             = 2
@@ -532,6 +517,40 @@ class AcdpAxisMovementsMovEjeDataMaqEstEstado:
     EST_MOV_TO_POS          = 10
     EST_MOV_TO_POS_LOAD     = 11
     EST_MOV_TO_FZA          = 12
+
+    def get_state(state_value):
+        if state_value == StateMachine.EST_SAFE:
+            return 'safe'
+        if state_value == StateMachine.EST_PRE_INITIAL:
+            return 'pre_initial'
+        if state_value == StateMachine.EST_INITIAL:
+            return 'initial'
+        if state_value == StateMachine.EST_POWERING_ON:
+            return 'powering_on'
+        if state_value == StateMachine.EST_POWERING_OFF:
+            return 'powering_off'
+        if state_value == StateMachine.EST_STOPPING:
+            return 'stopping'
+        if state_value == StateMachine.EST_FAST_STOPPING:
+            return 'fast_stopping'
+        if state_value == StateMachine.EST_HOMING:
+            return 'homing'
+        if state_value == StateMachine.EST_POSITIONING:
+            return 'positioning'
+        if state_value == StateMachine.EST_MOV_TO_VEL:
+            return 'mov_to_vel'
+        if state_value == StateMachine.EST_MOV_TO_POS:
+            return 'mov_to_pos'
+        if state_value == StateMachine.EST_MOV_TO_POS_LOAD:
+            return 'mov_to_pos_load'
+        if state_value == StateMachine.EST_MOV_TO_FZA:
+            return 'mov_to_fza'
+
+
+class AcdpAxisMovementsMovEjeDataFlagsBits:
+    slave       = 1 << 0
+    sync_on     = 1 << 1
+    em_stop     = 1 << 2
 
 
 class AcdpAxisMovementsMovEjeDataSincroMedDrv(BaseStructure):
