@@ -114,8 +114,7 @@ def manual_pneumatic(request):
             keys = 'expandir_horiz_pinza_desc'
             header, data = ctrl_func.set_rem_do(command, keys, 1)
 
-        elif name == 'verticalGr':          # REVISAR
-            print('EXPANDIR VERT G')
+        elif name == 'verticalGr':
             keys = 'expandir_vert_pinza_desc'
             header, data = ctrl_func.set_rem_do(command, keys, 1)
 
