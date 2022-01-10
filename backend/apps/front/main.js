@@ -21,6 +21,7 @@ window.addEventListener("hashchange", () => {                  //cuando tocas f5
 
 window.addEventListener("DOMContentLoaded", () => {                         //todo el tiempo
     (window.location.hash);                                                 //router
+    const socket = new WebSocket("ws://127.0.0.1:8000/ws/front/");
     monitor = document.querySelector("#component-monitor");
     monitorHorizontal = document.querySelector("#component-monitor-horizontal");
 });

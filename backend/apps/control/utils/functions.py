@@ -111,7 +111,8 @@ def update_axis_flags(micro_data, axis):
     ws_vars.MicroState.axis_flags[axis]['slave']       = micro_data.data.ctrl.eje[axis].flags & msg_app.AcdpAxisMovementsMovEjeDataFlagsBits.slave
     ws_vars.MicroState.axis_flags[axis]['sync_on']     = micro_data.data.ctrl.eje[axis].flags & msg_app.AcdpAxisMovementsMovEjeDataFlagsBits.sync_on
     ws_vars.MicroState.axis_flags[axis]['em_stop']     = micro_data.data.ctrl.eje[axis].flags & msg_app.AcdpAxisMovementsMovEjeDataFlagsBits.em_stop
-    ws_vars.MicroState.axis_flags[axis]['maq_est']     = micro_data.data.ctrl.eje[axis].maq_est.estado
+    ws_vars.MicroState.axis_flags[axis]['maq_est_val'] = micro_data.data.ctrl.eje[axis].maq_est.estado
+    ws_vars.MicroState.axis_flags[axis]['estado']      = msg_app.StateMachine.get_state(ws_vars.MicroState.axis_flags[axis]['maq_est_val'])
     ws_vars.MicroState.axis_flags[axis]['flags_fin']   = micro_data.data.ctrl.eje[axis].maq_est.flags_fin
     ws_vars.MicroState.axis_flags[axis]['fin']         = check_end_flags(ws_vars.MicroState.axis_flags[axis]['flags_fin'])
     ws_vars.MicroState.axis_flags[axis]['axis_id']     = axis

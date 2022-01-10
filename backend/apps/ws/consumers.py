@@ -12,6 +12,32 @@ from apps.control.utils import variables as ctrl_var
 from apps.control.utils import functions as ctrl_fun
 
 
+class FrontConsumer(AsyncWebsocketConsumer):
+    async def connect(self):
+        await self.set_channel_info()
+        print("FRONT WS CONNECTED")
+        await self.accept()
+    
+    async def receive(self, text_data=None, bytes_data=None):
+        print(text_data)
+    
+    async def disconnected(self, close_code):
+        print("Front ws disconnected, code", close_code)
+        await self.delete_channel_info()
+        await self.close()
+    
+    @database_sync_to_async
+    def set_channel_info(self):
+        ChannelInfo.objects.create(
+            source = 'front',
+            name = self.channel_name
+        )
+    
+    @database_sync_to_async
+    def delete_channel_info(self):
+        channel_info = ChannelInfo.objects.get(name=self.channel_name)
+        channel_info.delete()
+
 class MicroConsumer(WebsocketConsumer):
 
     def connect(self):
@@ -28,7 +54,7 @@ class MicroConsumer(WebsocketConsumer):
             MicroState.last_rx_header.store_from_raw(bytes_data[:h_bytes_len])
             MicroState.last_rx_data.store_from_raw(bytes_data[h_bytes_len:])
             ctrl_fun.update_states(micro_data=MicroState.last_rx_data)
-            show_states(MicroState.last_rx_header, MicroState.last_rx_data)
+            # show_states(MicroState.last_rx_header, MicroState.last_rx_data)
         else:
             MicroState.last_rx_header.store_from_raw(bytes_data)
 
@@ -49,12 +75,12 @@ def show_states(header, data):
     # print('REM IO:', data.data.ctrl.rem_io.di16[0])
     # for key, val in MicroState.rem_o_states[0].items():
     #     print(key, val)
-    # for axis in MicroState.axis_flags:
-    #     print("-"*50)
-    #     print(axis)
+    for axis in MicroState.axis_flags:
+        print("-"*50)
+        print(axis)
     # print("\n", "-"*20, "AVANCE", "-"*20)
     # print(MicroState.eje_avance)
     # print("\n", "-"*20, "CARGA", "-"*20)
     # print(MicroState.eje_carga)
-    print("\n", "-"*20, "GIRO", "-"*20)
-    print(MicroState.eje_giro)
+    # print("\n", "-"*20, "GIRO", "-"*20)
+    # print(MicroState.eje_giro)
