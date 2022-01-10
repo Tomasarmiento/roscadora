@@ -337,7 +337,8 @@ class AcdpAxisMovementsMovPosDataMedDrv(BaseStructure):
     _fields_ = [
         ('drv_fbk', AcdpDrvFbkData),
         ('pos_fil', c_float),
-        ('vel_fil', c_float)
+        ('vel_fil', c_float),
+        ('torque_fil', c_float)
     ]
 
 
@@ -493,7 +494,7 @@ class AxisFlagsFin:
     FLGFIN_ECHO_TIMEOUT         = 1 << 4
     FLGFIN_POS_ABS_DISABLED     = 1 << 5
     FLGFIN_UNKNOWN_ZERO         = 1 << 6
-    FLGFIN_POSFEED_BACK_ERROR   = 1 << 7
+    FLGFIN_POS_FEEDBACK_ERROR   = 1 << 7
     FLGFIN_LIMIT_VEL_EXCEEDED   = 1 << 8
     FLGFIN_LIMIT_POS_EXCEEDED   = 1 << 9
     FLGFIN_LIMIT_FZA_EXCEEDED   = 1 << 10
@@ -882,9 +883,7 @@ class AcdpPc(BaseStructure):
                 'pos_homing_states': axis.mov_pos.homing.estado,
                 'pos_fil': axis.mov_pos.med_drv.pos_fil,
                 'vel_fil': axis.mov_pos.med_drv.vel_fil,
-                # Load
-                'load_pos_fil': axis.mov_pos.med_load.pos_fil,
-                'load_vel_fil': axis.mov_pos.med_load.vel_fil,
+                'torque': axis.mov_pos_med_drv.torque_fil
             })
         states['axis'] = axis_arr
         return states

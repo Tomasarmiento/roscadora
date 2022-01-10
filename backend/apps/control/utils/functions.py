@@ -55,13 +55,81 @@ def update_data_flags(micro_data):
     return micro_flags
 
 
-def updata_axis_flags(micro_data, axis):
+def check_end_flags(flags_value):
+    ok_bit                  = msg_app.AxisFlagsFin.FLGFIN_OK
+    cancel_bit              = msg_app.AxisFlagsFin.FLGFIN_CANCELLED
+    em_stop_bit             = msg_app.AxisFlagsFin.FLGFIN_EM_STOP
+    drv_homing_err_bit      = msg_app.AxisFlagsFin.FLGFIN_DRV_HOMING_ERROR
+    echo_timeout_bit        = msg_app.AxisFlagsFin.FLGFIN_ECHO_TIMEOUT
+    pos_abs_disabled_bit    = msg_app.AxisFlagsFin.FLGFIN_POS_ABS_DISABLED
+    unkown_zero_bit         = msg_app.AxisFlagsFin.FLGFIN_UNKNOWN_ZERO
+    pos_fbk_err_bit         = msg_app.AxisFlagsFin.FLGFIN_POS_FEEDBACK_ERROR
+    limit_vel_exceeded_bit  = msg_app.AxisFlagsFin.FLGFIN_LIMIT_VEL_EXCEEDED
+    limit_pos_exceeded_bit  = msg_app.AxisFlagsFin.FLGFIN_LIMIT_POS_EXCEEDED
+    limit_fza_exceeded_bit  = msg_app.AxisFlagsFin.FLGFIN_LIMIT_FZA_EXCEEDED
+    yield_bit               = msg_app.AxisFlagsFin.FLGFIN_YIELD
+    invalid_state_bit       = msg_app.AxisFlagsFin.FLGFIN_INVALID_STATE
+    drv_not_enabled_bit     = msg_app.AxisFlagsFin.FLGFIN_DRV_NOT_ENABLED
+    axis_disabled_bit       = msg_app.AxisFlagsFin.FLGFIN_AXIS_DISABLED
+    end_states = []
+    if flags_value & ok_bit == ok_bit:
+        end_states = 'ok'
+    else:
+        if flags_value & cancel_bit == cancel_bit:
+            end_states.append('cancel')
+        if flags_value & em_stop_bit == em_stop_bit:
+            end_states.append('em_stop')
+        if flags_value & drv_homing_err_bit == drv_homing_err_bit:
+            end_states.append('homming_error')
+        if flags_value & echo_timeout_bit == echo_timeout_bit:
+            end_states.append('echo_timeout')
+        if flags_value & pos_abs_disabled_bit == pos_abs_disabled_bit:
+            end_states.append('pos_abs_disabled')
+        if flags_value & unkown_zero_bit == unkown_zero_bit:
+            end_states.append('unkown_zero')
+        if flags_value & pos_fbk_err_bit == pos_fbk_err_bit:
+            end_states.append('pos_fbk_err')
+        if flags_value & limit_vel_exceeded_bit == limit_vel_exceeded_bit:
+            end_states.append('limit_vel_exceeded')
+        if flags_value & limit_pos_exceeded_bit == limit_pos_exceeded_bit:
+            end_states.append('limit_pos_exceeded')
+        if flags_value & limit_fza_exceeded_bit == limit_fza_exceeded_bit:
+            end_states.append('limit_fza_exceeded')
+        if flags_value & yield_bit == yield_bit:
+            end_states.append('yield')
+        if flags_value & invalid_state_bit == invalid_state_bit:
+            end_states.append('invalid_state')
+        if flags_value & drv_not_enabled_bit == drv_not_enabled_bit:
+            end_states.append('drv_not_enabled')
+        if flags_value & axis_disabled_bit == axis_disabled_bit:
+            end_states.append('axis_disabled')
+    
+    return end_states
 
-    ws_vars.MicroState.axis_flags[axis]['slave']        = micro_data.data.ctrl.eje.flags & msg_app.AcdpAxisMovementsMovEjeDataFlagsBits.slave
-    ws_vars.MicroState.axis_flags[axis]['sync_on']      = micro_data.data.ctrl.eje.flags & msg_app.AcdpAxisMovementsMovEjeDataFlagsBits.sync_on
-    ws_vars.MicroState.axis_flags[axis]['em_stop']      = micro_data.data.ctrl.eje.flags & msg_app.AcdpAxisMovementsMovEjeDataFlagsBits.em_stop
-    ws_vars.MicroState.axis_flags[axis]['maq_est']      = micro_data.data.ctrl.eje.maq_est.estado
-    ws_vars.MicroState.axis_flags[axis]['flags_fin']    = micro_data.data.ctrl.eje.maq_est.flags_fin
+
+def update_axis_flags(micro_data, axis):
+    ws_vars.MicroState.axis_flags[axis]['slave']       = micro_data.data.ctrl.eje[axis].flags & msg_app.AcdpAxisMovementsMovEjeDataFlagsBits.slave
+    ws_vars.MicroState.axis_flags[axis]['sync_on']     = micro_data.data.ctrl.eje[axis].flags & msg_app.AcdpAxisMovementsMovEjeDataFlagsBits.sync_on
+    ws_vars.MicroState.axis_flags[axis]['em_stop']     = micro_data.data.ctrl.eje[axis].flags & msg_app.AcdpAxisMovementsMovEjeDataFlagsBits.em_stop
+    ws_vars.MicroState.axis_flags[axis]['maq_est']     = micro_data.data.ctrl.eje[axis].maq_est.estado
+    ws_vars.MicroState.axis_flags[axis]['flags_fin']   = micro_data.data.ctrl.eje[axis].maq_est.flags_fin
+    ws_vars.MicroState.axis_flags[axis]['fin']         = check_end_flags(ws_vars.MicroState.axis_flags[axis]['flags_fin'])
+    ws_vars.MicroState.axis_flags[axis]['axis_id']     = axis
+
+
+def update_axis_data(micro_data):
+    for i in range(ctrl_vars.AXIS_IDS['axis_amount']):
+        update_axis_flags(micro_data, i)
+        if i == ctrl_vars.AXIS_IDS['avance']:
+            ws_vars.MicroState.eje_avance['pos_fil'] = micro_data.data.ctrl.eje[i].mov_pos.med_drv.pos_fil
+            ws_vars.MicroState.eje_avance['vel_fil'] = micro_data.data.ctrl.eje[i].mov_pos.med_drv.vel_fil
+        elif i == ctrl_vars.AXIS_IDS['carga']:
+            ws_vars.MicroState.eje_carga['pos_fil'] = micro_data.data.ctrl.eje[i].mov_pos.med_drv.pos_fil
+            ws_vars.MicroState.eje_carga['vel_fil'] = micro_data.data.ctrl.eje[i].mov_pos.med_drv.vel_fil
+        else:
+            ws_vars.MicroState.eje_giro['pos_fil'] = micro_data.data.ctrl.eje[i].mov_pos.med_drv.pos_fil
+            ws_vars.MicroState.eje_giro['vel_fil'] = micro_data.data.ctrl.eje[i].mov_pos.med_drv.vel_fil
+            ws_vars.MicroState.eje_giro['torque'] = micro_data.data.ctrl.eje[i].mov_pos.med_drv.torque_fil
 
 
 def update_rem_io_states(micro_data):
@@ -142,6 +210,7 @@ def update_io_states(micro_data):
 def update_states(micro_data):
     update_io_states(micro_data)
     update_data_flags(micro_data)
+    update_axis_data(micro_data)
 
 
 ################################################################################################

@@ -21,7 +21,12 @@ class MicroState:
 
     # Flags
     micro_flags     = {}            # Flags on the data part of the rx message
-    axis_flags      = [{}, {}, {}]  # Indexes corresponds with Axis index
+    axis_flags      = [{}, {}, {}]  # Indexes corresponds with axis index
+
+    # Measurements
+    eje_carga       = {}
+    eje_avance      = {}
+    eje_giro        = {}
 
 
 class WsCodes:

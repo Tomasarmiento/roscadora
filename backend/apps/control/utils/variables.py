@@ -10,7 +10,8 @@ COMMAND_DEFAULT_VALUES = {
 AXIS_IDS = {
     'avance': AcdpAxisMovementEnums.ID_X_EJE_AVANCE,
     'carga': AcdpAxisMovementEnums.ID_X_EJE_CARGA,
-    'giro': AcdpAxisMovementEnums.ID_X_EJE_GIRO
+    'giro': AcdpAxisMovementEnums.ID_X_EJE_GIRO,
+    'axis_amount': AcdpAxisMovementEnums.CANT_EJES
 }
 
 LOC_DI_STATES = {}

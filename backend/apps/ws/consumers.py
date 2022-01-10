@@ -28,7 +28,7 @@ class MicroConsumer(WebsocketConsumer):
             MicroState.last_rx_header.store_from_raw(bytes_data[:h_bytes_len])
             MicroState.last_rx_data.store_from_raw(bytes_data[h_bytes_len:])
             ctrl_fun.update_states(micro_data=MicroState.last_rx_data)
-            # show_states(MicroState.last_rx_header, MicroState.last_rx_data)
+            show_states(MicroState.last_rx_header, MicroState.last_rx_data)
         else:
             MicroState.last_rx_header.store_from_raw(bytes_data)
 
@@ -45,22 +45,16 @@ class MicroConsumer(WebsocketConsumer):
 
 
 def show_states(header, data):
-    print("-"*50,)
+    # print("-"*50,)
     # print('REM IO:', data.data.ctrl.rem_io.di16[0])
-    for key, val in MicroState.rem_o_states[0].items():
-        print(key, val)
-    # for i in range(3):
-        # axis = data.get_states()['axis'][i]
-        # print(axis.get_values())
-        # print(
-        #     # 'Flags:', axis['flags'],
-        #     # '\nFlags fin de estado:', axis['flags_fin'],
-        #     # '\nMaquina de estados:', axis['state'],
-        #     # '\nHoming states:', axis['pos_homing_states'],
-        #     '\nPosicion:', axis['pos_fil'],
-        #     '\nVelocidad:', axis['vel_fil'],
-            # '\nPos carga:', axis['load_pos_fil'],
-            # '\nVel carga:', axis['load_vel_fil'],
-            # '\nRem do:', data.rem_do,
-            # '\nRem_di', data.rem_di
-        # )
+    # for key, val in MicroState.rem_o_states[0].items():
+    #     print(key, val)
+    # for axis in MicroState.axis_flags:
+    #     print("-"*50)
+    #     print(axis)
+    # print("\n", "-"*20, "AVANCE", "-"*20)
+    # print(MicroState.eje_avance)
+    # print("\n", "-"*20, "CARGA", "-"*20)
+    # print(MicroState.eje_carga)
+    print("\n", "-"*20, "GIRO", "-"*20)
+    print(MicroState.eje_giro)

@@ -422,7 +422,8 @@ class AcdpDrvFbkConfig(BaseStructure):
         # ('flags', AcdpDrvFbkConfigFlags),
         ('flags', c_uint32),
         ('pos', AcdpDrvFbkConfigPos),
-        ('vel', AcdpDrvFbkConfigVel)
+        ('vel', AcdpDrvFbkConfigVel),
+        ('torque', AcdpDrvFbkConfigVel)
     ]
 
 
@@ -456,7 +457,8 @@ class AcdpDrvFbkData(BaseStructure):
         ('config', AcdpDrvFbkConfig),
         ('pos_abs', c_float),           # Pos sin cerar
         ('pos', c_float),
-        ('vel', c_float)                # [mm/s]
+        ('vel', c_float),               # [mm/s]
+        ('torque', c_float)
     ]
 
 
