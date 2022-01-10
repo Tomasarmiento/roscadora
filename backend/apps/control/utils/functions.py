@@ -1,7 +1,9 @@
 from apps.service.acdp.handlers import build_msg
 from apps.service.api.variables import Commands, COMMANDS
 from apps.service.acdp import messages_app as msg_app
+
 from apps.control.utils import variables as ctrl_vars
+
 from apps.ws.utils.handlers import send_message
 from apps.ws.utils.functions import get_ch_info
 from apps.ws.utils import variables as ws_vars
@@ -28,6 +30,34 @@ def init_loc_io():
         ctrl_vars.LOC_DI_STATES[key] = None
     for key in ctrl_vars.LOC_DO_ARR:
         ctrl_vars.LOC_DO_STATES[key] = None
+
+
+def init_routine_info(routine_model):
+    routines = routine_model.objects.all()
+    rtn_names = []
+    for routine in routines:
+        rtn_names.append(routine.name)
+    for rtn_name in ctrl_vars.ROUTINE_NAMES:
+        if rtn_name not in rtn_names:
+            routine_model.objects.create(name=rtn_name, running=0)
+
+
+def init_comands_ref_rates():
+    for key, value in ctrl_vars.COMMAND_DEFAULT_VALUES.items():
+        ctrl_vars.COMMAND_REF_RATES[key] = value
+
+# -------------------------------------------------------------------------------------------- #
+# --------------------------------------- Routines ------------------------------------------- #
+# -------------------------------------------------------------------------------------------- #
+
+
+def get_running_routines(routine_model):
+    routines = routine_model.objects.all()
+    running_routines = []
+    for rtn in routines:
+        if rtn.running == 1:
+            running_routines.append(rtn.name)
+    return running_routines
 
 
 # -------------------------------------------------------------------------------------------- #
@@ -214,17 +244,31 @@ def update_states(micro_data):
     update_axis_data(micro_data)
 
 
-################################################################################################
-######################################## COMMANDS ##############################################
-################################################################################################
-
-
 # -------------------------------------------------------------------------------------------- #
 # ------------------------------ Set remote/local outputs ------------------------------------ #
 # -------------------------------------------------------------------------------------------- #
 
+def set_rem_do(command, key, group, bool_value):
+    msg_id = ws_vars.MicroState.last_rx_header.get_msg_id() + 1
+    ws_vars.MicroState.msg_id = msg_id
 
-def set_rem_do(command, keys, group):
+    mask = None
+    out_value = bool_value
+    
+    if group == 0:
+        bit = 0x0000 + 1 << ctrl_vars.REM_DO_G1_BITS[key]
+    elif group == 1:
+        bit = 0x0000 + 1 << ctrl_vars.REM_DO_G2_BITS[key]
+    mask = bit
+
+    if bool_value:
+        out_value = bit
+    else:
+        out_value = 0
+    return build_msg(command, msg_id=msg_id, mask=mask, out_value=out_value, group=group)
+
+
+def toggle_rem_do(command, keys, group):
     msg_id = ws_vars.MicroState.last_rx_header.get_msg_id() + 1
     ws_vars.MicroState.msg_id = msg_id
 

@@ -1,5 +1,5 @@
 from django.apps import AppConfig
-from apps.control.utils.functions import init_rem_io
+from apps.control.utils import functions
 
 
 class ControlConfig(AppConfig):
@@ -7,4 +7,7 @@ class ControlConfig(AppConfig):
     name = 'apps.control'
 
     def ready(self) -> None:
-        init_rem_io()
+        from apps.control.models import RoutineInfo
+        functions.init_routine_info(RoutineInfo)
+        functions.init_rem_io()
+        functions.init_comands_ref_rates()

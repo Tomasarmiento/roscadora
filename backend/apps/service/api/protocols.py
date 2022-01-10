@@ -99,7 +99,9 @@ async def ws_consumer(websocket):       # Fordwards message to micro. Message is
         except websockets.exceptions.ConnectionClosed:
             break
         if UDPProtocol.connected:
-            print("Sending msg")
+            # header = AcdpHeader()
+            # header.store_from_raw(rx_msg[:header.bytes_length])
+            # print("Sending msg", header.get_msg_id())
             send_message(rx_msg, UDPProtocol.transport)
 
 

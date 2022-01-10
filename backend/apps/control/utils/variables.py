@@ -1,11 +1,10 @@
 from apps.service.acdp.messages_app import AcdpAxisMovementEnums
 
 COMMAND_DEFAULT_VALUES = {
-    'vel_eje_giro': 360.0,
-    'vel_eje_avance': 5.0,
-    'vel_eje_carga': 180.0
+    'vel_giro': 360.0,
+    'vel_avance': 5.0,
+    'vel_carga': 90.0
 }
-
 
 AXIS_IDS = {
     'avance': AcdpAxisMovementEnums.ID_X_EJE_AVANCE,
@@ -13,6 +12,42 @@ AXIS_IDS = {
     'giro': AcdpAxisMovementEnums.ID_X_EJE_GIRO,
     'axis_amount': AcdpAxisMovementEnums.CANT_EJES
 }
+
+COMMAND_REF_RATES = {}
+
+# -------------------------------------------------------------------------------------------- #
+# --------------------------------------- Routines ------------------------------------------- #
+# -------------------------------------------------------------------------------------------- #
+
+ROUTINE_IDS = {
+    'cerado':   0,
+    'carga':    1,
+    'descarga': 2,
+    'roscado':  3
+}
+
+ROUTINE_NAMES = [
+    'cerado',
+    'carga',
+    'descarga',
+    'roscado'
+]
+
+LOAD_STEPS = [
+    0,
+    120,
+    240,
+    360,
+    480,
+    -480,
+    -360,
+    -240,
+    -120
+]
+
+# -------------------------------------------------------------------------------------------- #
+# --------------------------------- Remote/Local outputs ------------------------------------- #
+# -------------------------------------------------------------------------------------------- #
 
 LOC_DI_STATES = {}
 
@@ -169,8 +204,8 @@ REM_DO_G2_ARR = [
 REM_DI_G1_ARR = [
     'puntera_descarga_contraida',  # 1 - 0
     'puntera_descarga_expandida',  # 2 - 1
-    'puntera_carga_contraida',  # 3 - 2
-    'puntera_carga_expandida',  # 4 - 3
+    'puntera_carga_contraida',      # 3 - 2
+    'puntera_carga_expandida',      # 4 - 3
     'brazo_cargador_contraido',     # 5 - 4
     'brazo_cargador_expandido',     # 6 - 5
     'brazo_descarga_contraido',     # 7 - 6
@@ -194,11 +229,11 @@ REM_DI_G2_ARR = [
     'acople_lubric_expandido',      # 22 - 5
     'clampeo_plato_contraido',      # 23 - 6
     'clampeo_plato_expandido',      # 24 - 7
-    'pieza_en_boquilla_descarga',          # 25 - 8
-    'pieza_en_boquilla_carga',          # 26 - 9
-    'presencia_cupla_en_cargador',            # 27 - 10
+    'pieza_en_boquilla_descarga',   # 25 - 8
+    'pieza_en_boquilla_carga',      # 26 - 9
+    'presencia_cupla_en_cargador',  # 27 - 10
     '',                             # 28 - 11
-    'cupla_por_tobogan_descarga',            # 29 - 12
+    'cupla_por_tobogan_descarga',   # 29 - 12
     '',                             # 30 - 13
     '',                             # 31 - 14
     'baja_presion',                 # 32 - 15
