@@ -199,7 +199,7 @@
     </div>
 </div>   
 
-<div class="card col-md-5 mx-auto my-3 py-1 px-1 float-left" style="color: black;">
+<div class="card  mx-auto my-3 py-1 px-1 float-left" style="color: black; left: 125px;">
     <form action="{% url 'parameters-update' %}" method="post" id="{{3}}">
         {% csrf_token%}
         <table class="table table-sm table-striped table-borderless" style="color: black;" id="tablaCuplaModelo3">
@@ -293,11 +293,11 @@
         <input type="hidden" name="part_model" value="3">
         <input type="submit" value="" class="d-none">
     </form>
+    
 </div>
 <div class="row justify-content-center container-fluid">
-    <div class="col-md-12 text-right justify-content-center">
-        <a type="button" class="btn btn-secondary btn-lg" href="{% url 'home' %}">Volver</a>
+    <div class="col-md-12 text-right justify-content-center" style="bottom: 63px;right: 70px;">
+        <a type="button" class="btn btn-primary btn-lg" href="{% url 'home' %}">Volver</a>
     </div>
 </div>
-
 {% endblock %}

@@ -2,83 +2,12 @@
 {% load static %}
 {% block content %}
 
-<div class="row m-auto  d-flex justify-content-around mx-auto py-3 mx-5 px-0 " id="sensores">
-    <div class="container-fluid col-md-3 card p-1 border shadow rounded mb-5" style="height: 280px">
-        <table class="table table-sm table-striped table-borderless" style="color: black; " id="tablaSensoresGripper2Descarga">
+<div class="row m-auto d-flex justify-content-around mx-auto py-3 mx-5 px-0" id="sensores">
+    <div class="container-fluid col-md-3 card p-1 border shadow rounded mb-3" style="height: 415px;">
+        <table class="table table-sm table-striped table-borderless" style="color: black;" id="tablaSensoresCarga">
             <thead>
                 <tr>
-                    <th colspan="2" style="text-align: center; background-color: #52D5DA; color:black; border-top-right-radius: 8px; border-top-left-radius: 8px;">Sensores gripper descarga</th>
-                </tr>
-                <tr>
-                    <th>Sensor</th>
-                    <th class="text-center">Estado</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>Gripper descarga vertical arriba</td>
-                    <td><div class="led led-grey" id="gripperVerticalDownloaderUp"></div></td>
-                </tr>
-                <tr>
-                    <td>Gripper descarga vertical abajo</td>
-                    <td><div class="led led-grey" id="gripperVerticalDownloaderDown"></div></td>
-                </tr>
-                <tr> 
-                    <td>Gripper descarga horizontal adelante</td>
-                    <td><div class="led led-grey" id="gripperHorizontalDownloaderFwrd"></div></td>
-                </tr>
-                <tr>
-                    <td>Gripper descarga horizontal atras</td>
-                    <td><div class="led led-grey" id="gripperHorizontalDownloaderBkwrd"></div></td>
-                </tr>
-                <tr>
-                    <td>Gripper descarga pinza accionada</td>
-                    <td><div class="led led-grey" id="gripperDownloaderActuated"></div></td>
-                </tr>
-                <tr>
-                    <td>Gripper descarga pinza liberada</td>
-                    <td><div class="led led-grey" id="gripperDownloaderReleased"></div></td>
-                </tr>
-            </tbody>
-        </table>
-
-        <div class="container-fluid col-md-3 card p-1 border shadow rounded mb-3" style="margin-top: 50px; min-height: 180px;min-width: 300px;">
-            <table class="table table-sm table-striped table-borderless" style="color: black" id="tablaSensoresServoMotores">
-                <thead>
-                    <tr>
-                        <th colspan="2" style="text-align: center; background-color: #52D5DA; color:black; border-top-right-radius: 8px; border-top-left-radius: 8px;">Sensores Servo Motores</th>
-                    </tr>
-                    <tr>
-                        <th>Sensor</th>
-                        <th class="text-center">Estado</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Eje lineal limite Forward</td>
-                        <td><div class="led led-grey" id="axisLinearFwrd"></div></td>
-                    </tr>
-                    <tr>
-                        <td>Eje lineal Homing</td>
-                        <td><div class="led led-grey" id="axisLinearHom"></div></td>
-                    </tr>
-                    <tr>
-                        <td>Eje Rotativo Homing</td>
-                        <td><div class="led led-grey" id="axisRotativeHom"></div></td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-    
- 
-
-
-    <div class="container-fluid col-md-3 card p-1 border shadow rounded mb-5" style="margin-left: 0px; height: 410px;">
-        <table class="table table-sm table-striped table-borderless" style="color: black;" id="tablaSensoresPinzasCargaDescarga">
-            <thead>
-                <tr>
-                    <th colspan="3" style="text-align: center; background-color: #52D5DA; color:black; border-top-right-radius: 8px; border-top-left-radius: 8px;">Sensores pinzas carga/descarga</th>
+                    <th colspan="3" style="text-align: center; background-color: #52D5DA; color:black; border-top-right-radius: 8px; border-top-left-radius: 8px;">Sensores carga</th>
                 </tr>
                 <tr>
                     <th>Sensor</th>
@@ -112,62 +41,6 @@
                     <td><div class="led led-grey" id="gripperLoaderCupla"></div></td>
                     <td class="text-center">26</td>
                 </tr>
-                <tr>
-                    <td>Boquilla descarga atras</td>
-                    <td><div class="led led-grey" id="gripperDownloadBkwrd"></div></td>
-                    <td class="text-center">1</td>
-                </tr>
-                <tr>
-                    <td>Boquilla descarga adelante</td>
-                    <td><div class="led led-grey" id="gripperDownloadFwrd"></div></td>
-                    <td class="text-center">2</td>
-                </tr>
-                <tr>
-                    <td>Boquilla descarga liberada</td>
-                    <td><div class="led led-grey" id="gripperDownloadReleased"></div></td>
-                    <td class="text-center">12</td>
-                </tr>
-                <tr>
-                    <td>Boquilla descarga accionada</td>
-                    <td><div class="led led-grey" id="gripperDownloadActuated"></div></td>
-                    <td class="text-center">11</td>
-                </tr>
-                <tr>
-                    <td>Boquilla descarga con cupla</td>
-                    <td><div class="led led-grey" id="gripperDownloadCupla"></div></td>
-                    <td class="text-center">25</td>
-                </tr>
-            </tbody>
-            
-        </table>
-        
-    </div>
-    
-    
-    
-    <div class="container-fluid col-md-3 card p-1 border shadow rounded mb-3" style="height: 250px; margin-left:1px;">
-        <table class="table table-sm table-striped table-borderless" style="color: black;" id="tablaSensoresVerticalGiroCarga">
-            <thead>
-                <tr>
-                    <th colspan="3" style="text-align: center; background-color: #52D5DA; color:black; border-top-right-radius: 8px; border-top-left-radius: 8px;">Sensores vertical y giro de carga</th>
-                </tr>
-                <tr>
-                    <th>Sensor</th>
-                    <th class="text-center">Estado</th>
-                    <th class="text-center">N°DI</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>Vertical carga arriba</td>
-                    <td><div class="led led-grey" id="verticalLoadUp"></div></td>
-                    <td class="text-center">16</td>
-                </tr>
-                <tr>
-                    <td>Vertical carga abajo</td>
-                    <td><div class="led led-grey" id="verticalLoadDown"></div></td>
-                    <td class="text-center">15</td>
-                </tr>
                 <tr> 
                     <td>Giro brazo carga arriba</td>
                     <td><div class="led led-grey" id="turnLoadUp"></div></td>
@@ -179,15 +52,110 @@
                     <td class="text-center">6</td>
                 </tr>
                 <tr>
+                    <td>Vertical carga arriba</td>
+                    <td><div class="led led-grey" id="verticalLoadUp"></div></td>
+                    <td class="text-center">16</td>
+                </tr>
+                <tr>
+                    <td>Vertical carga abajo</td>
+                    <td><div class="led led-grey" id="verticalLoadDown"></div></td>
+                    <td class="text-center">15</td>
+                </tr>
+                <tr>
                     <td>Presencia cupla en cargador</td>
                     <td><div class="led led-grey" id="presenceCuplaOnLoad"></div></td>
                     <td class="text-center">27</td>
                 </tr>
             </tbody>
         </table>
-
-
-        <div class="container-fluid col-md-12 card p-1 border shadow rounded mb-3" style="margin-top: 50px;">
+    </div>
+        <div class="container-fluid col-md-3 card p-1 border shadow rounded mb-5">
+            <table class="table table-sm table-striped table-borderless" style="color: black;" id="tablaSensoreDescarga">
+                <thead>
+                    <tr>
+                        <th colspan="3" style="text-align: center; background-color: #52D5DA; color:black; border-top-right-radius: 8px; border-top-left-radius: 8px;">Sensores descarga</th>
+                    </tr>
+                    <tr>
+                        <th>Sensor</th>
+                        <th class="text-center">Estado</th>
+                        <th class="text-center">N°DI</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Boquilla descarga atras</td>
+                        <td><div class="led led-grey" id="gripperDownloadBkwrd"></div></td>
+                        <td class="text-center">1</td>
+                    </tr>
+                    <tr>
+                        <td>Boquilla descarga adelante</td>
+                        <td><div class="led led-grey" id="gripperDownloadFwrd"></div></td>
+                        <td class="text-center">2</td>
+                    </tr>
+                    <tr>
+                        <td>Boquilla descarga liberada</td>
+                        <td><div class="led led-grey" id="gripperDownloadReleased"></div></td>
+                        <td class="text-center">12</td>
+                    </tr>
+                    <tr>
+                        <td>Boquilla descarga accionada</td>
+                        <td><div class="led led-grey" id="gripperDownloadActuated"></div></td>
+                        <td class="text-center">11</td>
+                    </tr>
+                    <tr>
+                        <td>Boquilla descarga con cupla</td>
+                        <td><div class="led led-grey" id="gripperDownloadCupla"></div></td>
+                        <td class="text-center">25</td>
+                    </tr>
+                    <tr>
+                        <td>Gripper descarga vertical arriba</td>
+                        <td><div class="led led-grey" id="gripperVerticalDownloaderUp"></div></td>
+                        <td class="text-center">19</td>
+                    </tr>
+                    <tr>
+                        <td>Gripper descarga vertical abajo</td>
+                        <td><div class="led led-grey" id="gripperVerticalDownloaderDown"></div></td>
+                        <td class="text-center">20</td>
+                    </tr>
+                    <tr> 
+                        <td>Gripper descarga horizontal adelante</td>
+                        <td><div class="led led-grey" id="gripperHorizontalDownloaderFwrd"></div></td>
+                        <td class="text-center">18</td>
+                    </tr>
+                    <tr>
+                        <td>Gripper descarga horizontal atras</td>
+                        <td><div class="led led-grey" id="gripperHorizontalDownloaderBkwrd"></div></td>
+                        <td class="text-center">17</td>
+                    </tr>
+                    <tr>
+                        <td>Gripper descarga accionado</td>
+                        <td><div class="led led-grey" id="gripperDownloaderActuated"></div></td>
+                        <td class="text-center">9</td>
+                    </tr>
+                    <tr>
+                        <td>Gripper descarga liberada</td>
+                        <td><div class="led led-grey" id="gripperDownloaderReleased"></div></td>
+                        <td class="text-center">10</td>
+                    </tr>
+                    <tr>
+                        <td>Giro brazo descarga arriba</td>
+                        <td><div class="led led-grey" id="turnArmDownloadUp"></div></td>
+                        <td class="text-center">7</td>
+                    </tr>
+                    <tr>
+                        <td>Giro brazo descarga abajo</td>
+                        <td><div class="led led-grey" id="turnArmDownloadDown"></div></td>
+                        <td class="text-center">8</td>
+                    </tr>
+                    <tr>
+                        <td>Cupla por tobogán descarga</td>
+                        <td><div class="led led-grey" id="cuplaToboganDownload"></div></td>
+                        <td class="text-center">29</td>
+                    </tr>
+                </tbody>        
+            </table>
+        </div>    
+        <div class="container-fluid col-md-3 card p-1 border shadow rounded mb-3" style="height: 235px;">
             <table class="table table-sm table-striped table-borderless" style="color: black;" id="tablaPlato">
                 <thead>
                     <tr>
@@ -222,43 +190,51 @@
                     </tr>
                 </tbody>
             </table>
-        </div>
-
-        <div class="row justify-content-center container-fluid">
-            <div class="col-md-12 text-right justify-content-center">
-                <a type="button" class="btn btn-secondary btn-lg" href="{% url 'home' %}">Volver</a>
-                <a type="button" class="btn btn-secondary btn-lg" href="{% url 'sensoresPagina2' %}">Pagina 2</a>
+        <div class="container-fluid card p-1 border shadow rounded mb-3" style="top: 50px;">
+                <table class="table table-sm table-striped table-borderless" style="color: black" id="tablaSensoresMotoresDrive">
+                    <thead>
+                        <tr>
+                            <th colspan="2" style="text-align: center; background-color: #52D5DA; color:black; border-top-right-radius: 8px; border-top-left-radius: 8px;">Motores sensores en el Drive</th>
+                        </tr>
+                        <tr>
+                            <th>Sensor</th>
+                            <th class="text-center">Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Eje lineal limite Forward</td>
+                            <td><div class="led led-grey" id="axisLinearFwrd"></div></td>
+                        </tr>
+                        <tr>
+                            <td>Eje lineal Homing</td>
+                            <td><div class="led led-grey" id="axisLinearHom"></div></td>
+                        </tr>
+                        <tr>
+                            <td>Eje Cabezal Homing</td>
+                            <td><div class="led led-grey" id="axisCabezalHom"></div></td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
+            
+            <div class="col-md-12 text-right justify-content-center" style="top: 60px;">
+                <a type="button" class="btn btn-secondary btn-lg" href="{% url 'home' %}">Volver</a>
+                <a type="button" class="btn btn-primary btn-lg" href="{% url 'sensoresPagina2' %}">Pagina 2</a>
+            </div>
+            
         </div>
-    </div>
+</div> 
+
     
-</div>
-<div class="col-md-12 d-flex justify-content-around mx-auto my-0 px-0" style="color: black;">
     
-    <div class="container-fluid col-md-3 card p-1 border shadow rounded my-0 mb-5" >
-        <table class="table table-sm table-striped table-borderless" style="color: black;" id="tablaSensoresGiroDescarga">
-            <thead>
-                <tr>
-                    <th colspan="2" style="text-align: center; background-color: #52D5DA; color:black; border-top-right-radius: 8px; border-top-left-radius: 8px;">Sensores giro descarga</th>
-                </tr>
-                <tr>
-                    <th>Sensor</th>
-                    <th class="text-center">Estado</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>Giro brazo descarga arriba</td>
-                    <td><div class="led led-grey" id="turnArmDownloadUp"></div></td>
-                </tr>
-                <tr>
-                    <td>Giro brazo descarga abajo</td>
-                    <td><div class="led led-grey" id="turnArmDownloadDown"></div></td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-</div>
+    
+
+
+
+   
+    
+
 {% endblock %}
 
 
