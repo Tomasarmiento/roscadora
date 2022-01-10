@@ -55,6 +55,15 @@ def update_data_flags(micro_data):
     return micro_flags
 
 
+def updata_axis_flags(micro_data, axis):
+
+    ws_vars.MicroState.axis_flags[axis]['slave']        = micro_data.data.ctrl.eje.flags & msg_app.AcdpAxisMovementsMovEjeDataFlagsBits.slave
+    ws_vars.MicroState.axis_flags[axis]['sync_on']      = micro_data.data.ctrl.eje.flags & msg_app.AcdpAxisMovementsMovEjeDataFlagsBits.sync_on
+    ws_vars.MicroState.axis_flags[axis]['em_stop']      = micro_data.data.ctrl.eje.flags & msg_app.AcdpAxisMovementsMovEjeDataFlagsBits.em_stop
+    ws_vars.MicroState.axis_flags[axis]['maq_est']      = micro_data.data.ctrl.eje.maq_est.estado
+    ws_vars.MicroState.axis_flags[axis]['flags_fin']    = micro_data.data.ctrl.eje.maq_est.flags_fin
+
+
 def update_rem_io_states(micro_data):
     g_1_i = {}
     g_2_i = {}
@@ -186,26 +195,33 @@ def set_rem_do(command, keys, group):
     return build_msg(command, msg_id=msg_id, mask=mask, out_value=out_value, group=group)
 
 
-def set_loc_do(out_name, out_id, out_value):
+def set_loc_do(command, out_name, out_value):
     bit = None
     msg_id = ws_vars.MicroState.last_rx_header.get_msg_id() + 1
     ws_vars.MicroState.msg_id = msg_id
-    if out_id > 16: bit = ctrl_vars.REM_DO_G2_BITS[out_name]
-    else:   bit = ctrl_vars.REM_DO_G1_BITS[out_name]
-    header, data = build_msg(Commands.rem_do_set, bit=bit, msg_id=msg_id, out_value=out_value)
-    msg = header.pacself() + data.pacself()
-    send_message(msg)
+    bit = ctrl_vars.LOC_DO_BITS[out_name]
+    mask = bit
+    if ctrl_vars.LOC_DI_STATES[out_name]:
+        out_value = 0
+    else:
+        out_value = bit
+    return build_msg(Commands.loc_do_set, msg_id=msg_id, out_value=out_value, mask=mask)
+
+
+# -------------------------------------------------------------------------------------------- #
+# -------------------------------------- General --------------------------------------------- #
+# -------------------------------------------------------------------------------------------- #
 
 
 def sync_on(paso):
     msg_id = ws_vars.MicroState.last_rx_header.get_msg_id() + 1
     ws_vars.MicroState.msg_id = msg_id
-    header = build_msg(Commands.sync_on[0], msg_id = msg_id, paso=paso)
+    header = build_msg(Commands.sync_on, msg_id = msg_id, paso=paso)
     send_message(header.pacself())
 
 
 def stop():
     msg_id = ws_vars.MicroState.last_rx_header.get_msg_id() + 1
     ws_vars.MicroState.msg_id = msg_id
-    header = build_msg(Commands.stop[0], msg_id = msg_id)
+    header = build_msg(Commands.stop, msg_id = msg_id)
     send_message(header.pacself())

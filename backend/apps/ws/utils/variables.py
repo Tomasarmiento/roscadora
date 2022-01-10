@@ -2,11 +2,14 @@ from apps.service.acdp.acdp import AcdpHeader
 from apps.service.acdp.messages_app import AcdpPc
 
 class MicroState:
-    msg_id          = 0
-    cmd_rejected    = False
-    cmd_ok          = True
+    # Comunications
     last_rx_header  = AcdpHeader()
     last_rx_data    = AcdpPc()
+    msg_id          = 0         # Id of last msg sent
+    cmd_rejected    = False
+    cmd_ok          = True
+
+    # Remote/Local digital I/O
     rem_i_states    = []
     rem_o_states    = []
     rem_i           = []
@@ -15,7 +18,10 @@ class MicroState:
     loc_o_states    = None
     loc_i           = None
     loc_o           = None
-    micro_flags     = {}
+
+    # Flags
+    micro_flags     = {}            # Flags on the data part of the rx message
+    axis_flags      = [{}, {}, {}]  # Indexes corresponds with Axis index
 
 
 class WsCodes:

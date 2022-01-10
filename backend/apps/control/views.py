@@ -34,7 +34,7 @@ def manual_lineal(request):
     axis = int(req_data[1][1])
     ref_rate = None
     print(params)
-    if command != Commands.stop[0]:
+    if command != Commands.stop:
         for item in req_data[2:]:
             key = item[0]
             value = item[1]
