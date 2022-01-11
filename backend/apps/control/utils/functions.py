@@ -151,16 +151,9 @@ def update_axis_flags(micro_data, axis):
 def update_axis_data(micro_data):
     for i in range(ctrl_vars.AXIS_IDS['axis_amount']):
         update_axis_flags(micro_data, i)
-        if i == ctrl_vars.AXIS_IDS['avance']:
-            ws_vars.MicroState.eje_avance['pos_fil'] = micro_data.data.ctrl.eje[i].mov_pos.med_drv.pos_fil
-            ws_vars.MicroState.eje_avance['vel_fil'] = micro_data.data.ctrl.eje[i].mov_pos.med_drv.vel_fil
-        elif i == ctrl_vars.AXIS_IDS['carga']:
-            ws_vars.MicroState.eje_carga['pos_fil'] = micro_data.data.ctrl.eje[i].mov_pos.med_drv.pos_fil
-            ws_vars.MicroState.eje_carga['vel_fil'] = micro_data.data.ctrl.eje[i].mov_pos.med_drv.vel_fil
-        else:
-            ws_vars.MicroState.eje_giro['pos_fil'] = micro_data.data.ctrl.eje[i].mov_pos.med_drv.pos_fil
-            ws_vars.MicroState.eje_giro['vel_fil'] = micro_data.data.ctrl.eje[i].mov_pos.med_drv.vel_fil
-            ws_vars.MicroState.eje_giro['torque'] = micro_data.data.ctrl.eje[i].mov_pos.med_drv.torque_fil
+        ws_vars.MicroState.axis_measures[i]['pos_fil'] = micro_data.data.ctrl.eje[i].mov_pos.med_drv.pos_fil
+        ws_vars.MicroState.axis_measures[i]['vel_fil'] = micro_data.data.ctrl.eje[i].mov_pos.med_drv.vel_fil
+        ws_vars.MicroState.axis_measures[i]['torque'] = micro_data.data.ctrl.eje[i].mov_pos.med_drv.torque_fil
 
 
 def update_rem_io_states(micro_data):

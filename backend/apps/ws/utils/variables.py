@@ -24,9 +24,7 @@ class MicroState:
     axis_flags      = [{}, {}, {}]  # Indexes corresponds with axis index
 
     # Measurements
-    eje_carga       = {}
-    eje_avance      = {}
-    eje_giro        = {}
+    axis_measures  = [{}, {}, {}]
 
 
 class WsCodes:
