@@ -214,6 +214,19 @@ def update_states(micro_data):
     update_axis_data(micro_data)
 
 
+def get_front_states():
+    data = {
+        'husillo_rpm': ws_vars.MicroState,
+        'husillo_torque': ws_vars.MicroState,
+
+        'cabezal_pos': ws_vars.MicroState,
+        'cabezal_vel': ws_vars.MicroState,
+
+        'avance_pos': ws_vars.MicroState,
+        'avance_vel': ws_vars.MicroState,
+    }
+    return data
+
 ################################################################################################
 ######################################## COMMANDS ##############################################
 ################################################################################################

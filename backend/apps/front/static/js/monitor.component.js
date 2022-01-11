@@ -31,14 +31,14 @@ export function Monitorear(dataWs) {
   
     if (dataWs) {
       //Monitor
-      rpmActual.innerHTML = dataWs.v_rpm.toFixed(1);
-      torqueActual.innerHTML = dataWs.v_torque.toFixed(1);
+      rpmActual.innerHTML = dataWs.husillo_rpm.toFixed(1);
+      torqueActual.innerHTML = dataWs.husillo_torque.toFixed(1);
   
-      posicionActualV.innerHTML = dataWs.v_pos.toFixed(1);
-      velocidadActualV.innerHTML = dataWs.v_vel.toFixed(1);
+      posicionActualV.innerHTML = dataWs.cabezal_pos.toFixed(1);
+      velocidadActualV.innerHTML = dataWs.cabezal_vel.toFixed(1);
   
-      posicionActualH.innerHTML = dataWs.h_pos.toFixed(1);
-      velocidadActualH.innerHTML = dataWs.h_vel.toFixed(1);
+      posicionActualH.innerHTML = dataWs.avance_pos.toFixed(1);
+      velocidadActualH.innerHTML = dataWs.avance_vel.toFixed(1);
     
       
       // Generacion de flag de presencia de cuchilla. Es la combinacion del estatus 1 de digin_0 y digin_1 bit 10 en '1'
