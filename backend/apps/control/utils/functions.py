@@ -1,7 +1,9 @@
 from apps.service.acdp.handlers import build_msg
 from apps.service.api.variables import Commands, COMMANDS
 from apps.service.acdp import messages_app as msg_app
+
 from apps.control.utils import variables as ctrl_vars
+
 from apps.ws.utils.handlers import send_message
 from apps.ws.utils.functions import get_ch_info
 from apps.ws.utils import variables as ws_vars
@@ -28,6 +30,34 @@ def init_loc_io():
         ctrl_vars.LOC_DI_STATES[key] = None
     for key in ctrl_vars.LOC_DO_ARR:
         ctrl_vars.LOC_DO_STATES[key] = None
+
+
+def init_routine_info(routine_model):
+    routines = routine_model.objects.all()
+    rtn_names = []
+    for routine in routines:
+        rtn_names.append(routine.name)
+    for rtn_name in ctrl_vars.ROUTINE_NAMES:
+        if rtn_name not in rtn_names:
+            routine_model.objects.create(name=rtn_name, running=0)
+
+
+def init_comands_ref_rates():
+    for key, value in ctrl_vars.COMMAND_DEFAULT_VALUES.items():
+        ctrl_vars.COMMAND_REF_RATES[key] = value
+
+# -------------------------------------------------------------------------------------------- #
+# --------------------------------------- Routines ------------------------------------------- #
+# -------------------------------------------------------------------------------------------- #
+
+
+def get_running_routines(routine_model):
+    routines = routine_model.objects.all()
+    running_routines = []
+    for rtn in routines:
+        if rtn.running == 1:
+            running_routines.append(rtn.name)
+    return running_routines
 
 
 # -------------------------------------------------------------------------------------------- #
@@ -121,16 +151,9 @@ def update_axis_flags(micro_data, axis):
 def update_axis_data(micro_data):
     for i in range(ctrl_vars.AXIS_IDS['axis_amount']):
         update_axis_flags(micro_data, i)
-        if i == ctrl_vars.AXIS_IDS['avance']:
-            ws_vars.MicroState.eje_avance['pos_fil'] = micro_data.data.ctrl.eje[i].mov_pos.med_drv.pos_fil
-            ws_vars.MicroState.eje_avance['vel_fil'] = micro_data.data.ctrl.eje[i].mov_pos.med_drv.vel_fil
-        elif i == ctrl_vars.AXIS_IDS['carga']:
-            ws_vars.MicroState.eje_carga['pos_fil'] = micro_data.data.ctrl.eje[i].mov_pos.med_drv.pos_fil
-            ws_vars.MicroState.eje_carga['vel_fil'] = micro_data.data.ctrl.eje[i].mov_pos.med_drv.vel_fil
-        else:
-            ws_vars.MicroState.eje_giro['pos_fil'] = micro_data.data.ctrl.eje[i].mov_pos.med_drv.pos_fil
-            ws_vars.MicroState.eje_giro['vel_fil'] = micro_data.data.ctrl.eje[i].mov_pos.med_drv.vel_fil
-            ws_vars.MicroState.eje_giro['torque'] = micro_data.data.ctrl.eje[i].mov_pos.med_drv.torque_fil
+        ws_vars.MicroState.axis_measures[i]['pos_fil'] = micro_data.data.ctrl.eje[i].mov_pos.med_drv.pos_fil
+        ws_vars.MicroState.axis_measures[i]['vel_fil'] = micro_data.data.ctrl.eje[i].mov_pos.med_drv.vel_fil
+        ws_vars.MicroState.axis_measures[i]['torque'] = micro_data.data.ctrl.eje[i].mov_pos.med_drv.torque_fil
 
 
 def update_rem_io_states(micro_data):
@@ -236,8 +259,27 @@ def get_front_states():
 # ------------------------------ Set remote/local outputs ------------------------------------ #
 # -------------------------------------------------------------------------------------------- #
 
+def set_rem_do(command, key, group, bool_value):
+    msg_id = ws_vars.MicroState.last_rx_header.get_msg_id() + 1
+    ws_vars.MicroState.msg_id = msg_id
 
-def set_rem_do(command, keys, group):
+    mask = None
+    out_value = bool_value
+    
+    if group == 0:
+        bit = 0x0000 + 1 << ctrl_vars.REM_DO_G1_BITS[key]
+    elif group == 1:
+        bit = 0x0000 + 1 << ctrl_vars.REM_DO_G2_BITS[key]
+    mask = bit
+
+    if bool_value:
+        out_value = bit
+    else:
+        out_value = 0
+    return build_msg(command, msg_id=msg_id, mask=mask, out_value=out_value, group=group)
+
+
+def toggle_rem_do(command, keys, group):
     msg_id = ws_vars.MicroState.last_rx_header.get_msg_id() + 1
     ws_vars.MicroState.msg_id = msg_id
 

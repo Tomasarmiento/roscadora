@@ -10,9 +10,9 @@ class MicroState:
     cmd_ok          = True
 
     # Remote/Local digital I/O
-    rem_i_states    = []
+    rem_i_states    = []        # A dictionary with boolean values for each set
     rem_o_states    = []
-    rem_i           = []
+    rem_i           = []        # Int number with flags values
     rem_o           = []
     loc_i_states    = None
     loc_o_states    = None
@@ -24,9 +24,7 @@ class MicroState:
     axis_flags      = [{}, {}, {}]  # Indexes corresponds with axis index
 
     # Measurements
-    eje_carga       = {}
-    eje_avance      = {}
-    eje_giro        = {}
+    axis_measures  = [{}, {}, {}]
 
 
 class WsCodes:

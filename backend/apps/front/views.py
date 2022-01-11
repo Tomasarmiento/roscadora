@@ -15,7 +15,8 @@ def referenciar(request):
     return render(request, "referenciar.html")
 
 def automatico(request):
-    return render(request, "automatico.html")
+    context = COMMANDS
+    return render(request, "automatico.html", context)
 
 def neumaticaManual(request):
     context = COMMANDS

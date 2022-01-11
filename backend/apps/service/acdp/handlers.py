@@ -162,6 +162,10 @@ def build_msg(code, host_ip="192.168.0.100", dest_ip=ACDP_IP_ADDR, params={}, *a
                     vel_uns_max = kwargs['vel_uns_max']
                 param =  DataBuilder.build_mov_to_fza_yield_data(ref, ref_rate, yield_vals, vel_uns_max)
             
+            elif code == AcdpMsgCodes.Cmd.Cd_MovEje_PowerOn or code == AcdpMsgCodes.Cmd.Cd_MovEje_PowerOff\
+                or code == AcdpMsgCodes.Cmd.Cd_MovEje_ExitSafeMode or code == AcdpMsgCodes.Cmd.Cd_MovEje_EnterSafeMode:
+                pass
+            
         if param:
             tx_data = param
             tx_header.set_data_len(param.get_bytes_size())
