@@ -20,14 +20,14 @@ class FrontWs(threading.Thread):
     def run(self):
         while 1:
             data = {
-                'husillo_rpm': float(random.randint(1,10)),
-                'husillo_torque': float(random.randint(1,10)),
+                'husillo_rpm': 0.1,
+                'husillo_torque': 0.1,
 
-                'cabezal_pos': float(random.randint(1,10)),
-                'cabezal_vel': float(random.randint(1,10)),
+                'cabezal_pos': 0.1,
+                'cabezal_vel': 0.1,
 
-                'avance_pos': float(random.randint(1,10)),
-                'avance_vel': float(random.randint(1,10))
+                'avance_pos': 0.1,
+                'avance_vel': 0.1,
             }
             send_front_message(data)
             time.sleep(0.2)

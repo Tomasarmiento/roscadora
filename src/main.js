@@ -1,4 +1,4 @@
-import "jquery/dist/jquery";       
+/*import "jquery/dist/jquery";       
 import "bootstrap"; 
 import "bootstrap/dist/css/bootstrap.min.css";
 import './main.css'
@@ -64,4 +64,4 @@ socket.onmessage = function (event) {
       if ("hash" in datosWs) {
         window.location.hash = datosWs.hash;
       }
-    };
+    };*/
