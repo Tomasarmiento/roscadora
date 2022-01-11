@@ -5,7 +5,7 @@ import './main.css'
 import './components/monitor/monitor.component.css'
 
 import {router} from './router/index.routes'
-import { Monitorear } from "./components/monitor/monitor.component";
+import { Monitorear } from "./components/monitor/monitorComponent";
 
 router(window.location.hash);
 

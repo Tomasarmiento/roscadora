@@ -34,3 +34,6 @@ class WsCodes:
     error_msg       = 3
     log_msg         = 4
     last_rx_header  = 5
+
+front_channel_name = ''
+back_channel_name = ''

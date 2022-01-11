@@ -1,3 +1,6 @@
+import threading
+import random, time
+from datetime import datetime
 from apps.service.acdp.handlers import build_msg
 from apps.service.api.variables import Commands, COMMANDS
 from apps.service.acdp import messages_app as msg_app
@@ -5,9 +8,29 @@ from apps.service.acdp import messages_app as msg_app
 from apps.control.utils import variables as ctrl_vars
 
 from apps.ws.utils.handlers import send_message
-from apps.ws.utils.functions import get_ch_info
+from apps.ws.utils.functions import send_front_message
 from apps.ws.utils import variables as ws_vars
 
+
+class FrontWs(threading.Thread):
+
+    def __init__(self, **kwargs):
+        super(FrontWs, self).__init__(**kwargs)
+    
+    def run(self):
+        while 1:
+            data = {
+                'husillo_rpm': float(random.randint(1,10)),
+                'husillo_torque': float(random.randint(1,10)),
+
+                'cabezal_pos': float(random.randint(1,10)),
+                'cabezal_vel': float(random.randint(1,10)),
+
+                'avance_pos': float(random.randint(1,10)),
+                'avance_vel': float(random.randint(1,10))
+            }
+            send_front_message(data)
+            time.sleep(0.2)
 
 # -------------------------------------------------------------------------------------------- #
 # ----------------------------------- Initialization ----------------------------------------- #
@@ -153,7 +176,7 @@ def update_axis_data(micro_data):
         update_axis_flags(micro_data, i)
         ws_vars.MicroState.axis_measures[i]['pos_fil'] = micro_data.data.ctrl.eje[i].mov_pos.med_drv.pos_fil
         ws_vars.MicroState.axis_measures[i]['vel_fil'] = micro_data.data.ctrl.eje[i].mov_pos.med_drv.vel_fil
-        ws_vars.MicroState.axis_measures[i]['torque'] = micro_data.data.ctrl.eje[i].mov_pos.med_drv.torque_fil
+        ws_vars.MicroState.axis_measures[i]['torque_fil'] = micro_data.data.ctrl.eje[i].mov_pos.med_drv.torque_fil
 
 
 def update_rem_io_states(micro_data):
@@ -235,20 +258,26 @@ def update_states(micro_data):
     update_io_states(micro_data)
     update_data_flags(micro_data)
     update_axis_data(micro_data)
+    # update_front_states()
 
 
 def get_front_states():
     data = {
-        'husillo_rpm': ws_vars.MicroState,
-        'husillo_torque': ws_vars.MicroState,
+        'husillo_rpm': ws_vars.MicroState.axis_measures[ctrl_vars.AXIS_IDS['giro']]['vel_fil'],
+        'husillo_torque': ws_vars.MicroState.axis_measures[ctrl_vars.AXIS_IDS['giro']]['torque_fil'],
 
-        'cabezal_pos': ws_vars.MicroState,
-        'cabezal_vel': ws_vars.MicroState,
+        'cabezal_pos': ws_vars.MicroState.axis_measures[ctrl_vars.AXIS_IDS['carga']]['pos_fil'],
+        'cabezal_vel': ws_vars.MicroState.axis_measures[ctrl_vars.AXIS_IDS['carga']]['vel_fil'],
 
-        'avance_pos': ws_vars.MicroState,
-        'avance_vel': ws_vars.MicroState,
+        'avance_pos': ws_vars.MicroState.axis_measures[ctrl_vars.AXIS_IDS['avance']]['pos_fil'],
+        'avance_vel': ws_vars.MicroState.axis_measures[ctrl_vars.AXIS_IDS['avance']]['vel_fil']
     }
     return data
+
+
+def update_front_states():
+    data = get_front_states()
+    send_front_message(data)
 
 ################################################################################################
 ######################################## COMMANDS ##############################################

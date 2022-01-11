@@ -8,6 +8,7 @@ from channels.layers import get_channel_layer
 
 from apps.ws.models import ChannelInfo
 from apps.ws.utils.variables import MicroState
+from apps.ws.utils import variables as ws_vars
 from apps.control.utils import variables as ctrl_var
 from apps.control.utils import functions as ctrl_fun
 
@@ -15,6 +16,7 @@ from apps.control.utils import functions as ctrl_fun
 class FrontConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         await self.set_channel_info()
+        ws_vars.front_channel_name = self.channel_name
         print("FRONT WS CONNECTED")
         await self.accept()
     
@@ -25,6 +27,10 @@ class FrontConsumer(AsyncWebsocketConsumer):
         print("Front ws disconnected, code", close_code)
         await self.delete_channel_info()
         await self.close()
+    
+    async def front_message(self, event):
+        print(event['data'])
+        await self.send(text_data=json.dumps(event['data']))
     
     @database_sync_to_async
     def set_channel_info(self):
@@ -45,6 +51,7 @@ class MicroConsumer(WebsocketConsumer):
             source='micro',
             name = self.channel_name
             )
+        ws_vars.back_channel_name = self.channel_name
         self.accept()
         print('Micro WS connected')
 
