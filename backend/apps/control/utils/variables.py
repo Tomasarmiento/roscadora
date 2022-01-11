@@ -3,7 +3,7 @@ from apps.service.acdp.messages_app import AcdpAxisMovementEnums
 COMMAND_DEFAULT_VALUES = {
     'vel_giro': 360.0,
     'vel_avance': 5.0,
-    'vel_carga': 90.0
+    'vel_carga': 180.0
 }
 
 AXIS_IDS = {
@@ -23,7 +23,8 @@ ROUTINE_IDS = {
     'cerado':   0,
     'carga':    1,
     'descarga': 2,
-    'roscado':  3
+    'cabezal_indexar': 3,
+    'roscado':  4
 }
 
 ROUTINE_NAMES = [
@@ -44,6 +45,19 @@ LOAD_STEPS = [
     -240,
     -120
 ]
+
+BOQUILLA_CARGADOR = {
+    0: 2,
+    1: 1,
+    2: 3,
+    3: 2,
+    4: 1,
+    5: 3,
+    6: 2,
+    7: 1,
+    8: 3,
+    9: 2
+}
 
 # -------------------------------------------------------------------------------------------- #
 # --------------------------------- Remote/Local outputs ------------------------------------- #
@@ -164,19 +178,19 @@ LOC_DO_ARR = [
 
 
 REM_DO_G1_ARR = [
-    'contraer_puntera_descarga',   # 1 - 0
-    'expandir_puntera_descarga',   # 2 - 1
-    'contraer_puntera_carga',   # 3 - 2
-    'expandir_puntera_carga',   # 4 - 3
+    'contraer_puntera_descarga',    # 1 - 0
+    'expandir_puntera_descarga',    # 2 - 1
+    'contraer_puntera_carga',       # 3 - 2
+    'expandir_puntera_carga',       # 4 - 3
     'contraer_brazo_cargador',      # 5 - 4
     'expandir_brazo_cargador',      # 6 - 5
     'contraer_brazo_descargador',   # 7 - 6
     'expandir_brazo_descargador',   # 8 - 7
     'cerrar_pinza_descargadora',    # 9 - 8
     'abrir_pinza_descargadora',     # 10 - 9
-    'contraer_boquilla_descarga',    # 11 - 10
+    'contraer_boquilla_descarga',   # 11 - 10
     '',                             # 12 - 11
-    'contraer_boquilla_carga',    # 13 - 12
+    'contraer_boquilla_carga',      # 13 - 12
     '',                             # 14 - 13
     'expandir_vertical_carga',      # 15 - 14
     '',                             # 16 - 15
@@ -212,10 +226,10 @@ REM_DI_G1_ARR = [
     'brazo_descarga_expandido',     # 8 - 7
     'pinza_descargadora_cerrada',   # 9 - 8
     'pinza_descargadora_abierta',   # 10 - 9
-    'cargadora_sup_del_contraido',  # 11 - 10
-    'cargadora_sup_del_expandido',  # 12 - 11
-    'cargadora_inf_del_contraido',  # 13 - 12
-    'cargadora_inf_del_expandido',  # 14 - 13
+    'boquilla_descarga_contraida',  # 11 - 10
+    'boquilla_descarga_expandida',  # 12 - 11
+    'boquilla_carga_contraida',     # 13 - 12
+    'boquilla_carga_expandida',     # 14 - 13
     'vertical_carga_contraido',     # 15 - 14
     'vertical_carga_expandido',     # 16 - 15
 ]

@@ -198,3 +198,10 @@ def stop_all(request):
 def start_routine(request):
     RoutineHandler().start()
     return JsonResponse({'resp': 'ok'})
+
+@csrf_exempt
+def semiauto(request):
+    post_req = request.POST
+    routine = post_req['routine']
+    print(routine)
+    return JsonResponse({'resp': 'ok'})
