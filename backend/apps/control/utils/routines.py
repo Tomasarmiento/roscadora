@@ -48,6 +48,10 @@ class RoutineHandler(threading.Thread):
                 print('CERADO')
                 routine_ok = self.routine_homing()
             
+            elif routine == ctrl_vars.ROUTINE_IDS['roscado']:
+                print('ROSCADO')
+                routine_ok = self.routine_roscado()
+            
             end_time = datetime.now()
             print('ROUTINE TIME:', end_time - start_time)
             if routine_ok:
@@ -558,10 +562,14 @@ class RoutineHandler(threading.Thread):
             ws_vars.MicroState.rem_o_states[1]['encender_bomba_hidraulica'],            # hidráulica ON
             ws_vars.MicroState.rem_i_states[1]['clampeo_plato_expandido'],              # Plato clampeado
             ws_vars.MicroState.axis_flags[eje_avance]['maq_est_val'] == initial_state,  # eje avance ON
-            ws_vars.MicroState.axis_flags[eje_carga]['maq_est_val'] == safe_state       # eje carga OFF
+            ws_vars.MicroState.axis_flags[eje_carga]['maq_est_val'] == safe_state,      # eje carga OFF
+            round(ws_vars.MicroState.axis_measures[eje_avance]['pos_fil'], 0) == round(ctrl_vars.ROSCADO_CONSTANTES['posicion_de_inicio'], 0)   # Eje avance en posición de inicio
         ]
+        print(init_flags)
+        if False in init_flags:
+            return False
 
-        # Paso 1 - Desacoble lubricante
+        # Paso 1 - Acopla lubricante
         key = 'expandir_acople_lubric'
         wait_key = 'acople_lubric_expandido'
         group = 1
@@ -570,19 +578,22 @@ class RoutineHandler(threading.Thread):
             return False
         if not self.wait_for_remote_in_flag(wait_key, wait_group):
             return False
+        print("PASO 1")
 
         # Paso 2 - Encender bomba solube
         key = 'encender_bomba_soluble'
         group = 1
         if not self.send_pneumatic(key, group, 1):
             return False
-        
-        # Paso 3 - Presurizar
+        print("PASO 2")
+
+        # Paso 3 - Presurizar ON
         key = 'presurizar'
         group = 1
         if not self.send_pneumatic(key, group, 1):
             return False
-        
+        print("PASO 3")
+
         # Paso 4 - Cerrar boquilla hidráulica
         boquilla = self.get_current_boquilla_roscado()
         key_1 = 'cerrar_boquilla_' + str(boquilla)
@@ -590,9 +601,168 @@ class RoutineHandler(threading.Thread):
         group = 1
         self.send_pneumatic(key_1, group, 1, key_2, 0)
         time.sleep(2)
+        print("PASO 4")
 
-    
+        # Paso 5 - Avanzar a pos y vel de aproximacion
+        axis = ctrl_vars.AXIS_IDS['avance']
+        command = Commands.mov_to_pos
+        msg_id = self.get_message_id()
+        ref = ctrl_vars.ROSCADO_CONSTANTES['posicion_de_aproximacion']
+        header, data = build_msg(
+            command,
+            ref = ref,
+            ref_rate = ctrl_vars.ROSCADO_CONSTANTES['velocidad_en_vacio'],
+            msg_id = msg_id,
+            eje = axis)
+        if not self.send_message(header, data):
+            return False
+        
+        if not self.wait_for_lineal_mov(ref):
+            return False
+        print("PASO 5")
 
+        # Paso 6 - Dejar boquilla en centro cerrado
+        boquilla = self.get_current_boquilla_roscado()
+        key_1 = 'cerrar_boquilla_' + str(boquilla)
+        key_2 = 'abrir_boquilla_' + str(boquilla)
+        group = 1
+        self.send_pneumatic(key_1, group, 0, key_2, 0)
+        time.sleep(2)
+        print("PASO 6 - Dejar boquilla en centro cerrado")
+
+        # Paso 7 - Presurizar OFF
+        key = 'presurizar'
+        group = 1
+        self.send_pneumatic(key, group, 0)
+        print('PASO 6 - PRESURIZAR OFF')
+
+        # Paso 8 - Sale de safe para encender el husillo
+        command = Commands.exit_safe
+        axis = ctrl_vars.AXIS_IDS['giro']
+        msg_id = self.get_message_id()
+        header = build_msg(command, eje=axis, msg_id=msg_id)
+        if not self.send_message(header):
+            return False
+        
+        target_state = msg_app.StateMachine.EST_INITIAL
+        if not self.wait_for_axis_state(target_state, axis):
+            return False
+        print('PASO 8 - Sale de safe para encender el husillo')
+
+        # Paso 9 - Sincronizado ON
+        command = Commands.sync_on
+        axis = ctrl_vars.AXIS_IDS['avance']
+        paso = ctrl_vars.ROSCADO_CONSTANTES['paso_de_rosca']
+        header, data = build_msg(command, eje=axis, msg_id=msg_id, paso=paso)
+        if not self.send_message(header, data):
+            return False
+        print("SYNC ON SENT")
+        state = ws_vars.MicroState.axis_flags[axis]['sync_on']
+        while not state:
+            state = ws_vars.MicroState.axis_flags[axis]['sync_on']
+            time.sleep(self.wait_time)
+
+        print("PASO 9 - SINC ON")
+
+        # Paso 10 - Avanzar a pos y vel final de roscado
+        axis = ctrl_vars.AXIS_IDS['avance']
+        command = Commands.mov_to_pos
+        msg_id = self.get_message_id()
+        ref = ctrl_vars.ROSCADO_CONSTANTES['posicion_final_de_roscado']
+        header, data = build_msg(
+            command,
+            ref = ref,
+            ref_rate = ctrl_vars.ROSCADO_CONSTANTES['velocidad_de_roscado'],
+            msg_id = msg_id,
+            eje = axis)
+        if not self.send_message(header, data):
+            return False
+        
+        if not self.wait_for_lineal_mov(ref):
+            return False
+
+        print("PASO 10 - Avanzar a pos y vel final de roscado")
+
+        # Paso 11 - Avanzar a pos y vel de salida de rosca
+        axis = ctrl_vars.AXIS_IDS['avance']
+        command = Commands.mov_to_pos
+        msg_id = self.get_message_id()
+        ref = ctrl_vars.ROSCADO_CONSTANTES['posicion_salida_de_roscado']
+        header, data = build_msg(
+            command,
+            ref = ref,
+            ref_rate = ctrl_vars.ROSCADO_CONSTANTES['velocidad_de_retraccion'],
+            msg_id = msg_id,
+            eje = axis)
+        if not self.send_message(header, data):
+            return False
+        
+        if not self.wait_for_lineal_mov(ref):
+            return False
+        print("Paso 11 - Avanzar a pos y vel de salida de rosca")
+
+        # Paso 12 - Sincronizado OFF
+        command = Commands.sync_off
+        axis = ctrl_vars.AXIS_IDS['avance']
+        header = build_msg(command, eje=axis, msg_id=msg_id, paso=paso)
+        if not self.send_message(header):
+            return False
+        print('Paso 12 - Sincronizado OFF')
+
+        # Paso 13 - Enable husillo OFF
+        command = Commands.power_off
+        axis = ctrl_vars.AXIS_IDS['giro']
+        msg_id = self.get_message_id()
+        header = build_msg(command, eje=axis, msg_id=msg_id)
+        if not self.send_message(header):
+            return False
+        
+        if not self.wait_for_axis_state(msg_app.StateMachine.EST_SAFE, axis):
+            return False
+        print('Paso 13 - Enable husillo OFF')
+
+        # Paso 14 - Avance a posicion de inicio
+        axis = ctrl_vars.AXIS_IDS['avance']
+        command = Commands.mov_to_pos
+        msg_id = self.get_message_id()
+        ref = ctrl_vars.ROSCADO_CONSTANTES['posicion_de_inicio']
+        header, data = build_msg(
+            command,
+            ref = ref,
+            ref_rate = ctrl_vars.ROSCADO_CONSTANTES['velocidad_en_vacio'],
+            msg_id = msg_id,
+            eje = axis)
+        
+        if not self.send_message(header, data):
+            return False
+
+        if not self.wait_for_lineal_mov(ref):
+            return False
+        print('Paso 14 - Avance a posicion de inicio')
+
+        # Paso 15 - Apagar bomba solube
+        key = 'encender_bomba_soluble'
+        group = 1
+        if not self.send_pneumatic(key, group, 0):
+            return False
+        print("Paso 15 - Apagar bomba solube")
+
+        # Paso 16 - Desacopla lubricante
+        key = 'expandir_acople_lubric'
+        wait_key = 'acople_lubric_contraido'
+        group = 1
+        wait_group = 1
+        if not self.send_pneumatic(key, group, 0):
+            return False
+        if not self.wait_for_remote_in_flag(wait_key, wait_group):
+            return False
+        print("Paso 16 - Desacopla lubricante")
+
+
+
+        
+        print("FIN RUTINA ROSCADO")
+        return True
 
     def routine_homing(self):
         eje_avance = ctrl_vars.AXIS_IDS['avance']
@@ -723,10 +893,6 @@ class RoutineHandler(threading.Thread):
         print('FIN RUTINA HOMING')
         return True
 
-
-
-
-
     def send_message(self, header, data=None):
         if self.ch_info:
             if data:
@@ -838,6 +1004,16 @@ class RoutineHandler(threading.Thread):
 
         return self.wait_for_axis_state(msg_app.StateMachine.EST_INITIAL, axis)
 
+    def wait_for_lineal_mov(self, target_pos):
+        axis = ctrl_vars.AXIS_IDS['avance']
+        current_pos = ws_vars.MicroState.axis_measures[axis]['pos_fil']
+        while not (current_pos >= target_pos - 0.1 and current_pos <= target_pos + 0.1):
+            current_pos = ws_vars.MicroState.axis_measures[axis]['pos_fil']
+            time.sleep(self.wait_time)
+
+        return self.wait_for_axis_state(msg_app.StateMachine.EST_INITIAL, axis)
+
+
     def get_current_boquilla_carga(self):
         axis = ctrl_vars.AXIS_IDS['carga']
         pos = ws_vars.MicroState.axis_measures[axis]['pos_fil']
@@ -865,7 +1041,6 @@ class RoutineHandler(threading.Thread):
             if pos <= step + 2 and pos >= step - 2:
                 current_step = i
                 break
-        print("CURRENT STEP:", current_step)
         if current_step >= 0:
             return ctrl_vars.BOQUILLA_DESCARGADOR[current_step]
         return False
@@ -882,7 +1057,6 @@ class RoutineHandler(threading.Thread):
             if pos <= step + 2 and pos >= step - 2:
                 current_step = i
                 break
-        print("CURRENT STEP:", current_step)
         if current_step >= 0:
             return ctrl_vars.BOQUILLA_ROSCADO[current_step]
         return False

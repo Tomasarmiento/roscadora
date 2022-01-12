@@ -169,7 +169,8 @@ def build_msg(code, host_ip="192.168.0.100", dest_ip=ACDP_IP_ADDR, params={}, *a
                     zero = kwargs['zero']
                 param = DataBuilder.build_drv_set_zero_abs(zero)
             elif code == AcdpMsgCodes.Cmd.Cd_MovEje_PowerOn or code == AcdpMsgCodes.Cmd.Cd_MovEje_PowerOff\
-                or code == AcdpMsgCodes.Cmd.Cd_MovEje_ExitSafeMode or code == AcdpMsgCodes.Cmd.Cd_MovEje_EnterSafeMode:
+                or code == AcdpMsgCodes.Cmd.Cd_MovEje_ExitSafeMode or code == AcdpMsgCodes.Cmd.Cd_MovEje_EnterSafeMode\
+                    or code == AcdpMsgCodes.Cmd.Cd_MovEje_SyncOff:
                 pass
             
         if param:

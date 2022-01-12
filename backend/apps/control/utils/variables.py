@@ -34,6 +34,17 @@ ROUTINE_NAMES = [
     'roscado'
 ]
 
+ROSCADO_CONSTANTES = {
+    'posicion_de_aproximacion': -30,
+    'velocidad_en_vacio': 10,
+    'posicion_final_de_roscado': -80.8,
+    'velocidad_de_roscado': 1.27,
+    'posicion_salida_de_roscado': -30,
+    'velocidad_de_retraccion': 2.54,
+    'paso_de_rosca': 25.4,
+    'posicion_de_inicio': 5
+}
+
 LOAD_STEPS = [
     0,
     -120,
