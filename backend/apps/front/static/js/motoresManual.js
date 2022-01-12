@@ -11,6 +11,12 @@ document.addEventListener("DOMContentLoaded", (e) => {
 
     let btns_stop = document.getElementsByClassName('detener');
 
+    //Enable buttons
+    let btn_enable_lineal = document.getElementsByClassName('linealEnable');
+    let btn_enable_cabezal = document.getElementsByClassName('cabezalEnable');
+    let btn_enable_husillo = document.getElementsByClassName('husilloEnable');
+
+
     btn_mov_husillo.addEventListener("click", (e) => {
         let rpm = document.getElementById('rpmValue').value;
         cmd = btn_mov_husillo.getAttribute('cmd');
