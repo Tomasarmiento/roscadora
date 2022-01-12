@@ -1,4 +1,5 @@
 import json
+import time
 
 from django.shortcuts import render
 from django.http import JsonResponse
@@ -221,15 +222,17 @@ def enable_axis(request):
     initial_state = StateMachine.EST_INITIAL
     safe_state = StateMachine.EST_SAFE
     state = MicroState.axis_flags[axis]['maq_est_val'] 
-    
     if state == initial_state:
         command = Commands.power_off
     if state == safe_state:
         command = Commands.exit_safe
 
     msg_id = MicroState.last_rx_header.get_msg_id() + 1
-    header = service_handlers.build_msg(command, msg_id=msg_id, eje=axis)
+    header_1 = service_handlers.build_msg(Commands.sync_off, msg_id=msg_id, eje=axis)
+    header_2 = service_handlers.build_msg(Commands.power_off, msg_id=msg_id+1, eje=axis)
     ch_info = ChannelInfo.objects.get(source='micro')
     if ch_info:
-        send_message(header, ch_info)
+        send_message(header_1, ch_info)
+        time.sleep(0.2)
+        send_message(header_2, ch_info)
     return JsonResponse({'resp': 'ok'})
