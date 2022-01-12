@@ -12,7 +12,8 @@ def home(request):
     return render(request, "home.html")
 
 def referenciar(request):
-    return render(request, "referenciar.html")
+    context = {'routine': ROUTINE_IDS['cerado']}
+    return render(request, "referenciar.html", context)
 
 def automatico(request):
     context = COMMANDS

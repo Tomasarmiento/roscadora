@@ -196,7 +196,14 @@ def stop_all(request):
 
 @csrf_exempt
 def start_routine(request):
-    # RoutineHandler().start()
+    command = Commands.drv_set_zero_abs
+    msg_id = MicroState.last_rx_header.get_msg_id() + 1
+    MicroState.msg_id = msg_id
+    header, data = service_handlers.build_msg(command, msg_id=msg_id, zero=-7.2, eje=ctrl_vars.AXIS_IDS['carga'])
+    ch_info = ChannelInfo.objects.get(source='micro')
+    if ch_info:
+        print("SEND P0")
+        send_message(header, ch_info, data)
     return JsonResponse({'resp': 'ok'})
 
 @csrf_exempt

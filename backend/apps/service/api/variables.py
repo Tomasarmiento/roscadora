@@ -16,6 +16,9 @@ class Commands:
 
     echo_reply = AcdpMsgCxn.CD_ECHO_REPLY
 
+    # Homing
+    drv_set_zero_abs = AcdpMsgCmd.CD_DRV_FBK_SET_ZERO_ABSOLUTELY
+
     # Axis movements
     enter_safe = AcdpMsgCodes.Cmd.Cd_MovEje_EnterSafeMode
     exit_safe = AcdpMsgCodes.Cmd.Cd_MovEje_ExitSafeMode

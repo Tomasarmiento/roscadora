@@ -78,5 +78,8 @@ class MicroConsumer(WebsocketConsumer):
 
 def show_states(header, data):
     print("-"*50)
-    for key, value in MicroState.rem_o_states[1].items():
-        print(key, value)
+    # for key, value in MicroState.rem_o_states[1].items():
+    #     print(key, value)
+    print (MicroState.axis_flags[ctrl_var.AXIS_IDS['carga']]['home_switch'])
+    # for axis in MicroState.axis_measures:
+    #     print(axis)

@@ -10,7 +10,7 @@
             <p class="text-warning h2 text-center"><FONT COLOR="red">LA MESA DEBE ESTAR LIBRE DE OBJETOS</FONT></p>
 		</div>   
         <div class="row-col-12 mt-3 d-flex justify-content-around p-1">
-			<button type="button" class="btn btn-primary btn-lg w-50" id="homeExec">Referenciar EJES</button>
+			<button type="button" class="btn btn-primary btn-lg w-50" id="homeExec" routine="{{ routine }}">Referenciar EJES</button>
 			<article class="bg-secondary rounded-pill text-white w-25 text-center p-3" id="homeOk">HOME OK</article>
 		</div>  
     </div>
@@ -19,4 +19,5 @@
         <div id="component-monitor"></div>
     </div>
 </div>
+<script src="{% static 'js/referenciar.js' %}"></script>
 {% endblock %}

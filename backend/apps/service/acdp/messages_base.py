@@ -156,7 +156,7 @@ class AcdpMsgCxn:       # Connection
     CD_RTCSYNC_REPLY       = AcdpMsgType.CXN + AcdpMsgLevel.BASE + 0x09
     CD_CONFIG_REQ          = AcdpMsgType.CXN + AcdpMsgLevel.BASE + 0x0A
     CD_CONFIG_DAT          = AcdpMsgType.CXN + AcdpMsgLevel.BASE + 0x0B
-    CD_CONFIG_SETDEFAULT   = AcdpMsgType.CXN + AcdpMsgLevel.BASE + 0x0C
+    CD_CONFIG_SET_DEFAULT  = AcdpMsgType.CXN + AcdpMsgLevel.BASE + 0x0C
     CD_IPCONFIG_SET        = AcdpMsgType.CXN + AcdpMsgLevel.BASE + 0x0D
     CD_CTRL_CONFIG_SET     = AcdpMsgType.CXN + AcdpMsgLevel.BASE + 0x0E
     CD_CTRL_CONFIG_CLR     = AcdpMsgType.CXN + AcdpMsgLevel.BASE + 0x0F
@@ -207,19 +207,19 @@ class AcdpMsgData:
 
 class AcdpMsgCmdParamSetTareAvi(BaseStructure):
     _fields_ = [
-        ('Tare', c_float)
+        ('tare', c_float)
     ]
 
 
 class AcdpMsgCmdParamSetZeroEnc(BaseStructure):
     _fields_ = [
-        ('Zero', c_float)
+        ('zero', c_float)
     ]
 
 
 class AcdpMsgCmdParamSetZeroDrvFbk(BaseStructure):
     _fields_ = [
-        ('Zero', c_float)
+        ('zero', c_float)
     ]
 
 
@@ -232,14 +232,17 @@ class AcdpMsgCmdParam(BaseStructure):
 
 
 class AcdpMsgCmd:
-    CD_REJECTED           = AcdpMsgType.CMD + AcdpMsgLevel.BASE + 0x01
-    CD_ENTER_SAFE_MODE    = AcdpMsgType.CMD + AcdpMsgLevel.BASE + 0x02
-    CD_EXIT_SAFE_MODE     = AcdpMsgType.CMD + AcdpMsgLevel.BASE + 0x03
-    CD_STOP_ALL           = AcdpMsgType.CMD + AcdpMsgLevel.BASE + 0x04
-    CD_SET_TARE_AVI       = AcdpMsgType.CMD + AcdpMsgLevel.BASE + 0x05  # Parametro: Param::tSetTareAvi
-    CD_SET_ZERO_ENC       = AcdpMsgType.CMD + AcdpMsgLevel.BASE + 0x06  # Parametro: Param::tSetZeroEnc
-    CD_SET_ZERO_DRVF_BK   = AcdpMsgType.CMD + AcdpMsgLevel.BASE + 0x07  # Parametro: Param::tSetZeroDrvFbk
-    Param                 = AcdpMsgCmdParam
+    CD_REJECTED                     = AcdpMsgType.CMD + AcdpMsgLevel.BASE + 0X01
+    CD_ENTER_SAFE_MODE              = AcdpMsgType.CMD + AcdpMsgLevel.BASE + 0X02
+    CD_EXIT_SAFE_MODE               = AcdpMsgType.CMD + AcdpMsgLevel.BASE + 0X03
+    CD_STOP_ALL                     = AcdpMsgType.CMD + AcdpMsgLevel.BASE + 0X04
+    CD_AVI_SET_TARE                 = AcdpMsgType.CMD + AcdpMsgLevel.BASE + 0X05   # Parametro: Param::tSetTare
+    CD_ENC_SET_ZERO_RELATIVELY      = AcdpMsgType.CMD + AcdpMsgLevel.BASE + 0X06   # Parametro: Param::tSetZero
+    CD_ENC_SET_ZERO_ABSOLUTELY      = AcdpMsgType.CMD + AcdpMsgLevel.BASE + 0X07   # Parametro: Param::tSetZero
+    CD_DRV_FBK_SET_ZERO_RELATIVELY  = AcdpMsgType.CMD + AcdpMsgLevel.BASE + 0X08   # Parametro: Param::tSetZero
+    CD_DRV_FBK_SET_ZERO_ABSOLUTELY  = AcdpMsgType.CMD + AcdpMsgLevel.BASE + 0X09   # Parametro: Param::tSetZero
+
+    Param                           = AcdpMsgCmdParam
 
 
 class AcdpMsg:
@@ -426,6 +429,17 @@ class AcdpDrvFbkConfig(BaseStructure):
         ('torque', AcdpDrvFbkConfigVel)
     ]
 
+class DrvFbkDataFlags:
+    READY               = 1 << 0
+    ENABLED             = 1 << 1
+    FAULT               = 1 << 2
+    POSITIVE_0T         = 1 << 3
+    NEGATIVE_0T         = 1 << 4
+    HOME_SWITCH         = 1 << 5
+    HOMMING_ENDED_OK    = 1 << 6
+    HOMMING_ERROR       = 1 << 7
+    ZERO_SETTLED        = 1 << 8
+    UNKNOWN_ZERO        = 1 << 9
 
 class AcdpDrvFbkDataFlagsBits(BaseStructure):
     _fields_ = [

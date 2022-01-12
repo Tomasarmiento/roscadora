@@ -9,6 +9,7 @@ from apps.control.utils import variables as ctrl_vars
 from apps.service.api.variables import Commands, COMMANDS
 from apps.service.acdp.handlers import build_msg
 from apps.service.acdp import messages_app as msg_app
+from apps.service.acdp import messages_base as msg_base
 
 from apps.ws.models import ChannelInfo
 from apps.ws.utils import variables as ws_vars
@@ -42,6 +43,10 @@ class RoutineHandler(threading.Thread):
             elif routine == ctrl_vars.ROUTINE_IDS['descarga']:
                 print('DESCARGA')
                 routine_ok = self.routine_descarga()
+            
+            elif routine == ctrl_vars.ROUTINE_IDS['cerado']:
+                print('CERADO')
+                routine_ok = self.routine_homing()
             
             end_time = datetime.now()
             print('ROUTINE TIME:', end_time - start_time)
@@ -543,6 +548,185 @@ class RoutineHandler(threading.Thread):
 
         return True
 
+    def routine_roscado(self):
+        eje_avance = ctrl_vars.AXIS_IDS['avance']
+        eje_carga = ctrl_vars.AXIS_IDS['carga']
+        initial_state = msg_app.StateMachine.EST_INITIAL
+        safe_state = msg_app.StateMachine.EST_SAFE
+        # Paso 0 - Chequear condiciones iniciales - Todos los valores deben ser True par que empiece la rutina
+        init_flags = [
+            ws_vars.MicroState.rem_o_states[1]['encender_bomba_hidraulica'],            # hidráulica ON
+            ws_vars.MicroState.rem_i_states[1]['clampeo_plato_expandido'],              # Plato clampeado
+            ws_vars.MicroState.axis_flags[eje_avance]['maq_est_val'] == initial_state,  # eje avance ON
+            ws_vars.MicroState.axis_flags[eje_carga]['maq_est_val'] == safe_state       # eje carga OFF
+        ]
+
+        # Paso 1 - Desacoble lubricante
+        key = 'expandir_acople_lubric'
+        wait_key = 'acople_lubric_expandido'
+        group = 1
+        wait_group = 1
+        if not self.send_pneumatic(key, group, 1):
+            return False
+        if not self.wait_for_remote_in_flag(wait_key, wait_group):
+            return False
+
+        # Paso 2 - Encender bomba solube
+        key = 'encender_bomba_soluble'
+        group = 1
+        if not self.send_pneumatic(key, group, 1):
+            return False
+        
+        # Paso 3 - Presurizar
+        key = 'presurizar'
+        group = 1
+        if not self.send_pneumatic(key, group, 1):
+            return False
+        
+        # Paso 4 - Cerrar boquilla hidráulica
+        boquilla = self.get_current_boquilla_roscado()
+        key_1 = 'cerrar_boquilla_' + str(boquilla)
+        key_2 = 'abrir_boquilla_' + str(boquilla)
+        group = 1
+        self.send_pneumatic(key_1, group, 1, key_2, 0)
+        time.sleep(2)
+
+    
+
+
+    def routine_homing(self):
+        eje_avance = ctrl_vars.AXIS_IDS['avance']
+        eje_carga = ctrl_vars.AXIS_IDS['carga']
+        initial_state = msg_app.StateMachine.EST_INITIAL
+        # Paso 0 - Chequear condiciones iniciales - Todos los valores deben ser True par que empiece la rutina
+        init_flags = [
+            ws_vars.MicroState.rem_o_states[1]['encender_bomba_hidraulica'],            # hidráulica ON
+            ws_vars.MicroState.rem_i_states[1]['clampeo_plato_contraido'],              # Plato clampeado
+            ws_vars.MicroState.axis_flags[eje_avance]['maq_est_val'] == initial_state,  # eje avance ON
+            ws_vars.MicroState.axis_flags[eje_carga]['maq_est_val'] == initial_state,   # eje carga ON
+            ws_vars.MicroState.rem_i_states[1]['acople_lubric_contraido'],              # acople_lubricante_contraido
+            ws_vars.MicroState.rem_i_states[0]['puntera_descarga_contraida'],           # puntera_descarga_contraida
+            ws_vars.MicroState.rem_i_states[0]['puntera_carga_contraida']               # puntera_carga_contraida
+        ]
+        print(init_flags)
+        if False in init_flags:
+            return False
+
+        # Paso 1 - Cerado eje avance
+        command = Commands.run_zeroing
+        axis = ctrl_vars.AXIS_IDS['avance']
+        msg_id = self.get_message_id()
+        header = build_msg(command, msg_id=msg_id, eje=axis)
+        if not self.send_message(header):
+            return False
+
+        state = ws_vars.MicroState.axis_flags[axis]['home_switch']
+        while not state:
+            state = ws_vars.MicroState.axis_flags[axis]['home_switch']
+            print(state)
+            time.sleep(self.wait_time)
+        print('HOME SW ACTIVADO')
+
+        # Paso 2 - Liberar plato
+        key_1 = 'contraer_clampeo_plato'
+        key_2 = 'expandir_clampeo_plato'
+        if not self.send_pneumatic(key_1, 1, 1, key_2, 0):
+            return False
+        
+        if not self.wait_for_remote_in_flag('clampeo_plato_contraido', 1):
+            return False
+        
+        # Paso 3 - Cerado eje carga
+        print("CERAR EJE CARGA")
+        command = Commands.run_zeroing
+        axis = ctrl_vars.AXIS_IDS['carga']
+        msg_id = self.get_message_id()
+        header = build_msg(command, msg_id=msg_id, eje=axis)
+        if not self.send_message(header):
+            return False
+        
+        # Paso 4 - Esperar sensor homing activado
+        state = ws_vars.MicroState.axis_flags[axis]['home_switch']
+        while not state:
+            state = ws_vars.MicroState.axis_flags[axis]['home_switch']
+            print(state)
+            time.sleep(self.wait_time)
+        print('HOME SW ACTIVADO')
+        # Espera a que salga de la chapa
+        while state:
+            state = ws_vars.MicroState.axis_flags[axis]['home_switch']
+            time.sleep(self.wait_time)
+        print('HOME SW DESACTIVADO')
+        # Esperar fin de secuencia de homing
+        time.sleep(1)
+        current_pos = round(ws_vars.MicroState.axis_measures[axis]['pos_abs'], 2)
+        prev_pos = -1.0
+        while current_pos != prev_pos:
+            print(current_pos, prev_pos)
+            prev_pos = current_pos
+            time.sleep(self.wait_time*3)
+            current_pos = round(ws_vars.MicroState.axis_measures[axis]['pos_abs'], 2)
+        print(current_pos)
+        print("FIN SECUENCIA HOMING")
+        
+        command = Commands.mov_to_pos
+        msg_id = self.get_message_id()
+        header, data = build_msg(command, ref=45, ref_rate=5, msg_id=msg_id, eje=axis)
+        if not self.send_message(header, data):
+            return False
+
+        # Espera sw home activado
+        state = ws_vars.MicroState.axis_flags[axis]['home_switch']
+        while not state:
+            state = ws_vars.MicroState.axis_flags[axis]['home_switch']
+            print(state)
+            time.sleep(self.wait_time)
+
+        pos = ws_vars.MicroState.axis_measures[axis]['pos_fil']
+        print("POSICION EN CHAPA", pos)
+        
+        # Detener eje
+        command = Commands.stop
+        msg_id = self.get_message_id()
+        header = build_msg(command, msg_id=msg_id, eje=axis)
+        if not self.send_message(header):
+            return False
+        time.sleep(0.5)
+
+        # Configura cero
+        header = None
+        data = None
+        if pos > 4:
+            print('Caso 1, p0=7.2')
+            command = Commands.drv_set_zero_abs
+            msg_id = self.get_message_id()
+            header, data = build_msg(command, msg_id=msg_id, zero=7.2, eje=axis)
+        elif pos >= -3 and pos <= 1:
+            print('Caso 2, p0=0')
+        elif pos < -4:
+            print('Caso 3, p0=-7.2')
+            command = Commands.drv_set_zero_abs
+            msg_id = self.get_message_id()
+            header, data = build_msg(command, msg_id=msg_id, zero=-7.2, eje=axis)
+        if header:
+            print("SENDING P0")
+            print(data, data.zero)
+            if not self.send_message(header, data):
+                return False
+        time.sleep(2)
+        command = Commands.mov_to_pos
+        msg_id = self.get_message_id()
+        header, data = build_msg(command, ref=0, ref_rate=40, msg_id=msg_id, eje=axis)
+        if not self.send_message(header, data):
+            return False
+
+        print('FIN RUTINA HOMING')
+        return True
+
+
+
+
+
     def send_message(self, header, data=None):
         if self.ch_info:
             if data:
@@ -684,6 +868,23 @@ class RoutineHandler(threading.Thread):
         print("CURRENT STEP:", current_step)
         if current_step >= 0:
             return ctrl_vars.BOQUILLA_DESCARGADOR[current_step]
+        return False
+
+    def get_current_boquilla_roscado(self):
+        axis = ctrl_vars.AXIS_IDS['carga']
+        pos = ws_vars.MicroState.axis_measures[axis]['pos_fil']
+        steps = ctrl_vars.LOAD_STEPS
+        current_step = -1
+        steps_count = len(steps)
+        print("POS", pos)
+        for i in range(steps_count):
+            step = steps[i]
+            if pos <= step + 2 and pos >= step - 2:
+                current_step = i
+                break
+        print("CURRENT STEP:", current_step)
+        if current_step >= 0:
+            return ctrl_vars.BOQUILLA_ROSCADO[current_step]
         return False
 
     def stop(self):

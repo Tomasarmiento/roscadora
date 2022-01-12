@@ -2,7 +2,7 @@ from datetime import datetime
 from apps.service.acdp.acdp import ACDP_VERSION, ACDP_UDP_PORT, ACDP_IP_ADDR
 from apps.service.acdp.acdp import AcdpHeader
 from apps.service.acdp.messages_app import AcdpPc, AcdpMsgCodes, AcdpMsgParams, AcdpAxisMovementEnums
-from apps.service.acdp.messages_base import AcdpMsgCmdParam, BaseStructure, AcdpMsgCxn
+from apps.service.acdp.messages_base import AcdpMsgCmdParam, BaseStructure, AcdpMsgCxn, AcdpMsgCmd, AcdpMsgCmdParamSetZeroDrvFbk
 
 
 class AcdpMessage(BaseStructure):
@@ -162,6 +162,12 @@ def build_msg(code, host_ip="192.168.0.100", dest_ip=ACDP_IP_ADDR, params={}, *a
                     vel_uns_max = kwargs['vel_uns_max']
                 param =  DataBuilder.build_mov_to_fza_yield_data(ref, ref_rate, yield_vals, vel_uns_max)
             
+            elif code == AcdpMsgCmd.CD_DRV_FBK_SET_ZERO_ABSOLUTELY:
+                if params:
+                    zero = params['zero']
+                else:
+                    zero = kwargs['zero']
+                param = DataBuilder.build_drv_set_zero_abs(zero)
             elif code == AcdpMsgCodes.Cmd.Cd_MovEje_PowerOn or code == AcdpMsgCodes.Cmd.Cd_MovEje_PowerOff\
                 or code == AcdpMsgCodes.Cmd.Cd_MovEje_ExitSafeMode or code == AcdpMsgCodes.Cmd.Cd_MovEje_EnterSafeMode:
                 pass
@@ -241,4 +247,9 @@ class DataBuilder:
         param = AcdpMsgParams().do_set
         setattr(param, 'mask', mask)
         setattr(param, 'value', value)
+        return param
+    
+    def build_drv_set_zero_abs(zero):
+        param = AcdpMsgCmdParamSetZeroDrvFbk()
+        setattr(param, 'zero', zero)
         return param
