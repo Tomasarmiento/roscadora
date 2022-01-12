@@ -29,7 +29,6 @@ class FrontConsumer(AsyncWebsocketConsumer):
         await self.close()
     
     async def front_message(self, event):
-        print(event['data'])
         await self.send(text_data=json.dumps(event['data']))
     
     @database_sync_to_async

@@ -12,26 +12,6 @@ from apps.ws.utils.functions import send_front_message
 from apps.ws.utils import variables as ws_vars
 
 
-class FrontWs(threading.Thread):
-
-    def __init__(self, **kwargs):
-        super(FrontWs, self).__init__(**kwargs)
-    
-    def run(self):
-        while 1:
-            data = {
-                'husillo_rpm': 0.1,
-                'husillo_torque': 0.1,
-
-                'cabezal_pos': 0.1,
-                'cabezal_vel': 0.1,
-
-                'avance_pos': 0.1,
-                'avance_vel': 0.1,
-            }
-            send_front_message(data)
-            time.sleep(0.2)
-
 # -------------------------------------------------------------------------------------------- #
 # ----------------------------------- Initialization ----------------------------------------- #
 # -------------------------------------------------------------------------------------------- #
@@ -258,7 +238,7 @@ def update_states(micro_data):
     update_io_states(micro_data)
     update_data_flags(micro_data)
     update_axis_data(micro_data)
-    # update_front_states()
+    update_front_states()
 
 
 def get_front_states():
