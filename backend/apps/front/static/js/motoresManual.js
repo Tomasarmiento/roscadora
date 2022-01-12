@@ -12,10 +12,24 @@ document.addEventListener("DOMContentLoaded", (e) => {
     let btns_stop = document.getElementsByClassName('detener');
 
     //Enable buttons
-    let btn_enable_lineal = document.getElementsByClassName('linealEnable');
-    let btn_enable_cabezal = document.getElementsByClassName('cabezalEnable');
-    let btn_enable_husillo = document.getElementsByClassName('husilloEnable');
+    let btn_enable_lineal = document.getElementById('linealEnable');
+    let btn_enable_cabezal = document.getElementById('cabezalEnable');
+    let btn_enable_husillo = document.getElementById('husilloEnable');
 
+    btn_enable_husillo.addEventListener('change', (e) => {
+        let eje = btn_enable_husillo.getAttribute('eje');
+        sendEnable(eje);
+    });
+
+    btn_enable_lineal.addEventListener('change', (e) => {
+        let eje = btn_enable_lineal.getAttribute('eje');
+        sendEnable(eje);
+    });
+    
+    btn_enable_cabezal.addEventListener('change', (e) => {
+        let eje = btn_enable_cabezal.getAttribute('eje');
+        sendEnable(eje);
+    });
 
     btn_mov_husillo.addEventListener("click", (e) => {
         let rpm = document.getElementById('rpmValue').value;
@@ -103,6 +117,20 @@ function sendCommand(cmd, eje, args){
 function sendStopAxisCommand(cmd, eje){
     let url = "http://localhost:8000/control/manual/stop-axis/";
     let params = "command=" + cmd + "&eje=" + eje;
+
+    let xhr = new XMLHttpRequest();
+    
+    xhr.open("POST", url, true);
+
+    //Send the proper header information along with the request
+    xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+    xhr.send(params);
+}
+
+function sendEnable(eje){
+    let url = "http://localhost:8000/control/manual/motor/enable/";
+    let params = "eje=" + eje;
 
     let xhr = new XMLHttpRequest();
     

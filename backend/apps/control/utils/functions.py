@@ -269,7 +269,23 @@ def get_front_states():
         'cabezal_vel': ws_vars.MicroState.axis_measures[ctrl_vars.AXIS_IDS['carga']]['vel_fil'],
 
         'avance_pos': ws_vars.MicroState.axis_measures[ctrl_vars.AXIS_IDS['avance']]['pos_fil'],
-        'avance_vel': ws_vars.MicroState.axis_measures[ctrl_vars.AXIS_IDS['avance']]['vel_fil']
+        'avance_vel': ws_vars.MicroState.axis_measures[ctrl_vars.AXIS_IDS['avance']]['vel_fil'],
+
+        'lineal_enable': ws_vars.MicroState.axis_flags[ctrl_vars.AXIS_IDS['avance']]['estado'] == 'initial',
+        'cabezal_enable': ws_vars.MicroState.axis_flags[ctrl_vars.AXIS_IDS['carga']]['estado'] == 'initial',
+        'husillo_enable': ws_vars.MicroState.axis_flags[ctrl_vars.AXIS_IDS['giro']]['estado'] == 'initial',
+
+        'remote_inputs': ws_vars.MicroState.rem_i_states,
+        'remote_outputs': ws_vars.MicroState.rem_o_states,
+
+        'flags_fin_eje_carga': ws_vars.MicroState.axis_flags[ctrl_vars.AXIS_IDS['carga']]['flags_fin'],
+        'estado_eje_carga': ws_vars.MicroState.axis_flags[ctrl_vars.AXIS_IDS['carga']]['estado'],
+
+        'flags_fin_eje_avance': ws_vars.MicroState.axis_flags[ctrl_vars.AXIS_IDS['avance']]['flags_fin'],
+        'estado_eje_avance': ws_vars.MicroState.axis_flags[ctrl_vars.AXIS_IDS['avance']]['estado'],
+
+        'flags_fin_eje_giro': ws_vars.MicroState.axis_flags[ctrl_vars.AXIS_IDS['giro']]['flags_fin'],
+        'estado_eje_giro': ws_vars.MicroState.axis_flags[ctrl_vars.AXIS_IDS['giro']]['estado']
     }
     return data
 
