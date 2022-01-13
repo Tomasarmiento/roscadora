@@ -45,6 +45,13 @@ ROSCADO_CONSTANTES = {
     'posicion_de_inicio': 5
 }
 
+HOMING_CONSTANTES = {
+    'position_positive_7': 4,
+    'position_mid_low': -3,
+    'position_mid_high': 1,
+    'position_negative_7': -4,
+}
+
 LOAD_STEPS = [
     0,
     -120,

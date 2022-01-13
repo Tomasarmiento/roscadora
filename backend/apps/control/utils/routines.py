@@ -822,7 +822,6 @@ class RoutineHandler(threading.Thread):
         initial_state = msg_app.StateMachine.EST_INITIAL
         # Paso 0 - Chequear condiciones iniciales - Todos los valores deben ser True par que empiece la rutina
         init_flags = [
-            ws_vars.MicroState.rem_o_states[1]['encender_bomba_hidraulica'],            # hidráulica ON
             ws_vars.MicroState.rem_i_states[1]['clampeo_plato_expandido'],              # Plato clampeado
             ws_vars.MicroState.axis_flags[eje_avance]['maq_est_val'] == initial_state,  # eje avance ON
             # ws_vars.MicroState.axis_flags[eje_carga]['maq_est_val'] == initial_state,   # eje carga ON
@@ -832,6 +831,12 @@ class RoutineHandler(threading.Thread):
         ]
         print(init_flags)
         if False in init_flags:
+            return False
+
+        # Paso 0.1 - Encender bomba hidráulica
+        key = 'encender_bomba_hidraulica'
+        group = 1
+        if not self.send_pneumatic(key, group, 1):
             return False
 
         # Paso 1 - Cerado eje avance
@@ -947,14 +952,14 @@ class RoutineHandler(threading.Thread):
         # Configura cero
         header = None
         data = None
-        if pos > 4:
+        if pos > ctrl_vars.HOMING_CONSTANTES['position_positive_7']:
             print('Caso 1, p0=7.2')
             command = Commands.drv_set_zero_abs
             msg_id = self.get_message_id()
             header, data = build_msg(command, msg_id=msg_id, zero=7.2, eje=axis)
-        elif pos >= -3 and pos <= 1:
+        elif pos >= ctrl_vars.HOMING_CONSTANTES['position_mid_low'] and pos <= ctrl_vars.HOMING_CONSTANTES['position_mid_high']:
             print('Caso 2, p0=0')
-        elif pos < -4:
+        elif pos < ctrl_vars.HOMING_CONSTANTES['position_negative_7']:
             print('Caso 3, p0=-7.2')
             command = Commands.drv_set_zero_abs
             msg_id = self.get_message_id()
