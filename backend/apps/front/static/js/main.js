@@ -43,12 +43,14 @@ socket.onmessage = function (event) {
   const posicionActualH = document.querySelector("#posHorizontal");
   const velocidadActualH = document.querySelector("#velHorizontal");
 
-  //Enables Motores manueal
+  // Enables Motores Manual
   const enableLineal = document.querySelector("#linealEnable")
   const enableCabezal = document.querySelector("#cabezalEnable")
   const enableHusillo = document.querySelector("#husilloEnable")
+
+  //Sincronizar Husillo
+  const syncHusillo = document.querySelector("#husilloSync")
   
-  const enableCabezalChecked = enableCabezal.checked
   if (datosWs) {
     //Monitor
     rpmActual.innerHTML = datosWs.husillo_rpm.toFixed(1);
@@ -61,16 +63,21 @@ socket.onmessage = function (event) {
     velocidadActualH.innerHTML = datosWs.avance_vel.toFixed(1);
 
     datosWs.lineal_enable == false
-      ? (enableLineal.className = "switch slider")
-      : (enableLineal.checked = "switch slider");
+      ? (enableLineal.className = "box box-green")
+      : (enableLineal.className = "box box-grey");
 
     datosWs.cabezal_enable == false
-      ? (enableCabezal.className = "switch slider")
-      : (enableCabezal.checked = "switch slider");
+      ? (enableCabezal.className = "box box-green")
+      : (enableCabezal.className = "box box-grey");
 
     datosWs.husillo_enable == false
-      ? (enableHusillo.className = "switch slider")
-      : (enableHusillo.checked = "switch slider");
+      ? (enableHusillo.className = "box box-green")
+      : (enableHusillo.className = "box box-grey");
+
+    datosWs.husillo_sync == false
+      ? (syncHusillo.className = "box box-green")
+      : (syncHusillo.className = "box box-grey");
+
 
   
     

@@ -11,10 +11,19 @@ document.addEventListener("DOMContentLoaded", (e) => {
 
     let btns_stop = document.getElementsByClassName('detener');
 
-    //Enable buttons
-    let btn_enable_lineal = document.getElementsByClassName('linealEnable');
-    let btn_enable_cabezal = document.getElementsByClassName('cabezalEnable');
-    let btn_enable_husillo = document.getElementsByClassName('husilloEnable');
+    //On buttons
+    let btn_on_lineal = document.getElementById('onLineal');
+    let btn_on_cabezal = document.getElementById('onCabezal');
+    let btn_on_husillo = document.getElementById('onHusillo');
+
+    let btn_on_sync = document.getElementById('onSync');
+
+    //Off buttons
+    let btn_off_lineal = document.getElementById('offLineal');
+    let btn_off_cabezal = document.getElementById('offLineal');
+    let btn_off_husillo = document.getElementById('offLineal');
+
+    let btn_off_sync = document.getElementById('offSync');
 
 
     btn_mov_husillo.addEventListener("click", (e) => {
