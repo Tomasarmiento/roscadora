@@ -27,6 +27,7 @@ class RoutineHandler(threading.Thread):
         self._stop_event = threading.Event()
         self.wait_time = 0.1
     
+    
     def run(self):
         routine = self.current_routine
         if routine:
@@ -63,17 +64,22 @@ class RoutineHandler(threading.Thread):
         else:
             print('Rutine no especificada')
     
+
     def routine_cabezal_indexar(self):
         # Paso 0 - Chequear condiciones iniciales
+        eje_avance = ctrl_vars.AXIS_IDS['avance']
         init_flags = [
             ws_vars.MicroState.rem_i_states[1]['clampeo_plato_expandido'],      # plato_clampeado
             ws_vars.MicroState.rem_i_states[1]['acople_lubric_contraido'],      # acople_lubricante_contraido
             ws_vars.MicroState.rem_i_states[0]['puntera_descarga_contraida'],   # puntera_descarga_contraida
-            ws_vars.MicroState.rem_i_states[0]['puntera_carga_contraida']       # puntera_carga_contraida
+            ws_vars.MicroState.rem_i_states[0]['puntera_carga_contraida'],      # puntera_carga_contraida
+            round(ws_vars.MicroState.axis_measures[eje_avance]['pos_fil'], 0) == round(ctrl_vars.ROSCADO_CONSTANTES['posicion_de_inicio'], 0)   # Eje avance en posición de inicio
         ]
+        print('Paso 0 - Chequear condiciones iniciales')
         print(init_flags)
         if False in init_flags:
             return
+
         # Paso 1 - Liberar plato
         key_1 = 'contraer_clampeo_plato'
         key_2 = 'expandir_clampeo_plato'
@@ -82,7 +88,8 @@ class RoutineHandler(threading.Thread):
         
         if not self.wait_for_remote_in_flag('clampeo_plato_contraido', 1):
             return False
-        
+        print('Paso 1 - Liberar plato')
+
         # Paso 2 - Sale de safe para encender el servo
         command = Commands.exit_safe
         axis = ctrl_vars.AXIS_IDS['carga']
@@ -94,22 +101,14 @@ class RoutineHandler(threading.Thread):
         target_state = msg_app.StateMachine.EST_INITIAL
         if not self.wait_for_axis_state(target_state, axis):
             return False
-        
+        print('Paso 2 - Sale de safe para encender el servo')
+
         # Paso 3 - Avanza 120° al siguiente paso
         if not self.move_step_load_axis():
             return False
+        print(' Paso 3 - Avanza 120° al siguiente paso')
 
-        # Paso 4 - Power off
-        command = Commands.power_off
-        msg_id = self.get_message_id()
-        header = build_msg(command, eje=axis, msg_id=msg_id)
-        if not self.send_message(header):
-            return False
-        
-        if not self.wait_for_axis_state(msg_app.StateMachine.EST_SAFE, axis):
-            return False
-        
-        # Paso 5 - Clampea plato
+        # Paso 4 - Clampea plato
         key_1 = 'expandir_clampeo_plato'
         key_2 = 'contraer_clampeo_plato'
         group = 1
@@ -118,7 +117,24 @@ class RoutineHandler(threading.Thread):
         
         if not self.wait_for_remote_in_flag('clampeo_plato_expandido', group):
             return False
+        print('Paso 4 - Clampea plato')
+
+        # Paso 5 - Power off
+        command = Commands.power_off
+        msg_id = self.get_message_id()
+        header = build_msg(command, eje=axis, msg_id=msg_id)
+        if not self.send_message(header):
+            return False
+        
+        if not self.wait_for_axis_state(msg_app.StateMachine.EST_SAFE, axis):
+            return False
+        print(' Paso 5 - Power off')
+
+
+
+        print('FIN RUTINA CABEZAL INDEXAR')
         return True
+
 
     def routine_carga(self):
         # Paso 0 - Chequear condiciones iniciales - Todos los valores deben ser True par que empiece la rutina
@@ -145,18 +161,29 @@ class RoutineHandler(threading.Thread):
             return False
         if not self.wait_for_remote_in_flag(wait_key, wait_group):
             return False
+        print('Paso 1 - Expandir vertical carga')
+        
+        # Paso 1.1 - Abrir válvula de boquilla hidráulica
+        boquilla = self.get_current_boquilla_carga()
+        key_1 = 'cerrar_boquilla_' + str(boquilla)
+        key_2 = 'abrir_boquilla_' + str(boquilla)
+        group = 1
+        self.send_pneumatic(key_1, group, 0, key_2, 1)
+        print('Paso 1.1 - Abrir válvula de boquilla hidráulica')
 
         # Paso 2 - Expandir puntera carga
         key_1 = 'expandir_puntera_carga'
         key_2 = 'contraer_puntera_carga'
-        wait_key = 'puntera_carga_expandida'
+        wait_key = 'puntera_carga_contraida'
         group = 0
         print("EXPANDIR PUNTERA CARGA")
         if not self.send_pneumatic(key_1, group, 1, key_2, 0):
             return False
-        if not self.wait_for_remote_in_flag(wait_key, wait_group):
+        if not self.wait_for_not_remote_in_flag(wait_key, wait_group):
             return False
-        
+        time.sleep(1)
+        print(' Paso 2 - Expandir puntera carga')
+
         # Paso 3 - Boquilla carga contraida
         key = 'contraer_boquilla_carga'
         wait_key = 'boquilla_carga_contraida'
@@ -166,13 +193,15 @@ class RoutineHandler(threading.Thread):
             return False
         if not self.wait_for_remote_in_flag(wait_key, wait_group):
             return False
+        print('Paso 3 - Boquilla carga contraida')
         
         # Paso 4 - Verificar flags pieza en boquilla carga
         key = 'pieza_en_boquilla_carga'
         if not ws_vars.MicroState.rem_i_states[1][key]:
             return False
-        else:
-            print("PIEZA EN BOQUILLA", ws_vars.MicroState.rem_i_states[1][key])
+        print("PIEZA EN BOQUILLA", ws_vars.MicroState.rem_i_states[1][key])
+        print('Paso 4 - Verificar flags pieza en boquilla carga')
+
         # Paso 5 - Puntera cargador contraída
         key_1 = 'contraer_puntera_carga'
         key_2 = 'expandir_puntera_carga'
@@ -183,7 +212,8 @@ class RoutineHandler(threading.Thread):
             return False
         if not self.wait_for_remote_in_flag(wait_key, wait_group):
             return False
-        
+        print('Paso 5 - Puntera cargador contraída')
+
         # Paso 6 - Contraer vertical y brazo cargador
         key = 'expandir_vertical_carga'
         group = 0
@@ -204,13 +234,15 @@ class RoutineHandler(threading.Thread):
         if not self.wait_for_remote_in_flag(wait_key, wait_group):
             return False
         print('BRAZO CARGA CONTRAIDO')
-        
+        print('Paso 6 - Contraer vertical y brazo cargador')
+
         # Paso 7 - Verificar pieza en boquilla carga
         if not ws_vars.MicroState.rem_i_states[1]['pieza_en_boquilla_carga']:
             return False
         else:
             print('PIEZA EN BOQUILLA CARGA')
-        
+        print(' Paso 7 - Verificar pieza en boquilla carga')
+
         # Paso 8 - Avanza puntera carga en boquilla
         key_1 = 'expandir_puntera_carga'
         key_2 = 'contraer_puntera_carga'
@@ -222,7 +254,8 @@ class RoutineHandler(threading.Thread):
             return False
         time.sleep(1)
         print('PUNTERA EXPANDIDA')
-        
+        print('Paso 8 - Avanza puntera carga en boquilla')
+
         # Paso 9 - Boquilla carga extendida
         key = 'contraer_boquilla_carga'
         wait_key = 'boquilla_carga_expandida'
@@ -233,11 +266,13 @@ class RoutineHandler(threading.Thread):
         if not self.wait_for_remote_in_flag(wait_key, wait_group):
             return False
         print("BOQUILLA CARGA CONTRAIDA")
+        print('Paso 9 - Boquilla carga extendida')
+
         # Paso 10 - Presurizar ON
         key = 'presurizar'
         group = 1
         self.send_pneumatic(key, group, 1)
-        print('PRESURIZAR')
+        print('Paso 10 - Presurizar ON')
         
         # Paso 11 - Contraer boquilla cabezal
         boquilla = self.get_current_boquilla_carga()
@@ -246,6 +281,7 @@ class RoutineHandler(threading.Thread):
         group = 1
         self.send_pneumatic(key_1, group, 1, key_2, 0)
         time.sleep(2)
+        print('Paso 11 - Contraer boquilla cabezal')
 
         # Paso 12 - Puntera cargador contraída
         key_1 = 'contraer_puntera_carga'
@@ -258,11 +294,13 @@ class RoutineHandler(threading.Thread):
         if not self.wait_for_remote_in_flag(wait_key, wait_group):
             return False
         print("CONTRAER BOQUILLA CABEZAL")
+        print('Paso 12 - Puntera cargador contraída')
 
         # Paso 13 - Verificar pieza en boquilla carga
         if ws_vars.MicroState.rem_i_states[1]['pieza_en_boquilla_carga']:
             return False
         print('CUPLA NO PRESENTE')
+        print('Paso 13 - Verificar pieza en boquilla carga')
 
         # Paso 14 - Cerrar válvula de boquilla hidráulica
         boquilla = self.get_current_boquilla_carga()
@@ -271,12 +309,13 @@ class RoutineHandler(threading.Thread):
         group = 1
         self.send_pneumatic(key_1, group, 0, key_2, 0)
         print('CERRAR VALVULA HIDRAULICA')
+        print('Paso 14 - Cerrar válvula de boquilla hidráulica')
 
         # Paso 15 - Presurizar OFF
         key = 'presurizar'
         group = 1
         self.send_pneumatic(key, group, 0)
-        print('PRESURIZAR OFF')
+        print('Paso 15 - Presurizar OFF')
 
         # Paso 16 - Expandir brazo cargador
         key_1 = 'expandir_brazo_cargador'
@@ -284,14 +323,17 @@ class RoutineHandler(threading.Thread):
         wait_key = 'brazo_cargador_expandido'
         group = 0
         wait_group = 0
-        
+    
         if not self.send_pneumatic(key_1, group, 1, key_2, 0):
             return False
         
         if not self.wait_for_remote_in_flag(wait_key, wait_group):
             return False
+        print('Paso 16 - Expandir brazo cargador')
+
         print('FIN RUTINA CARGA') 
         return True
+
 
     def routine_descarga(self):
         # Paso 0 - Chequear condiciones iniciales - Todos los valores deben ser True par que empiece la rutina
@@ -322,7 +364,7 @@ class RoutineHandler(threading.Thread):
             return False
         if not self.wait_for_not_remote_in_flag(wait_key, wait_group):
             return False
-        time.sleep(1)
+        time.sleep(2)
 
         # Paso 2 - Boquilla descarga contraida
         key = 'contraer_boquilla_descarga'
@@ -552,6 +594,7 @@ class RoutineHandler(threading.Thread):
 
         return True
 
+
     def routine_roscado(self):
         eje_avance = ctrl_vars.AXIS_IDS['avance']
         eje_carga = ctrl_vars.AXIS_IDS['carga']
@@ -764,6 +807,7 @@ class RoutineHandler(threading.Thread):
         print("FIN RUTINA ROSCADO")
         return True
 
+
     def routine_homing(self):
         eje_avance = ctrl_vars.AXIS_IDS['avance']
         eje_carga = ctrl_vars.AXIS_IDS['carga']
@@ -771,9 +815,9 @@ class RoutineHandler(threading.Thread):
         # Paso 0 - Chequear condiciones iniciales - Todos los valores deben ser True par que empiece la rutina
         init_flags = [
             ws_vars.MicroState.rem_o_states[1]['encender_bomba_hidraulica'],            # hidráulica ON
-            ws_vars.MicroState.rem_i_states[1]['clampeo_plato_contraido'],              # Plato clampeado
+            ws_vars.MicroState.rem_i_states[1]['clampeo_plato_expandido'],              # Plato clampeado
             ws_vars.MicroState.axis_flags[eje_avance]['maq_est_val'] == initial_state,  # eje avance ON
-            ws_vars.MicroState.axis_flags[eje_carga]['maq_est_val'] == initial_state,   # eje carga ON
+            # ws_vars.MicroState.axis_flags[eje_carga]['maq_est_val'] == initial_state,   # eje carga ON
             ws_vars.MicroState.rem_i_states[1]['acople_lubric_contraido'],              # acople_lubricante_contraido
             ws_vars.MicroState.rem_i_states[0]['puntera_descarga_contraida'],           # puntera_descarga_contraida
             ws_vars.MicroState.rem_i_states[0]['puntera_carga_contraida']               # puntera_carga_contraida
@@ -795,7 +839,22 @@ class RoutineHandler(threading.Thread):
             state = ws_vars.MicroState.axis_flags[axis]['home_switch']
             print(state)
             time.sleep(self.wait_time)
+        print('PASO 1')
         print('HOME SW ACTIVADO')
+
+        # Paso 1.1 - Chequeo cero
+        if not self.wait_for_lineal_mov(0):
+            return False
+        print('Paso 1.1 - Chequeo cero')
+
+        # Paso 1.2 - Mover a posición de inicio
+        pos_inicio = ctrl_vars.ROSCADO_CONSTANTES['posicion_de_inicio']
+        if not self.mov_to_pos_lineal(pos_inicio):
+            return False
+        print('Mov to pos')
+        if not self.wait_for_lineal_mov(pos_inicio):
+            return False
+        print('Paso 1.2 - Mover a posición de inicio')
 
         # Paso 2 - Liberar plato
         key_1 = 'contraer_clampeo_plato'
@@ -805,7 +864,21 @@ class RoutineHandler(threading.Thread):
         
         if not self.wait_for_remote_in_flag('clampeo_plato_contraido', 1):
             return False
+        print('PASO 2')
+
+        # Paso 2.1 - Sale de safe para encender el servo
+        command = Commands.exit_safe
+        axis = ctrl_vars.AXIS_IDS['carga']
+        msg_id = self.get_message_id()
+        header = build_msg(command, eje=axis, msg_id=msg_id)
+        if not self.send_message(header):
+            return False
         
+        target_state = msg_app.StateMachine.EST_INITIAL
+        if not self.wait_for_axis_state(target_state, axis):
+            return False
+        print('Paso 2.1 - Sale de safe para encender el servo')
+
         # Paso 3 - Cerado eje carga
         print("CERAR EJE CARGA")
         command = Commands.run_zeroing
@@ -814,18 +887,19 @@ class RoutineHandler(threading.Thread):
         header = build_msg(command, msg_id=msg_id, eje=axis)
         if not self.send_message(header):
             return False
-        
+        print('PASO 3')
+
         # Paso 4 - Esperar sensor homing activado
         state = ws_vars.MicroState.axis_flags[axis]['home_switch']
         while not state:
             state = ws_vars.MicroState.axis_flags[axis]['home_switch']
-            print(state)
-            time.sleep(self.wait_time)
+            # print(state)
+            time.sleep(0.01)
         print('HOME SW ACTIVADO')
         # Espera a que salga de la chapa
         while state:
             state = ws_vars.MicroState.axis_flags[axis]['home_switch']
-            time.sleep(self.wait_time)
+            time.sleep(0.01)
         print('HOME SW DESACTIVADO')
         # Esperar fin de secuencia de homing
         time.sleep(1)
@@ -838,23 +912,22 @@ class RoutineHandler(threading.Thread):
             current_pos = round(ws_vars.MicroState.axis_measures[axis]['pos_abs'], 2)
         print(current_pos)
         print("FIN SECUENCIA HOMING")
-        
+        # gira una posición buscando la chapa
         command = Commands.mov_to_pos
         msg_id = self.get_message_id()
         header, data = build_msg(command, ref=45, ref_rate=5, msg_id=msg_id, eje=axis)
         if not self.send_message(header, data):
             return False
-
-        # Espera sw home activado
+        print('gira una posición buscando la chapa')
+        # Espera sensor home activado
         state = ws_vars.MicroState.axis_flags[axis]['home_switch']
         while not state:
             state = ws_vars.MicroState.axis_flags[axis]['home_switch']
             print(state)
             time.sleep(self.wait_time)
-
         pos = ws_vars.MicroState.axis_measures[axis]['pos_fil']
+        print('Espera sensor home activado')
         print("POSICION EN CHAPA", pos)
-        
         # Detener eje
         command = Commands.stop
         msg_id = self.get_message_id()
@@ -862,7 +935,7 @@ class RoutineHandler(threading.Thread):
         if not self.send_message(header):
             return False
         time.sleep(0.5)
-
+        print('Detener eje')
         # Configura cero
         header = None
         data = None
@@ -889,9 +962,35 @@ class RoutineHandler(threading.Thread):
         header, data = build_msg(command, ref=0, ref_rate=40, msg_id=msg_id, eje=axis)
         if not self.send_message(header, data):
             return False
+        print('Configura cero')
+        print('PASO 4')
+
+        # Paso 5 - Clampea plato
+        key_1 = 'expandir_clampeo_plato'
+        key_2 = 'contraer_clampeo_plato'
+        group = 1
+        if not self.send_pneumatic(key_1, group, 1, key_2, 0):
+            return False
+        
+        if not self.wait_for_remote_in_flag('clampeo_plato_expandido', group):
+            return False
+        print('PASO 5 - Clampea plato')
+
+        # Paso 6 - Power off
+        command = Commands.power_off
+        axis = ctrl_vars.AXIS_IDS['carga']
+        msg_id = self.get_message_id()
+        header = build_msg(command, eje=axis, msg_id=msg_id)
+        if not self.send_message(header):
+            return False
+        
+        if not self.wait_for_axis_state(msg_app.StateMachine.EST_SAFE, axis):
+            return False
+        print('PASO 6 - Power off')
 
         print('FIN RUTINA HOMING')
         return True
+       
 
     def send_message(self, header, data=None):
         if self.ch_info:
@@ -902,10 +1001,12 @@ class RoutineHandler(threading.Thread):
             return True
         return False
 
+
     def get_message_id(self):
         msg_id = ws_vars.MicroState.last_rx_header.get_msg_id() + 1
         ws_vars.MicroState.msg_id = msg_id
         return msg_id
+
 
     def check_initials(self, routine):
         if routine == ctrl_vars.ROUTINE_IDS['cerado']:
@@ -936,6 +1037,7 @@ class RoutineHandler(threading.Thread):
         if routine == ctrl_vars.ROUTINE_IDS['roscado']:
             pass
 
+
     def send_pneumatic(self, key, group, bool_value, second_key=None, second_bool_value=None):
         command = Commands.rem_do_set
         header, data = ctrl_fun.set_rem_do(command, key, group, bool_value)
@@ -945,7 +1047,8 @@ class RoutineHandler(threading.Thread):
             header, data = ctrl_fun.set_rem_do(command, second_key, group, second_bool_value)
             return self.send_message(header, data)
         return True
-    
+
+
     def wait_for_remote_in_flag(self, flag_key, group):
         flag = ws_vars.MicroState.rem_i_states[group][flag_key]
         while not flag:     # Verifica que el flag está en HIGH
@@ -954,7 +1057,8 @@ class RoutineHandler(threading.Thread):
         if not flag:
             return False
         return True
-    
+
+
     def wait_for_not_remote_in_flag(self, flag_key, group):
         flag = ws_vars.MicroState.rem_i_states[group][flag_key]
         while flag:     # Verifica que el flag está en LOW
@@ -963,7 +1067,8 @@ class RoutineHandler(threading.Thread):
         if flag:
             return False
         return True
-    
+
+
     def wait_for_axis_state(self, target_state, axis):
         current_state_value = ws_vars.MicroState.axis_flags[axis]['maq_est_val']
         while current_state_value != target_state:
@@ -972,6 +1077,7 @@ class RoutineHandler(threading.Thread):
         if current_state_value != target_state:
             return False
         return True
+
 
     def move_step_load_axis(self):
         axis = ctrl_vars.AXIS_IDS['carga']
@@ -1004,6 +1110,7 @@ class RoutineHandler(threading.Thread):
 
         return self.wait_for_axis_state(msg_app.StateMachine.EST_INITIAL, axis)
 
+
     def wait_for_lineal_mov(self, target_pos):
         axis = ctrl_vars.AXIS_IDS['avance']
         current_pos = ws_vars.MicroState.axis_measures[axis]['pos_fil']
@@ -1028,7 +1135,8 @@ class RoutineHandler(threading.Thread):
         if current_step >= 0:
             return ctrl_vars.BOQUILLA_CARGADOR[current_step]
         return False
-    
+
+
     def get_current_boquilla_descarga(self):
         axis = ctrl_vars.AXIS_IDS['carga']
         pos = ws_vars.MicroState.axis_measures[axis]['pos_fil']
@@ -1044,6 +1152,7 @@ class RoutineHandler(threading.Thread):
         if current_step >= 0:
             return ctrl_vars.BOQUILLA_DESCARGADOR[current_step]
         return False
+
 
     def get_current_boquilla_roscado(self):
         axis = ctrl_vars.AXIS_IDS['carga']
@@ -1061,8 +1170,24 @@ class RoutineHandler(threading.Thread):
             return ctrl_vars.BOQUILLA_ROSCADO[current_step]
         return False
 
+    def mov_to_pos_lineal(self, target_pos, ref_rate=ctrl_vars.ROSCADO_CONSTANTES['velocidad_en_vacio']):
+        axis = ctrl_vars.AXIS_IDS['avance']
+        command = Commands.mov_to_pos
+        msg_id = self.get_message_id()
+        ref = target_pos
+        header, data = build_msg(
+            command,
+            ref = ref,
+            ref_rate = ref_rate,
+            msg_id = msg_id,
+            eje = axis)
+        if not self.send_message(header, data):
+            return False
+        return True
+
     def stop(self):
         self._stop_event.set()
-    
+
+
     def stopped(self):
         return self._stop_event.it_set()
