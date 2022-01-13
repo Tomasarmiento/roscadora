@@ -353,6 +353,14 @@ class RoutineHandler(threading.Thread):
         if False in init_flags:
             return
         
+        # Paso 0.1 - expandir_horiz_pinza_desc
+        key = 'expandir_horiz_pinza_desc'
+        group = 1
+        if not self.send_pneumatic(key, group, 1):
+            return False
+        print('expandir_horiz_pinza_desc')
+        print('Paso 0.1')
+
         # Paso 1 - Expandir puntera descarga
         key_1 = 'expandir_puntera_descarga'
         key_2 = 'contraer_puntera_descarga'
@@ -365,6 +373,20 @@ class RoutineHandler(threading.Thread):
         if not self.wait_for_not_remote_in_flag(wait_key, wait_group):
             return False
         time.sleep(2)
+        print('Paso 1 - Expandir puntera descarga')
+
+        # Paso 1.1 - Verifica paso 0.1
+        wait_key = 'horiz_pinza_desc_expandido'
+        wait_group = 1
+        if not self.wait_for_remote_in_flag(wait_key, wait_group):
+            return False
+
+        # Paso 1.2 - expandir_vert_pinza_desc
+        key = 'expandir_vert_pinza_desc'
+        group = 1
+        if not self.send_pneumatic(key, group, 1):
+            return False
+        print('PASO 1.1')
 
         # Paso 2 - Boquilla descarga contraida
         key = 'contraer_boquilla_descarga'
@@ -377,6 +399,13 @@ class RoutineHandler(threading.Thread):
             return False
         time.sleep(1)
         print('contraer_boquilla_descarga')
+
+        # Paso 2.1 - Verifica paso 1.2
+        wait_key = 'vert_pinza_desc_expandido'
+        wait_group = 1
+        if not self.wait_for_remote_in_flag(wait_key, wait_group):
+            return False
+        print('expandir_vert_pinza_desc')
 
         # Paso 3 - Presurizar OFF
         key = 'presurizar'
@@ -405,7 +434,7 @@ class RoutineHandler(threading.Thread):
             return False
         print("PUNTERA DESCARGA CONTRAIDA")
 
-        # Paso 6 - Verificar pieza en boquilla descarga
+        Paso 6 - Verificar pieza en boquilla descarga
         if not ws_vars.MicroState.rem_i_states[1]['pieza_en_boquilla_descarga']:
             return False
         print('CUPLA PRESENTE')
@@ -435,34 +464,10 @@ class RoutineHandler(threading.Thread):
         if not self.wait_for_remote_in_flag(wait_key, wait_group):
             return False
         
-        # Paso 9 - Verificar pieza en boquilla descarga
+        Paso 9 - Verificar pieza en boquilla descarga
         if not ws_vars.MicroState.rem_i_states[1]['pieza_en_boquilla_descarga']:
             return False
         print('CUPLA PRESENTE')
-
-        # Paso 10 - expandir_horiz_pinza_desc
-        key = 'expandir_horiz_pinza_desc'
-        group = 1
-        wait_key = 'horiz_pinza_desc_expandido'
-        wait_group = 1
-        if not self.send_pneumatic(key, group, 1):
-            return False
-        if not self.wait_for_remote_in_flag(wait_key, wait_group):
-            return False
-        print('PASO 10')
-        print('expandir_horiz_pinza_desc')
-
-        # Paso 11 - expandir_vert_pinza_desc
-        key = 'expandir_vert_pinza_desc'
-        group = 1
-        wait_key = 'vert_pinza_desc_expandido'
-        wait_group = 1
-        if not self.send_pneumatic(key, group, 1):
-            return False
-        if not self.wait_for_remote_in_flag(wait_key, wait_group):
-            return False
-        print('PASO 11')
-        print('expandir_vert_pinza_desc')
 
         # Paso 12 - pinza_descargadora_cerrada
         key_1 = 'cerrar_pinza_descargadora'
@@ -504,6 +509,13 @@ class RoutineHandler(threading.Thread):
         print('PASO 14')
         print("PUNTERA DESCARGA CONTRAIDA")
 
+        # Paso 14.1 - contraer_vert_pinza_desc
+        key = 'expandir_vert_pinza_desc'
+        group = 1
+        if not self.send_pneumatic(key, group, 0):
+            return False
+        print('Paso 14.1 - contraer_vert_pinza_desc')
+        
         # Paso 15 - Verificar pieza no presente en boquilla descarga
         if ws_vars.MicroState.rem_i_states[1]['pieza_en_boquilla_descarga']:
             return False
@@ -513,30 +525,19 @@ class RoutineHandler(threading.Thread):
         # Paso 16 - Expandir brazo descargador
         key_1 = 'expandir_brazo_descargador'
         key_2 = 'contraer_brazo_descargador'
-        wait_key = 'brazo_descarga_expandido'
         group = 0
-        wait_group = 0
         
         if not self.send_pneumatic(key_1, group, 1, key_2, 0):
             return False
         
-        if not self.wait_for_remote_in_flag(wait_key, wait_group):
-            return False
-        print('PASO 16')
-
-        # Paso 17 - contraer_vert_pinza_desc
-        key = 'expandir_vert_pinza_desc'
-        group = 1
+        # Paso 16.1 - Verifica paso 14.1
         wait_key = 'vert_pinza_desc_contraido'
         wait_group = 1
-        if not self.send_pneumatic(key, group, 0):
-            return False
         if not self.wait_for_remote_in_flag(wait_key, wait_group):
             return False
-        print('PASO 17')
         print('contraer_vert_pinza_desc')
 
-        # Paso 18 - contraer_horiz_pinza_desc
+        # Paso 16.2 - contraer_horiz_pinza_desc
         key = 'expandir_horiz_pinza_desc'
         group = 1
         wait_key = 'horiz_pinza_desc_contraido'
@@ -545,8 +546,15 @@ class RoutineHandler(threading.Thread):
             return False
         if not self.wait_for_remote_in_flag(wait_key, wait_group):
             return False
-        print('PASO 18')
+        print('Paso 16.2 - contraer_horiz_pinza_desc')
         print('contraer_horiz_pinza_desc')
+
+        # Paso 16.3 - Verifica paso 16
+        wait_key = 'brazo_descarga_expandido'
+        wait_group = 0
+        if not self.wait_for_remote_in_flag(wait_key, wait_group):
+            return False
+        print('PASO 16')
 
         # Paso 19 - expandir_vert_pinza_desc
         key = 'expandir_vert_pinza_desc'
@@ -585,13 +593,13 @@ class RoutineHandler(threading.Thread):
         print('PASO 21')
         print('contraer_vert_pinza_desc')
 
-        # Paso 22 - Expera presencia de cupla en tobogan
+        Paso 22 - Expera presencia de cupla en tobogan
         flag = ws_vars.MicroState.rem_i_states[1]['cupla_por_tobogan_descarga']
         while flag:
             flag = ws_vars.MicroState.rem_i_states[1]['cupla_por_tobogan_descarga']
             time.sleep(self.wait_time)
-        print('FIN RUTINA DESCARGA')
 
+        print('FIN RUTINA DESCARGA')
         return True
 
 
