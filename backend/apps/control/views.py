@@ -69,7 +69,7 @@ def manual_lineal(request):
     if ch_info:
         send_message(header, ch_info, data)
     
-    return JsonResponse({'resp': 'ok'})
+    return JsonResponse({})
 
 
 @csrf_exempt
@@ -164,7 +164,7 @@ def manual_pneumatic(request):
     if ch_info:
         print(header.get_values(), data.get_values())
         send_message(header, ch_info, data)
-    return JsonResponse({'resp': 'ok'})
+    return JsonResponse({})
 
 
 @csrf_exempt
@@ -186,13 +186,13 @@ def stop_axis(request):
     if ch_info:
         send_message(header, ch_info)
     
-    return JsonResponse({'resp': 'ok'})
+    return JsonResponse({})
 
 
 @csrf_exempt
 def stop_all(request):
     print('stop all')
-    return JsonResponse({'resp': 'ok'})
+    return JsonResponse({})
 
 
 @csrf_exempt
@@ -204,35 +204,45 @@ def start_routine(request):
     ch_info = ChannelInfo.objects.get(source='micro')
     if ch_info:
         send_message(header, ch_info, data)
-    return JsonResponse({'resp': 'ok'})
+    return JsonResponse({})
 
 @csrf_exempt
 def semiauto(request):
     post_req = request.POST
     routine = int(post_req['routine'])
     RoutineHandler(routine).start()
-    return JsonResponse({'resp': 'ok'})
+    return JsonResponse({})
 
 
 @csrf_exempt
 def enable_axis(request):
     post_req = request.POST
     axis = int(post_req['eje'])
-
-    initial_state = StateMachine.EST_INITIAL
-    safe_state = StateMachine.EST_SAFE
-    state = MicroState.axis_flags[axis]['maq_est_val'] 
-    if state == initial_state:
-        command = Commands.power_off
-    if state == safe_state:
-        command = Commands.exit_safe
-
+    cmd = int(post_req['command'])
+    print(cmd, axis)
     msg_id = MicroState.last_rx_header.get_msg_id() + 1
-    header_1 = service_handlers.build_msg(Commands.sync_off, msg_id=msg_id, eje=axis)
-    header_2 = service_handlers.build_msg(Commands.power_off, msg_id=msg_id+1, eje=axis)
+    header = service_handlers.build_msg(cmd, msg_id=msg_id, eje=axis)
     ch_info = ChannelInfo.objects.get(source='micro')
     if ch_info:
-        send_message(header_1, ch_info)
-        time.sleep(0.2)
-        send_message(header_2, ch_info)
-    return JsonResponse({'resp': 'ok'})
+        send_message(header, ch_info)
+    return JsonResponse({})
+
+
+@csrf_exempt
+def sync_axis(request):
+    post_req = request.POST
+    msg_id = MicroState.last_rx_header.get_msg_id() + 1
+    cmd = int(post_req['command'])
+    ch_info = ChannelInfo.objects.get(source='micro')
+    paso = None
+    data = None
+    header = None
+    if 'paso' in post_req.keys() and cmd == Commands.sync_on:
+        paso = float(post_req['paso'])
+        header, data = service_handlers.build_msg(cmd, msg_id=msg_id, paso=paso, eje=ctrl_vars.AXIS_IDS['avance'])
+    elif cmd == Commands.sync_off:
+        header = service_handlers.build_msg(cmd, msg_id=msg_id, eje=ctrl_vars.AXIS_IDS['avance'])
+    if header:
+        if ch_info:
+            send_message(header, ch_info, data)
+    return JsonResponse({})

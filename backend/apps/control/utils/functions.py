@@ -285,7 +285,10 @@ def get_front_states():
         'estado_eje_avance': ws_vars.MicroState.axis_flags[ctrl_vars.AXIS_IDS['avance']]['estado'],
 
         'flags_fin_eje_giro': ws_vars.MicroState.axis_flags[ctrl_vars.AXIS_IDS['giro']]['flags_fin'],
-        'estado_eje_giro': ws_vars.MicroState.axis_flags[ctrl_vars.AXIS_IDS['giro']]['estado']
+        'estado_eje_giro': ws_vars.MicroState.axis_flags[ctrl_vars.AXIS_IDS['giro']]['estado'],
+
+        'sync_on_avance': ws_vars.MicroState.axis_flags[ctrl_vars.AXIS_IDS['avance']]['sync_on'],
+        'slave_giro': ws_vars.MicroState.axis_flags[ctrl_vars.AXIS_IDS['giro']]['slave']
     }
     return data
 

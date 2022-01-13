@@ -51,6 +51,8 @@ class Commands:
 COMMANDS = {
     # General
     'stop_all': AcdpMsgCmd.CD_STOP_ALL,
+    'enter_safe': AcdpMsgCodes.Cmd.Cd_MovEje_EnterSafeMode,
+    'exit_safe': AcdpMsgCodes.Cmd.Cd_MovEje_ExitSafeMode,
 
     # Connection
     'open_connection': AcdpMsgCxn.CD_CONNECT,
