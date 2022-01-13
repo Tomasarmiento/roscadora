@@ -80,6 +80,6 @@ def show_states(header, data):
     print("-"*50)
     # for key, value in MicroState.rem_o_states[1].items():
     #     print(key, value)
-    print (MicroState.axis_flags[ctrl_var.AXIS_IDS['avance']])
+    print (MicroState.axis_measures[ctrl_var.AXIS_IDS['carga']])
     # for axis in MicroState.axis_measures:
     #     print(axis)

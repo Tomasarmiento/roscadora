@@ -32,31 +32,39 @@ class RoutineHandler(threading.Thread):
         routine = self.current_routine
         if routine:
             routine_ok = None
+            
             start_time = datetime.now()
-            if routine == ctrl_vars.ROUTINE_IDS['cabezal_indexar']:
-                print('ROUTINE CABEZAL')
-                routine_ok = self.routine_cabezal_indexar()
+            pos = round(ws_vars.MicroState.axis_measures[ctrl_vars.AXIS_IDS['carga']]['pos_fil'], 0)
             
-            elif routine == ctrl_vars.ROUTINE_IDS['carga']:
-                print('CARGA')
-                routine_ok = self.routine_carga()
-            
-            elif routine == ctrl_vars.ROUTINE_IDS['descarga']:
-                print('DESCARGA')
-                routine_ok = self.routine_descarga()
-            
-            elif routine == ctrl_vars.ROUTINE_IDS['cerado']:
+            if routine == ctrl_vars.ROUTINE_IDS['cerado']:
                 print('CERADO')
                 routine_ok = self.routine_homing()
             
-            elif routine == ctrl_vars.ROUTINE_IDS['roscado']:
-                print('ROSCADO')
-                routine_ok = self.routine_roscado()
+            elif pos not in ctrl_vars.LOAD_STEPS:
+                routine_ok = False
+                print('Error en posicion de cabezal')
+            
+            else:
+                if routine == ctrl_vars.ROUTINE_IDS['cabezal_indexar']:
+                    print('ROUTINE CABEZAL')
+                    routine_ok = self.routine_cabezal_indexar()
+                
+                elif routine == ctrl_vars.ROUTINE_IDS['carga']:
+                    print('CARGA')
+                    routine_ok = self.routine_carga()
+                
+                elif routine == ctrl_vars.ROUTINE_IDS['descarga']:
+                    print('DESCARGA')
+                    routine_ok = self.routine_descarga()
+                
+                elif routine == ctrl_vars.ROUTINE_IDS['roscado']:
+                    print('ROSCADO')
+                    routine_ok = self.routine_roscado()
             
             end_time = datetime.now()
-            print('ROUTINE TIME:', end_time - start_time)
             if routine_ok:
                 print('Routine OK')
+                print('ROUTINE TIME:', end_time - start_time)
                 return True
             else:
                 print('ROUTINE ERR')
