@@ -26,6 +26,37 @@ document.addEventListener("DOMContentLoaded", (e) => {
     let btn_off_sync = document.getElementById('offSync');
 
 
+    // Enables Motores Manual
+    const enableLineal = document.querySelector("#linealEnable")
+    const enableCabezal = document.querySelector("#cabezalEnable")
+    const enableHusillo = document.querySelector("#husilloEnable")
+
+    //Sincronizar Husillo
+    const syncHusillo = document.querySelector("#husilloSync")
+
+    socket.onmessage = function (event) {
+        const datosWs = JSON.parse(event.data);
+
+        if (datosWs) {
+            
+          datosWs.lineal_enable == false
+            ? (enableLineal.className = "box box-green")
+            : (enableLineal.className = "box box-grey");
+      
+          datosWs.cabezal_enable == false
+            ? (enableCabezal.className = "box box-green")
+            : (enableCabezal.className = "box box-grey");
+      
+          datosWs.husillo_enable == false
+            ? (enableHusillo.className = "box box-green")
+            : (enableHusillo.className = "box box-grey");
+      
+          datosWs.husillo_sync == false
+            ? (syncHusillo.className = "box box-green")
+            : (syncHusillo.className = "box box-grey");  
+        }
+    }
+
     btn_mov_husillo.addEventListener("click", (e) => {
         let rpm = document.getElementById('rpmValue').value;
         cmd = btn_mov_husillo.getAttribute('cmd');
