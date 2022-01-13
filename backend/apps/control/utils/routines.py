@@ -434,7 +434,7 @@ class RoutineHandler(threading.Thread):
             return False
         print("PUNTERA DESCARGA CONTRAIDA")
 
-        Paso 6 - Verificar pieza en boquilla descarga
+        # Paso 6 - Verificar pieza en boquilla descarga
         if not ws_vars.MicroState.rem_i_states[1]['pieza_en_boquilla_descarga']:
             return False
         print('CUPLA PRESENTE')
@@ -464,7 +464,7 @@ class RoutineHandler(threading.Thread):
         if not self.wait_for_remote_in_flag(wait_key, wait_group):
             return False
         
-        Paso 9 - Verificar pieza en boquilla descarga
+        # Paso 9 - Verificar pieza en boquilla descarga
         if not ws_vars.MicroState.rem_i_states[1]['pieza_en_boquilla_descarga']:
             return False
         print('CUPLA PRESENTE')
@@ -593,7 +593,7 @@ class RoutineHandler(threading.Thread):
         print('PASO 21')
         print('contraer_vert_pinza_desc')
 
-        Paso 22 - Expera presencia de cupla en tobogan
+        # Paso 22 - Expera presencia de cupla en tobogan
         flag = ws_vars.MicroState.rem_i_states[1]['cupla_por_tobogan_descarga']
         while flag:
             flag = ws_vars.MicroState.rem_i_states[1]['cupla_por_tobogan_descarga']
@@ -1178,6 +1178,7 @@ class RoutineHandler(threading.Thread):
             return ctrl_vars.BOQUILLA_ROSCADO[current_step]
         return False
 
+
     def mov_to_pos_lineal(self, target_pos, ref_rate=ctrl_vars.ROSCADO_CONSTANTES['velocidad_en_vacio']):
         axis = ctrl_vars.AXIS_IDS['avance']
         command = Commands.mov_to_pos
@@ -1193,8 +1194,10 @@ class RoutineHandler(threading.Thread):
             return False
         return True
 
+
     def stop(self):
         self._stop_event.set()
+
 
 
     def stopped(self):
