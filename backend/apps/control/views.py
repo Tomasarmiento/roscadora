@@ -1,11 +1,12 @@
 import json
+import time
 
 from django.shortcuts import render
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
 import apps.service.acdp.handlers as service_handlers
-from apps.service.acdp.messages_app import AcdpAxisMovementEnums
+from apps.service.acdp.messages_app import AcdpAxisMovementEnums, StateMachine
 
 from apps.service.api.variables import Commands
 from apps.ws.utils.handlers import send_message
@@ -196,5 +197,42 @@ def stop_all(request):
 
 @csrf_exempt
 def start_routine(request):
-    RoutineHandler().start()
+    command = Commands.drv_set_zero_abs
+    msg_id = MicroState.last_rx_header.get_msg_id() + 1
+    MicroState.msg_id = msg_id
+    header, data = service_handlers.build_msg(command, msg_id=msg_id, zero=-7.2, eje=ctrl_vars.AXIS_IDS['carga'])
+    ch_info = ChannelInfo.objects.get(source='micro')
+    if ch_info:
+        send_message(header, ch_info, data)
+    return JsonResponse({'resp': 'ok'})
+
+@csrf_exempt
+def semiauto(request):
+    post_req = request.POST
+    routine = int(post_req['routine'])
+    RoutineHandler(routine).start()
+    return JsonResponse({'resp': 'ok'})
+
+
+@csrf_exempt
+def enable_axis(request):
+    post_req = request.POST
+    axis = int(post_req['eje'])
+
+    initial_state = StateMachine.EST_INITIAL
+    safe_state = StateMachine.EST_SAFE
+    state = MicroState.axis_flags[axis]['maq_est_val'] 
+    if state == initial_state:
+        command = Commands.power_off
+    if state == safe_state:
+        command = Commands.exit_safe
+
+    msg_id = MicroState.last_rx_header.get_msg_id() + 1
+    header_1 = service_handlers.build_msg(Commands.sync_off, msg_id=msg_id, eje=axis)
+    header_2 = service_handlers.build_msg(Commands.power_off, msg_id=msg_id+1, eje=axis)
+    ch_info = ChannelInfo.objects.get(source='micro')
+    if ch_info:
+        send_message(header_1, ch_info)
+        time.sleep(0.2)
+        send_message(header_2, ch_info)
     return JsonResponse({'resp': 'ok'})

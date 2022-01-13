@@ -57,6 +57,8 @@ document.addEventListener("DOMContentLoaded", (e) => {
         }
     }
 
+
+    
     btn_mov_husillo.addEventListener("click", (e) => {
         let rpm = document.getElementById('rpmValue').value;
         cmd = btn_mov_husillo.getAttribute('cmd');
@@ -143,6 +145,20 @@ function sendCommand(cmd, eje, args){
 function sendStopAxisCommand(cmd, eje){
     let url = "http://localhost:8000/control/manual/stop-axis/";
     let params = "command=" + cmd + "&eje=" + eje;
+
+    let xhr = new XMLHttpRequest();
+    
+    xhr.open("POST", url, true);
+
+    //Send the proper header information along with the request
+    xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+    xhr.send(params);
+}
+
+function sendEnable(eje){
+    let url = "http://localhost:8000/control/manual/motor/enable/";
+    let params = "eje=" + eje;
 
     let xhr = new XMLHttpRequest();
     

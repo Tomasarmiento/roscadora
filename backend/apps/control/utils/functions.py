@@ -4,6 +4,7 @@ from datetime import datetime
 from apps.service.acdp.handlers import build_msg
 from apps.service.api.variables import Commands, COMMANDS
 from apps.service.acdp import messages_app as msg_app
+from apps.service.acdp import messages_base as msg_base
 
 from apps.control.utils import variables as ctrl_vars
 
@@ -141,14 +142,32 @@ def check_end_flags(flags_value):
 
 
 def update_axis_flags(micro_data, axis):
-    ws_vars.MicroState.axis_flags[axis]['slave']       = micro_data.data.ctrl.eje[axis].flags & msg_app.AcdpAxisMovementsMovEjeDataFlagsBits.slave
-    ws_vars.MicroState.axis_flags[axis]['sync_on']     = micro_data.data.ctrl.eje[axis].flags & msg_app.AcdpAxisMovementsMovEjeDataFlagsBits.sync_on
-    ws_vars.MicroState.axis_flags[axis]['em_stop']     = micro_data.data.ctrl.eje[axis].flags & msg_app.AcdpAxisMovementsMovEjeDataFlagsBits.em_stop
-    ws_vars.MicroState.axis_flags[axis]['maq_est_val'] = micro_data.data.ctrl.eje[axis].maq_est.estado
-    ws_vars.MicroState.axis_flags[axis]['estado']      = msg_app.StateMachine.get_state(ws_vars.MicroState.axis_flags[axis]['maq_est_val'])
-    ws_vars.MicroState.axis_flags[axis]['flags_fin']   = micro_data.data.ctrl.eje[axis].maq_est.flags_fin
-    ws_vars.MicroState.axis_flags[axis]['fin']         = check_end_flags(ws_vars.MicroState.axis_flags[axis]['flags_fin'])
-    ws_vars.MicroState.axis_flags[axis]['axis_id']     = axis
+    flag = msg_app.AcdpAxisMovementsMovEjeDataFlagsBits.slave
+    ws_vars.MicroState.axis_flags[axis]['slave']            = micro_data.data.ctrl.eje[axis].flags & flag == flag
+
+    flag = msg_app.AcdpAxisMovementsMovEjeDataFlagsBits.sync_on
+    ws_vars.MicroState.axis_flags[axis]['sync_on']          = micro_data.data.ctrl.eje[axis].flags & flag == flag
+    
+    flag = msg_app.AcdpAxisMovementsMovEjeDataFlagsBits.em_stop
+    ws_vars.MicroState.axis_flags[axis]['em_stop']          = micro_data.data.ctrl.eje[axis].flags & flag == flag
+
+    ws_vars.MicroState.axis_flags[axis]['maq_est_val']      = micro_data.data.ctrl.eje[axis].maq_est.estado
+    ws_vars.MicroState.axis_flags[axis]['estado']           = msg_app.StateMachine.get_state(ws_vars.MicroState.axis_flags[axis]['maq_est_val'])
+
+    flag = msg_base.DrvFbkDataFlags.UNKNOWN_ZERO
+    ws_vars.MicroState.axis_flags[axis]['cero_desconocido'] = micro_data.data.ctrl.eje[axis].mov_pos.med_drv.drv_fbk.flags & flag  == flag
+
+    flag = msg_base.DrvFbkDataFlags.HOME_SWITCH
+    ws_vars.MicroState.axis_flags[axis]['home_switch']      = micro_data.data.ctrl.eje[axis].mov_pos.med_drv.drv_fbk.flags & flag == flag
+    
+    # if axis == ctrl_vars.AXIS_IDS['carga']:
+        # print(flag)
+        # print(micro_data.data.ctrl.eje[axis].mov_pos.med_drv.drv_fbk.flags)
+        # print(ws_vars.MicroState.axis_flags[axis]['homming_ended_ok'])
+    
+    ws_vars.MicroState.axis_flags[axis]['flags_fin']        = micro_data.data.ctrl.eje[axis].maq_est.flags_fin
+    ws_vars.MicroState.axis_flags[axis]['fin']              = check_end_flags(ws_vars.MicroState.axis_flags[axis]['flags_fin'])
+    ws_vars.MicroState.axis_flags[axis]['axis_id']          = axis
 
 
 def update_axis_data(micro_data):
@@ -157,7 +176,7 @@ def update_axis_data(micro_data):
         ws_vars.MicroState.axis_measures[i]['pos_fil'] = micro_data.data.ctrl.eje[i].mov_pos.med_drv.pos_fil
         ws_vars.MicroState.axis_measures[i]['vel_fil'] = micro_data.data.ctrl.eje[i].mov_pos.med_drv.vel_fil
         ws_vars.MicroState.axis_measures[i]['torque_fil'] = micro_data.data.ctrl.eje[i].mov_pos.med_drv.torque_fil
-
+        ws_vars.MicroState.axis_measures[i]['pos_abs'] = micro_data.data.ctrl.eje[i].mov_pos.med_drv.drv_fbk.pos_abs
 
 def update_rem_io_states(micro_data):
     g_1_i = {}
@@ -250,7 +269,23 @@ def get_front_states():
         'cabezal_vel': ws_vars.MicroState.axis_measures[ctrl_vars.AXIS_IDS['carga']]['vel_fil'],
 
         'avance_pos': ws_vars.MicroState.axis_measures[ctrl_vars.AXIS_IDS['avance']]['pos_fil'],
-        'avance_vel': ws_vars.MicroState.axis_measures[ctrl_vars.AXIS_IDS['avance']]['vel_fil']
+        'avance_vel': ws_vars.MicroState.axis_measures[ctrl_vars.AXIS_IDS['avance']]['vel_fil'],
+
+        'lineal_enable': ws_vars.MicroState.axis_flags[ctrl_vars.AXIS_IDS['avance']]['estado'] == 'initial',
+        'cabezal_enable': ws_vars.MicroState.axis_flags[ctrl_vars.AXIS_IDS['carga']]['estado'] == 'initial',
+        'husillo_enable': ws_vars.MicroState.axis_flags[ctrl_vars.AXIS_IDS['giro']]['estado'] == 'initial',
+
+        'remote_inputs': ws_vars.MicroState.rem_i_states,
+        'remote_outputs': ws_vars.MicroState.rem_o_states,
+
+        'flags_fin_eje_carga': ws_vars.MicroState.axis_flags[ctrl_vars.AXIS_IDS['carga']]['flags_fin'],
+        'estado_eje_carga': ws_vars.MicroState.axis_flags[ctrl_vars.AXIS_IDS['carga']]['estado'],
+
+        'flags_fin_eje_avance': ws_vars.MicroState.axis_flags[ctrl_vars.AXIS_IDS['avance']]['flags_fin'],
+        'estado_eje_avance': ws_vars.MicroState.axis_flags[ctrl_vars.AXIS_IDS['avance']]['estado'],
+
+        'flags_fin_eje_giro': ws_vars.MicroState.axis_flags[ctrl_vars.AXIS_IDS['giro']]['flags_fin'],
+        'estado_eje_giro': ws_vars.MicroState.axis_flags[ctrl_vars.AXIS_IDS['giro']]['estado']
     }
     return data
 
