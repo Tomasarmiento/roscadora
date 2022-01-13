@@ -11,14 +11,20 @@
                 </div>
             </div>
             <div class="row mt-3">
-                <div class="col text-center">
-                    <p style="display: inline;">Horizontal</p>
+                <div class="col text-center" style="padding-left: 0px;padding-right: 0px;top: 20px;left: 10px;">
+                    <p style="display: inline;margin-top: 15px;">Horizontal</p>
                 </div>
-                <div class="col text-center">
-                    <button class="btn btn-primary" id="horizontalCargaOnOff" menu="carga" cmd= {{ rem_do_set }}> ON/OFF </button>
+                <div class="col text-center" style="padding-right: 0px;padding-left: 0px;left: 20px;">
+                    <button class="btn btn-primary" id="horizontalCargaOnOff" menu="carga" cmd= {{ rem_do_set }}> Adelante </button>
+                    <button class="btn btn-primary" style="margin-top: 10px;" id="horizontalCargaOnOff" menu="carga" cmd= {{ rem_do_set }}> Atrás </button>
                 </div>
-                <div class="col text-center">
-                    <article class="led led-grey" id="horizontalCargaOk"></article>
+                <div class="col text-center" style="padding-right: 0px;padding-left: 0px;left: 10px;">
+                    <article class="led led-grey" style="margin-top: 6px;" id="horizontalCargaOk"></article>
+                    <article class="led led-grey" style="margin-top: 24px;" id="horizontalCargaOk"></article>
+                </div>
+                <div class="col text-center" style="padding-left: 0px;padding-right: 0px;right: 10px;">
+                    <label style="margin-top: 5px;"><FONT SIZE=4>4 off-3 on</FONT></label>
+                    <label style="margin-top: 13px;"><FONT SIZE=4>4 on-3 off</FONT></label>
                 </div>
             </div>
             <hr size="100px" style="width: 100%;" color="grey">
