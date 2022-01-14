@@ -255,11 +255,39 @@ def update_io_states(micro_data):
     update_loc_io_states(micro_data)
 
 
+def update_graph():
+    if ws_vars.MicroState.graph_flag == True:
+        position_value = ws_vars.MicroState.axis_measures[ctrl_vars.AXIS_IDS['avance']]['pos_fil']
+        torque_value = ws_vars.MicroState.axis_measures[ctrl_vars.AXIS_IDS['giro']]['torque_fil']
+        ws_vars.MicroState.position_values.append(position_value)
+        ws_vars.MicroState.torque_values.append(torque_value)
+
+
+def check_timeouts():
+    flag = msg_base.DrvFbkDataFlags.ENABLED
+    key_1 = 'contraer_clampeo_plato'
+    key_2 = 'expandir_clampeo_plato'
+    axis = ctrl_vars.AXIS_IDS['carga']
+    if ws_vars.MicroState.rem_o_states[1][key_1] == False and ws_vars.MicroState.rem_o_states[1][key_2] == True:  # Plato clampeado
+        if ws_vars.MicroState.axis_flags[axis]['drv_flags'] & flag == 0:     # Servo de carga apagado
+            ws_vars.MicroState.cabezal_on_timer = datetime.now()    # Resetea timer
+        else:
+            ws_vars.MicroState.cabezal_on_timer = datetime.now() - ws_vars.MicroState.cabezal_on_timer
+            if ws_vars.MicroState.cabezal_on_timer > ctrl_vars.CABEZAL_ON_TIMEOFF:
+                msg_id = get_message_id()
+                cmd = Commands.power_off
+                header = build_msg(cmd, eje=axis, msg_id=msg_id)
+                send_message(header)
+                ws_vars.MicroState.cabezal_on_timer = datetime.now()    # Resetea timer
+
+
 def update_states(micro_data):
     update_io_states(micro_data)
     update_data_flags(micro_data)
     update_axis_data(micro_data)
-    update_front_states()
+    update_graph()
+    check_timeouts()
+    update_front_states()           # Should always be called at the end
 
 
 def get_front_states():
@@ -292,7 +320,7 @@ def get_front_states():
         'sync_on_avance': ws_vars.MicroState.axis_flags[ctrl_vars.AXIS_IDS['avance']]['sync_on'],
         'slave_giro': ws_vars.MicroState.axis_flags[ctrl_vars.AXIS_IDS['giro']]['slave'],
 
-        'graph': False
+        'graph': ws_vars.MicroState.graph_flag
     }
     return data
 
@@ -393,11 +421,15 @@ def sync_on(paso):
     msg_id = ws_vars.MicroState.last_rx_header.get_msg_id() + 1
     ws_vars.MicroState.msg_id = msg_id
     header = build_msg(Commands.sync_on, msg_id = msg_id, paso=paso)
-    send_message(header.pacself())
+    send_message(header)
 
 
 def stop():
     msg_id = ws_vars.MicroState.last_rx_header.get_msg_id() + 1
     ws_vars.MicroState.msg_id = msg_id
     header = build_msg(Commands.stop, msg_id = msg_id)
-    send_message(header.pacself())
+    send_message(header)
+
+
+def get_message_id():
+    return ws_vars.MicroState.msg_id + 1

@@ -16,6 +16,8 @@ from apps.ws.utils import variables as ws_vars
 from apps.ws.utils.handlers import send_message
 from apps.ws.utils.functions import get_ch_info
 
+from apps.graphs.models import Graph
+
 class RoutineHandler(threading.Thread):
 
     def __init__(self, routine=None, **kwargs):
@@ -63,10 +65,25 @@ class RoutineHandler(threading.Thread):
             
             end_time = datetime.now()
             if routine_ok:
+                duration = end_time - start_time
                 print('Routine OK')
-                print('ROUTINE TIME:', end_time - start_time)
+                print('ROUTINE TIME:', duration)
+                if ws_vars.MicroState.graph_flag == True:
+                    ws_vars.MicroState.graph_flag = False
+                    ws_vars.MicroState.graph_duration = duration
+                    start_graph = datetime.now()
+                    Graph.objects.create(
+                        graph_data = {
+                            'position': ws_vars.MicroState.position_values,
+                            'torque': ws_vars.MicroState.torque_values
+                        }
+                    )
+                    end_graph = datetime.now()
+                    print(end_graph - start_graph)
                 return True
             else:
+                ws_vars.MicroState.graph_flag = False
+                ws_vars.MicroState.graph_duration = -1
                 print('ROUTINE ERR')
                 return False
         else:
@@ -365,7 +382,9 @@ class RoutineHandler(threading.Thread):
         print(init_flags)
         if False in init_flags:
             return
-        
+        ws_vars.MicroState.position_values = []
+        ws_vars.MicroState.torque_values = []
+        ws_vars.MicroState.graph_flag = True
         # Paso 0.1 - expandir_horiz_pinza_desc
         key = 'expandir_horiz_pinza_desc'
         group = 1
@@ -448,9 +467,9 @@ class RoutineHandler(threading.Thread):
         print("PUNTERA DESCARGA CONTRAIDA")
 
         # Paso 6 - Verificar pieza en boquilla descarga
-        if not ws_vars.MicroState.rem_i_states[1]['pieza_en_boquilla_descarga']:
-            return False
-        print('CUPLA PRESENTE')
+        # if not ws_vars.MicroState.rem_i_states[1]['pieza_en_boquilla_descarga']:
+        #     return False
+        # print('CUPLA PRESENTE')
 
         # Paso 7 - Contraer brazo descargador
         key_1 = 'contraer_brazo_descargador'
@@ -478,9 +497,9 @@ class RoutineHandler(threading.Thread):
             return False
         
         # Paso 9 - Verificar pieza en boquilla descarga
-        if not ws_vars.MicroState.rem_i_states[1]['pieza_en_boquilla_descarga']:
-            return False
-        print('CUPLA PRESENTE')
+        # if not ws_vars.MicroState.rem_i_states[1]['pieza_en_boquilla_descarga']:
+        #     return False
+        # print('CUPLA PRESENTE')
 
         # Paso 12 - pinza_descargadora_cerrada
         key_1 = 'cerrar_pinza_descargadora'
@@ -607,10 +626,10 @@ class RoutineHandler(threading.Thread):
         print('contraer_vert_pinza_desc')
 
         # Paso 22 - Expera presencia de cupla en tobogan
-        flag = ws_vars.MicroState.rem_i_states[1]['cupla_por_tobogan_descarga']
-        while flag:
-            flag = ws_vars.MicroState.rem_i_states[1]['cupla_por_tobogan_descarga']
-            time.sleep(self.wait_time)
+        # flag = ws_vars.MicroState.rem_i_states[1]['cupla_por_tobogan_descarga']
+        # while flag:
+        #     flag = ws_vars.MicroState.rem_i_states[1]['cupla_por_tobogan_descarga']
+        #     time.sleep(self.wait_time)
 
         print('FIN RUTINA DESCARGA')
         return True
@@ -864,7 +883,6 @@ class RoutineHandler(threading.Thread):
         state = ws_vars.MicroState.axis_flags[axis]['home_switch']
         while not state:
             state = ws_vars.MicroState.axis_flags[axis]['home_switch']
-            print(state)
             time.sleep(self.wait_time)
         print('PASO 1')
         print('HOME SW ACTIVADO')
