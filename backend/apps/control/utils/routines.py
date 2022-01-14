@@ -44,6 +44,10 @@ class RoutineHandler(threading.Thread):
                 routine_ok = False
                 print('Error en posicion de cabezal')
             
+            elif ws_vars.MicroState.rem_i_states[1]['presion_normal'] == False:
+                routine_ok = False
+                print('Baja presión')
+
             else:
                 if routine == ctrl_vars.ROUTINE_IDS['cabezal_indexar']:
                     print('ROUTINE CABEZAL')

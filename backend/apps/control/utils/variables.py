@@ -205,7 +205,7 @@ REM_DI_G2_BITS = {
     'cupla_por_tobogan_descarga':   12,
                                     # 13 not implemented
                                     # 14 not implemented
-    'baja_presion':                 15,
+    'presion_normal':               15,
 }
 
 
@@ -294,5 +294,5 @@ REM_DI_G2_ARR = [
     'cupla_por_tobogan_descarga',   # 29 - 12
     '',                             # 30 - 13
     '',                             # 31 - 14
-    'baja_presion',                 # 32 - 15
+    'presion_normal',               # 32 - 15
 ]
