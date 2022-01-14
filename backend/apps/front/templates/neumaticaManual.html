@@ -29,38 +29,56 @@
             </div>
             <hr size="100px" style="width: 100%;" color="grey">
             <div class="row mt-3">
-                <div class="col text-center">
-                    <p style="display: inline;">Vertical</p>
+                <div class="col text-center" style="padding-left: 0px;padding-right: 0px;top: 20px;left: 10px;">
+                    <p style="display: inline;margin-top: 15px;">Vertical</p>
                 </div>
-                <div class="col text-center">
-                    <button class="btn btn-primary" id="verticalCargaOnOff" menu="carga" cmd= {{ rem_do_set }}> ON/OFF </button>
+                <div class="col text-center" style="padding-right: 0px;padding-left: 0px;left: 20px;">
+                    <button class="btn btn-primary" id="verticalCargaOnOff" menu="carga" cmd= {{ rem_do_set }}> Arriba </button>
+                    <button class="btn btn-primary" style="margin-top: 10px;" id="verticalCargaOnOff" menu="carga" cmd= {{ rem_do_set }}> Abajo </button>
                 </div>
-                <div class="col text-center">
-                    <article class="led led-grey" id="verticalCargaOk"></article>
+                <div class="col text-center" style="padding-right: 0px;padding-left: 0px;left: 10px;">
+                    <article class="led led-grey" style="margin-top: 6px;" id="verticalCargaOk"></article>
+                    <article class="led led-grey" style="margin-top: 24px;" id="verticalCargaOk"></article>
                 </div>
-            </div>
+                <div class="col text-center" style="padding-left: 0px;padding-right: 0px;right: 10px;">
+                    <label style="margin-top: 5px;"><FONT SIZE=4>15 on</FONT></label>
+                    <label style="margin-top: 13px;"><FONT SIZE=4>15 off</FONT></label>
+                </div>
+            </div>  
             <hr size="100px" style="width: 100%;" color="grey">
             <div class="row mt-3">
-                <div class="col text-center">
-                    <p style="display: inline;">Boquilla Carga</p>
+                <div class="col text-center" style="padding-left: 0px;padding-right: 0px;top: 20px;left: 10px;">
+                    <p style="display: inline;margin-top: 15px;">Boquilla Carga</p>
                 </div>
-                <div class="col text-center">
-                    <button class="btn btn-primary" id="BoquillaCargaOnOff" menu="carga" cmd= {{ rem_do_set }}> ON/OFF </button>
+                <div class="col text-center" style="padding-right: 0px;padding-left: 0px;left: 20px;">
+                    <button class="btn btn-primary" id="BoquillaCargaOnOff" menu="carga" cmd= {{ rem_do_set }}> Cierra </button>
+                    <button class="btn btn-primary" style="margin-top: 10px;" id="BoquillaCargaOnOff" menu="carga" cmd= {{ rem_do_set }}> Abre </button>
                 </div>
-                <div class="col text-center">
-                    <article class="led led-grey" id="boquillaCargaOk"></article>
+                <div class="col text-center" style="padding-right: 0px;padding-left: 0px;left: 10px;">
+                    <article class="led led-grey" style="margin-top: 6px;" id="boquillaCargaOk"></article>
+                    <article class="led led-grey" style="margin-top: 24px;" id="boquillaCargaOk"></article>
+                </div>
+                <div class="col text-center" style="padding-left: 0px;padding-right: 0px;right: 10px;">
+                    <label style="margin-top: 5px;"><FONT SIZE=4>13 on</FONT></label>
+                    <label style="margin-top: 13px;"><FONT SIZE=4>13 off</FONT></label>
                 </div>
             </div>
             <hr size="100px" style="width: 98%;" color="grey">
             <div class="row mt-3">
-                <div class="col text-center">
+                <div class="col text-center" style="padding-left: 0px;padding-right: 0px;top: 20px;left: 10px;">
                     <p style="display: inline;">Giro</p>
                 </div>
-                <div class="col text-center">
-                    <button class="btn btn-primary" id="giroCargaOnOff" menu="carga" cmd= {{ rem_do_set }}> ON/OFF </button>
+                <div class="col text-center" style="padding-right: 0px;padding-left: 0px;left: 20px;">
+                    <button class="btn btn-primary" id="giroCargaOnOff" menu="carga" cmd= {{ rem_do_set }}> Arriba </button>
+                    <button class="btn btn-primary" style="margin-top: 10px;" id="giroCargaOnOff" menu="carga" cmd= {{ rem_do_set }}> Abajo </button>
                 </div>
-                <div class="col text-center">
-                    <article class="led led-grey" id="giroCargaOk"></article>
+                <div class="col text-center" style="padding-right: 0px;padding-left: 0px;left: 10px;">
+                    <article class="led led-grey" style="margin-top: 6px;" id="giroCargaOk"></article>
+                    <article class="led led-grey" style="margin-top: 24px;" id="giroCargaOk"></article>
+                </div>
+                <div class="col text-center" style="padding-left: 0px;padding-right: 0px;right: 10px;">
+                    <label style="margin-top: 5px;"><FONT SIZE=4>6 off-5 on</FONT></label>
+                    <label style="margin-top: 13px;"><FONT SIZE=4>6 on-5 off</FONT></label>
                 </div>
             </div>
             
@@ -75,78 +93,117 @@
                         </div>
                     </div>
                     <div class="row mt-3">
-                        <div class="col text-center">
+                        <div class="col text-center" style="padding-left: 0px;padding-right: 0px;top: 20px;left: 10px;">
                             <p style="display: inline;">Horizontal</p>
                         </div>
-                        <div class="col text-center">
-                            <button class="btn btn-primary" id="horizontalDescOnOff"  menu="descarga" cmd= {{ rem_do_set }}> ON/OFF </button>
+                        <div class="col text-center" style="padding-right: 0px;padding-left: 0px;left: 20px;">
+                            <button class="btn btn-primary" id="horizontalDescOnOff"  menu="descarga" cmd= {{ rem_do_set }}> Atrás </button>
+                            <button class="btn btn-primary" style="margin-top: 10px;" id="horizontalDescOnOff"  menu="descarga" cmd= {{ rem_do_set }}> Adelante </button>
                         </div>
-                        <div class="col text-center">
-                            <article class="led led-grey" id="horizontalDescOk"></article>
+                        <div class="col text-center" style="padding-right: 0px;padding-left: 0px;left: 10px;">
+                            <article class="led led-grey" style="margin-top: 6px;" id="horizontalDescOk"></article>
+                            <article class="led led-grey" style="margin-top: 24px;" id="horizontalDescOk"></article>
+                        </div>
+                        <div class="col text-center" style="padding-left: 0px;padding-right: 0px;right: 10px;">
+                            <label style="margin-top: 5px;"><FONT SIZE=4>2 off-1 on</FONT></label>
+                            <label style="margin-top: 13px;"><FONT SIZE=4>2 on-1 off</FONT></label>
                         </div>
                     </div>
                     <hr size="100px" style="width: 98%;" color="grey">
                     <div class="row mt-3">
-                        <div class="col text-center">
+                        <div class="col text-center" style="padding-left: 0px;padding-right: 0px;top: 20px;left: 10px;">
                             <p style="display: inline;">Giro</p>
                         </div>
-                        <div class="col text-center">
-                            <button class="btn btn-primary" id="giroDescOnOff"  menu="descarga" cmd= {{ rem_do_set }}> ON/OFF </button>
+                        <div class="col text-center" style="padding-right: 0px;padding-left: 0px;left: 20px;">
+                            <button class="btn btn-primary" id="giroDescOnOff"  menu="descarga" cmd= {{ rem_do_set }}> Arriba </button>
+                            <button class="btn btn-primary" style="margin-top: 10px;" id="giroDescOnOff"  menu="descarga" cmd= {{ rem_do_set }}> Abajo </button>
                         </div>
-                        <div class="col text-center">
-                            <article class="led led-grey" id="giroDescOk"></article>
+                        <div class="col text-center" style="padding-right: 0px;padding-left: 0px;left: 10px;">
+                            <article class="led led-grey" style="margin-top: 6px;" id="giroDescOk"></article>
+                            <article class="led led-grey" style="margin-top: 24px;" id="giroDescOk"></article>
+                        </div>
+                        <div class="col text-center" style="padding-left: 0px;padding-right: 0px;right: 10px;">
+                            <label style="margin-top: 5px;"><FONT SIZE=4>8 off-7 on</FONT></label>
+                            <label style="margin-top: 13px;"><FONT SIZE=4>8 on-7 off</FONT></label>
                         </div>
                     </div>
                     <hr size="100px" style="width: 98%;" color="grey">
                     <div class="row mt-3">
-                        <div class="col text-center">
+                        <div class="col text-center" style="padding-left: 0px;padding-right: 0px;top: 20px;left: 10px;">
                             <p style="display: inline;">Horizon Gripper</p>
                         </div>
-                        <div class="col text-center">
-                            <button class="btn btn-primary" id="horizontalGrOnOff"  menu="descarga" cmd= {{ rem_do_set }}> ON/OFF </button>
+                        <div class="col text-center" style="padding-right: 0px;padding-left: 0px;left: 20px;">
+                            <button class="btn btn-primary" id="horizontalGrOnOff" menu="descarga" cmd= {{ rem_do_set }}> Adelante </button>
+                            <button class="btn btn-primary" style="margin-top: 10px;" id="horizontalGrOnOff" menu="descarga" cmd= {{ rem_do_set }}> Atrás </button> 
                         </div>
-                        <div class="col text-center">
-                            <article class="led led-grey" id="horizontalGrOk"></article>
+                        <div class="col text-center" style="padding-right: 0px;padding-left: 0px;left: 10px;">
+                            <article class="led led-grey" style="margin-top: 6px;" id="horizontalGrOk"></article>
+                            <article class="led led-grey" style="margin-top: 24px;" id="giroDescOk"></article>
+                        </div>
+                        <div class="col text-center" style="padding-left: 0px;padding-right: 0px;right: 10px;">
+                            <label style="margin-top: 5px;"><FONT SIZE=4>17 off</FONT></label>
+                            <label style="margin-top: 13px;"><FONT SIZE=4>17 on</FONT></label>
                         </div>
                     </div>
                     <hr size="100px" style="width: 98%;" color="grey">
                     <div class="row mt-3">
-                        <div class="col text-center">
+                        <div class="col text-center" style="padding-left: 0px;padding-right: 0px;top: 20px;left: 10px;">
                             <p style="display: inline;">Vertical Gripper</p>
                         </div>
-                        <div class="col text-center">
-                            <button class="btn btn-primary" id="verticalGrOnOff"   menu="descarga" cmd= {{ rem_do_set }}> ON/OFF </button>
+                        <div class="col text-center" style="padding-right: 0px;padding-left: 0px;left: 20px;">
+                            <button class="btn btn-primary" id="verticalGrOnOff" menu="descarga" cmd= {{ rem_do_set }}> Arriba </button>
+                            <button class="btn btn-primary" style="margin-top: 10px;" id="verticalGrOnOff" menu="descarga" cmd= {{ rem_do_set }}> Abajo </button>
                         </div>
-                        <div class="col text-center">
-                            <article class="led led-grey" id="verticalGrOk"></article>
+                        <div class="col text-center" style="padding-right: 0px;padding-left: 0px;left: 10px;">
+                            <article class="led led-grey" style="margin-top: 6px;" id="verticalGrOk"></article>
+                            <article class="led led-grey" style="margin-top: 24px;" id="verticalGrOk"></article>
+                        </div>
+                        <div class="col text-center" style="padding-left: 0px;padding-right: 0px;right: 10px;">
+                            <label style="margin-top: 5px;"><FONT SIZE=4>19 off</FONT></label>
+                            <label style="margin-top: 13px;"><FONT SIZE=4>19 on</FONT></label>
                         </div>
                     </div>
                     <hr size="100px" style="width: 98%;" color="grey">
                     <div class="row mt-3">
-                        <div class="col text-center">
+                        <div class="col text-center" style="padding-left: 0px;padding-right: 0px;top: 20px;left: 10px;">
                             <p style="display: inline;">Boquilla Descarga</p>
                         </div>
-                        <div class="col text-center">
-                            <button class="btn btn-primary" id="BoquillaDescOnOff"  menu="descarga" cmd= {{ rem_do_set }}> ON/OFF </button>
+                        <div class="col text-center" style="padding-right: 0px;padding-left: 0px;left: 20px;">
+                            <button class="btn btn-primary" id="BoquillaDescOnOff"  menu="descarga" cmd= {{ rem_do_set }}> Cierra </button>
+                            <button class="btn btn-primary" style="margin-top: 10px;" id="BoquillaDescOnOff"  menu="descarga" cmd= {{ rem_do_set }}> Abre </button> 
                         </div>
-                        <div class="col text-center">
-                            <article class="led led-grey" id="BoquillaDescOk"></article>
+                        <div class="col text-center" style="padding-right: 0px;padding-left: 0px;left: 10px;">
+                            <article class="led led-grey" style="margin-top: 6px;" id="BoquillaDescOk"></article>
+                            <article class="led led-grey" style="margin-top: 24px;" id="BoquillaDescOk"></article>
+                        </div>
+                        <div class="col text-center" style="padding-left: 0px;padding-right: 0px;right: 10px;">
+                            <label style="margin-top: 5px;"><FONT SIZE=4>11 on</FONT></label> 
+                            <label style="margin-top: 13px;"><FONT SIZE=4>11 off</FONT></label>
                         </div>
                     </div>
                     <hr size="100px" style="width: 98%;" color="grey">
                     <div class="row mt-3">
-                        <div class="col text-center">
+                        <div class="col text-center" style="padding-left: 0px;padding-right: 0px;top: 20px;left: 10px;">
                             <p style="display: inline;">Gripper Descarga</p>
                         </div>
-                        <div class="col text-center">
-                            <button class="btn btn-primary" id="gripperDescOnOff"  menu="descarga" cmd= {{ rem_do_set }}> ON/OFF </button>
+                        <div class="col text-center" style="padding-right: 0px;padding-left: 0px;left: 20px;">
+                            <button class="btn btn-primary" id="gripperDescOnOff"  menu="descarga" cmd= {{ rem_do_set }}> Cierra </button>
+                            <button class="btn btn-primary" style="margin-top: 10px;" id="gripperDescOnOff"  menu="descarga" cmd= {{ rem_do_set }}> Abre </button>
                         </div>
-                        <div class="col text-center">
-                            <article class="led led-grey" id="gripperDescOk"></article>
+                        <div class="col text-center" style="right: 10px;">
+                            <article class="led led-grey" style="margin-top: 6px;" id="gripperDescOk"></article>
+                            <article class="led led-grey" style="margin-top: 24px;" id="gripperDescOk"></article>
+                        </div>
+                        <div class="col text-center" style="padding-left: 0px;padding-right: 0px;right: 40px;">
+                            <label style="margin-top: 5px;width: 100px;"><FONT SIZE=4>10 off-9 on</FONT></label> 
+                            <label style="margin-top: 13px;width: 100px;"><FONT SIZE=4>10 on-9 off</FONT></label>
                         </div>
                     </div>
                 </div>  
             </div>
+
+            
+            
             <div id="contenedorNeumatica" class="col-md-3 col-12 mb-5 card rounded p-2 mx-auto my-3 shadow-sm text-black">
                 <div class="contanier-fluid">
                     <div class="card-header text-center">
@@ -155,108 +212,156 @@
                         </div>
                     </div>
                     <div class="row mt-3">
-                        <div class="col text-center">
+                        <div class="col text-center" style="padding-left: 0px;padding-right: 0px;top: 20px;left: 10px;">
                             <p style="display: inline;">Clampeo</p>
                         </div>
-                        <div class="col text-center">
-                            <button class="btn btn-primary" id="clampeoOnOff" menu="cabezal" cmd= {{ rem_do_set }}> ON/OFF </button>
+                        <div class="col text-center" style="padding-right: 0px;padding-left: 0px;left: 20px;">
+                            <button class="btn btn-primary" id="clampeoOnOff" menu="cabezal" cmd= {{ rem_do_set }}> Si </button>
+                            <button class="btn btn-primary" style="margin-top: 10px;" id="clampeoOnOff" menu="cabezal" cmd= {{ rem_do_set }}> No </button>
                         </div>
-                        <div class="col text-center">
-                            <article class="led led-grey" id="clampeoOk"></article>
+                        <div class="col text-center" style="right: 10px;">
+                            <article class="led led-grey" style="margin-top: 6px;" id="clampeoOk"></article>
+                            <article class="led led-grey" style="margin-top: 24px;" id="clampeoOk"></article>
+                        </div>
+                        <div class="col text-center" style="padding-left: 0px;padding-right: 0px;right: 40px;">
+                            <label style="margin-top: 5px;width: 100px;"><FONT SIZE=4>22 off-23 on</FONT></label> 
+                            <label style="margin-top: 13px;width: 100px;"><FONT SIZE=4>22 on-23 off</FONT></label>
                         </div>
                     </div>
                     <hr size="100px" style="width: 98%;" color="grey">
                     <div class="row mt-3">
-                        <div class="col text-center">
+                        <div class="col text-center" style="padding-left: 0px;padding-right: 0px;top: 20px;left: 10px;">
                             <p style="display: inline;">Presión</p>
                         </div>
-                        <div class="col text-center">
-                            <button class="btn btn-primary" id="presionOnOff" menu="cabezal" cmd= {{ rem_do_set }}> ON/OFF </button>
+                        <div class="col text-center" style="padding-right: 0px;padding-left: 0px;left: 20px;">
+                            <button class="btn btn-primary" id="presionOnOff" menu="cabezal" cmd= {{ rem_do_set }}> Si </button>
+                            <button class="btn btn-primary" style="margin-top: 10px;" id="presionOnOff" menu="cabezal" cmd= {{ rem_do_set }}> No </button>
                         </div>
-                        <div class="col text-center">
-                            <article class="led led-grey" id="presionOk"></article>
+                        <div class="col text-center" style="right: 10px;">
+                            <article class="led led-grey" style="margin-top: 6px;" id="presionOk"></article>
+                            <article class="led led-grey" style="margin-top: 24px;" id="presionOk"></article>
+                        </div>
+                        <div class="col text-center" style="padding-left: 0px;padding-right: 0px;right: 40px;">
+                            <label style="margin-top: 5px;"><FONT SIZE=4>26 on</FONT></label> 
+                            <label style="margin-top: 13px;"><FONT SIZE=4>26 off</FONT></label>
                         </div>
                     </div>
                     <hr size="100px" style="width: 98%;" color="grey">
                     <div class="row mt-3">
-                        <div class="col text-center">
+                        <div class="col text-center" style="padding-left: 0px;padding-right: 0px;top: 20px;left: 10px;">
                             <p style="display: inline;">Boquilla 1</p>
                         </div>
-                        <div class="col text-center">
-                            <button class="btn btn-primary" id="boquilla1OnOff" menu="cabezal" cmd= {{ rem_do_set }}> ON/OFF </button>
+                        <div class="col text-center" style="padding-right: 0px;padding-left: 0px;left: 20px;">
+                            <button class="btn btn-primary" id="boquilla1OnOff" menu="cabezal" cmd= {{ rem_do_set }}> Cierra </button>
+                            <button class="btn btn-primary" style="margin-top: 10px;" id="boquilla1OnOff" menu="cabezal" cmd= {{ rem_do_set }}> Abre </button>
                         </div>
-                        <div class="col text-center">
-                            <article class="led led-grey" id="boquilla1Ok"></article>
+                        <div class="col text-center" style="right: 10px;">
+                            <article class="led led-grey" style="margin-top: 6px;" id="boquilla1Ok"></article>
+                            <article class="led led-grey" style="margin-top: 24px;" id="boquilla1Ok"></article>
+                        </div>
+                        <div class="col text-center" style="padding-left: 0px;padding-right: 0px;right: 40px;">
+                            <label style="margin-top: 5px;width: 100px;"><FONT SIZE=4>28 off-27 on</FONT></label> 
+                            <label style="margin-top: 13px;width: 100px;"><FONT SIZE=4>28 on-27 off</FONT></label>
                         </div>
                     </div>
                     <hr size="100px" style="width: 98%;" color="grey">
                     <div class="row mt-3">
-                        <div class="col text-center">
+                        <div class="col text-center" style="padding-left: 0px;padding-right: 0px;top: 20px;left: 10px;">
                             <p style="display: inline;">Boquilla 2</p>
                         </div>
-                        <div class="col text-center">
-                            <button class="btn btn-primary" id="boquilla2OnOff" menu="cabezal" cmd= {{ rem_do_set }}> ON/OFF </button>
+                        <div class="col text-center" style="padding-right: 0px;padding-left: 0px;left: 20px;" >
+                            <button class="btn btn-primary" id="boquilla2OnOff" menu="cabezal" cmd= {{ rem_do_set }}> Cierra </button>
+                            <button class="btn btn-primary" style="margin-top: 10px;" id="boquilla2OnOff" menu="cabezal" cmd= {{ rem_do_set }}> Abre </button>
                         </div>
-                        <div class="col text-center">
-                            <article class="led led-grey" id="boquilla2Ok"></article>
+                        <div class="col text-center" style="right: 10px;">
+                            <article class="led led-grey" style="margin-top: 6px;" id="boquilla2Ok"></article>
+                            <article class="led led-grey" style="margin-top: 24px;" id="boquilla2Ok"></article>
+                        </div>
+                        <div class="col text-center" style="padding-left: 0px;padding-right: 0px;right: 40px;">
+                            <label style="margin-top: 5px;width: 100px;"><FONT SIZE=4>30 off-29 on</FONT></label> 
+                            <label style="margin-top: 13px;width: 100px;"><FONT SIZE=4>30 on-29 off</FONT></label>
                         </div>
                     </div>
                     <hr size="100px" style="width: 98%;" color="grey">
                     <div class="row mt-3">
-                        <div class="col text-center">
+                        <div class="col text-center" style="padding-left: 0px;padding-right: 0px;top: 20px;left: 10px;">
                             <p style="display: inline;">Boquilla 3</p>
                         </div>
-                        <div class="col text-center">
-                            <button class="btn btn-primary" id="boquilla3OnOff" menu="cabezal" cmd= {{ rem_do_set }}> ON/OFF </button>
+                        <div class="col text-center" style="padding-right: 0px;padding-left: 0px;left: 20px;">
+                            <button class="btn btn-primary" id="boquilla3OnOff" menu="cabezal" cmd= {{ rem_do_set }}> Cierra </button>
+                            <button class="btn btn-primary" style="margin-top: 10px;" id="boquilla3OnOff" menu="cabezal" cmd= {{ rem_do_set }}> Abre </button>
                         </div>
-                        <div class="col text-center">
-                            <article class="led led-grey" id="boquilla3Ok"></article>
+                        <div class="col text-center" style="right: 10px;">
+                            <article class="led led-grey" style="margin-top: 6px;" id="boquilla3Ok"></article>
+                            <article class="led led-grey" style="margin-top: 24px;" id="boquilla3Ok"></article>
+                        </div>
+                        <div class="col text-center" style="padding-left: 0px;padding-right: 0px;right: 40px;">
+                            <label style="margin-top: 5px;width: 100px;"><FONT SIZE=4>32 off-31 on</FONT></label> 
+                            <label style="margin-top: 13px;width: 100px;"><FONT SIZE=4>32 on-31 off</FONT></label>
                         </div>
                     </div>
                     <hr size="100px" style="width: 98%;" color="grey">
                     <div class="row mt-3">
-                        <div class="col text-center">
+                        <div class="col text-center" style="padding-left: 0px;padding-right: 0px;top: 20px;left: 10px;">
                             <p style="display: inline;">Acopla Soluble</p>
                         </div>
-                        <div class="col text-center">
-                            <button class="btn btn-primary" id="acoplaSolOnOff" menu="cabezal" cmd= {{ rem_do_set }}> ON/OFF </button>
+                        <div class="col text-center" style="padding-right: 0px;padding-left: 0px;left: 20px;">
+                            <button class="btn btn-primary" id="acoplaSolOnOff" menu="cabezal" cmd= {{ rem_do_set }}> Si </button>
+                            <button class="btn btn-primary" style="margin-top: 10px;" id="acoplaSolOnOff" menu="cabezal" cmd= {{ rem_do_set }}> No </button>
                         </div>
-                        <div class="col text-center">
-                            <article class="led led-grey" id="acoplaSolOk"></article>
+                        <div class="col text-center" style="right: 10px;">
+                            <article class="led led-grey" style="margin-top: 6px;" id="acoplaSolOk"></article>
+                            <article class="led led-grey" style="margin-top: 24px;" id="acoplaSolOk"></article>
+                        </div>
+                        <div class="col text-center" style="padding-left: 0px;padding-right: 0px;right: 40px;">
+                            <label style="margin-top: 5px;"><FONT SIZE=4>21 on</FONT></label> 
+                            <label style="margin-top: 13px;"><FONT SIZE=4>21 off</FONT></label>
                         </div>
                     </div>
                     <hr size="100px" style="width: 98%;" color="grey">
                     <div class="row mt-3">
-                        <div class="col text-center">
+                        <div class="col text-center" style="padding-left: 0px;padding-right: 0px;top: 20px;left: 10px;">
                             <p style="display: inline;">Bomba Soluble</p>
                         </div>
-                        <div class="col text-center">
-                            <button class="btn btn-primary" id="bombaSolOnOff" menu="cabezal" cmd= {{ rem_do_set }}> ON/OFF </button>
+                        <div class="col text-center" style="padding-right: 0px;padding-left: 0px;left: 20px;">
+                            <button class="btn btn-primary" id="bombaSolOnOff" menu="cabezal" cmd= {{ rem_do_set }}> ON </button>
+                            <button class="btn btn-primary" style="margin-top: 10px;" id="bombaSolOnOff" menu="cabezal" cmd= {{ rem_do_set }}> OFF </button>
                         </div>
-                        <div class="col text-center">
-                            <article class="led led-grey" id="bombaSolOk"></article>
+                        <div class="col text-center" style="right: 10px;">
+                            <article class="led led-grey" style="margin-top: 6px;" id="bombaSolOk"></article>
+                            <article class="led led-grey" style="margin-top: 24px;" id="bombaSolOk"></article>
+                        </div>
+                        <div class="col text-center" style="padding-left: 0px;padding-right: 0px;right: 40px;">
+                            <label style="margin-top: 5px;"><FONT SIZE=4>25 on</FONT></label> 
+                            <label style="margin-top: 13px;"><FONT SIZE=4>25 off</FONT></label>
                         </div>
                     </div>
                     <hr size="100px" style="width: 98%;" color="grey">
                     <div class="row mt-3">
-                        <div class="col text-center">
+                        <div class="col text-center" style="padding-left: 0px;padding-right: 0px;top: 20px;left: 10px;">
                             <p style="display: inline;">Bomba Hidraulica</p>
                         </div>
-                        <div class="col text-center">
-                            <button class="btn btn-primary" id="bombaHidrOnOff" menu="cabezal" cmd= {{ rem_do_set }}> ON/OFF </button>
+                        <div class="col text-center" style="padding-right: 0px;padding-left: 0px;left: 20px;">
+                            <button class="btn btn-primary" id="bombaHidrOnOff" menu="cabezal" cmd= {{ rem_do_set }}> ON </button>
+                            <button class="btn btn-primary" style="margin-top: 10px;" id="bombaHidrOnOff" menu="cabezal" cmd= {{ rem_do_set }}> OFF </button>
                         </div>
-                        <div class="col text-center">
-                            <article class="led led-grey" id="bombaHidrOk"></article>
+                        <div class="col text-center" style="right: 10px;">
+                            <article class="led led-grey" style="margin-top: 6px;" id="bombaHidrOk"></article>
+                            <article class="led led-grey" style="margin-top: 24px;" id="bombaHidrOk"></article>
+                        </div>
+                        <div class="col text-center" style="padding-left: 0px;padding-right: 0px;right: 40px;">
+                            <label style="margin-top: 5px;"><FONT SIZE=4>24 on</FONT></label> 
+                            <label style="margin-top: 13px;"><FONT SIZE=4>24 off</FONT></label>
                         </div>
                     </div>   
                 </div>  
             </div>
       
 
-<div class="col-md-2 col-12 mb-5 float-right border shadow rounded bg-white  px-1 py-1">
+<div class="col-md-2 col-12 mb-5 float-right border shadow rounded bg-white  px-1 py-1" style="bottom:187px">
     {% include 'monitorComponent.html' %}
     <div id="component-monitor"></div>
 </div>
-</div>
+
 <script src="{% static 'js/neumaticaManual.js' %}"></script>
 {% endblock %}
