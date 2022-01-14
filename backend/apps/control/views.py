@@ -1,11 +1,12 @@
 import json
+import time
 
 from django.shortcuts import render
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
 import apps.service.acdp.handlers as service_handlers
-from apps.service.acdp.messages_app import AcdpAxisMovementEnums
+from apps.service.acdp.messages_app import AcdpAxisMovementEnums, StateMachine
 
 from apps.service.api.variables import Commands
 from apps.ws.utils.handlers import send_message
@@ -68,7 +69,7 @@ def manual_lineal(request):
     if ch_info:
         send_message(header, ch_info, data)
     
-    return JsonResponse({'resp': 'ok'})
+    return JsonResponse({})
 
 
 @csrf_exempt
@@ -163,7 +164,7 @@ def manual_pneumatic(request):
     if ch_info:
         print(header.get_values(), data.get_values())
         send_message(header, ch_info, data)
-    return JsonResponse({'resp': 'ok'})
+    return JsonResponse({})
 
 
 @csrf_exempt
@@ -185,16 +186,63 @@ def stop_axis(request):
     if ch_info:
         send_message(header, ch_info)
     
-    return JsonResponse({'resp': 'ok'})
+    return JsonResponse({})
 
 
 @csrf_exempt
 def stop_all(request):
     print('stop all')
-    return JsonResponse({'resp': 'ok'})
+    return JsonResponse({})
 
 
 @csrf_exempt
 def start_routine(request):
-    RoutineHandler().start()
-    return JsonResponse({'resp': 'ok'})
+    command = Commands.drv_set_zero_abs
+    msg_id = MicroState.last_rx_header.get_msg_id() + 1
+    MicroState.msg_id = msg_id
+    header, data = service_handlers.build_msg(command, msg_id=msg_id, zero=-7.2, eje=ctrl_vars.AXIS_IDS['carga'])
+    ch_info = ChannelInfo.objects.get(source='micro')
+    if ch_info:
+        send_message(header, ch_info, data)
+    return JsonResponse({})
+
+@csrf_exempt
+def semiauto(request):
+    post_req = request.POST
+    routine = int(post_req['routine'])
+    RoutineHandler(routine).start()
+    return JsonResponse({})
+
+
+@csrf_exempt
+def enable_axis(request):
+    post_req = request.POST
+    axis = int(post_req['eje'])
+    cmd = int(post_req['command'])
+    print(cmd, axis)
+    msg_id = MicroState.last_rx_header.get_msg_id() + 1
+    header = service_handlers.build_msg(cmd, msg_id=msg_id, eje=axis)
+    ch_info = ChannelInfo.objects.get(source='micro')
+    if ch_info:
+        send_message(header, ch_info)
+    return JsonResponse({})
+
+
+@csrf_exempt
+def sync_axis(request):
+    post_req = request.POST
+    msg_id = MicroState.last_rx_header.get_msg_id() + 1
+    cmd = int(post_req['command'])
+    ch_info = ChannelInfo.objects.get(source='micro')
+    paso = None
+    data = None
+    header = None
+    if 'paso' in post_req.keys() and cmd == Commands.sync_on:
+        paso = float(post_req['paso'])
+        header, data = service_handlers.build_msg(cmd, msg_id=msg_id, paso=paso, eje=ctrl_vars.AXIS_IDS['avance'])
+    elif cmd == Commands.sync_off:
+        header = service_handlers.build_msg(cmd, msg_id=msg_id, eje=ctrl_vars.AXIS_IDS['avance'])
+    if header:
+        if ch_info:
+            send_message(header, ch_info, data)
+    return JsonResponse({})

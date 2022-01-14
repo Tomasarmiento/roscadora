@@ -20,8 +20,8 @@ document.addEventListener("DOMContentLoaded", (e) => {
 
     //Off buttons
     let btn_off_lineal = document.getElementById('offLineal');
-    let btn_off_cabezal = document.getElementById('offLineal');
-    let btn_off_husillo = document.getElementById('offLineal');
+    let btn_off_cabezal = document.getElementById('offCabezal');
+    let btn_off_husillo = document.getElementById('offHusillo');
 
     let btn_off_sync = document.getElementById('offSync');
 
@@ -39,23 +39,50 @@ document.addEventListener("DOMContentLoaded", (e) => {
 
         if (datosWs) {
             
-          datosWs.lineal_enable == false
-            ? (enableLineal.className = "box box-green")
-            : (enableLineal.className = "box box-grey");
-      
-          datosWs.cabezal_enable == false
-            ? (enableCabezal.className = "box box-green")
-            : (enableCabezal.className = "box box-grey");
-      
-          datosWs.husillo_enable == false
-            ? (enableHusillo.className = "box box-green")
-            : (enableHusillo.className = "box box-grey");
-      
-          datosWs.husillo_sync == false
-            ? (syncHusillo.className = "box box-green")
-            : (syncHusillo.className = "box box-grey");  
+            // Tabla de datos
+            const rpmActual = document.querySelector("#frRPM");
+            const torqueActual = document.querySelector("#fTorque");
+            
+            // Datos Eje vertical
+            const posicionActualV = document.querySelector("#posVertical");
+            const velocidadActualV = document.querySelector("#velVertical");
+            
+            // Datos Eje Horizontal
+            const posicionActualH = document.querySelector("#posHorizontal");
+            const velocidadActualH = document.querySelector("#velHorizontal");
+            
+            //Monitor
+            rpmActual.innerHTML = datosWs.husillo_rpm.toFixed(1);
+            torqueActual.innerHTML = datosWs.husillo_torque.toFixed(1);
+
+            posicionActualV.innerHTML = datosWs.cabezal_pos.toFixed(1);
+            velocidadActualV.innerHTML = datosWs.cabezal_vel.toFixed(1);
+
+            posicionActualH.innerHTML = datosWs.avance_pos.toFixed(1);
+            velocidadActualH.innerHTML = datosWs.avance_vel.toFixed(1);
+
+            //Enables
+            datosWs.lineal_enable == true
+                ? (enableLineal.className = "box box-green")
+                : (enableLineal.className = "box box-grey");
+        
+            datosWs.cabezal_enable == true
+                ? (enableCabezal.className = "box box-green")
+                : (enableCabezal.className = "box box-grey");
+        
+            datosWs.husillo_enable == true
+                ? (enableHusillo.className = "box box-green")
+                : (enableHusillo.className = "box box-grey");
+        
+            datosWs.sync_on_avance == true
+                ? (syncHusillo.className = "box box-green")
+                : (syncHusillo.className = "box box-grey"); 
+
+           
         }
     }
+
+
 
     btn_mov_husillo.addEventListener("click", (e) => {
         let rpm = document.getElementById('rpmValue').value;
@@ -111,6 +138,54 @@ document.addEventListener("DOMContentLoaded", (e) => {
         eje = parseInt(btn_mov_rel_bwd_cabezal.getAttribute('eje'));
         sendCommand(cmd, eje, {'ref': parseFloat(pos), 'ref_rate': parseFloat(ref_rate), 'abs': true});
     });
+
+    btn_on_lineal.addEventListener("click", (e) => {
+        cmd = parseInt(btn_on_lineal.getAttribute('cmd'));
+        eje = parseInt(btn_on_lineal.getAttribute('eje'));
+        sendEnable(cmd, eje);
+    });
+
+    btn_on_cabezal.addEventListener("click", (e) => {
+        cmd = parseInt(btn_on_cabezal.getAttribute('cmd'));
+        eje = parseInt(btn_on_cabezal.getAttribute('eje'));
+        sendEnable(cmd, eje);
+    });
+
+    btn_on_husillo.addEventListener("click", (e) => {
+        cmd = parseInt(btn_on_husillo.getAttribute('cmd'));
+        eje = parseInt(btn_on_husillo.getAttribute('eje'));
+        sendEnable(cmd, eje);
+    });
+
+    btn_on_sync.addEventListener("click", (e) => {
+        let paso = parseFloat(document.getElementById('pasoValue').value);
+        cmd = parseInt(btn_on_sync.getAttribute('cmd'));
+        sendSync(cmd, paso);
+    });
+
+
+    btn_off_lineal.addEventListener("click", (e) => {
+        cmd = parseInt(btn_off_lineal.getAttribute('cmd'));
+        eje = parseInt(btn_off_lineal.getAttribute('eje'));
+        sendEnable(cmd, eje);
+    });
+
+    btn_off_cabezal.addEventListener("click", (e) => {
+        cmd = parseInt(btn_off_cabezal.getAttribute('cmd'));
+        eje = parseInt(btn_off_cabezal.getAttribute('eje'));
+        sendEnable(cmd, eje);
+    });
+
+    btn_off_husillo.addEventListener("click", (e) => {
+        cmd = parseInt(btn_off_husillo.getAttribute('cmd'));
+        eje = parseInt(btn_off_husillo.getAttribute('eje'));
+        sendEnable(cmd, eje);
+    });
+
+    btn_off_sync.addEventListener("click", (e) => {
+        cmd = btn_off_sync.getAttribute('cmd');
+        sendSync(cmd);
+    });
     
     for(let i=0; i < btns_stop.length; i++){
         btns_stop[i].addEventListener('click', (e) => {
@@ -143,6 +218,37 @@ function sendCommand(cmd, eje, args){
 function sendStopAxisCommand(cmd, eje){
     let url = "http://localhost:8000/control/manual/stop-axis/";
     let params = "command=" + cmd + "&eje=" + eje;
+
+    let xhr = new XMLHttpRequest();
+    
+    xhr.open("POST", url, true);
+
+    //Send the proper header information along with the request
+    xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+    xhr.send(params);
+}
+
+function sendEnable(cmd, eje){
+    let url = "http://localhost:8000/control/manual/motor/enable/";
+    let params = "command=" + cmd + "&eje=" + eje;
+
+    let xhr = new XMLHttpRequest();
+    
+    xhr.open("POST", url, true);
+
+    //Send the proper header information along with the request
+    xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+    xhr.send(params);
+}
+
+function sendSync(cmd, paso=null){
+    let url = "http://localhost:8000/control/manual/motor/sync/";
+    let params = "command=" + cmd;
+    if(paso){
+        params += "&paso=" + paso;
+    }
 
     let xhr = new XMLHttpRequest();
     

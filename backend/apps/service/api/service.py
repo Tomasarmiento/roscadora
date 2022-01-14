@@ -19,7 +19,6 @@ WS_URI = "ws://localhost:8000/ws/micro/"
 
 
 async def service():
-    django.setup()
     loop = asyncio.get_running_loop()
 
     transport, protocol = await loop.create_datagram_endpoint(
