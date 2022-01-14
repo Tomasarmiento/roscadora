@@ -25,7 +25,7 @@ class RoutineHandler(threading.Thread):
         self.ch_info = get_ch_info(ChannelInfo, 'micro')
         super(RoutineHandler, self).__init__(**kwargs)
         self._stop_event = threading.Event()
-        self.wait_time = 0.1
+        self.wait_time = 0.05
     
     
     def run(self):
@@ -88,6 +88,7 @@ class RoutineHandler(threading.Thread):
         if False in init_flags:
             return
 
+
         # Paso 1 - Liberar plato
         key_1 = 'contraer_clampeo_plato'
         key_2 = 'expandir_clampeo_plato'
@@ -98,23 +99,25 @@ class RoutineHandler(threading.Thread):
             return False
         print('Paso 1 - Liberar plato')
 
-        # Paso 2 - Sale de safe para encender el servo
-        command = Commands.exit_safe
+
+        # Paso 2 - Power on servo carga
+        command = Commands.power_on
         axis = ctrl_vars.AXIS_IDS['carga']
         msg_id = self.get_message_id()
         header = build_msg(command, eje=axis, msg_id=msg_id)
         if not self.send_message(header):
             return False
-        
-        target_state = msg_app.StateMachine.EST_INITIAL
-        if not self.wait_for_axis_state(target_state, axis):
+    
+        if not self.wait_for_axis_state(msg_app.StateMachine.EST_INITIAL, axis):
             return False
-        print('Paso 2 - Sale de safe para encender el servo')
+        print(' Paso 5 - Power on servo carga')
+       
 
         # Paso 3 - Avanza 120° al siguiente paso
         if not self.move_step_load_axis():
             return False
         print(' Paso 3 - Avanza 120° al siguiente paso')
+
 
         # Paso 4 - Clampea plato
         key_1 = 'expandir_clampeo_plato'
@@ -127,14 +130,16 @@ class RoutineHandler(threading.Thread):
             return False
         print('Paso 4 - Clampea plato')
 
+
         # Paso 5 - Power off
         command = Commands.power_off
         msg_id = self.get_message_id()
+        drv_flag = msg_base.DrvFbkDataFlags.ENABLED
         header = build_msg(command, eje=axis, msg_id=msg_id)
         if not self.send_message(header):
             return False
         
-        if not self.wait_for_axis_state(msg_app.StateMachine.EST_SAFE, axis):
+        if not self.wait_for_drv_flag(drv_flag, axis, 0):
             return False
         print(' Paso 5 - Power off')
 
@@ -618,10 +623,10 @@ class RoutineHandler(threading.Thread):
         safe_state = msg_app.StateMachine.EST_SAFE
         # Paso 0 - Chequear condiciones iniciales - Todos los valores deben ser True par que empiece la rutina
         init_flags = [
-            ws_vars.MicroState.rem_o_states[1]['encender_bomba_hidraulica'],            # hidráulica ON
-            ws_vars.MicroState.rem_i_states[1]['clampeo_plato_expandido'],              # Plato clampeado
-            ws_vars.MicroState.axis_flags[eje_avance]['maq_est_val'] == initial_state,  # eje avance ON
-            ws_vars.MicroState.axis_flags[eje_carga]['maq_est_val'] == safe_state,      # eje carga OFF
+            ws_vars.MicroState.rem_o_states[1]['encender_bomba_hidraulica'],                                # hidráulica ON
+            ws_vars.MicroState.rem_i_states[1]['clampeo_plato_expandido'],                                  # Plato clampeado
+            ws_vars.MicroState.axis_flags[eje_avance]['maq_est_val'] == initial_state,                      # eje avance ON
+            ws_vars.MicroState.axis_flags[eje_carga]['drv_flags'] & msg_base.DrvFbkDataFlags.ENABLED == 0,  # eje carga OFF
             round(ws_vars.MicroState.axis_measures[eje_avance]['pos_fil'], 0) == round(ctrl_vars.ROSCADO_CONSTANTES['posicion_de_inicio'], 0)   # Eje avance en posición de inicio
         ]
         print(init_flags)
@@ -659,7 +664,6 @@ class RoutineHandler(threading.Thread):
         key_2 = 'abrir_boquilla_' + str(boquilla)
         group = 1
         self.send_pneumatic(key_1, group, 1, key_2, 0)
-        time.sleep(2)
         print("PASO 4")
 
         # Paso 5 - Avanzar a pos y vel de aproximacion
@@ -686,17 +690,12 @@ class RoutineHandler(threading.Thread):
         key_2 = 'abrir_boquilla_' + str(boquilla)
         group = 1
         self.send_pneumatic(key_1, group, 0, key_2, 0)
-        time.sleep(2)
+        time.sleep(0.5)
         print("PASO 6 - Dejar boquilla en centro cerrado")
 
-        # Paso 7 - Presurizar OFF
-        key = 'presurizar'
-        group = 1
-        self.send_pneumatic(key, group, 0)
-        print('PASO 6 - PRESURIZAR OFF')
 
-        # Paso 8 - Sale de safe para encender el husillo
-        command = Commands.exit_safe
+        # Paso 7 - Sale de safe para encender el husillo
+        command = Commands.power_on
         axis = ctrl_vars.AXIS_IDS['giro']
         msg_id = self.get_message_id()
         header = build_msg(command, eje=axis, msg_id=msg_id)
@@ -706,9 +705,9 @@ class RoutineHandler(threading.Thread):
         target_state = msg_app.StateMachine.EST_INITIAL
         if not self.wait_for_axis_state(target_state, axis):
             return False
-        print('PASO 8 - Sale de safe para encender el husillo')
+        print('PASO 7 - Sale de safe para encender el husillo')
 
-        # Paso 9 - Sincronizado ON
+        # Paso 8 - Sincronizado ON
         command = Commands.sync_on
         axis = ctrl_vars.AXIS_IDS['avance']
         paso = ctrl_vars.ROSCADO_CONSTANTES['paso_de_rosca']
@@ -721,7 +720,15 @@ class RoutineHandler(threading.Thread):
             state = ws_vars.MicroState.axis_flags[axis]['sync_on']
             time.sleep(self.wait_time)
 
-        print("PASO 9 - SINC ON")
+        print("PASO 8 - SINC ON")
+
+
+        # Paso 9 - Presurizar OFF
+        key = 'presurizar'
+        group = 1
+        self.send_pneumatic(key, group, 0)
+        print('PASO 9 - PRESURIZAR OFF')
+
 
         # Paso 10 - Avanzar a pos y vel final de roscado
         axis = ctrl_vars.AXIS_IDS['avance']
@@ -771,12 +778,13 @@ class RoutineHandler(threading.Thread):
         # Paso 13 - Enable husillo OFF
         command = Commands.power_off
         axis = ctrl_vars.AXIS_IDS['giro']
+        drv_flag = msg_base.DrvFbkDataFlags.ENABLED
         msg_id = self.get_message_id()
         header = build_msg(command, eje=axis, msg_id=msg_id)
         if not self.send_message(header):
             return False
         
-        if not self.wait_for_axis_state(msg_app.StateMachine.EST_SAFE, axis):
+        if not self.wait_for_drv_flag(drv_flag, axis, 0):
             return False
         print('Paso 13 - Enable husillo OFF')
 
@@ -830,9 +838,7 @@ class RoutineHandler(threading.Thread):
         initial_state = msg_app.StateMachine.EST_INITIAL
         # Paso 0 - Chequear condiciones iniciales - Todos los valores deben ser True par que empiece la rutina
         init_flags = [
-            ws_vars.MicroState.rem_i_states[1]['clampeo_plato_expandido'],              # Plato clampeado
             ws_vars.MicroState.axis_flags[eje_avance]['maq_est_val'] == initial_state,  # eje avance ON
-            # ws_vars.MicroState.axis_flags[eje_carga]['maq_est_val'] == initial_state,   # eje carga ON
             ws_vars.MicroState.rem_i_states[1]['acople_lubric_contraido'],              # acople_lubricante_contraido
             ws_vars.MicroState.rem_i_states[0]['puntera_descarga_contraida'],           # puntera_descarga_contraida
             ws_vars.MicroState.rem_i_states[0]['puntera_carga_contraida']               # puntera_carga_contraida
@@ -887,8 +893,8 @@ class RoutineHandler(threading.Thread):
             return False
         print('PASO 2')
 
-        # Paso 2.1 - Sale de safe para encender el servo
-        command = Commands.exit_safe
+        # Paso 2.1 - Encender servo
+        command = Commands.power_on
         axis = ctrl_vars.AXIS_IDS['carga']
         msg_id = self.get_message_id()
         header = build_msg(command, eje=axis, msg_id=msg_id)
@@ -898,7 +904,7 @@ class RoutineHandler(threading.Thread):
         target_state = msg_app.StateMachine.EST_INITIAL
         if not self.wait_for_axis_state(target_state, axis):
             return False
-        print('Paso 2.1 - Sale de safe para encender el servo')
+        print('Paso 2.1 - Encender servo')
 
         # Paso 3 - Cerado eje carga
         print("CERAR EJE CARGA")
@@ -933,6 +939,7 @@ class RoutineHandler(threading.Thread):
             current_pos = round(ws_vars.MicroState.axis_measures[axis]['pos_abs'], 2)
         print(current_pos)
         print("FIN SECUENCIA HOMING")
+        time.sleep(2)
         # gira una posición buscando la chapa
         command = Commands.mov_to_pos
         msg_id = self.get_message_id()
@@ -944,7 +951,6 @@ class RoutineHandler(threading.Thread):
         state = ws_vars.MicroState.axis_flags[axis]['home_switch']
         while not state:
             state = ws_vars.MicroState.axis_flags[axis]['home_switch']
-            print(state)
             time.sleep(self.wait_time)
         pos = ws_vars.MicroState.axis_measures[axis]['pos_fil']
         print('Espera sensor home activado')
@@ -999,13 +1005,14 @@ class RoutineHandler(threading.Thread):
 
         # Paso 6 - Power off
         command = Commands.power_off
+        drv_flag = msg_base.DrvFbkDataFlags.ENABLED
         axis = ctrl_vars.AXIS_IDS['carga']
         msg_id = self.get_message_id()
         header = build_msg(command, eje=axis, msg_id=msg_id)
         if not self.send_message(header):
             return False
         
-        if not self.wait_for_axis_state(msg_app.StateMachine.EST_SAFE, axis):
+        if not self.wait_for_drv_flag(drv_flag, axis, 0):
             return False
         print('PASO 6 - Power off')
 
@@ -1211,7 +1218,14 @@ class RoutineHandler(threading.Thread):
     def stop(self):
         self._stop_event.set()
 
-
+    def wait_for_drv_flag(self, flag, axis, flag_value):
+        drv_flags = ws_vars.MicroState.axis_flags[axis]['drv_flags']
+        while drv_flags & flag != flag_value:
+            drv_flags = ws_vars.MicroState.axis_flags[axis]['drv_flags']
+            time.sleep(self.wait_time)
+        if drv_flags & flag != flag_value:
+            return False
+        return True
 
     def stopped(self):
         return self._stop_event.it_set()

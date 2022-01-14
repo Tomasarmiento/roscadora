@@ -38,11 +38,11 @@ ROSCADO_CONSTANTES = {
     'posicion_de_aproximacion': -20,
     'velocidad_en_vacio': 10,
     'posicion_final_de_roscado': -110,
-    'velocidad_de_roscado': 5,
+    'velocidad_de_roscado': 4,
     'posicion_salida_de_roscado': -20,
     'velocidad_de_retraccion': 10,
     'paso_de_rosca': 2.54,
-    'posicion_de_inicio': 5
+    'posicion_de_inicio': 5,
 }
 
 HOMING_CONSTANTES = {

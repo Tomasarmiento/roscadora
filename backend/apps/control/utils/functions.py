@@ -169,6 +169,8 @@ def update_axis_flags(micro_data, axis):
     ws_vars.MicroState.axis_flags[axis]['fin']              = check_end_flags(ws_vars.MicroState.axis_flags[axis]['flags_fin'])
     ws_vars.MicroState.axis_flags[axis]['axis_id']          = axis
 
+    ws_vars.MicroState.axis_flags[axis]['drv_flags']        = micro_data.data.ctrl.eje[axis].mov_pos.med_drv.drv_fbk.flags
+
 
 def update_axis_data(micro_data):
     for i in range(ctrl_vars.AXIS_IDS['axis_amount']):
@@ -288,7 +290,9 @@ def get_front_states():
         'estado_eje_giro': ws_vars.MicroState.axis_flags[ctrl_vars.AXIS_IDS['giro']]['estado'],
 
         'sync_on_avance': ws_vars.MicroState.axis_flags[ctrl_vars.AXIS_IDS['avance']]['sync_on'],
-        'slave_giro': ws_vars.MicroState.axis_flags[ctrl_vars.AXIS_IDS['giro']]['slave']
+        'slave_giro': ws_vars.MicroState.axis_flags[ctrl_vars.AXIS_IDS['giro']]['slave'],
+
+        'graph': False
     }
     return data
 
