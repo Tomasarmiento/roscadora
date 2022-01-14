@@ -76,9 +76,7 @@ document.addEventListener("DOMContentLoaded", (e) => {
         
             datosWs.sync_on_avance == true
                 ? (syncHusillo.className = "box box-green")
-                : (syncHusillo.className = "box box-grey"); 
-
-           
+                : (syncHusillo.className = "box box-grey");
         }
     }
 

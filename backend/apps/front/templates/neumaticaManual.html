@@ -19,8 +19,8 @@
                     <button class="btn btn-primary" style="margin-top: 10px;" id="horizontalCargaOnOff" menu="carga" cmd= {{ rem_do_set }}> Atrás </button>
                 </div>
                 <div class="col text-center" style="padding-right: 0px;padding-left: 0px;left: 10px;">
-                    <article class="led led-grey" style="margin-top: 6px;" id="horizontalCargaOk"></article>
-                    <article class="led led-grey" style="margin-top: 24px;" id="horizontalCargaOk"></article>
+                    <article class="led led-grey" style="margin-top: 6px;" id="horizontalCargaAdelanteOk"></article>
+                    <article class="led led-grey" style="margin-top: 24px;" id="horizontalCargaAtrasOk"></article>
                 </div>
                 <div class="col text-center" style="padding-left: 0px;padding-right: 0px;right: 10px;">
                     <label style="margin-top: 5px;"><FONT SIZE=4>4 off-3 on</FONT></label>
@@ -37,8 +37,8 @@
                     <button class="btn btn-primary" style="margin-top: 10px;" id="verticalCargaOnOff" menu="carga" cmd= {{ rem_do_set }}> Abajo </button>
                 </div>
                 <div class="col text-center" style="padding-right: 0px;padding-left: 0px;left: 10px;">
-                    <article class="led led-grey" style="margin-top: 6px;" id="verticalCargaOk"></article>
-                    <article class="led led-grey" style="margin-top: 24px;" id="verticalCargaOk"></article>
+                    <article class="led led-grey" style="margin-top: 6px;" id="verticalCargaArribaOk"></article>
+                    <article class="led led-grey" style="margin-top: 24px;" id="verticalCargaAbajoOk"></article>
                 </div>
                 <div class="col text-center" style="padding-left: 0px;padding-right: 0px;right: 10px;">
                     <label style="margin-top: 5px;"><FONT SIZE=4>15 on</FONT></label>
@@ -55,8 +55,8 @@
                     <button class="btn btn-primary" style="margin-top: 10px;" id="BoquillaCargaOnOff" menu="carga" cmd= {{ rem_do_set }}> Abre </button>
                 </div>
                 <div class="col text-center" style="padding-right: 0px;padding-left: 0px;left: 10px;">
-                    <article class="led led-grey" style="margin-top: 6px;" id="boquillaCargaOk"></article>
-                    <article class="led led-grey" style="margin-top: 24px;" id="boquillaCargaOk"></article>
+                    <article class="led led-grey" style="margin-top: 6px;" id="boquillaCargaCierraOk"></article>
+                    <article class="led led-grey" style="margin-top: 24px;" id="boquillaCargaAabreOk"></article>
                 </div>
                 <div class="col text-center" style="padding-left: 0px;padding-right: 0px;right: 10px;">
                     <label style="margin-top: 5px;"><FONT SIZE=4>13 on</FONT></label>
@@ -73,8 +73,8 @@
                     <button class="btn btn-primary" style="margin-top: 10px;" id="giroCargaOnOff" menu="carga" cmd= {{ rem_do_set }}> Abajo </button>
                 </div>
                 <div class="col text-center" style="padding-right: 0px;padding-left: 0px;left: 10px;">
-                    <article class="led led-grey" style="margin-top: 6px;" id="giroCargaOk"></article>
-                    <article class="led led-grey" style="margin-top: 24px;" id="giroCargaOk"></article>
+                    <article class="led led-grey" style="margin-top: 6px;" id="giroCargaArribaOk"></article>
+                    <article class="led led-grey" style="margin-top: 24px;" id="giroCargaAbajoOk"></article>
                 </div>
                 <div class="col text-center" style="padding-left: 0px;padding-right: 0px;right: 10px;">
                     <label style="margin-top: 5px;"><FONT SIZE=4>6 off-5 on</FONT></label>
@@ -101,8 +101,8 @@
                             <button class="btn btn-primary" style="margin-top: 10px;" id="horizontalDescOnOff"  menu="descarga" cmd= {{ rem_do_set }}> Adelante </button>
                         </div>
                         <div class="col text-center" style="padding-right: 0px;padding-left: 0px;left: 10px;">
-                            <article class="led led-grey" style="margin-top: 6px;" id="horizontalDescOk"></article>
-                            <article class="led led-grey" style="margin-top: 24px;" id="horizontalDescOk"></article>
+                            <article class="led led-grey" style="margin-top: 6px;" id="horizontalDescAtrasOk"></article>
+                            <article class="led led-grey" style="margin-top: 24px;" id="horizontalDescAdelanteOk"></article>
                         </div>
                         <div class="col text-center" style="padding-left: 0px;padding-right: 0px;right: 10px;">
                             <label style="margin-top: 5px;"><FONT SIZE=4>2 off-1 on</FONT></label>
@@ -119,12 +119,30 @@
                             <button class="btn btn-primary" style="margin-top: 10px;" id="giroDescOnOff"  menu="descarga" cmd= {{ rem_do_set }}> Abajo </button>
                         </div>
                         <div class="col text-center" style="padding-right: 0px;padding-left: 0px;left: 10px;">
-                            <article class="led led-grey" style="margin-top: 6px;" id="giroDescOk"></article>
-                            <article class="led led-grey" style="margin-top: 24px;" id="giroDescOk"></article>
+                            <article class="led led-grey" style="margin-top: 6px;" id="giroDescArribaOk"></article>
+                            <article class="led led-grey" style="margin-top: 24px;" id="giroDescAbajoOk"></article>
                         </div>
                         <div class="col text-center" style="padding-left: 0px;padding-right: 0px;right: 10px;">
                             <label style="margin-top: 5px;"><FONT SIZE=4>8 off-7 on</FONT></label>
                             <label style="margin-top: 13px;"><FONT SIZE=4>8 on-7 off</FONT></label>
+                        </div>
+                    </div>
+                    <hr size="100px" style="width: 98%;" color="grey">
+                    <div class="row mt-3">
+                        <div class="col text-center" style="padding-left: 0px;padding-right: 0px;top: 20px;left: 10px;">
+                            <p style="display: inline;">Boquilla Descarga</p>
+                        </div>
+                        <div class="col text-center" style="padding-right: 0px;padding-left: 0px;left: 20px;">
+                            <button class="btn btn-primary" id="BoquillaDescOnOff"  menu="descarga" cmd= {{ rem_do_set }}> Cierra </button>
+                            <button class="btn btn-primary" style="margin-top: 10px;" id="BoquillaDescOnOff"  menu="descarga" cmd= {{ rem_do_set }}> Abre </button> 
+                        </div>
+                        <div class="col text-center" style="padding-right: 0px;padding-left: 0px;left: 10px;">
+                            <article class="led led-grey" style="margin-top: 6px;" id="boquillaDescCierraOk"></article>
+                            <article class="led led-grey" style="margin-top: 24px;" id="boquillaDescAbreOk"></article>
+                        </div>
+                        <div class="col text-center" style="padding-left: 0px;padding-right: 0px;right: 10px;">
+                            <label style="margin-top: 5px;"><FONT SIZE=4>11 on</FONT></label> 
+                            <label style="margin-top: 13px;"><FONT SIZE=4>11 off</FONT></label>
                         </div>
                     </div>
                     <hr size="100px" style="width: 98%;" color="grey">
@@ -137,8 +155,8 @@
                             <button class="btn btn-primary" style="margin-top: 10px;" id="horizontalGrOnOff" menu="descarga" cmd= {{ rem_do_set }}> Atrás </button> 
                         </div>
                         <div class="col text-center" style="padding-right: 0px;padding-left: 0px;left: 10px;">
-                            <article class="led led-grey" style="margin-top: 6px;" id="horizontalGrOk"></article>
-                            <article class="led led-grey" style="margin-top: 24px;" id="giroDescOk"></article>
+                            <article class="led led-grey" style="margin-top: 6px;" id="horizontalGrAdelanteOk"></article>
+                            <article class="led led-grey" style="margin-top: 24px;" id="horizontalGrAtrasOk"></article>
                         </div>
                         <div class="col text-center" style="padding-left: 0px;padding-right: 0px;right: 10px;">
                             <label style="margin-top: 5px;"><FONT SIZE=4>17 off</FONT></label>
@@ -155,30 +173,12 @@
                             <button class="btn btn-primary" style="margin-top: 10px;" id="verticalGrOnOff" menu="descarga" cmd= {{ rem_do_set }}> Abajo </button>
                         </div>
                         <div class="col text-center" style="padding-right: 0px;padding-left: 0px;left: 10px;">
-                            <article class="led led-grey" style="margin-top: 6px;" id="verticalGrOk"></article>
-                            <article class="led led-grey" style="margin-top: 24px;" id="verticalGrOk"></article>
+                            <article class="led led-grey" style="margin-top: 6px;" id="verticalGrArribaOk"></article>
+                            <article class="led led-grey" style="margin-top: 24px;" id="verticalGrAbajoOk"></article>
                         </div>
                         <div class="col text-center" style="padding-left: 0px;padding-right: 0px;right: 10px;">
                             <label style="margin-top: 5px;"><FONT SIZE=4>19 off</FONT></label>
                             <label style="margin-top: 13px;"><FONT SIZE=4>19 on</FONT></label>
-                        </div>
-                    </div>
-                    <hr size="100px" style="width: 98%;" color="grey">
-                    <div class="row mt-3">
-                        <div class="col text-center" style="padding-left: 0px;padding-right: 0px;top: 20px;left: 10px;">
-                            <p style="display: inline;">Boquilla Descarga</p>
-                        </div>
-                        <div class="col text-center" style="padding-right: 0px;padding-left: 0px;left: 20px;">
-                            <button class="btn btn-primary" id="BoquillaDescOnOff"  menu="descarga" cmd= {{ rem_do_set }}> Cierra </button>
-                            <button class="btn btn-primary" style="margin-top: 10px;" id="BoquillaDescOnOff"  menu="descarga" cmd= {{ rem_do_set }}> Abre </button> 
-                        </div>
-                        <div class="col text-center" style="padding-right: 0px;padding-left: 0px;left: 10px;">
-                            <article class="led led-grey" style="margin-top: 6px;" id="BoquillaDescOk"></article>
-                            <article class="led led-grey" style="margin-top: 24px;" id="BoquillaDescOk"></article>
-                        </div>
-                        <div class="col text-center" style="padding-left: 0px;padding-right: 0px;right: 10px;">
-                            <label style="margin-top: 5px;"><FONT SIZE=4>11 on</FONT></label> 
-                            <label style="margin-top: 13px;"><FONT SIZE=4>11 off</FONT></label>
                         </div>
                     </div>
                     <hr size="100px" style="width: 98%;" color="grey">
@@ -191,8 +191,8 @@
                             <button class="btn btn-primary" style="margin-top: 10px;" id="gripperDescOnOff"  menu="descarga" cmd= {{ rem_do_set }}> Abre </button>
                         </div>
                         <div class="col text-center" style="right: 10px;">
-                            <article class="led led-grey" style="margin-top: 6px;" id="gripperDescOk"></article>
-                            <article class="led led-grey" style="margin-top: 24px;" id="gripperDescOk"></article>
+                            <article class="led led-grey" style="margin-top: 6px;" id="gripperDescCierraOk"></article>
+                            <article class="led led-grey" style="margin-top: 24px;" id="gripperDescAbreOk"></article>
                         </div>
                         <div class="col text-center" style="padding-left: 0px;padding-right: 0px;right: 40px;">
                             <label style="margin-top: 5px;width: 100px;"><FONT SIZE=4>10 off-9 on</FONT></label> 
@@ -220,8 +220,8 @@
                             <button class="btn btn-primary" style="margin-top: 10px;" id="clampeoOnOff" menu="cabezal" cmd= {{ rem_do_set }}> No </button>
                         </div>
                         <div class="col text-center" style="right: 10px;">
-                            <article class="led led-grey" style="margin-top: 6px;" id="clampeoOk"></article>
-                            <article class="led led-grey" style="margin-top: 24px;" id="clampeoOk"></article>
+                            <article class="led led-grey" style="margin-top: 6px;" id="clampeoSiOk"></article>
+                            <article class="led led-grey" style="margin-top: 24px;" id="clampeoNoOk"></article>
                         </div>
                         <div class="col text-center" style="padding-left: 0px;padding-right: 0px;right: 40px;">
                             <label style="margin-top: 5px;width: 100px;"><FONT SIZE=4>22 off-23 on</FONT></label> 
@@ -238,8 +238,8 @@
                             <button class="btn btn-primary" style="margin-top: 10px;" id="presionOnOff" menu="cabezal" cmd= {{ rem_do_set }}> No </button>
                         </div>
                         <div class="col text-center" style="right: 10px;">
-                            <article class="led led-grey" style="margin-top: 6px;" id="presionOk"></article>
-                            <article class="led led-grey" style="margin-top: 24px;" id="presionOk"></article>
+                            <article class="led led-grey" style="margin-top: 6px;" id="presionSiOk"></article>
+                            <article class="led led-grey" style="margin-top: 24px;" id="presionNoOk"></article>
                         </div>
                         <div class="col text-center" style="padding-left: 0px;padding-right: 0px;right: 40px;">
                             <label style="margin-top: 5px;"><FONT SIZE=4>26 on</FONT></label> 
@@ -256,8 +256,8 @@
                             <button class="btn btn-primary" style="margin-top: 10px;" id="boquilla1OnOff" menu="cabezal" cmd= {{ rem_do_set }}> Abre </button>
                         </div>
                         <div class="col text-center" style="right: 10px;">
-                            <article class="led led-grey" style="margin-top: 6px;" id="boquilla1Ok"></article>
-                            <article class="led led-grey" style="margin-top: 24px;" id="boquilla1Ok"></article>
+                            <article class="led led-grey" style="margin-top: 6px;" id="boquilla1CierraOk"></article>
+                            <article class="led led-grey" style="margin-top: 24px;" id="boquilla1AbreOk"></article>
                         </div>
                         <div class="col text-center" style="padding-left: 0px;padding-right: 0px;right: 40px;">
                             <label style="margin-top: 5px;width: 100px;"><FONT SIZE=4>28 off-27 on</FONT></label> 
@@ -274,8 +274,8 @@
                             <button class="btn btn-primary" style="margin-top: 10px;" id="boquilla2OnOff" menu="cabezal" cmd= {{ rem_do_set }}> Abre </button>
                         </div>
                         <div class="col text-center" style="right: 10px;">
-                            <article class="led led-grey" style="margin-top: 6px;" id="boquilla2Ok"></article>
-                            <article class="led led-grey" style="margin-top: 24px;" id="boquilla2Ok"></article>
+                            <article class="led led-grey" style="margin-top: 6px;" id="boquilla2CierraOk"></article>
+                            <article class="led led-grey" style="margin-top: 24px;" id="boquilla2AbreOk"></article>
                         </div>
                         <div class="col text-center" style="padding-left: 0px;padding-right: 0px;right: 40px;">
                             <label style="margin-top: 5px;width: 100px;"><FONT SIZE=4>30 off-29 on</FONT></label> 
@@ -292,8 +292,8 @@
                             <button class="btn btn-primary" style="margin-top: 10px;" id="boquilla3OnOff" menu="cabezal" cmd= {{ rem_do_set }}> Abre </button>
                         </div>
                         <div class="col text-center" style="right: 10px;">
-                            <article class="led led-grey" style="margin-top: 6px;" id="boquilla3Ok"></article>
-                            <article class="led led-grey" style="margin-top: 24px;" id="boquilla3Ok"></article>
+                            <article class="led led-grey" style="margin-top: 6px;" id="boquilla3CierraOk"></article>
+                            <article class="led led-grey" style="margin-top: 24px;" id="boquilla3AbreOk"></article>
                         </div>
                         <div class="col text-center" style="padding-left: 0px;padding-right: 0px;right: 40px;">
                             <label style="margin-top: 5px;width: 100px;"><FONT SIZE=4>32 off-31 on</FONT></label> 
@@ -310,8 +310,8 @@
                             <button class="btn btn-primary" style="margin-top: 10px;" id="acoplaSolOnOff" menu="cabezal" cmd= {{ rem_do_set }}> No </button>
                         </div>
                         <div class="col text-center" style="right: 10px;">
-                            <article class="led led-grey" style="margin-top: 6px;" id="acoplaSolOk"></article>
-                            <article class="led led-grey" style="margin-top: 24px;" id="acoplaSolOk"></article>
+                            <article class="led led-grey" style="margin-top: 6px;" id="acoplaSolSiOk"></article>
+                            <article class="led led-grey" style="margin-top: 24px;" id="acoplaSolNoOk"></article>
                         </div>
                         <div class="col text-center" style="padding-left: 0px;padding-right: 0px;right: 40px;">
                             <label style="margin-top: 5px;"><FONT SIZE=4>21 on</FONT></label> 
@@ -328,8 +328,8 @@
                             <button class="btn btn-primary" style="margin-top: 10px;" id="bombaSolOnOff" menu="cabezal" cmd= {{ rem_do_set }}> OFF </button>
                         </div>
                         <div class="col text-center" style="right: 10px;">
-                            <article class="led led-grey" style="margin-top: 6px;" id="bombaSolOk"></article>
-                            <article class="led led-grey" style="margin-top: 24px;" id="bombaSolOk"></article>
+                            <article class="led led-grey" style="margin-top: 6px;" id="bombaSolOnOk"></article>
+                            <article class="led led-grey" style="margin-top: 24px;" id="bombaSolOffOk"></article>
                         </div>
                         <div class="col text-center" style="padding-left: 0px;padding-right: 0px;right: 40px;">
                             <label style="margin-top: 5px;"><FONT SIZE=4>25 on</FONT></label> 
@@ -346,8 +346,8 @@
                             <button class="btn btn-primary" style="margin-top: 10px;" id="bombaHidrOnOff" menu="cabezal" cmd= {{ rem_do_set }}> OFF </button>
                         </div>
                         <div class="col text-center" style="right: 10px;">
-                            <article class="led led-grey" style="margin-top: 6px;" id="bombaHidrOk"></article>
-                            <article class="led led-grey" style="margin-top: 24px;" id="bombaHidrOk"></article>
+                            <article class="led led-grey" style="margin-top: 6px;" id="bombaHidrOnOk"></article>
+                            <article class="led led-grey" style="margin-top: 24px;" id="bombaHidrOffOk"></article>
                         </div>
                         <div class="col text-center" style="padding-left: 0px;padding-right: 0px;right: 40px;">
                             <label style="margin-top: 5px;"><FONT SIZE=4>24 on</FONT></label> 
