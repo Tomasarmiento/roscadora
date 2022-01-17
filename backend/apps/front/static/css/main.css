@@ -481,4 +481,31 @@ body {
     margin: 0 0 25px;
     overflow: hidden;
     padding: 15px;
-    }
+  }
+
+  .buton-width{
+    width: 90px;
+  }
+
+
+  .inblock-center{
+    display: block;
+    top: 10px;
+    left: 10px;
+  }
+
+  .di-position{
+    right: 10px;
+  }
+
+  .enables{
+    margin-bottom: 90px;
+    margin-left: 82px
+  }
+
+  .enable-sync{
+    display: block;
+    top: 10px;
+    margin-left: 100px;
+    height: 75px;
+  }

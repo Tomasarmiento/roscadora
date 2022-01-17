@@ -253,7 +253,7 @@ socket.onmessage = function (event) {
           ? (bombaHidraulicaOff.className = "led led-grey")
           : (bombaHidraulicaOff.className = "led led-green");
 
-          console.log(datosWs.remote_inputs);
+          
         }
     }
 
