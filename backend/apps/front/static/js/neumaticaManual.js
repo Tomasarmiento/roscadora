@@ -62,7 +62,7 @@ socket.onmessage = function (event) {
         
         //Cabezal
         const clampeoSi = document.querySelector("#clampeoSiOk");
-        const clampeoNo = document.querySelector("#clampeoNoSiOk");
+        const clampeoNo = document.querySelector("#clampeoNoOk");
         
         const presionSi = document.querySelector("#presionSiOk");
         const presionNo = document.querySelector("#presionNoOk");
@@ -88,171 +88,172 @@ socket.onmessage = function (event) {
 
           //CARGA//
           //Horizontal
-          datosWs.puntera_carga_expandida == true && datosWs.puntera_carga_contraida == false
+          datosWs.remote_inputs[0].puntera_carga_expandida == false && datosWs.remote_inputs[0].puntera_carga_contraida == true
           ? (horizontalCargaAdelante.className = "led led-grey")
           : (horizontalCargaAdelante.className = "led led-green");
 
-          datosWs.puntera_carga_expandida == false && datosWs.puntera_carga_contraida == true   
+          datosWs.remote_inputs[0].puntera_carga_expandida == true && datosWs.remote_inputs[0].puntera_carga_contraida == false   
           ? (horizontalCargaAtras.className = "led led-grey")
           : (horizontalCargaAtras.className = "led led-green");
 
           //Vertical
-          datosWs.expandir_vertical_carga == false
+          datosWs.remote_inputs[0].vertical_carga_expandido == false
           ? (verticalArriba.className = "led led-grey")
           : (verticalArriba.className = "led led-green");
 
-          datosWs.expandir_vertical_carga == true
-          ? (verticalAbajo.className = "led led-grey")
-          : (verticalAbajo.className = "led led-green");
+          datosWs.remote_inputs[0].vertical_carga_contraido == true
+          ? (verticalAbajo.className = "led led-green")
+          : (verticalAbajo.className = "led led-grey");
 
           //Boquilla carga
-          datosWs.contraer_boquilla_carga == false
+          datosWs.remote_inputs[0].boquilla_carga_contraida == true
           ? (boquillaCargaCierra.className = "led led-grey")
           : (boquillaCargaCierra.className = "led led-green");
 
-          datosWs.contraer_boquilla_carga == true
+          datosWs.remote_inputs[0].boquilla_carga_expandida == true
           ? (boquillaCargaAbre.className = "led led-grey")
           : (boquillaCargaAbre.className = "led led-green");
 
           //Giro
-          datosWs.expandir_brazo_cargador == true && datosWs.contraer_brazo_cargador == false
+          datosWs.remote_inputs[0].brazo_cargador_expandido == true && datosWs.remote_inputs[0].brazo_cargador_contraido == false
           ? (giroCargaArriba.className = "led led-grey")
           : (giroCargaArriba.className = "led led-green");
 
-          datosWs.expandir_brazo_cargador == false && datosWs.contraer_brazo_cargador == true   
+          datosWs.remote_inputs[0].brazo_cargador_expandido == false && datosWs.remote_inputs[0].brazo_cargador_contraido == true   
           ? (giroCargaAbajo.className = "led led-grey")
           : (giroCargaAbajo.className = "led led-green");
 
 
           //DESCARGA//
           //Horizontal
-          datosWs.expandir_puntera_descarga == true && datosWs.contraer_brazo_cargador == false
-          ? (horizontalDescargaAtras.className = "led led-grey")
-          : (horizontalDescargaAtras.className = "led led-green");
+          datosWs.remote_inputs[0].puntera_descarga_expandida == true && datosWs.remote_inputs[0].puntera_descarga_contraida == false
+          ? (horizontalDescargaAtras.className = "led led-green")
+          : (horizontalDescargaAtras.className = "led led-grey");
 
-          datosWs.expandir_puntera_descarga == false && datosWs.contraer_brazo_cargador == true   
+          datosWs.remote_inputs[0].puntera_descarga_expandida == true && datosWs.remote_inputs[0].puntera_descarga_contraida == false   
           ? (horizontalDescargaAdelante.className = "led led-grey")
           : (horizontalDescargaAdelante.className = "led led-green");
 
           //Giro
-          datosWs.expandir_brazo_descargador == true && datosWs.contraer_brazo_descargador == false
+          datosWs.remote_inputs[0].brazo_descarga_expandido == true && datosWs.remote_inputs[0].brazo_descarga_contraido == false
           ? (giroDescargaArriba.className = "led led-grey")
           : (giroDescargaArriba.className = "led led-green");
 
-          datosWs.expandir_brazo_descargador == false && datosWs.contraer_brazo_descargador == true   
+          datosWs.remote_inputs[0].brazo_descarga_expandido == false && datosWs.remote_inputs[0].brazo_descarga_contraido == true   
           ? (giroDescargaAbajo.className = "led led-grey")
           : (giroDescargaAbajo.className = "led led-green");
 
           //Boquilla descarga
-          datosWs.contraer_boquilla_descarga == false
+          datosWs.remote_inputs[0].boquilla_descarga_contraida == true
           ? (boquillaDescargaCierra.className = "led led-grey")
           : (boquillaDescargaCierra.className = "led led-green");
 
-          datosWs.contraer_boquilla_descarga == true
+          datosWs.remote_inputs[0].boquilla_descarga_expandida == true
           ? (boquillaDescargaAbre.className = "led led-grey")
           : (boquillaDescargaAbre.className = "led led-green");
 
           //Horizontal Gripper
-          datosWs.expandir_horiz_pinza_desc == false
+          datosWs.remote_inputs[1].horiz_pinza_desc_contraido == true
           ? (horizontalGripperAdelante.className = "led led-grey")
           : (horizontalGripperAdelante.className = "led led-green");
 
-          datosWs.expandir_horiz_pinza_desc == true
+          datosWs.remote_inputs[1].horiz_pinza_desc_expandido == true
           ? (horizontalGripperAtras.className = "led led-grey")
           : (horizontalGripperAtras.className = "led led-green");
 
           //Vertical Gripper
-          datosWs.expandir_vert_pinza_desc == false
+          datosWs.remote_inputs[1].vert_pinza_desc_expandido == true
           ? (verticalGripperArriba.className = "led led-grey")
           : (verticalGripperArriba.className = "led led-green");
 
-          datosWs.expandir_vert_pinza_desc == true
+          datosWs.remote_inputs[1].vert_pinza_desc_contraido == true
           ? (verticalGripperAbajo.className = "led led-grey")
           : (verticalGripperAbajo.className = "led led-green");
 
           //Gripper Descarga
-          datosWs.abrir_pinza_descargadora == true && datosWs.cerrar_pinza_descargadora == false
+          datosWs.remote_inputs[0].pinza_descargadora_abierta == true && datosWs.remote_inputs[0].pinza_descargadora_cerrada == false
           ? (gripperDescargaCierra.className = "led led-grey")
           : (gripperDescargaCierra.className = "led led-green");
 
-          datosWs.abrir_pinza_descargadora == false && datosWs.cerrar_pinza_descargadora == true   
+          datosWs.remote_inputs[0].pinza_descargadora_abierta == false && datosWs.remote_inputs[0].pinza_descargadora_cerrada == true   
           ? (gripperDescargaAbre.className = "led led-grey")
           : (gripperDescargaAbre.className = "led led-green");
  
 
           //CABEZAL//
           //Clampeo
-          datosWs.contraer_clampeo_plato == true && datosWs.expandir_clampeo_plato == false   
+          datosWs.remote_inputs[1].clampeo_plato_contraido == true && datosWs.remote_inputs[1].clampeo_plato_expandido == false   
           ? (clampeoSi.className = "led led-grey")
           : (clampeoSi.className = "led led-green");
 
-          datosWs.contraer_clampeo_plato == false && datosWs.expandir_clampeo_plato == true   
+          datosWs.remote_inputs[1].clampeo_plato_contraido == false && datosWs.remote_inputs[1].clampeo_plato_expandido == true   
           ? (clampeoNo.className = "led led-grey")
           : (clampeoNo.className = "led led-green");
 
           //Presion
-          datosWs.presurizar == true && datosWs.presurizar == false   
-          ? (presionSi.className = "led led-grey")
-          : (presionSi.className = "led led-green");
+          datosWs.remote_outputs[1].presurizar == true
+          ? (presionSi.className = "led led-green")
+          : (presionSi.className = "led led-grey");
 
-          datosWs.presurizar == false && datosWs.presurizar == true   
+          datosWs.remote_outputs[1].presurizar == true
           ? (presionNo.className = "led led-grey")
           : (presionNo.className = "led led-green");
 
           //Boquilla 1
-          datosWs.abrir_boquilla_1 == true && datosWs.cerrar_boquilla_1 == false   
+          datosWs.remote_outputs[1].abrir_boquilla_1 == true && datosWs.remote_outputs[1].cerrar_boquilla_1 == false 
           ? (boquilla1Cierra.className = "led led-grey")
           : (boquilla1Cierra.className = "led led-green");
 
-          datosWs.abrir_boquilla_1 == false && datosWs.cerrar_boquilla_1 == true   
+          datosWs.remote_outputs[1].abrir_boquilla_1 == false && datosWs.remote_outputs[1].cerrar_boquilla_1 == true
           ? (boquilla1Abre.className = "led led-grey")
           : (boquilla1Abre.className = "led led-green");
 
           //Boquilla 2
-          datosWs.abrir_boquilla_2 == true && datosWs.cerrar_boquilla_2 == false   
+          datosWs.remote_outputs[1].abrir_boquilla_2 == true && datosWs.remote_outputs[1].cerrar_boquilla_2 == false
           ? (boquilla2Cierra.className = "led led-grey")
           : (boquilla2Cierra.className = "led led-green");
 
-          datosWs.abrir_boquilla_2 == false && datosWs.cerrar_boquilla_2 == true   
+          datosWs.remote_outputs[1].abrir_boquilla_2 == false && datosWs.remote_outputs[1].cerrar_boquilla_2 == true
           ? (boquilla2Abre.className = "led led-grey")
           : (boquilla2Abre.className = "led led-green");
 
           //Boquilla 3
-          datosWs.abrir_boquilla_3 == true && datosWs.cerrar_boquilla_3 == false   
+          datosWs.remote_outputs[1].abrir_boquilla_3 == true && datosWs.remote_outputs[1].cerrar_boquilla_3 == false
           ? (boquilla3Cierra.className = "led led-grey")
           : (boquilla3Cierra.className = "led led-green");
 
-          datosWs.abrir_boquilla_3 == false && datosWs.cerrar_boquilla_3 == true   
+          datosWs.remote_outputs[1].abrir_boquilla_3 == false && datosWs.remote_outputs[1].cerrar_boquilla_3 == true
           ? (boquilla3Abre.className = "led led-grey")
           : (boquilla3Abre.className = "led led-green");
 
           //Acopla Soluble
-          datosWs.expandir_acople_lubric == false
+          datosWs.remote_inputs[1].acople_lubric_expandido == true
           ? (acoplaSolubleSi.className = "led led-grey")
           : (acoplaSolubleSi.className = "led led-green");
 
-          datosWs.expandir_acople_lubric == true
+          datosWs.remote_inputs[1].acople_lubric_contraido == true
           ? (acoplaSolubleNo.className = "led led-grey")
           : (acoplaSolubleNo.className = "led led-green");
 
           //Bomba Soluble
-          datosWs.encender_bomba_soluble == false
+          datosWs.remote_outputs[1].encender_bomba_soluble == false
           ? (bombaSolubleOn.className = "led led-grey")
           : (bombaSolubleOn.className = "led led-green");
 
-          datosWs.encender_bomba_soluble == true
+          datosWs.remote_outputs[1].encender_bomba_soluble == true
           ? (bombaSolubleOff.className = "led led-grey")
           : (bombaSolubleOff.className = "led led-green");
 
           //Bomba Hidraulica
-          datosWs.encender_bomba_hidraulica == false
+          datosWs.remote_outputs[1].encender_bomba_hidraulica == false
           ? (bombaHidraulicaOn.className = "led led-grey")
           : (bombaHidraulicaOn.className = "led led-green");
 
-          datosWs.encender_bomba_hidraulica == true
+          datosWs.remote_outputs[1].encender_bomba_hidraulica == true
           ? (bombaHidraulicaOff.className = "led led-grey")
           : (bombaHidraulicaOff.className = "led led-green");
 
+          console.log(datosWs.remote_inputs);
         }
     }
 

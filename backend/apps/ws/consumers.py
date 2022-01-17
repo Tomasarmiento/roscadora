@@ -11,6 +11,7 @@ from apps.ws.utils.variables import MicroState
 from apps.ws.utils import variables as ws_vars
 from apps.control.utils import variables as ctrl_var
 from apps.control.utils import functions as ctrl_fun
+from apps.service.acdp import messages_base as msg_base
 
 
 class FrontConsumer(AsyncWebsocketConsumer):
@@ -80,6 +81,7 @@ def show_states(header, data):
     print("-"*50)
     # for key, value in MicroState.rem_o_states[1].items():
     #     print(key, value)
-    print (MicroState.axis_flags[ctrl_var.AXIS_IDS['avance']])
+    print(ws_vars.MicroState.axis_flags[ctrl_var.AXIS_IDS['carga']]['drv_flags'] & msg_base.DrvFbkDataFlags.ENABLED)
+    # print (MicroState.axis_measures[ctrl_var.AXIS_IDS['carga']])
     # for axis in MicroState.axis_measures:
     #     print(axis)
