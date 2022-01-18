@@ -17,7 +17,6 @@ socket.onmessage = function (event) {
 
     if (datosWs) {
 
-
         //SENSORES CARGA//
         const boquillaCargaAtras = document.querySelector("#boquillaLoaderBkwrd");
         const boquillaCargaAdelante = document.querySelector("#boquillaLoaderFwrd");
@@ -70,49 +69,42 @@ socket.onmessage = function (event) {
         //SENSORES CARGA//
         //Presencia cupla en cargador	
         datosWs.remote_inputs[1].presencia_cupla_en_cargador == false
-        ? (presenciaCuplaEnCargador.className = "led led-green")
-        : (presenciaCuplaEnCargador.className = "led led-grey");
-
-
-
+         ? (presenciaCuplaEnCargador.className = "led led-green")
+         : (presenciaCuplaEnCargador.className = "led led-grey");
 
         //Vertical carga abajo	
         datosWs.remote_inputs[0].vertical_carga_contraido == true
-        ? (verticalCargaAbajo.className = "led led-green")
-        : (verticalCargaAbajo.className = "led led-grey");
+         ? (verticalCargaAbajo.className = "led led-green")
+         : (verticalCargaAbajo.className = "led led-grey");
 
         //Vertical carga arriba	
         datosWs.remote_inputs[0].vertical_carga_expandido == false
          ? (verticalCargaArriba.className = "led led-grey")
          : (verticalCargaArriba.className = "led led-green");
 
-
         //Giro brazo carga abajo	
         datosWs.remote_inputs[0].brazo_cargador_expandido == false && datosWs.remote_inputs[0].brazo_cargador_contraido == true   
-          ? (giroBrazoCargaAbajo.className = "led led-grey")
-          : (giroBrazoCargaAbajo.className = "led led-green");
+         ? (giroBrazoCargaAbajo.className = "led led-grey")
+         : (giroBrazoCargaAbajo.className = "led led-green");
 
         //Giro brazo carga arriba	
         datosWs.remote_inputs[0].brazo_cargador_expandido == true && datosWs.remote_inputs[0].brazo_cargador_contraido == false
-          ? (giroBrazoCargaArriba.className = "led led-grey")
-          : (giroBrazoCargaArriba.className = "led led-green");
+         ? (giroBrazoCargaArriba.className = "led led-grey")
+         : (giroBrazoCargaArriba.className = "led led-green");
 
-
-          
         //Boquilla carga con cupla	
         datosWs.remote_inputs[1].pieza_en_boquilla_carga == false
-          ? (boquillaCargaConCupla.className = "led led-grey")
-          : (boquillaCargaConCupla.className = "led led-green");
-
+         ? (boquillaCargaConCupla.className = "led led-grey")
+         : (boquillaCargaConCupla.className = "led led-green");
 
         //Boquilla carga liberada	
         datosWs.remote_inputs[0].boquilla_carga_contraida == true
-          ? (boquillaCargaLiberada.className = "led led-grey")
-          : (boquillaCargaLiberada.className = "led led-green");
+         ? (boquillaCargaLiberada.className = "led led-grey")
+         : (boquillaCargaLiberada.className = "led led-green");
         //Boquilla carga accionada
         datosWs.remote_inputs[0].boquilla_carga_expandida == true
-          ? (boquillaCargaAccionada.className = "led led-grey")
-          : (boquillaCargaAccionada.className = "led led-green");	
+         ? (boquillaCargaAccionada.className = "led led-grey")
+         : (boquillaCargaAccionada.className = "led led-green");	
 
         //Boquilla carga atras
         datosWs.remote_inputs[0].puntera_carga_expandida == true && datosWs.remote_inputs[0].puntera_carga_contraida == false   
@@ -129,12 +121,10 @@ socket.onmessage = function (event) {
         datosWs.remote_inputs[0].puntera_descarga_expandida == false && datosWs.remote_inputs[0].puntera_descarga_contraida == true
          ? (boquillaDescargaAtras.className = "led led-green")
          : (boquillaDescargaAtras.className = "led led-grey");
-        //Boquilla descarga adelante    //revisar si checkea que no este prendido el sensor de atras o que checkee si esa prendido el de adelante
-        datosWs.remote_inputs[0].puntera_descarga_expandida == true
-         ? (boquillaDescargaAdelante.className = "led led-green")
-         : (boquillaDescargaAdelante.className = "led led-grey");
-
-
+        //Boquilla descarga adelante
+        datosWs.remote_inputs[0].puntera_descarga_expandida == false && datosWs.remote_inputs[0].puntera_descarga_contraida == true   
+         ? (boquillaDescargaAdelante.className = "led led-grey")
+         : (boquillaDescargaAdelante.className = "led led-green");
 
         //Boquilla descarga accionada	
         datosWs.remote_inputs[0].boquilla_descarga_expandida == true
@@ -146,14 +136,10 @@ socket.onmessage = function (event) {
          ? (boquillaDescargaLiberada.className = "led led-grey")
          : (boquillaDescargaLiberada.className = "led led-green");
 
-
         //Boquilla descarga con cupla
          datosWs.remote_inputs[1].pieza_en_boquilla_descarga == false
-          ? (boquillaDescargaConCupla.className = "led led-grey")
-          : (boquillaDescargaConCupla.className = "led led-green");
-
-
-
+         ? (boquillaDescargaConCupla.className = "led led-grey")
+         : (boquillaDescargaConCupla.className = "led led-green");
 
         //Gripper descarga accionado	
         datosWs.remote_inputs[0].pinza_descargadora_abierta == true && datosWs.remote_inputs[0].pinza_descargadora_cerrada == false
@@ -164,7 +150,6 @@ socket.onmessage = function (event) {
          ? (gripperDescargaLiberado.className = "led led-grey")
          : (gripperDescargaLiberado.className = "led led-green");
 
-
         //Gripper descarga vertical arriba
         datosWs.remote_inputs[1].vert_pinza_desc_expandido == true
          ? (gripperDescargaVerticalArriba.className = "led led-grey")
@@ -174,63 +159,48 @@ socket.onmessage = function (event) {
          ? (gripperDescargaVerticalAbajo.className = "led led-grey")
          : (gripperDescargaVerticalAbajo.className = "led led-green");
 
-
         //Gripper descarga horizontal adelante
         datosWs.remote_inputs[1].horiz_pinza_desc_contraido == true
-          ? (gripperDescargaHorizontalAdelante.className = "led led-grey")
-          : (gripperDescargaHorizontalAdelante.className = "led led-green");
+         ? (gripperDescargaHorizontalAdelante.className = "led led-grey")
+         : (gripperDescargaHorizontalAdelante.className = "led led-green");
         //Gripper descarga horizontal atras	
-          datosWs.remote_inputs[1].horiz_pinza_desc_expandido == true
-          ? (gripperDescargaHorizontalAtras.className = "led led-grey")
-          : (gripperDescargaHorizontalAtras.className = "led led-green");
-
+        datosWs.remote_inputs[1].horiz_pinza_desc_expandido == true
+         ? (gripperDescargaHorizontalAtras.className = "led led-grey")
+         : (gripperDescargaHorizontalAtras.className = "led led-green");
 
         //Giro brazo descarga arriba	
-          datosWs.remote_inputs[0].brazo_descarga_expandido == true && datosWs.remote_inputs[0].brazo_descarga_contraido == false
-          ? (giroBrazoDescargaArriba.className = "led led-grey")
-          : (giroBrazoDescargaArriba.className = "led led-green");
+        datosWs.remote_inputs[0].brazo_descarga_expandido == true && datosWs.remote_inputs[0].brazo_descarga_contraido == false
+         ? (giroBrazoDescargaArriba.className = "led led-grey")
+         : (giroBrazoDescargaArriba.className = "led led-green");
         //Giro brazo descarga abajo	
-          datosWs.remote_inputs[0].brazo_descarga_expandido == false && datosWs.remote_inputs[0].brazo_descarga_contraido == true   
-          ? (giroBrazoDescargaAbajo.className = "led led-grey")
-          : (giroBrazoDescargaAbajo.className = "led led-green");
-
-
+        datosWs.remote_inputs[0].brazo_descarga_expandido == false && datosWs.remote_inputs[0].brazo_descarga_contraido == true   
+         ? (giroBrazoDescargaAbajo.className = "led led-grey")
+         : (giroBrazoDescargaAbajo.className = "led led-green");
 
         //Cupla por tobogán descarga
         datosWs.remote_inputs[1].cupla_por_tobogan_descarga == true
-        ? (cuplaPorTobogánDescarga.className = "led led-grey")
-        : (cuplaPorTobogánDescarga.className = "led led-green");
-
-
+         ? (cuplaPorTobogánDescarga.className = "led led-grey")
+         : (cuplaPorTobogánDescarga.className = "led led-green");
 
         //PLATO
         //Acople Lubricante Extendido	
         datosWs.remote_inputs[1].acople_lubric_expandido == false
-        ? (acopleLubricanteExtendido.className = "led led-grey")
-        : (acopleLubricanteExtendido.className = "led led-green");
+         ? (acopleLubricanteExtendido.className = "led led-grey")
+         : (acopleLubricanteExtendido.className = "led led-green");
         
         //Acople Lubricante Contraído	
         datosWs.remote_inputs[1].acople_lubric_contraido == false
-        ? (acopleLubricanteContraido.className = "led led-grey")
-        : (acopleLubricanteContraido.className = "led led-green");
+         ? (acopleLubricanteContraido.className = "led led-grey")
+         : (acopleLubricanteContraido.className = "led led-green");
         
-
-
-
         //Neumático clampeo plato Extendido	
         datosWs.remote_inputs[1].clampeo_plato_expandido == true
-        ? (neumaticoClampeoPlatoExtendido.className = "led led-grey")
-        : (neumaticoClampeoPlatoExtendido.className = "led led-green");
+         ? (neumaticoClampeoPlatoExtendido.className = "led led-grey")
+         : (neumaticoClampeoPlatoExtendido.className = "led led-green");
         //Neumático clampeo plato Contraído	
         datosWs.remote_inputs[1].clampeo_plato_contraido == true
-          ? (neumaticoClampeoPlatoContraido.className = "led led-grey")
-          : (neumaticoClampeoPlatoContraido.className = "led led-green");
-
-
-
-
-
-
+         ? (neumaticoClampeoPlatoContraido.className = "led led-grey")
+         : (neumaticoClampeoPlatoContraido.className = "led led-green");
 
         console.log(datosWs);
     }
