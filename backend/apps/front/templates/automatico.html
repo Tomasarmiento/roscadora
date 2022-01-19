@@ -2,9 +2,12 @@
 {% load static %}
 {% block content %}
 
+<figure class="highcharts-figure">
 <div class="row col-md-12 text-center mx-auto px-0">
-	<div id="component-grafico-roscado" class="col-md-12 col-12 border shadow rounded bg-white p-5"></div>
+	<div class="col-md-12 col-12 border shadow rounded bg-white p-5"></div>
+    <canvas id="component-grafico-roscado"></canvas>
 </div> 
+</figure>
 
 <div class="col-md-8 col-12 float-left mb-8 px-0">
 	<div class="col-md-9 my-2 py-1 d-flex justify-content-around" id="component-monitor-horizontal">
@@ -120,6 +123,7 @@
 	
 	
 </div>
+<script src="{% static 'js/monitorHorizontal.js' %}"></script>
 <script src="{% static 'js/automatico.js' %}"></script>
 <script src="{% static 'js/stopAll.js' %}"></script>
 {% endblock %}
