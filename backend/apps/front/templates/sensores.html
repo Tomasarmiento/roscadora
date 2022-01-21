@@ -1,4 +1,4 @@
-{% extends 'index.html'%}
+{% extends 'indexNoData.html'%}
 {% load static %}
 {% block content %}
 
@@ -18,27 +18,27 @@
             <tbody>
                 <tr>
                     <td>Boquilla carga atras</td>
-                    <td><div class="led led-grey" id="gripperLoaderBkwrd"></div></td>
+                    <td><div class="led led-grey" id="boquillaLoaderBkwrd"></div></td>
                     <td class="text-center">3</td>
                 </tr>
                 <tr>
                     <td>Boquilla carga adelante</td>
-                    <td><div class="led led-grey" id="gripperLoaderFwrd"></div></td>
+                    <td><div class="led led-grey" id="boquillaLoaderFwrd"></div></td>
                     <td class="text-center">4</td>
                 </tr>
                 <tr> 
                     <td>Boquilla carga liberada</td>
-                    <td><div class="led led-grey" id="gripperLoaderReleased"></div></td>
+                    <td><div class="led led-grey" id="boquillaLoaderReleased"></div></td>
                     <td class="text-center">14</td>
                 </tr>
                 <tr>
                     <td>Boquilla carga accionada</td>
-                    <td><div class="led led-grey" id="gripperLoaderActuated"></div></td>
+                    <td><div class="led led-grey" id="boquillaLoaderActuated"></div></td>
                     <td class="text-center">13</td>
                 </tr>
                 <tr>
                     <td>Boquilla carga con cupla</td>
-                    <td><div class="led led-grey" id="gripperLoaderCupla"></div></td>
+                    <td><div class="led led-grey" id="boquillaLoaderCupla"></div></td>
                     <td class="text-center">26</td>
                 </tr>
                 <tr> 
@@ -84,57 +84,57 @@
                 <tbody>
                     <tr>
                         <td>Boquilla descarga atras</td>
-                        <td><div class="led led-grey" id="gripperDownloadBkwrd"></div></td>
+                        <td><div class="led led-grey" id="boquillaDownloadBkwrd"></div></td>
                         <td class="text-center">1</td>
                     </tr>
                     <tr>
                         <td>Boquilla descarga adelante</td>
-                        <td><div class="led led-grey" id="gripperDownloadFwrd"></div></td>
+                        <td><div class="led led-grey" id="boquillaDownloadFwrd"></div></td>
                         <td class="text-center">2</td>
                     </tr>
                     <tr>
                         <td>Boquilla descarga liberada</td>
-                        <td><div class="led led-grey" id="gripperDownloadReleased"></div></td>
+                        <td><div class="led led-grey" id="boquillaDownloadReleased"></div></td>
                         <td class="text-center">12</td>
                     </tr>
                     <tr>
                         <td>Boquilla descarga accionada</td>
-                        <td><div class="led led-grey" id="gripperDownloadActuated"></div></td>
+                        <td><div class="led led-grey" id="boquillaDownloadActuated"></div></td>
                         <td class="text-center">11</td>
                     </tr>
                     <tr>
                         <td>Boquilla descarga con cupla</td>
-                        <td><div class="led led-grey" id="gripperDownloadCupla"></div></td>
+                        <td><div class="led led-grey" id="boquillaDownloadCupla"></div></td>
                         <td class="text-center">25</td>
                     </tr>
                     <tr>
                         <td>Gripper descarga vertical arriba</td>
-                        <td><div class="led led-grey" id="gripperVerticalDownloaderUp"></div></td>
+                        <td><div class="led led-grey" id="gripVerticalDownloaderUp"></div></td>
                         <td class="text-center">19</td>
                     </tr>
                     <tr>
                         <td>Gripper descarga vertical abajo</td>
-                        <td><div class="led led-grey" id="gripperVerticalDownloaderDown"></div></td>
+                        <td><div class="led led-grey" id="gripVerticalDownloaderDown"></div></td>
                         <td class="text-center">20</td>
                     </tr>
                     <tr> 
                         <td>Gripper descarga horizontal adelante</td>
-                        <td><div class="led led-grey" id="gripperHorizontalDownloaderFwrd"></div></td>
+                        <td><div class="led led-grey" id="gripHorizontalDownloaderFwrd"></div></td>
                         <td class="text-center">18</td>
                     </tr>
                     <tr>
                         <td>Gripper descarga horizontal atras</td>
-                        <td><div class="led led-grey" id="gripperHorizontalDownloaderBkwrd"></div></td>
+                        <td><div class="led led-grey" id="gripHorizontalDownloaderBkwrd"></div></td>
                         <td class="text-center">17</td>
                     </tr>
                     <tr>
                         <td>Gripper descarga accionado</td>
-                        <td><div class="led led-grey" id="gripperDownloaderActuated"></div></td>
+                        <td><div class="led led-grey" id="gripDownloaderActuated"></div></td>
                         <td class="text-center">9</td>
                     </tr>
                     <tr>
-                        <td>Gripper descarga liberada</td>
-                        <td><div class="led led-grey" id="gripperDownloaderReleased"></div></td>
+                        <td>Gripper descarga liberado</td>
+                        <td><div class="led led-grey" id="gripDownloaderReleased"></div></td>
                         <td class="text-center">10</td>
                     </tr>
                     <tr>
@@ -224,17 +224,8 @@
             </div>
             
         </div>
-</div> 
-
-    
-    
-    
-
-
-
-   
-    
-
+</div>
+<script src="{% static 'js/sensoresP1.js' %}"></script>
 {% endblock %}
 
 
