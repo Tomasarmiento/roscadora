@@ -8,7 +8,7 @@ class MicroState:
     last_rx_data    = AcdpPc()
     msg_id          = 0         # Id of last msg sent
     cmd_rejected    = False
-    cmd_ok          = True
+    cmd_ok          = False
 
     # Remote/Local digital I/O
     rem_i_states        = []        # A dictionary with boolean values for each flag
@@ -32,7 +32,7 @@ class MicroState:
     # Graph
     position_values     = []
     torque_values       = []
-    graph_flag          = False
+    graph_flag          = True
     graph_duration      = 0
 
 

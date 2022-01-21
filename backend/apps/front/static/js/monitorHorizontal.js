@@ -83,7 +83,7 @@ window.onload = function() {
 
 socket.onmessage = function (event) {
   const datosWs = JSON.parse(event.data);
-  
+  console.log(datosWs);
 
   // Tabla de datos
   const rpmActual = document.querySelector("#frRPMH");
@@ -112,21 +112,17 @@ socket.onmessage = function (event) {
     velocidadActualH.innerHTML = datosWs.avance_vel.toFixed(1);
 
    
-        if(datosWs){
-            console.log('aca');
-          xAccelChartInstance.data.labels.push(datosWs.cabezal_pos);
-          xAccelChartInstance.data.datasets.forEach((dataset) =>{dataset.data.push(datosWs.cabezal_pos)});
-          if(updateCount > numberElements){
-            xAccelChartInstance.data.labels.shift();
-            xAccelChartInstance.data.datasets[0].data.shift();
-          }
-          else updateCount++;
-          xAccelChartInstance.update();
-        }
-      
-        
+    if (datosWs.graph_flag == true) {
+      xAccelChartInstance.data.labels.push(datosWs.husillo_torque.toFixed(1));
+      xAccelChartInstance.data.datasets.forEach((dataset) =>{dataset.data.push(datosWs.avance_pos.toFixed(1))});
+      if(updateCount > numberElements){
+        xAccelChartInstance.data.labels.shift();
+        xAccelChartInstance.data.datasets[0].data.shift();
+      }
+      else updateCount++;
+      xAccelChartInstance.update();
+    }
     
-   
-    
+  }
 }
-}}
+};

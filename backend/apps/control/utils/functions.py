@@ -10,27 +10,7 @@ from apps.control.utils import variables as ctrl_vars
 
 from apps.ws.utils.handlers import send_message
 from apps.ws.utils.functions import send_front_message
-from apps.ws.utils import variables as ws_vars
-
-class FrontWs(threading.Thread):
-
-    def __init__(self, **kwargs):
-        super(FrontWs, self).__init__(**kwargs)
-    
-    def run(self):
-        while 1:
-            data = {
-                'husillo_rpm': float(random.randint(1,10)),
-                'husillo_torque': float(random.randint(1,10)),
-
-                'cabezal_pos': float(random.randint(1,10)),
-                'cabezal_vel': float(random.randint(1,10)),
-
-                'avance_pos': float(random.randint(1,10)),
-                'avance_vel': float(random.randint(1,10)),
-            }
-            send_front_message(data)
-            time.sleep(0.2)
+from apps.ws.utils import variables as ws_vars 
 
 # -------------------------------------------------------------------------------------------- #
 # ----------------------------------- Initialization ----------------------------------------- #
@@ -339,7 +319,9 @@ def get_front_states():
         'sync_on_avance': ws_vars.MicroState.axis_flags[ctrl_vars.AXIS_IDS['avance']]['sync_on'],
         'slave_giro': ws_vars.MicroState.axis_flags[ctrl_vars.AXIS_IDS['giro']]['slave'],
 
-        'graph': ws_vars.MicroState.graph_flag
+        # 'graph': ws_vars.MicroState.graph_flag
+        'graph': False,
+        'graph_flag': ws_vars.MicroState.graph_flag
     }
     return data
 

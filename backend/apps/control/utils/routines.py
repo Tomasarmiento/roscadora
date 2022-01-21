@@ -380,11 +380,14 @@ class RoutineHandler(threading.Thread):
             ws_vars.MicroState.rem_i_states[0]['pinza_descargadora_abierta']        # pinza_descargadora_abierta
         ]
         print(init_flags)
-        if False in init_flags:
-            return
+
         ws_vars.MicroState.position_values = []
         ws_vars.MicroState.torque_values = []
         ws_vars.MicroState.graph_flag = True
+        
+        if False in init_flags:
+            return
+        
         # Paso 0.1 - expandir_horiz_pinza_desc
         key = 'expandir_horiz_pinza_desc'
         group = 1
@@ -651,6 +654,10 @@ class RoutineHandler(threading.Thread):
         print(init_flags)
         if False in init_flags:
             return False
+        
+        ws_vars.MicroState.position_values = []
+        ws_vars.MicroState.torque_values = []
+        ws_vars.MicroState.graph_flag = True
 
         # Paso 1 - Acopla lubricante
         key = 'expandir_acople_lubric'

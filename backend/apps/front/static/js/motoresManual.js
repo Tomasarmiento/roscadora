@@ -36,6 +36,7 @@ document.addEventListener("DOMContentLoaded", (e) => {
 
     socket.onmessage = function (event) {
         const datosWs = JSON.parse(event.data);
+        
 
         if (datosWs) {
             
@@ -77,6 +78,8 @@ document.addEventListener("DOMContentLoaded", (e) => {
             datosWs.sync_on_avance == true
                 ? (syncHusillo.className = "box box-green")
                 : (syncHusillo.className = "box box-grey");
+
+                console.log(datosWs);
         }
     }
 
