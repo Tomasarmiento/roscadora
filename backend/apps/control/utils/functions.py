@@ -286,7 +286,7 @@ def update_states(micro_data):
     update_data_flags(micro_data)
     update_axis_data(micro_data)
     update_graph()
-    check_timeouts()
+    # check_timeouts()
     update_front_states()           # Should always be called at the end
 
 

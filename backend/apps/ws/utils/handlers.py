@@ -17,7 +17,7 @@ def send_message(header, ch_info=None, data=None):        # Converts msg to byte
             'bytes_data': msg
         }
         if ch_info:
-            ch_info.name
+            ch_name = ch_info.name
         else:
             ch_name = back_channel_name
         async_to_sync(ch_layer.send)(
