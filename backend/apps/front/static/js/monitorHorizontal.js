@@ -28,6 +28,58 @@ window.addEventListener("DOMContentLoaded", () => {                         //to
     monitor = document.querySelector("#component-monitor");
     monitorHorizontal = document.querySelector("#component-monitor-horizontal");
 });
+window.onload = function() {
+   
+
+    //Configuration variables
+    var updateInterval = 20 //in ms
+    var numberElements = 200;
+
+    //Globals
+    var updateCount = 0;
+
+    // Chart Objects
+    var xAccelChart = $("#xAccelChart");
+    //chart instances & configuration
+
+    var commonOptions = {
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero:true
+                }
+            }],
+            yAxes: [{
+                ticks: {
+                    beginAtZero:true
+                }
+            }]
+        },
+        legend: {display: false},
+        tooltips:{
+          enabled: false
+        }
+    };
+    var xAccelChartInstance = new Chart(xAccelChart, {
+        type: 'line',
+        data: {
+            datasets: [{
+                label: "X Acceleration",
+                data: 0,
+                fill: false,
+                borderColor: '#343e9a',
+                borderWidth: 1
+            }]
+        },
+        options: Object.assign({}, commonOptions, {
+          title:{
+            display: true,
+            text: "Acceleration - X",
+            fontSize: 18
+          }
+        })
+    });
+
 
 socket.onmessage = function (event) {
   const datosWs = JSON.parse(event.data);
@@ -59,28 +111,22 @@ socket.onmessage = function (event) {
     posicionActualH.innerHTML = datosWs.avance_pos.toFixed(1);
     velocidadActualH.innerHTML = datosWs.avance_vel.toFixed(1);
 
-
-    
-    var ctx = document.getElementById("component-grafico-roscado").getContext('2d');
-    var myChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: ["Tokyo",	"Mumbai",	"Mexico City",	"Shanghai",	"Sao Paulo",	"New York",	"Karachi","Buenos Aires",	"Delhi","Moscow"],
-            datasets: [{
-                label: 'Series 1', // Name the series
-                data: [500,	50,	2424,	14040,	14141,	4111,	4544,	47,	5555, 6811], // Specify the data values array
-                fill: false,
-                borderColor: '#2196f3', // Add custom color border (Line)
-                backgroundColor: '#FFFFFF', // Add custom color background (Points and Fill)
-                borderWidth: 1 // Specify bar border width
-            }]},
-        options: {
-        responsive: true, // Instruct chart js to respond nicely.
-        maintainAspectRatio: false, // Add to prevent default behaviour of full-width/height 
+   
+        if(datosWs){
+            console.log('aca');
+          xAccelChartInstance.data.labels.push(datosWs.cabezal_pos);
+          xAccelChartInstance.data.datasets.forEach((dataset) =>{dataset.data.push(datosWs.cabezal_pos)});
+          if(updateCount > numberElements){
+            xAccelChartInstance.data.labels.shift();
+            xAccelChartInstance.data.datasets[0].data.shift();
+          }
+          else updateCount++;
+          xAccelChartInstance.update();
         }
-    });
+      
+        
     
-    
+   
     
 }
-}
+}}
