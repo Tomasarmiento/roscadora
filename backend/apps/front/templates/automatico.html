@@ -1,15 +1,18 @@
 {% extends 'indexNoData.html'%}
 {% load static %}
 {% block content %}
-
-
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.1"></script>
+	<script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8"></script>
+    <script src="../static/zoomplugin/chartjs-plugin-zoom.min.js"></script>
 <div id="accelContainer" class="container">
 
     <div id="xAccel" class="x">
 
+
       <canvas id="xAccelChart"></canvas>
     </div><!--xAccel-->
-    
+</div>   
+
 <div class="col-md-8 col-12 float-left mb-8 px-0">
 	<div class="col-md-9 my-2 py-1 d-flex justify-content-around" id="component-monitor-horizontal">
         {% include 'monitorHorizontal.component.html' %}

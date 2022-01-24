@@ -1,5 +1,3 @@
-
-
 var monitor = null;
 var monitorHorizontal = null;
 
@@ -30,7 +28,6 @@ window.addEventListener("DOMContentLoaded", () => {                         //to
 });
 window.onload = function() {
    
-
     //Configuration variables
     var updateInterval = 20 //in ms
     var numberElements = 200;
@@ -41,6 +38,8 @@ window.onload = function() {
     // Chart Objects
     var xAccelChart = $("#xAccelChart");
     //chart instances & configuration
+
+
 
     var commonOptions = {
         scales: {
@@ -58,8 +57,9 @@ window.onload = function() {
         legend: {display: false},
         tooltips:{
           enabled: false
-        }
+        },
     };
+    
     var xAccelChartInstance = new Chart(xAccelChart, {
         type: 'line',
         data: {
@@ -76,9 +76,31 @@ window.onload = function() {
             display: true,
             text: "Acceleration - X",
             fontSize: 18
-          }
-        })
+          },
+          
+        }),
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                zoom: {
+                    pan: {
+                        enabled: true,
+                        mode: 'xy',
+                        xScale0: {
+                            max: 1e4
+                        }
+                    },
+                    zoom: {
+                        enabled: true,
+                        mode: 'xy'
+                    }
+                }
+            }
+        },
+       
     });
+
 
 
 socket.onmessage = function (event) {
@@ -111,22 +133,17 @@ socket.onmessage = function (event) {
     posicionActualH.innerHTML = datosWs.avance_pos.toFixed(1);
     velocidadActualH.innerHTML = datosWs.avance_vel.toFixed(1);
 
-   
         if(datosWs){
-            console.log('aca');
-          xAccelChartInstance.data.labels.push(datosWs.cabezal_pos);
-          xAccelChartInstance.data.datasets.forEach((dataset) =>{dataset.data.push(datosWs.cabezal_pos)});
-          if(updateCount > numberElements){
+        xAccelChartInstance.data.labels.push(datosWs.husillo_rpm);
+        xAccelChartInstance.data.datasets.forEach((dataset) =>{dataset.data.push(datosWs.cabezal_pos)});
+        if(updateCount > numberElements){
             xAccelChartInstance.data.labels.shift();
             xAccelChartInstance.data.datasets[0].data.shift();
-          }
-          else updateCount++;
-          xAccelChartInstance.update();
+        }
+        else updateCount++;
+        xAccelChartInstance.update();
         }
       
         
-    
-   
-    
 }
 }}
