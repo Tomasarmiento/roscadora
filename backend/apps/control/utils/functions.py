@@ -41,7 +41,7 @@ def init_routine_info(routine_model):
     rtn_names = []
     for routine in routines:
         rtn_names.append(routine.name)
-    for rtn_name in ctrl_vars.ROUTINE_NAMES:
+    for rtn_name in ctrl_vars.ROUTINE_NAMES.values():
         if rtn_name not in rtn_names:
             routine_model.objects.create(name=rtn_name, running=0)
 
@@ -62,6 +62,34 @@ def get_running_routines(routine_model):
         if rtn.running == 1:
             running_routines.append(rtn.name)
     return running_routines
+
+
+def check_routine_allowed(routine_model, routine):
+    running_rtns = get_running_routines(routine_model)
+    homing_name = ctrl_vars.ROUTINE_NAMES[ctrl_vars.ROUTINE_IDS['cerado']]
+    cabezal_indexar = ctrl_vars.ROUTINE_NAMES[ctrl_vars.ROUTINE_IDS['cabezal_indexar']]
+    roscado = ctrl_vars.ROUTINE_NAMES[ctrl_vars.ROUTINE_IDS['roscado']]
+    routine_name = ctrl_vars.ROUTINE_NAMES[routine]
+
+    if running_rtns:
+
+        if homing_name in running_rtns:
+            print('Cerado en proceso')
+            return False
+
+        if cabezal_indexar in running_rtns:
+            print('indexado en proceso')
+            return False
+    
+        if routine_name == homing_name or routine_name in running_rtns:
+            print('Rutina en proceso')
+            return False
+    
+        if routine_name == cabezal_indexar and roscado in running_rtns:
+            print('Indexar prohibido: roscado en proceso')
+            return False
+    
+    return True
 
 
 # -------------------------------------------------------------------------------------------- #
@@ -105,7 +133,9 @@ def check_end_flags(flags_value):
     invalid_state_bit       = msg_app.AxisFlagsFin.FLGFIN_INVALID_STATE
     drv_not_enabled_bit     = msg_app.AxisFlagsFin.FLGFIN_DRV_NOT_ENABLED
     axis_disabled_bit       = msg_app.AxisFlagsFin.FLGFIN_AXIS_DISABLED
+
     end_states = []
+
     if flags_value & ok_bit == ok_bit:
         end_states = 'ok'
     else:

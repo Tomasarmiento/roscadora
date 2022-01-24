@@ -26,8 +26,9 @@ class RoutineHandler(threading.Thread):
         super(RoutineHandler, self).__init__(**kwargs)
         self._stop_event = threading.Event()
         self.wait_time = 0.05
+        self.err_msg = []
     
-    
+
     def run(self):
         routine = self.current_routine
         if routine:
@@ -36,6 +37,19 @@ class RoutineHandler(threading.Thread):
             start_time = datetime.now()
             pos = round(ws_vars.MicroState.axis_measures[ctrl_vars.AXIS_IDS['carga']]['pos_fil'], 0)
             
+            try:
+                routine_info = RoutineInfo.objects.get(name=ctrl_vars.ROUTINE_NAMES[routine])
+            except RoutineInfo.DoesNotExist:
+                print('ID de rutina inválido')
+                return False
+
+            if routine_info.running == 1:
+                print('Rutina en proceso')
+                return False
+            
+            routine_info.running = 1
+            routine_info.save()
+
             if routine == ctrl_vars.ROUTINE_IDS['cerado']:
                 print('CERADO')
                 routine_ok = self.routine_homing()
@@ -72,6 +86,10 @@ class RoutineHandler(threading.Thread):
                 return True
             else:
                 print('ROUTINE ERR')
+                routine_info.running = 0
+                routine_info.save()
+                for msg in self.err_msg:
+                    print(msg)
                 return False
         else:
             print('Rutine no especificada')
@@ -168,7 +186,7 @@ class RoutineHandler(threading.Thread):
         print(init_flags)
         if False in init_flags:
             return
-        
+
         # Paso 1 - Expandir vertical carga
         key = 'expandir_vertical_carga'
         wait_key = 'vertical_carga_expandido'
@@ -348,7 +366,7 @@ class RoutineHandler(threading.Thread):
             return False
         print('Paso 16 - Expandir brazo cargador')
 
-        print('FIN RUTINA CARGA') 
+        print('FIN RUTINA CARGA')
         return True
 
 
@@ -1083,9 +1101,13 @@ class RoutineHandler(threading.Thread):
 
     def wait_for_remote_in_flag(self, flag_key, group):
         flag = ws_vars.MicroState.rem_i_states[group][flag_key]
-        while not flag:     # Verifica que el flag está en HIGH
+        timer = 0
+        stop_flags_ok = self.check_stop_flags(timeout=ctrl_vars.TIMEOUT_PNEUMATIC)
+        while not flag and stop_flags_ok:     # Verifica que el flag está en HIGH
             flag = ws_vars.MicroState.rem_i_states[group][flag_key]
             time.sleep(self.wait_time)
+            stop_flags_ok = self.check_stop_flags(timer=timer, timeout=ctrl_vars.TIMEOUT_PNEUMATIC)
+            timer += self.wait_time
         if not flag:
             return False
         return True
@@ -1093,9 +1115,13 @@ class RoutineHandler(threading.Thread):
 
     def wait_for_not_remote_in_flag(self, flag_key, group):
         flag = ws_vars.MicroState.rem_i_states[group][flag_key]
-        while flag:     # Verifica que el flag está en LOW
+        timer = 0
+        stop_flags_ok = self.check_stop_flags(timeout=ctrl_vars.TIMEOUT_PNEUMATIC)
+        while flag and stop_flags_ok:     # Verifica que el flag está en LOW
             flag = ws_vars.MicroState.rem_i_states[group][flag_key]
             time.sleep(self.wait_time)
+            timer += self.wait_time
+            stop_flags_ok = self.check_stop_flags(timer=timer, timeout=ctrl_vars.TIMEOUT_PNEUMATIC)
         if flag:
             return False
         return True
@@ -1103,9 +1129,17 @@ class RoutineHandler(threading.Thread):
 
     def wait_for_axis_state(self, target_state, axis):
         current_state_value = ws_vars.MicroState.axis_flags[axis]['maq_est_val']
-        while current_state_value != target_state:
+        timer = 0
+        timeout = ctrl_vars.TIMEOUT_STATE_CHANGE
+        err_msg='cambio de estado de eje'
+        stop_flags_ok = self.check_stop_flags(err_msg=err_msg, timeout=timeout, axis=axis)
+        
+        while current_state_value != target_state and stop_flags_ok:
             current_state_value = ws_vars.MicroState.axis_flags[axis]['maq_est_val']
             time.sleep(self.wait_time)
+            timer += self.wait_time
+            stop_flags_ok = self.check_stop_flags(err_msg=err_msg, timer=timer, timeout=timeout, axis=axis)
+
         if current_state_value != target_state:
             return False
         return True
@@ -1136,9 +1170,16 @@ class RoutineHandler(threading.Thread):
         
         pos = ws_vars.MicroState.axis_measures[axis]['pos_fil']
         print("POS:", pos)
-        while not (pos >= nex_step - 1 and pos <= nex_step + 1):
+        timer = 0
+        stop_flags_ok = self.check_stop_flags(err_msg='indexado', timeout=ctrl_vars.TIMEOUT_LOAD, axis=axis)
+        while not (pos >= nex_step - 1 and pos <= nex_step + 1) and stop_flags_ok:
             pos = ws_vars.MicroState.axis_measures[axis]['pos_fil']
             time.sleep(self.wait_time)
+            timer += self.wait_time
+            stop_flags_ok = self.check_stop_flags(err_msg='indexado', timer=timer, timeout=ctrl_vars.TIMEOUT_LOAD, axis=axis)
+
+        if stop_flags_ok == False:
+            return False
 
         return self.wait_for_axis_state(msg_app.StateMachine.EST_INITIAL, axis)
 
@@ -1146,10 +1187,18 @@ class RoutineHandler(threading.Thread):
     def wait_for_lineal_mov(self, target_pos):
         axis = ctrl_vars.AXIS_IDS['avance']
         current_pos = ws_vars.MicroState.axis_measures[axis]['pos_fil']
-        while not (current_pos >= target_pos - 0.1 and current_pos <= target_pos + 0.1):
+        timer = 0
+        stop_flags_ok = self.check_stop_flags(err_msg='movimiento lineal', timeout=ctrl_vars.TIMEOUT_LINEAL, axis=axis)
+        
+        while not (current_pos >= target_pos - 0.1 and current_pos <= target_pos + 0.1) and stop_flags_ok:
             current_pos = ws_vars.MicroState.axis_measures[axis]['pos_fil']
             time.sleep(self.wait_time)
+            timer += self.wait_time
+            stop_flags_ok = self.check_stop_flags(err_msg='movimiento lineal', timeout=ctrl_vars.TIMEOUT_LINEAL, axis=axis)
 
+        if stop_flags_ok == False:
+            return False
+        
         return self.wait_for_axis_state(msg_app.StateMachine.EST_INITIAL, axis)
 
 
@@ -1203,7 +1252,7 @@ class RoutineHandler(threading.Thread):
         return False
 
 
-    def mov_to_pos_lineal(self, target_pos, ref_rate=ctrl_vars.ROSCADO_CONSTANTES['velocidad_en_vacio']):
+    def mov_to_pos_lineal(self, target_pos, ref_rate=ctrl_vars.ROSCADO_CONSTANTES['velocidad_en_vacio']):   # Sends cmd to move to target position on lineal axis
         axis = ctrl_vars.AXIS_IDS['avance']
         command = Commands.mov_to_pos
         msg_id = self.get_message_id()
@@ -1224,12 +1273,44 @@ class RoutineHandler(threading.Thread):
 
     def wait_for_drv_flag(self, flag, axis, flag_value):
         drv_flags = ws_vars.MicroState.axis_flags[axis]['drv_flags']
-        while drv_flags & flag != flag_value:
+        timer = 0
+        stop_flags_ok = self.check_stop_flags(timeout=ctrl_vars.TIMEOUT_STATE_CHANGE)
+        while drv_flags & flag != flag_value and stop_flags_ok == True:
             drv_flags = ws_vars.MicroState.axis_flags[axis]['drv_flags']
             time.sleep(self.wait_time)
+            stop_flags_ok = self.check_stop_flags(timer=timer, timeout=ctrl_vars.TIMEOUT_STATE_CHANGE)
         if drv_flags & flag != flag_value:
             return False
         return True
+
+
+    def check_stop_flags(self, err_msg='', timer=0, timeout=ctrl_vars.TIMEOUT_GENERAL, axis=None):
+        msg = ''
+
+        if timer >= timeout:
+            msg = 'Timeout'
+            if err_msg:
+                msg += ' en ' + err_msg
+            self.err_msg.append(msg)
+            return False
+
+        if axis or axis == 0:
+            if ws_vars.MicroState.axis_flags[axis]['em_stop']:
+                msg = 'Parada de emergencia (eje)'
+                if err_msg:
+                    msg += ' en ' + err_msg
+                self.err_msg.append(msg)
+                return False
+        
+        if ws_vars.MicroState.micro_flags['em_stop'] == True:
+            msg = 'Parada de emergencia (general)'
+            if err_msg:
+                msg += ' en ' + err_msg
+            self.err_msg.append(msg)
+            return False
+
+        return True
+
 
     def stopped(self):
         return self._stop_event.it_set()

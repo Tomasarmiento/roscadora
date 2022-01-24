@@ -18,6 +18,7 @@ from apps.control.utils.variables import COMMAND_DEFAULT_VALUES
 from apps.control.utils.routines import RoutineHandler
 from apps.control.utils import variables as ctrl_vars
 from apps.control.utils import functions as ctrl_func
+from apps.control.models import RoutineInfo
 
 
 @csrf_exempt
@@ -210,7 +211,10 @@ def start_routine(request):
 def semiauto(request):
     post_req = request.POST
     routine = int(post_req['routine'])
-    RoutineHandler(routine).start()
+
+    if ctrl_func.check_routine_allowed(RoutineInfo, routine):
+        RoutineHandler(routine).start()
+    
     return JsonResponse({})
 
 

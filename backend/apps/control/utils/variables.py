@@ -27,12 +27,13 @@ ROUTINE_IDS = {
     'roscado':  5
 }
 
-ROUTINE_NAMES = [
-    'cerado',
-    'carga',
-    'descarga',
-    'roscado'
-]
+ROUTINE_NAMES = {
+    ROUTINE_IDS['cerado']: 'cerado',
+    ROUTINE_IDS['carga']: 'carga',
+    ROUTINE_IDS['descarga']: 'descarga',
+    ROUTINE_IDS['roscado']: 'roscado',
+    ROUTINE_IDS['cabezal_indexar']: 'cabezal_indexar'
+}
 
 ROSCADO_CONSTANTES = {
     'posicion_de_aproximacion': -20,
@@ -106,6 +107,13 @@ BOQUILLA_ROSCADO = {
 # -------------------------------------------------------------------------------------------- #
 # --------------------------------- Remote/Local outputs ------------------------------------- #
 # -------------------------------------------------------------------------------------------- #
+
+TIMEOUT_GENERAL         = 10
+TIMEOUT_PNEUMATIC       = 20
+TIMEOUT_LOAD            = 10
+TIMEOUT_LINEAL          = 30
+TIMEOUT_STATE_CHANGE    = 5
+
 
 LOC_DI_STATES = {}
 

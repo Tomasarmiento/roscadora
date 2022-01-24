@@ -22,6 +22,8 @@ class MicroState:
     # Flags
     micro_flags     = {}            # Flags on the data part of the rx message
     axis_flags      = [{}, {}, {}]  # Indexes corresponds with axis index
+    stopped         = False         # Raised when command/movemnt is interrupted
+    stop_messages   = []            # Describes stop cause
 
     # Measurements
     axis_measures  = [{}, {}, {}]
