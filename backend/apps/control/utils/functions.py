@@ -264,6 +264,7 @@ def update_states(micro_data):
 
 def get_front_states():
     data = {
+        # Measures
         'husillo_rpm': ws_vars.MicroState.axis_measures[ctrl_vars.AXIS_IDS['giro']]['vel_fil'],
         'husillo_torque': ws_vars.MicroState.axis_measures[ctrl_vars.AXIS_IDS['giro']]['torque_fil'],
 
@@ -273,9 +274,14 @@ def get_front_states():
         'avance_pos': ws_vars.MicroState.axis_measures[ctrl_vars.AXIS_IDS['avance']]['pos_fil'],
         'avance_vel': ws_vars.MicroState.axis_measures[ctrl_vars.AXIS_IDS['avance']]['vel_fil'],
 
+        # Axis states
         'lineal_enable': ws_vars.MicroState.axis_flags[ctrl_vars.AXIS_IDS['avance']]['estado'] == 'initial',
         'cabezal_enable': ws_vars.MicroState.axis_flags[ctrl_vars.AXIS_IDS['carga']]['estado'] == 'initial',
         'husillo_enable': ws_vars.MicroState.axis_flags[ctrl_vars.AXIS_IDS['giro']]['estado'] == 'initial',
+
+        'lineal_cero_desconocido': ws_vars.MicroState.axis_flags[ctrl_vars.AXIS_IDS['avance']]['cero_desconocido'],
+        'cabezal_cero_desconocido': ws_vars.MicroState.axis_flags[ctrl_vars.AXIS_IDS['carga']]['cero_desconocido'],
+        'husillo_cero_desconocido': ws_vars.MicroState.axis_flags[ctrl_vars.AXIS_IDS['giro']]['cero_desconocido'],
 
         'remote_inputs': ws_vars.MicroState.rem_i_states,
         'remote_outputs': ws_vars.MicroState.rem_o_states,
