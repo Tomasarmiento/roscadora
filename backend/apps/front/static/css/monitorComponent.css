@@ -23,6 +23,10 @@
   .bg-c-pink {
     background: linear-gradient(45deg, #ff5370, #ff869a);
   }
+
+  .bg-c-skyblue {
+    background: linear-gradient( #00aeef, #525050);
+  }
   
   .bg-c-blue {
     background: linear-gradient(45deg, #4099ff, #73b4ff);

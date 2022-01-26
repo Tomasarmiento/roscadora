@@ -195,8 +195,8 @@ socket.onmessage = function (event) {
       xAccelChartInstance.data.labels.push(datosWs.husillo_torque.toFixed(1));
       xAccelChartInstance.data.datasets.forEach((dataset) =>{dataset.data.push(datosWs.avance_pos.toFixed(1))});
       if(updateCount > numberElements){
-        xAccelChartInstance.data.labels.shift();
-        xAccelChartInstance.data.datasets[0].data.shift();
+        xAccelChartInstance.data.labels;
+        xAccelChartInstance.data.datasets[0].data;
       }
       else updateCount++;
       xAccelChartInstance.update();
