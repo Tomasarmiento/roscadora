@@ -22,21 +22,22 @@
   
 <div id="accelContainer" class="container">
      <!-- <button onclick="resetZoomChart()">Reset Zoom</button> -->
-    <button id="resetZoom">Reset Zoom</button>
-    <div id="xAccel" class="x">
-      <canvas id="xAccelChart"></canvas>
-    </div><!--xAccel-->
-</div> 
-
-
-
-
-
-<div class="col-md-8 col-12 float-left mb-8 px-0">
-	<div class="col-md-9 my-2 py-1 d-flex justify-content-around" id="component-monitor-horizontal">
-        {% include 'monitorHorizontal.component.html' %}
-    </div>
-	<div class="col-12 mb-3 d-inline-flex">
+     <div id="xAccel" class="x">
+         <canvas id="xAccelChart"></canvas>
+        </div><!--xAccel-->
+    </div> 
+    
+    
+    
+    <div id="resetZoomDiv" class="container">
+        <button type="button" class=" btn-primary btn-lg mb-3" style="float: right;" id="resetZoom">Reset</button>
+    </div> 
+    <div class="col-md-8 col-12 float-left mb-8 px-0">
+        <div class="col-md-9 my-2 py-1 d-flex justify-content-around" id="component-monitor-horizontal">
+            {% include 'monitorHorizontal.component.html' %}
+            
+        </div>
+        <div class="col-12 mb-3 d-inline-flex">
 		<div class="card p-1 mb-3">
             <form action="{% url 'parameters-update' %}" method="post" id="id={{3}}">
                 {% csrf_token%}

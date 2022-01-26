@@ -49,7 +49,7 @@ window.onload = function() {
     //chart instances & configuration
 
 
-    const btnContainer = document.querySelector("#accelContainer");
+    const btnContainer = document.querySelector("#resetZoomDiv");
    
 
 
@@ -77,18 +77,18 @@ window.onload = function() {
         type: 'line',
         data: {
             datasets: [{
-                label: "X Acceleration",
+                label: "cabezal_pos",
                 data: 0,
                 fill: false,
-                borderColor: '#00FFFF',
-                backgroundColor: '#ffffff73',
-                borderWidth: 1
+                borderColor: '#00aeef',
+                backgroundColor: 'blue',
+                borderWidth: 2
             }]
         },
         options: Object.assign({}, commonOptions, {
           title:{
             display: true,
-            text: "Acceleration - X",
+            text: "cabezal_pos",
             fontSize: 18,
             backgroundColor: '#ffffff73',
           },
@@ -191,8 +191,8 @@ socket.onmessage = function (event) {
     velocidadActualH.innerHTML = datosWs.avance_vel.toFixed(1);
 
         if(datosWs){
-        xAccelChartInstance.data.labels.push(datosWs.husillo_rpm);
-        xAccelChartInstance.data.datasets.forEach((dataset) =>{dataset.data.push(datosWs.cabezal_pos)});
+        xAccelChartInstance.data.labels.push(datosWs.husillo_rpm).toFixed(2);
+        xAccelChartInstance.data.datasets.forEach((dataset) =>{dataset.data.push(datosWs.cabezal_pos).toFixed(2)});
         if(updateCount > numberElements){
             xAccelChartInstance.data.labels.shift();
             xAccelChartInstance.data.datasets[0].data.shift();
