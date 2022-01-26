@@ -35,8 +35,6 @@ const totalDuration = 10000;
 
 window.onload = function() {
 
-   
-
     //Configuration variables
     var updateInterval = 20 //in ms
     var numberElements = 200;
@@ -48,26 +46,23 @@ window.onload = function() {
     var xAccelChart = $("#xAccelChart");
     //chart instances & configuration
 
-
     const btnContainer = document.querySelector("#resetZoomDiv");
    
-
-
     var commonOptions = {
         scales: {
             yAxes: [{
                 ticks: {
                     beginAtZero:true
-                }
+                },
             }],
-            yAxes: [{
+            xAxes: [{
                 ticks: {
                     beginAtZero:true
                 }
             }]
         },
         backgroundColor: '#ffffff73',
-        legend: {display: false},
+        legend: {display: true},
         tooltips:{
           enabled: false
         },
@@ -79,6 +74,7 @@ window.onload = function() {
             datasets: [{
                 label: "cabezal_pos",
                 data: 0,
+                pointRadius: 1,
                 fill: false,
                 borderColor: '#00aeef',
                 backgroundColor: 'blue',
@@ -92,21 +88,36 @@ window.onload = function() {
             fontSize: 18,
             backgroundColor: '#ffffff73',
           },
-          
         }),
         options: {
+            scales: {
+                yAxes: [{
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Torque'
+                    },   
+                }],
+                xAxes: [{
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Posición'
+                    },
+                }],
+               
+            },
             responsive: true,
+            
             maintainAspectRatio: false,
             backgroundColor: '#ffffff73',
             plugins: {
-                legend: false,
+                legend:  false,
                 zoom: {
                     pan: {
                         enabled: true,
                         mode: 'xy',
                         xScale0: {
                             max: 1e4
-                        }
+                        }, 
                     },
                     zoom: {
                         enabled: true,
@@ -115,7 +126,6 @@ window.onload = function() {
                     pinch: {
                         enabled: true,
                     },
-                    legend: false,
                 }
             },
             animation:{
@@ -191,7 +201,7 @@ socket.onmessage = function (event) {
     velocidadActualH.innerHTML = datosWs.avance_vel.toFixed(1);
 
         if(datosWs){
-        xAccelChartInstance.data.labels.push(datosWs.husillo_rpm).toFixed(2);
+        xAccelChartInstance.data.labels.push(datosWs.husillo_torque).toFixed(2);
         xAccelChartInstance.data.datasets.forEach((dataset) =>{dataset.data.push(datosWs.cabezal_pos).toFixed(2)});
         if(updateCount > numberElements){
             xAccelChartInstance.data.labels.shift();
