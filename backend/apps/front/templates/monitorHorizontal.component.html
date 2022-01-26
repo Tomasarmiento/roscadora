@@ -1,13 +1,23 @@
 {% load static %}
 {% block content %}
-<script src="https://code.highcharts.com/highcharts.js"></script>
-<script src="https://code.highcharts.com/modules/series-label.js"></script>
-<script src="https://code.highcharts.com/modules/exporting.js"></script>
-<script src="https://code.highcharts.com/modules/export-data.js"></script>
-<script src="https://code.highcharts.com/modules/accessibility.js"></script>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.1/jquery.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>
+
+<head>
+	<script src="{% static 'js/monitorHorizontal.js' %}"></script>
+</head>
+<body>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.1"></script>
+	<script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8"></script>
+	<script src="../static/zoomplugin/chartjs-plugin-zoom.min.js"></script>
+	
+	<!-- <pre id="selected"></pre>
+    <script type="module">
+  	import ChartJSEnhancements from '../static/zoomplugin/ChartJSEnhancements.min.js';
+  	document.getElementById('resetZoom').addEventListener('click', () => { tools.resetZoom(); });
+    </script> -->
+
+</body>
+
 
 
 <TABLE FRAME="border" RULES="none" BORDER=5 class="card bg-c-grey text-white py-1" width="300" height="60">

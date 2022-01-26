@@ -1,5 +1,4 @@
-
-
+var data = []
 var monitor = null;
 var monitorHorizontal = null;
 
@@ -28,7 +27,14 @@ window.addEventListener("DOMContentLoaded", () => {                         //to
     monitor = document.querySelector("#component-monitor");
     monitorHorizontal = document.querySelector("#component-monitor-horizontal");
 });
+const totalDuration = 10000;
+    const delayBetweenPoints = totalDuration / data.length;
+    const previousY = (ctx) => ctx.index === 0 
+    ? ctx.chart.scales.y.getPixelForValue(100) 
+    : ctx.chart.getDatasetMeta(ctx.datasetIndex).data[ctx.index - 1].getProps(['y'], true).y;
+
 window.onload = function() {
+
    
 
     //Configuration variables
@@ -41,6 +47,11 @@ window.onload = function() {
     // Chart Objects
     var xAccelChart = $("#xAccelChart");
     //chart instances & configuration
+
+
+    const btnContainer = document.querySelector("#resetZoomDiv");
+   
+
 
     var commonOptions = {
         scales: {
@@ -55,32 +66,100 @@ window.onload = function() {
                 }
             }]
         },
+        backgroundColor: '#ffffff73',
         legend: {display: false},
         tooltips:{
           enabled: false
-        }
+        },
     };
+    
     var xAccelChartInstance = new Chart(xAccelChart, {
         type: 'line',
         data: {
             datasets: [{
-                label: "X Acceleration",
+                label: "cabezal_pos",
                 data: 0,
                 fill: false,
-                borderColor: '#343e9a',
-                borderWidth: 1
+                borderColor: '#00aeef',
+                backgroundColor: 'blue',
+                borderWidth: 2
             }]
         },
         options: Object.assign({}, commonOptions, {
           title:{
             display: true,
-            text: "Acceleration - X",
-            fontSize: 18
-          }
-        })
+            text: "cabezal_pos",
+            fontSize: 18,
+            backgroundColor: '#ffffff73',
+          },
+          
+        }),
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            backgroundColor: '#ffffff73',
+            plugins: {
+                legend: false,
+                zoom: {
+                    pan: {
+                        enabled: true,
+                        mode: 'xy',
+                        xScale0: {
+                            max: 1e4
+                        }
+                    },
+                    zoom: {
+                        enabled: true,
+                        mode: 'xy'
+                    },
+                    pinch: {
+                        enabled: true,
+                    },
+                    legend: false,
+                }
+            },
+            animation:{
+                x: {
+                    type: 'number',
+                    easing: 'linear',
+                    duration: delayBetweenPoints,
+                    from: NaN, // the point is initially skipped
+                    delay(ctx) {
+                    if (ctx.type !== 'data' || ctx.xStarted) {
+                        return 0;
+                    }
+                    ctx.xStarted = true;
+                    return ctx.index * delayBetweenPoints;
+                    }
+                },
+                y: {
+                    type: 'number',
+                    easing: 'linear',
+                    duration: delayBetweenPoints,
+                    from: previousY,
+                    delay(ctx) {
+                    if (ctx.type !== 'data' || ctx.yStarted) {
+                        return 0;
+                    }
+                    ctx.yStarted = true;
+                    return ctx.index * delayBetweenPoints;
+                    }
+                }
+            },
+        }
     });
+   
 
-
+    
+   
+    btnContainer.addEventListener("click", (e) => {
+    switch (e.target.id) {
+      case "resetZoom":
+        xAccelChartInstance.resetZoom()
+    break;
+    }
+    }); 
+    
 socket.onmessage = function (event) {
   const datosWs = JSON.parse(event.data);
   console.log(datosWs);

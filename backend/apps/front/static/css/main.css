@@ -509,3 +509,10 @@ body {
     margin-left: 100px;
     height: 75px;
   }
+
+  .x{
+    flex:3;
+    text-align: center;
+    background-color: rgba(0, 0, 0, 0.73);
+    margin: 10px;
+  }

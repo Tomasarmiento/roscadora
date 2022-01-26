@@ -1,20 +1,43 @@
 {% extends 'indexNoData.html'%}
 {% load static %}
 {% block content %}
+<head>
+ <script src="{% static 'js/monitorHorizontal.js' %}"></script>
+    <style>
+		canvas {
+			user-select: none;
+			-moz-user-select: none;
+			-webkit-user-select: none;
+			-ms-user-select: none;
+		}
+		body {
+			overflow-y: scroll;
+		}
+		</style>
+</head>
 
 
+
+<body>
+  
 <div id="accelContainer" class="container">
-
-    <div id="xAccel" class="x">
-
-      <canvas id="xAccelChart"></canvas>
-    </div><!--xAccel-->
+     <!-- <button onclick="resetZoomChart()">Reset Zoom</button> -->
+     <div id="xAccel" class="x">
+         <canvas id="xAccelChart"></canvas>
+        </div><!--xAccel-->
+    </div> 
     
-<div class="col-md-8 col-12 float-left mb-8 px-0">
-	<div class="col-md-9 my-2 py-1 d-flex justify-content-around" id="component-monitor-horizontal">
-        {% include 'monitorHorizontal.component.html' %}
-    </div>
-	<div class="col-12 mb-3 d-inline-flex">
+    
+    
+    <div id="resetZoomDiv" class="container">
+        <button type="button" class=" btn-primary btn-lg mb-3" style="float: right;" id="resetZoom">Reset</button>
+    </div> 
+    <div class="col-md-8 col-12 float-left mb-8 px-0">
+        <div class="col-md-9 my-2 py-1 d-flex justify-content-around" id="component-monitor-horizontal">
+            {% include 'monitorHorizontal.component.html' %}
+            
+        </div>
+        <div class="col-12 mb-3 d-inline-flex">
 		<div class="card p-1 mb-3">
             <form action="{% url 'parameters-update' %}" method="post" id="id={{3}}">
                 {% csrf_token%}
@@ -124,9 +147,9 @@
 	
 	
 </div>
-<script src="{% static 'js/monitorHorizontal.js' %}"></script>
 <script src="{% static 'js/automatico.js' %}"></script>
 <script src="{% static 'js/stopAll.js' %}"></script>
+</body>
 {% endblock %}
  
 <!--<div class="col-md-4 mb-2 float-left justify-content-around px-1">
