@@ -74,7 +74,7 @@ window.onload = function() {
             datasets: [{
                 label: "cabezal_pos",
                 data: 0,
-                pointRadius: 1,
+                pointRadius: 0.5,
                 fill: false,
                 borderColor: '#00aeef',
                 backgroundColor: 'blue',
@@ -202,8 +202,8 @@ socket.onmessage = function (event) {
 
    
     if (datosWs.graph_flag == true) {
-      xAccelChartInstance.data.labels.push(datosWs.husillo_torque.toFixed(1));
-      xAccelChartInstance.data.datasets.forEach((dataset) =>{dataset.data.push(datosWs.avance_pos.toFixed(1))});
+      xAccelChartInstance.data.labels.push(datosWs.avance_pos.toFixed(1));
+      xAccelChartInstance.data.datasets.forEach((dataset) =>{dataset.data.push(datosWs.husillo_torque.toFixed(1))});
       if(updateCount > numberElements){
         xAccelChartInstance.data.labels;
         xAccelChartInstance.data.datasets[0].data;

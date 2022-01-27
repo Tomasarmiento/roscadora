@@ -227,11 +227,11 @@ socket.onmessage = function (event) {
           : (boquilla3Abre.className = "led led-green");
 
           //Acopla Soluble
-          datosWs.remote_inputs[1].acople_lubric_expandido == true
+          datosWs.remote_inputs[1].acople_lubric_expandido == false
           ? (acoplaSolubleSi.className = "led led-grey")
           : (acoplaSolubleSi.className = "led led-green");
 
-          datosWs.remote_inputs[1].acople_lubric_contraido == true
+          datosWs.remote_inputs[1].acople_lubric_contraido == false
           ? (acoplaSolubleNo.className = "led led-grey")
           : (acoplaSolubleNo.className = "led led-green");
 

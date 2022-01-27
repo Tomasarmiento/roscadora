@@ -1,3 +1,4 @@
+from asyncio import sleep
 import threading
 import time
 from datetime import datetime
@@ -760,6 +761,7 @@ class RoutineHandler(threading.Thread):
         axis = ctrl_vars.AXIS_IDS['avance']
         command = Commands.mov_to_pos
         msg_id = self.get_message_id()
+        time.sleep(1)  #timer TS
         ref = ctrl_vars.ROSCADO_CONSTANTES['posicion_final_de_roscado']
         header, data = build_msg(
             command,

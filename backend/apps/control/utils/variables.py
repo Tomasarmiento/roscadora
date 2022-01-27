@@ -46,9 +46,11 @@ ROUTINE_NAMES = [
 ]
 
 ROSCADO_CONSTANTES = {
-    'posicion_de_aproximacion': -20,
+   #'posicion_de_aproximacion': -20,
+    'posicion_de_aproximacion': -35,
     'velocidad_en_vacio': 10,
-    'posicion_final_de_roscado': -110,
+    #'posicion_final_de_roscado': -110,
+    'posicion_final_de_roscado': -195,
     'velocidad_de_roscado': 4,
     'posicion_salida_de_roscado': -20,
     'velocidad_de_retraccion': 10,

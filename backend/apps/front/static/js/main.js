@@ -43,6 +43,15 @@ socket.onmessage = function (event) {
   const posicionActualH = document.querySelector("#posHorizontal");
   const velocidadActualH = document.querySelector("#velHorizontal");
 
+  //Descarga
+  const descarga = document.querySelector("#statusDownloader");
+  //Carga
+  const carga = document.querySelector("#statusLoader");
+  //Indexar
+  const indexar = document.querySelector("#statusIndex");
+  //Roscado
+  const roscado = document.querySelector("#statusRoscado")
+
   if (datosWs) {
     //Monitor
     rpmActual.innerHTML = datosWs.husillo_rpm.toFixed(1);
@@ -54,8 +63,56 @@ socket.onmessage = function (event) {
     posicionActualH.innerHTML = datosWs.avance_pos.toFixed(1);
     velocidadActualH.innerHTML = datosWs.avance_vel.toFixed(1);
 
-  
+
+
+    //descarga
+    datosWs.remote_outputs[1].encender_bomba_hidraulica == true 
+     && datosWs.remote_inputs[1].clampeo_plato_expandido == true
+     && datosWs.remote_inputs[0].puntera_descarga_contraida == true
+     && datosWs.remote_inputs[0].brazo_descarga_expandido == true
+     && datosWs.remote_inputs[0].boquilla_descarga_expandida == true
+     && datosWs.remote_inputs[1].cupla_por_tobogan_descarga == true
+     && datosWs.remote_inputs[1].pieza_en_boquilla_descarga == true
+     && datosWs.remote_inputs[1].horiz_pinza_desc_contraido == true
+     && datosWs.remote_inputs[1].vert_pinza_desc_contraido == true
+     && datosWs.remote_inputs[0].pinza_descargadora_abierta == true && datosWs.remote_inputs[0].pinza_descargadora_cerrada == false
+    ? (descarga.className = "bg-success indicadorMon")
+    : (descarga.className = "bg-secondary indicadorMon");
+
+
+    //carga
+    datosWs.remote_outputs[1].encender_bomba_hidraulica == true
+     && datosWs.remote_inputs[1].clampeo_plato_expandido == true
+     && datosWs.remote_inputs[0].vertical_carga_contraido == true
+     && datosWs.remote_inputs[0].puntera_carga_expandida == false && datosWs.remote_inputs[0].puntera_carga_contraida == true
+     && datosWs.remote_inputs[0].brazo_cargador_expandido == true && datosWs.remote_inputs[0].brazo_cargador_contraido == false
+     && datosWs.remote_inputs[0].boquilla_carga_expandida == true
+     && datosWs.remote_inputs[1].presencia_cupla_en_cargador == true
+     && datosWs.remote_inputs[1].pieza_en_boquilla_carga == true
+    ? (carga.className = "bg-success indicadorMon")
+    : (carga.className = "bg-secondary indicadorMon");
+
+    //indexar
+    datosWs.remote_inputs[1].clampeo_plato_contraido == false && datosWs.remote_inputs[1].clampeo_plato_expandido == true
+     && datosWs.remote_inputs[1].acople_lubric_contraido == true
+     && datosWs.remote_inputs[0].puntera_descarga_expandida == false && datosWs.remote_inputs[0].puntera_descarga_contraida == true
+     && datosWs.remote_inputs[0].puntera_carga_expandida == false && datosWs.remote_inputs[0].puntera_carga_contraida == true
+     && datosWs.avance_pos.toFixed(1) >= '5'
+    ? (indexar.className = "bg-success indicadorMon")
+    : (indexar.className = "bg-secondary indicadorMon");
+
+
+    //roscado
+    datosWs.remote_outputs[1].encender_bomba_hidraulica == true
+     && datosWs.remote_inputs[1].clampeo_plato_contraido == false && datosWs.remote_inputs[1].clampeo_plato_expandido == true
+     && datosWs.estado_eje_avance == initial
+     ? (indexar.className = "bg-success indicadorMon")
+     : (indexar.className = "bg-secondary indicadorMon");
+     
+     
   }
+
+    
 }
 
 
