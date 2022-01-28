@@ -43,6 +43,11 @@ socket.onmessage = function (event) {
   const posicionActualH = document.querySelector("#posHorizontal");
   const velocidadActualH = document.querySelector("#velHorizontal");
 
+
+  //Cabezal
+  const cabezal = document.querySelector("#statusHead")
+  //Eje Lineal
+  const ejeLineal = document.querySelector("#statusLinealAxis")
   //Descarga
   const descarga = document.querySelector("#statusDownloader");
   //Carga
@@ -63,6 +68,25 @@ socket.onmessage = function (event) {
     posicionActualH.innerHTML = datosWs.avance_pos.toFixed(1);
     velocidadActualH.innerHTML = datosWs.avance_vel.toFixed(1);
 
+
+
+    //cabezal
+    datosWs.estado_eje_carga == 'initial'
+    ? (cabezal.className = "bg-success indicadorMon") && (cabezal.innerHTML = 'Cabezal <br/> Initial')
+    : (cabezal.className = "bg-secondary indicadorMon");
+
+    datosWs.estado_eje_carga == 'homing'
+    ? (cabezal.className = "bg-warning indicadorMon") && (cabezal.innerHTML = 'Cabezal <br/> Homming')
+    : (cabezal.className = "bg-secondary indicadorMon");
+
+    //eje lineal
+    datosWs.estado_eje_avance == 'initial'
+    ? (ejeLineal.className = "bg-success indicadorMon") && (ejeLineal.innerHTML = 'Eje lineal <br/> Initial')
+    : (ejeLineal.className = "bg-secondary indicadorMon");
+
+    datosWs.estado_eje_avance == 'homing'
+    ? (ejeLineal.className = "bg-warning indicadorMon") && (ejeLineal.innerHTML = 'Eje lineal <br/> Homming')
+    : (ejeLineal.className = "bg-secondary indicadorMon");
 
 
     //descarga
@@ -97,17 +121,19 @@ socket.onmessage = function (event) {
      && datosWs.remote_inputs[1].acople_lubric_contraido == true
      && datosWs.remote_inputs[0].puntera_descarga_expandida == false && datosWs.remote_inputs[0].puntera_descarga_contraida == true
      && datosWs.remote_inputs[0].puntera_carga_expandida == false && datosWs.remote_inputs[0].puntera_carga_contraida == true
-     && datosWs.avance_pos.toFixed(1) >= '5'
-    ? (indexar.className = "bg-success indicadorMon")
-    : (indexar.className = "bg-secondary indicadorMon");
+     && datosWs.avance_pos.toFixed(1) >= datosWs.posicion_de_inicio
+     ? (indexar.className = "bg-success indicadorMon")
+     : (indexar.className = "bg-secondary indicadorMon");
 
 
     //roscado
     datosWs.remote_outputs[1].encender_bomba_hidraulica == true
      && datosWs.remote_inputs[1].clampeo_plato_contraido == false && datosWs.remote_inputs[1].clampeo_plato_expandido == true
-     && datosWs.estado_eje_avance == initial
-     ? (indexar.className = "bg-success indicadorMon")
-     : (indexar.className = "bg-secondary indicadorMon");
+     && datosWs.estado_eje_avance == 'initial'
+     && datosWs.cabezal_enable == false
+     && datosWs.avance_pos.toFixed(1) == datosWs.posicion_de_inicio
+     ? (roscado.className = "bg-success indicadorMon")
+     : (roscado.className = "bg-secondary indicadorMon");
      
      
   }

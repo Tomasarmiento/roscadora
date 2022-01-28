@@ -321,7 +321,9 @@ def get_front_states():
 
         # 'graph': ws_vars.MicroState.graph_flag
         'graph': False,
-        'graph_flag': ws_vars.MicroState.graph_flag
+        'graph_flag': ws_vars.MicroState.graph_flag,
+
+        'posicion_de_inicio': ctrl_vars.ROSCADO_CONSTANTES['posicion_de_inicio']
     }
     return data
 

@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", (e) => {
 
     btn_roscado.addEventListener('click', (e) => {
         let routine = btn_roscado.getAttribute('rtn');
-        startRoutine(routine);
+        startRoutine(routine),removeData(chart);
     });
 
     btn_descarga.addEventListener('click', (e) => {
@@ -39,4 +39,12 @@ function startRoutine(routine){
     xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 
     xhr.send(params);
+}
+
+function removeData(chart) {
+    chart.data.labels.pop();
+    chart.data.datasets.forEach((dataset) => {
+        dataset.data.pop();
+    });
+    chart.update();
 }

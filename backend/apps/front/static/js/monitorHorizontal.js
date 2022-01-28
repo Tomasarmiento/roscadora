@@ -72,7 +72,7 @@ window.onload = function() {
         type: 'line',
         data: {
             datasets: [{
-                label: "cabezal_pos",
+                label: "Torque",
                 data: 0,
                 pointRadius: 0.5,
                 fill: false,
