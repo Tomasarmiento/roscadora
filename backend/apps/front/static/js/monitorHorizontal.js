@@ -45,6 +45,7 @@ window.onload = function() {
     // Chart Objects
     var xAccelChart = $("#xAccelChart");
     //chart instances & configuration
+    
 
     const btnContainer = document.querySelector("#resetZoomDiv");
    
@@ -102,6 +103,10 @@ window.onload = function() {
                         display: true,
                         labelString: 'Posición'
                     },
+                    type: 'time',
+                    time: {
+                            unit: 'minute'   
+                    }
                 }],
                
             },
@@ -126,6 +131,7 @@ window.onload = function() {
                     pinch: {
                         enabled: true,
                     },
+                    sensitivity:0.1,
                 }
             },
             animation:{
@@ -156,19 +162,20 @@ window.onload = function() {
                     }
                 }
             },
-        }
+        }   
     });
-   
-
+    
     
    
     btnContainer.addEventListener("click", (e) => {
     switch (e.target.id) {
       case "resetZoom":
         xAccelChartInstance.resetZoom()
+      case "destroy":
+        xAccelChartInstance.destroy();
     break;
     }
-    }); 
+    });
     
 socket.onmessage = function (event) {
   const datosWs = JSON.parse(event.data);
@@ -201,8 +208,8 @@ socket.onmessage = function (event) {
     velocidadActualH.innerHTML = datosWs.avance_vel.toFixed(1);
 
         if(datosWs){
-        xAccelChartInstance.data.labels.push(datosWs.husillo_torque).toFixed(2);
-        xAccelChartInstance.data.datasets.forEach((dataset) =>{dataset.data.push(datosWs.cabezal_pos).toFixed(2)});
+            xAccelChartInstance.data.labels.push(new Date());            //(datosWs.cabezal_pos).toFixed(1);
+            xAccelChartInstance.data.datasets.forEach((dataset) =>{dataset.data.push(datosWs.husillo_torque).toFixed(1)});
         if(updateCount > numberElements){
             xAccelChartInstance.data.labels.shift();
             xAccelChartInstance.data.datasets[0].data.shift();

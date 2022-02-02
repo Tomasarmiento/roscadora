@@ -23,7 +23,7 @@ class FrontWs(threading.Thread):
                 'husillo_rpm': float(random.randint(1,10)),
                 'husillo_torque': float(random.randint(1,10)),
 
-                'cabezal_pos': float(random.randint(1,10)),
+                'cabezal_pos': float(random.randint(-10,10)),
                 'cabezal_vel': float(random.randint(1,10)),
 
                 'avance_pos': float(random.randint(1,10)),
