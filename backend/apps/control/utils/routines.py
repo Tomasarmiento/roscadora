@@ -31,6 +31,7 @@ class RoutineHandler(threading.Thread):
 
     def run(self):
         routine = self.current_routine
+        print('INICIO DE RUTINA ID', routine)
         if routine:
             routine_ok = None
             
@@ -39,6 +40,7 @@ class RoutineHandler(threading.Thread):
             
             try:
                 routine_info = RoutineInfo.objects.get(name=ctrl_vars.ROUTINE_NAMES[routine])
+                print('RUTINA', ctrl_vars.ROUTINE_NAMES[routine])
             except RoutineInfo.DoesNotExist:
                 print('ID de rutina inválido')
                 return False
@@ -52,6 +54,7 @@ class RoutineHandler(threading.Thread):
 
             if routine == ctrl_vars.ROUTINE_IDS['cerado']:
                 print('CERADO')
+                ws_vars.MicroState.routine_ongoing = True
                 routine_ok = self.routine_homing()
             
             elif pos not in ctrl_vars.LOAD_STEPS:
@@ -63,6 +66,7 @@ class RoutineHandler(threading.Thread):
                 print('Baja presión')
 
             else:
+                ws_vars.MicroState.routine_ongoing = True
                 if routine == ctrl_vars.ROUTINE_IDS['cabezal_indexar']:
                     print('ROUTINE CABEZAL')
                     routine_ok = self.routine_cabezal_indexar()
@@ -80,9 +84,12 @@ class RoutineHandler(threading.Thread):
                     routine_ok = self.routine_roscado()
             
             end_time = datetime.now()
+            ws_vars.MicroState.routine_ongoing = False
             if routine_ok:
                 print('Routine OK')
                 print('ROUTINE TIME:', end_time - start_time)
+                routine_info.running = 0
+                routine_info.save()
                 return True
             else:
                 print('ROUTINE ERR')
@@ -92,7 +99,7 @@ class RoutineHandler(threading.Thread):
                     print(msg)
                 return False
         else:
-            print('Rutine no especificada')
+            print('Rutina no especificada')
     
 
     def routine_cabezal_indexar(self):
@@ -960,7 +967,7 @@ class RoutineHandler(threading.Thread):
             time.sleep(self.wait_time*3)
             current_pos = round(ws_vars.MicroState.axis_measures[axis]['pos_abs'], 2)
         print(current_pos)
-        print("FIN SECUENCIA HOMING")
+        print("FIN COMANDO HOMING")
         time.sleep(2)
         # gira una posición buscando la chapa
         command = Commands.mov_to_pos
@@ -1049,6 +1056,7 @@ class RoutineHandler(threading.Thread):
             else:
                 send_message(header, self.ch_info)
             return True
+        print('send msg false')
         return False
 
 
@@ -1263,8 +1271,11 @@ class RoutineHandler(threading.Thread):
             ref_rate = ref_rate,
             msg_id = msg_id,
             eje = axis)
+        print('sending mov to pos lineal cmd')
         if not self.send_message(header, data):
+            print('send false')
             return False
+        print('send true')
         return True
 
 
@@ -1304,6 +1315,13 @@ class RoutineHandler(threading.Thread):
         
         if ws_vars.MicroState.micro_flags['em_stop'] == True:
             msg = 'Parada de emergencia (general)'
+            if err_msg:
+                msg += ' en ' + err_msg
+            self.err_msg.append(msg)
+            return False
+        
+        if ws_vars.MicroState.routine_stopped == True:
+            msg = 'Rutina detenida'
             if err_msg:
                 msg += ' en ' + err_msg
             self.err_msg.append(msg)

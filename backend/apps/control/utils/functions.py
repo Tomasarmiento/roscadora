@@ -41,6 +41,8 @@ def init_routine_info(routine_model):
     rtn_names = []
     for routine in routines:
         rtn_names.append(routine.name)
+        routine.running = 0
+        routine.save()
     for rtn_name in ctrl_vars.ROUTINE_NAMES.values():
         if rtn_name not in rtn_names:
             routine_model.objects.create(name=rtn_name, running=0)

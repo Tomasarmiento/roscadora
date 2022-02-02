@@ -62,6 +62,9 @@ def build_msg(code, host_ip="192.168.0.100", dest_ip=ACDP_IP_ADDR, params={}, *a
         tx_header.ctrl.msg_id = 0
         tx_header.ctrl.data_len8 = 0
     
+    elif code == AcdpMsgCmd.CD_STOP_ALL:
+        pass
+    
     elif code == AcdpMsgCodes.Cmd.Cd_MovEje_RunZeroing:
         axis = kwargs['eje']
         tx_header.ctrl.object = axis

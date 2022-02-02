@@ -26,7 +26,11 @@ class MicroState:
     stop_messages   = []            # Describes stop cause
 
     # Measurements
-    axis_measures  = [{}, {}, {}]
+    axis_measures   = [{}, {}, {}]
+
+    # Routines flags
+    routine_stopped = False
+    routine_ongoing = False
 
 
 class WsCodes:

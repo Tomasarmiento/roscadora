@@ -7,6 +7,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 import apps.service.acdp.handlers as service_handlers
 from apps.service.acdp.messages_app import AcdpAxisMovementEnums, StateMachine
+from apps.service.acdp.messages_base import AcdpMsgCmd
 
 from apps.service.api.variables import Commands
 from apps.ws.utils.handlers import send_message
@@ -193,6 +194,14 @@ def stop_axis(request):
 @csrf_exempt
 def stop_all(request):
     print('stop all')
+    ch_info = get_ch_info(ChannelInfo, 'micro')
+    msg_id = MicroState.msg_id
+    command = AcdpMsgCmd.CD_STOP_ALL
+    header = service_handlers.build_msg(command, msg_id=msg_id)
+    if ch_info:
+        send_message(header, ch_info)
+    if MicroState.routine_ongoing == True:
+        MicroState.routine_stopped = True
     return JsonResponse({})
 
 
