@@ -3,6 +3,8 @@ import time
 
 from django.shortcuts import render
 from django.http import JsonResponse
+from django.views.generic import View
+from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 
 import apps.service.acdp.handlers as service_handlers
@@ -202,19 +204,9 @@ def stop_all(request):
         send_message(header, ch_info)
     if MicroState.routine_ongoing == True:
         MicroState.routine_stopped = True
+    MicroState.master_stop = True
     return JsonResponse({})
 
-
-@csrf_exempt
-def start_routine(request):
-    command = Commands.drv_set_zero_abs
-    msg_id = MicroState.last_rx_header.get_msg_id() + 1
-    MicroState.msg_id = msg_id
-    header, data = service_handlers.build_msg(command, msg_id=msg_id, zero=-7.2, eje=ctrl_vars.AXIS_IDS['carga'])
-    ch_info = ChannelInfo.objects.get(source='micro')
-    if ch_info:
-        send_message(header, ch_info, data)
-    return JsonResponse({})
 
 @csrf_exempt
 def semiauto(request):
@@ -259,3 +251,85 @@ def sync_axis(request):
         if ch_info:
             send_message(header, ch_info, data)
     return JsonResponse({})
+
+
+@method_decorator(csrf_exempt, name='dispatch')
+class StartRoutine(View):
+
+    def get(self, request):
+        print('GET req auto')
+        return JsonResponse({})
+    
+    def post(self, request):
+        if MicroState.master_running == True:
+            print('Master ya está ejecutándose')
+        
+        else:
+            MicroState.master_running = True
+            MicroState.master_stop = False
+            MicroState.iteration = 0
+            roscado_id = ctrl_vars.ROUTINE_IDS['roscado']
+            carga_id = ctrl_vars.ROUTINE_IDS['carga']
+            descarga_id = ctrl_vars.ROUTINE_IDS['descarga']
+            indexar_id = ctrl_vars.ROUTINE_IDS['cabezal_indexar']
+
+            while MicroState.master_stop == False:
+                running_ids = self.get_running_routines()
+                print('\nRUNNING RTNS', running_ids)
+                if carga_id not in running_ids:
+                    print('RUTINA CARGA')
+                    RoutineHandler(carga_id).start()
+
+                    while carga_id not in running_ids:
+                        time.sleep(0.2)
+                        running_ids = self.get_running_routines()
+                
+                if MicroState.iteration >= 1:
+                    if roscado_id not in running_ids:
+                        print('RUTINA ROSCADO')
+                        RoutineHandler(roscado_id).start()
+                    
+                    while roscado_id not in running_ids:
+                        time.sleep(0.2)
+                        running_ids = self.get_running_routines()
+                
+                if MicroState.iteration >= 2:
+                    if descarga_id not in running_ids:
+                        print('RUTINA DESCARGA')
+                        RoutineHandler(descarga_id).start()
+                    while descarga_id not in running_ids:
+                        time.sleep(0.2)
+                        running_ids = self.get_running_routines()
+
+                while MicroState.routine_ongoing == True:
+                    time.sleep(0.5)
+                
+                if MicroState.master_stop == False:
+                    running_ids = self.get_running_routines()
+                    if indexar_id not in running_ids:
+                        print('RUTINA INDEXAR')
+                        RoutineHandler(indexar_id).start()
+                    
+                    while indexar_id not in running_ids:
+                        time.sleep(0.5)
+                        running_ids = self.get_running_routines()
+                
+                while indexar_id in running_ids:
+                    time.sleep(0.5)
+                    running_ids = self.get_running_routines()
+                
+                MicroState.iteration += 1
+                if MicroState.iteration > 2:
+                    MicroState.iteration = 2
+                
+                if MicroState.master_stop == True:
+                    MicroState.master_running = False
+        
+        return JsonResponse({})
+    
+    def get_running_routines(self):
+        running_routines = []
+        for routine in RoutineInfo.objects.all():
+            if routine.running == 1:
+                running_routines.append(ctrl_vars.ROUTINE_IDS[routine.name])
+        return running_routines

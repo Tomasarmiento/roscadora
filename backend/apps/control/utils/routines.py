@@ -46,15 +46,19 @@ class RoutineHandler(threading.Thread):
                 return False
 
             if routine_info.running == 1:
-                print('Rutina en proceso')
+                print('La rutina ya se está ejecutando')
                 return False
             
-            routine_info.running = 1
-            routine_info.save()
+            self.set_routine_ongoing_flag()
 
             if routine == ctrl_vars.ROUTINE_IDS['cerado']:
+                if ws_vars.MicroState.routine_ongoing == True:
+                    print('Rutina en proceso. No se puede cerar')
+                    return False
                 print('CERADO')
                 ws_vars.MicroState.routine_ongoing = True
+                routine_info.running = 1
+                routine_info.save()
                 routine_ok = self.routine_homing()
             
             elif pos not in ctrl_vars.LOAD_STEPS:
@@ -64,14 +68,23 @@ class RoutineHandler(threading.Thread):
             elif ws_vars.MicroState.rem_i_states[1]['presion_normal'] == False:
                 routine_ok = False
                 print('Baja presión')
+            
+            elif routine == ctrl_vars.ROUTINE_IDS['cabezal_indexar']:
+                if ws_vars.MicroState.routine_ongoing == True:
+                    print('Rutina en proceso. No se puede indexar')
+                    return False
+                ws_vars.MicroState.routine_ongoing = True
+                routine_info.running = 1
+                routine_info.save()
+                print('ROUTINE CABEZAL')
+                routine_ok = self.routine_cabezal_indexar()
 
             else:
+                routine_info.running = 1
+                routine_info.save()
                 ws_vars.MicroState.routine_ongoing = True
-                if routine == ctrl_vars.ROUTINE_IDS['cabezal_indexar']:
-                    print('ROUTINE CABEZAL')
-                    routine_ok = self.routine_cabezal_indexar()
                 
-                elif routine == ctrl_vars.ROUTINE_IDS['carga']:
+                if routine == ctrl_vars.ROUTINE_IDS['carga']:
                     print('CARGA')
                     routine_ok = self.routine_carga()
                 
@@ -83,18 +96,17 @@ class RoutineHandler(threading.Thread):
                     print('ROSCADO')
                     routine_ok = self.routine_roscado()
             
+            routine_info.running = 0
+            routine_info.save()
             end_time = datetime.now()
-            ws_vars.MicroState.routine_ongoing = False
+            ws_vars.MicroState.routine_ongoing = self.check_running_routines()
             if routine_ok:
                 print('Routine OK')
                 print('ROUTINE TIME:', end_time - start_time)
-                routine_info.running = 0
-                routine_info.save()
                 return True
             else:
                 print('ROUTINE ERR')
-                routine_info.running = 0
-                routine_info.save()
+                ws_vars.MicroState.master_stop = True
                 for msg in self.err_msg:
                     print(msg)
                 return False
@@ -143,6 +155,17 @@ class RoutineHandler(threading.Thread):
        
 
         # Paso 3 - Avanza 120° al siguiente paso
+        turn_init_flags = [
+            ws_vars.MicroState.rem_i_states[1]['acople_lubric_contraido'],      # acople_lubricante_contraido
+            ws_vars.MicroState.rem_i_states[0]['puntera_descarga_contraida'],   # puntera_descarga_contraida
+            ws_vars.MicroState.rem_i_states[0]['puntera_carga_contraida'],      # puntera_carga_contraida
+            round(ws_vars.MicroState.axis_measures[eje_avance]['pos_fil'], 0) == round(ctrl_vars.ROSCADO_CONSTANTES['posicion_de_inicio'], 0)   # Eje avance en posición de inicio
+        ]
+
+        if False in turn_init_flags:
+            self.err_msg.append('Error en condiciones de giro indexado')
+            return False
+
         if not self.move_step_load_axis():
             return False
         print(' Paso 3 - Avanza 120° al siguiente paso')
@@ -311,6 +334,7 @@ class RoutineHandler(threading.Thread):
         print('Paso 9 - Boquilla carga extendida')
 
         # Paso 10 - Presurizar ON
+        ws_vars.MicroState.load_allow_presure_off = False
         key = 'presurizar'
         group = 1
         self.send_pneumatic(key, group, 1)
@@ -352,8 +376,19 @@ class RoutineHandler(threading.Thread):
         self.send_pneumatic(key_1, group, 0, key_2, 0)
         print('CERRAR VALVULA HIDRAULICA')
         print('Paso 14 - Cerrar válvula de boquilla hidráulica')
+        time.sleep(1)
+
+        # Paso 14.1 - Espera habilitación de presurizar off en roscado
+        roscado_id = ctrl_vars.ROUTINE_IDS['roscado']
+        roscado_running = (RoutineInfo.objects.get(name=ctrl_vars.ROUTINE_NAMES[roscado_id]).running == 1)
+        print('ROSCADO EN PROCESO:', roscado_running)
+        
+        if roscado_running:
+            if self.wait_presure_off_allowed(roscado_id) == False:
+                return False
 
         # Paso 15 - Presurizar OFF
+        ws_vars.MicroState.load_allow_presure_off = True
         key = 'presurizar'
         group = 1
         self.send_pneumatic(key, group, 0)
@@ -442,18 +477,12 @@ class RoutineHandler(threading.Thread):
         time.sleep(1)
         print('contraer_boquilla_descarga')
 
-        # Paso 2.1 - Verifica paso 1.2
+        # Paso 3 - Verifica paso 1.2
         wait_key = 'vert_pinza_desc_expandido'
         wait_group = 1
         if not self.wait_for_remote_in_flag(wait_key, wait_group):
             return False
         print('expandir_vert_pinza_desc')
-
-        # Paso 3 - Presurizar OFF
-        key = 'presurizar'
-        group = 1
-        self.send_pneumatic(key, group, 0)
-        print('PRESURIZAR OFF')
 
         # Paso 4 - Abrir válvula de boquilla hidráulica
         boquilla = self.get_current_boquilla_descarga()
@@ -656,6 +685,7 @@ class RoutineHandler(threading.Thread):
             ws_vars.MicroState.rem_i_states[1]['clampeo_plato_expandido'],                                  # Plato clampeado
             ws_vars.MicroState.axis_flags[eje_avance]['maq_est_val'] == initial_state,                      # eje avance ON
             ws_vars.MicroState.axis_flags[eje_carga]['drv_flags'] & msg_base.DrvFbkDataFlags.ENABLED == 0,  # eje carga OFF
+            ws_vars.MicroState.axis_flags[eje_avance]['sync_on'] == 0,                                            # Sincronismo OFF
             round(ws_vars.MicroState.axis_measures[eje_avance]['pos_fil'], 0) == round(ctrl_vars.ROSCADO_CONSTANTES['posicion_de_inicio'], 0)   # Eje avance en posición de inicio
         ]
         print(init_flags)
@@ -681,6 +711,7 @@ class RoutineHandler(threading.Thread):
         print("PASO 2")
 
         # Paso 3 - Presurizar ON
+        ws_vars.MicroState.roscado_allow_presure_off = False
         key = 'presurizar'
         group = 1
         if not self.send_pneumatic(key, group, 1):
@@ -753,6 +784,14 @@ class RoutineHandler(threading.Thread):
 
 
         # Paso 9 - Presurizar OFF
+        load_id = ctrl_vars.ROUTINE_IDS['carga']
+        load_running = RoutineInfo.objects.get(name=ctrl_vars.ROUTINE_NAMES[load_id]).running == 1
+        
+        if load_running:
+            if self.wait_presure_off_allowed(load_id) == False:
+                return False
+
+        ws_vars.MicroState.roscado_allow_presure_off = True
         key = 'presurizar'
         group = 1
         self.send_pneumatic(key, group, 0)
@@ -802,6 +841,12 @@ class RoutineHandler(threading.Thread):
         header = build_msg(command, eje=axis, msg_id=msg_id, paso=paso)
         if not self.send_message(header):
             return False
+
+        state = ws_vars.MicroState.axis_flags[axis]['sync_on']
+        while state:
+            state = ws_vars.MicroState.axis_flags[axis]['sync_on']
+            time.sleep(self.wait_time)
+
         print('Paso 12 - Sincronizado OFF')
 
         # Paso 13 - Enable husillo OFF
@@ -1330,5 +1375,54 @@ class RoutineHandler(threading.Thread):
         return True
 
 
+    def check_running_routines(self):
+        for routine in RoutineInfo.objects.all():
+            if routine.running == 1:
+                return True
+        return False
+
+
+    def set_routine_ongoing_flag(self):
+        if self.check_running_routines():
+            ws_vars.MicroState.routine_ongoing = True
+        else:
+            ws_vars.MicroState.routine_ongoing = False
+
+    
+    def wait_presure_off_allowed(self, routine):
+        stop_flags_ok = self.check_stop_flags()
+        load_id = ctrl_vars.ROUTINE_IDS['carga']
+        
+        if routine == load_id:
+            flag = ws_vars.MicroState.load_allow_presure_off
+        else:
+            flag = ws_vars.MicroState.roscado_allow_presure_off
+        
+        while flag == False and stop_flags_ok == True:
+            time.sleep(self.wait_time)
+            stop_flags_ok = self.check_stop_flags()
+            if routine == load_id:
+                flag = ws_vars.MicroState.load_allow_presure_off
+            else:
+                flag = ws_vars.MicroState.roscado_allow_presure_off
+        
+        if stop_flags_ok == False:
+            return False
+
+        return True
+        
+
+
     def stopped(self):
         return self._stop_event.it_set()
+
+
+
+class MasterHandler(threading.Thread):
+
+    def __init__(self, routine=None, **kwargs):
+        super(MasterHandler, self).__init__(**kwargs)
+    
+
+    def run(self):
+        pass
