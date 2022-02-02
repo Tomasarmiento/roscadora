@@ -105,8 +105,15 @@ window.onload = function() {
                     },
                     type: 'time',
                     time: {
-                            unit: 'minute'   
-                    }
+                            unit: 'second',
+                            
+                            displayFormats: {
+                                second: 'mm:ss'
+                              }
+                    },
+                    displayFormats: {
+                        second: 'ss:SSS'
+                      }
                 }],
                
             },
