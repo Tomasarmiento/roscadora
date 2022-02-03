@@ -40,6 +40,12 @@ class MicroState:
     master_stop     = False
     iteration       = 0
 
+    # Graph
+    position_values     = []
+    torque_values       = []
+    graph_flag          = True
+    graph_duration      = 0
+
 
 class WsCodes:
     states          = 0

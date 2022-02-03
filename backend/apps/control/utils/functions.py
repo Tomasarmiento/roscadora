@@ -51,6 +51,12 @@ def init_comands_ref_rates():
     for key, value in ctrl_vars.COMMAND_DEFAULT_VALUES.items():
         ctrl_vars.COMMAND_REF_RATES[key] = value
 
+
+def init_master_flags():
+    ws_vars.MicroState.master_running = False
+    ws_vars.MicroState.master_stop = False
+    ws_vars.MicroState.iteration = 0
+
 # -------------------------------------------------------------------------------------------- #
 # --------------------------------------- Routines ------------------------------------------- #
 # -------------------------------------------------------------------------------------------- #

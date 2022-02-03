@@ -79,7 +79,7 @@ class RoutineHandler(threading.Thread):
                 ws_vars.MicroState.routine_ongoing = True
                 routine_info.running = 1
                 routine_info.save()
-                print('ROUTINE CABEZAL')
+                print('RUTINA CABEZAL')
                 routine_ok = self.routine_cabezal_indexar()
 
             else:
@@ -371,14 +371,14 @@ class RoutineHandler(threading.Thread):
         self.send_pneumatic(key, group, 1)
         print('Paso 10 - Presurizar ON')
         
-        # Paso 11 - Contraer boquilla cabezal
+        # Paso 11 - Poner en ON cerrar boquilla hidráulica
         boquilla = self.get_current_boquilla_carga()
         key_1 = 'cerrar_boquilla_' + str(boquilla)
         key_2 = 'abrir_boquilla_' + str(boquilla)
         group = 1
         self.send_pneumatic(key_1, group, 1, key_2, 0)
         time.sleep(2)
-        print('Paso 11 - Contraer boquilla cabezal')
+        print('Paso 11 - Poner en ON cerrar boquilla hidráulica')
 
         # Paso 12 - Puntera cargador contraída
         key_1 = 'contraer_puntera_carga'
@@ -390,23 +390,21 @@ class RoutineHandler(threading.Thread):
             return False
         if not self.wait_for_remote_in_flag(wait_key, wait_group):
             return False
-        print("CONTRAER BOQUILLA CABEZAL")
         print('Paso 12 - Puntera cargador contraída')
 
-        # Paso 13 - Verificar pieza en boquilla carga
+        # Paso 13 - Verificar que no haya pieza en boquilla carga
         if ws_vars.MicroState.rem_i_states[1]['pieza_en_boquilla_carga']:
             return False
-        print('CUPLA NO PRESENTE')
-        print('Paso 13 - Verificar pieza en boquilla carga')
+        print('Paso 13 - Verificar no pieza en boquilla carga')
 
-        # Paso 14 - Cerrar válvula de boquilla hidráulica
+        # Paso 14 - Poner abrir y cerrar en OFF boquilla hidráulica
         boquilla = self.get_current_boquilla_carga()
         key_1 = 'cerrar_boquilla_' + str(boquilla)
         key_2 = 'abrir_boquilla_' + str(boquilla)
         group = 1
         self.send_pneumatic(key_1, group, 0, key_2, 0)
         print('CERRAR VALVULA HIDRAULICA')
-        print('Paso 14 - Cerrar válvula de boquilla hidráulica')
+        print('Paso 14 - Poner abrir y cerrar en OFF boquilla hidráulica')
         time.sleep(1)
 
         # Paso 14.1 - Espera habilitación de presurizar off en roscado
@@ -414,12 +412,13 @@ class RoutineHandler(threading.Thread):
         roscado_running = (RoutineInfo.objects.get(name=ctrl_vars.ROUTINE_NAMES[roscado_id]).running == 1)
         print('ROSCADO EN PROCESO:', roscado_running)
         
+        ws_vars.MicroState.load_allow_presure_off = True
+
         if roscado_running:
             if self.wait_presure_off_allowed(roscado_id) == False:
                 return False
 
         # Paso 15 - Presurizar OFF
-        ws_vars.MicroState.load_allow_presure_off = True
         key = 'presurizar'
         group = 1
         self.send_pneumatic(key, group, 0)
@@ -498,6 +497,7 @@ class RoutineHandler(threading.Thread):
             return False
         if not self.wait_for_not_remote_in_flag(wait_key, wait_group):
             return False
+
         time.sleep(2)
         print('Paso 1 - Expandir puntera descarga')
 
@@ -540,7 +540,7 @@ class RoutineHandler(threading.Thread):
         group = 1
         self.send_pneumatic(key_1, group, 1, key_2, 0)
         print('CERRAR VALVULA HIDRAULICA')
-        time.sleep(2)
+        time.sleep(5)
 
         # Paso 5 - Puntera descargador contraída
         key_1 = 'contraer_puntera_descarga'
@@ -555,9 +555,9 @@ class RoutineHandler(threading.Thread):
         print("PUNTERA DESCARGA CONTRAIDA")
 
         # Paso 6 - Verificar pieza en boquilla descarga
-        # if not ws_vars.MicroState.rem_i_states[1]['pieza_en_boquilla_descarga']:
-        #     return False
-        # print('CUPLA PRESENTE')
+        if not ws_vars.MicroState.rem_i_states[1]['pieza_en_boquilla_descarga']:
+            return False
+        print('CUPLA PRESENTE')
 
         # Paso 7 - Contraer brazo descargador
         key_1 = 'contraer_brazo_descargador'
@@ -585,9 +585,9 @@ class RoutineHandler(threading.Thread):
             return False
         
         # Paso 9 - Verificar pieza en boquilla descarga
-        # if not ws_vars.MicroState.rem_i_states[1]['pieza_en_boquilla_descarga']:
-        #     return False
-        # print('CUPLA PRESENTE')
+        if not ws_vars.MicroState.rem_i_states[1]['pieza_en_boquilla_descarga']:
+            return False
+        print('CUPLA PRESENTE')
 
         # Paso 12 - pinza_descargadora_cerrada
         key_1 = 'cerrar_pinza_descargadora'
@@ -603,7 +603,7 @@ class RoutineHandler(threading.Thread):
         print('PASO 12')
         print('pinza_descargadora_cerrada')
 
-        # Paso 13 - Boquilla descarga expandir
+        # Paso 13 - Abrir boquilla descarga
         key = 'contraer_boquilla_descarga'
         wait_key = 'boquilla_descarga_expandida'
         group = 0
@@ -613,8 +613,7 @@ class RoutineHandler(threading.Thread):
         if not self.wait_for_remote_in_flag(wait_key, wait_group):
             return False
         time.sleep(1)
-        print('PASO 13')
-        print('Boquilla descarga expandir')
+        print('PASO 13 - Abrir boquilla descarga')
 
         # Paso 14 - Puntera descargador contraída
         key_1 = 'contraer_puntera_descarga'
@@ -667,7 +666,6 @@ class RoutineHandler(threading.Thread):
         if not self.wait_for_remote_in_flag(wait_key, wait_group):
             return False
         print('Paso 16.2 - contraer_horiz_pinza_desc')
-        print('contraer_horiz_pinza_desc')
 
         # Paso 16.3 - Verifica paso 16
         wait_key = 'brazo_descarga_expandido'
@@ -714,10 +712,10 @@ class RoutineHandler(threading.Thread):
         print('contraer_vert_pinza_desc')
 
         # Paso 22 - Expera presencia de cupla en tobogan
-        # flag = ws_vars.MicroState.rem_i_states[1]['cupla_por_tobogan_descarga']
-        # while flag:
-        #     flag = ws_vars.MicroState.rem_i_states[1]['cupla_por_tobogan_descarga']
-        #     time.sleep(self.wait_time)
+        flag = ws_vars.MicroState.rem_i_states[1]['cupla_por_tobogan_descarga']
+        while flag:
+            flag = ws_vars.MicroState.rem_i_states[1]['cupla_por_tobogan_descarga']
+            time.sleep(self.wait_time)
 
         print('FIN RUTINA DESCARGA')
         return True
@@ -850,14 +848,16 @@ class RoutineHandler(threading.Thread):
 
 
         # Paso 9 - Presurizar OFF
+
+        ws_vars.MicroState.roscado_allow_presure_off = True
+
         load_id = ctrl_vars.ROUTINE_IDS['carga']
         load_running = RoutineInfo.objects.get(name=ctrl_vars.ROUTINE_NAMES[load_id]).running == 1
-        
+
         if load_running:
             if self.wait_presure_off_allowed(load_id) == False:
                 return False
 
-        ws_vars.MicroState.roscado_allow_presure_off = True
         key = 'presurizar'
         group = 1
         self.send_pneumatic(key, group, 0)
@@ -1013,12 +1013,15 @@ class RoutineHandler(threading.Thread):
         if not self.wait_for_lineal_mov(0):
             return False
         print('Paso 1.1 - Chequeo cero')
-
+        time.sleep(1)
+        
         # Paso 1.2 - Mover a posición de inicio
         pos_inicio = ctrl_vars.ROSCADO_CONSTANTES['posicion_de_inicio']
         if not self.mov_to_pos_lineal(pos_inicio):
             return False
         print('Mov to pos')
+        time.sleep(1)
+
         if not self.wait_for_lineal_mov(pos_inicio):
             return False
         print('Paso 1.2 - Mover a posición de inicio')
@@ -1479,11 +1482,6 @@ class RoutineHandler(threading.Thread):
             return False
 
         return True
-        
-
-
-    def stopped(self):
-        return self._stop_event.it_set()
 
 
 
@@ -1495,12 +1493,12 @@ class MasterHandler(threading.Thread):
         self.wait_rtn_time = 0.5
         self.timer = 0
         self.init_rtn_timeout = 20
-    
-
-    def run(self):
         ws_vars.MicroState.master_running = True
         ws_vars.MicroState.master_stop = False
         ws_vars.MicroState.iteration = 0
+    
+
+    def run(self):
         roscado_id = ctrl_vars.ROUTINE_IDS['roscado']
         carga_id = ctrl_vars.ROUTINE_IDS['carga']
         descarga_id = ctrl_vars.ROUTINE_IDS['descarga']
@@ -1509,6 +1507,13 @@ class MasterHandler(threading.Thread):
         while ws_vars.MicroState.master_stop == False:
             running_ids = self.get_running_routines()
             print('\nRUNNING RTNS', running_ids)
+
+            if indexar_id in running_ids:
+                print('Rutina master, esperar fin de indexado')
+                while indexar_id in running_ids and ws_vars.MicroState.master_stop == False:
+                    running_ids = self.get_running_routines()
+                    time.sleep(self.wait_rtn_time)
+
             if carga_id not in running_ids:
                 print('RUTINA CARGA')
                 RoutineHandler(carga_id).start()

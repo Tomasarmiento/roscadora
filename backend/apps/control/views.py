@@ -18,7 +18,7 @@ from apps.ws.utils.variables import MicroState
 from apps.ws.models import ChannelInfo
 
 from apps.control.utils.variables import COMMAND_DEFAULT_VALUES
-from apps.control.utils.routines import RoutineHandler
+from apps.control.utils.routines import RoutineHandler, MasterHandler
 from apps.control.utils import variables as ctrl_vars
 from apps.control.utils import functions as ctrl_func
 from apps.control.models import RoutineInfo
@@ -76,100 +76,295 @@ def manual_lineal(request):
     return JsonResponse({})
 
 
-@csrf_exempt
-def manual_pneumatic(request):
-    post_req = request.POST
-    ch_info = get_ch_info(ChannelInfo, 'micro')
-    req_data = []
-    MicroState.msg_id += 1
-    msg_id = MicroState.msg_id
-    
-    for item in post_req.items():   # Item is in (key, value) format
-        req_data.append(item)
+@method_decorator(csrf_exempt, name='dispatch')
+class ManualPneumatic(View):
 
-    command = int(req_data[0][1])
-    menu = req_data[1][1]
-    name = req_data[2][1]
-    if menu == 'carga':
-        if 'horizontal' in name:
-            keys = ['contraer_puntera_carga', 'expandir_puntera_carga']
-            header, data = ctrl_func.toggle_rem_do(command, keys, 0)
-
-        elif 'vertical' in name:
-            keys = 'expandir_vertical_carga'
-            header, data = ctrl_func.toggle_rem_do(command, keys, 0)
-
-        elif name == 'BoquillaCarga':
-            keys = 'contraer_boquilla_carga'
-            header, data = ctrl_func.toggle_rem_do(command, keys, 0)
-
-        elif 'giro' in name:
-            keys = ['contraer_brazo_cargador', 'expandir_brazo_cargador']
-            header, data = ctrl_func.toggle_rem_do(command, keys, 0)
-    
-    elif menu == 'descarga':
-        if name == 'horizontalDesc':
-            keys = ['contraer_puntera_descarga', 'expandir_puntera_descarga']
-            header, data = ctrl_func.toggle_rem_do(command, keys, 0)
-            
-        elif name == 'giroDesc':
-            keys = ['contraer_brazo_descargador', 'expandir_brazo_descargador']
-            header, data = ctrl_func.toggle_rem_do(command, keys, 0)
-
-        elif name == 'horizontalGr':
-            keys = 'expandir_horiz_pinza_desc'
-            header, data = ctrl_func.toggle_rem_do(command, keys, 1)
-
-        elif name == 'verticalGr':
-            keys = 'expandir_vert_pinza_desc'
-            header, data = ctrl_func.toggle_rem_do(command, keys, 1)
-
-        elif name == 'BoquillaDesc':
-            keys = 'contraer_boquilla_descarga'
-            header, data = ctrl_func.toggle_rem_do(command, keys, 0)
-
-        elif name == 'gripperDesc':
-            keys = ['cerrar_pinza_descargadora', 'abrir_pinza_descargadora']
-            header, data = ctrl_func.toggle_rem_do(command, keys, 0)
-    
-    elif menu == 'cabezal':
-        if name == 'clampeo':
-            keys = ['contraer_clampeo_plato', 'expandir_clampeo_plato']
-            header, data = ctrl_func.toggle_rem_do(command, keys, 1)
-
-        elif name == 'presion':
-            keys = 'presurizar'
-            header, data = ctrl_func.toggle_rem_do(command, keys, 1)
-
-        elif name == 'boquilla1':
-            keys = ['cerrar_boquilla_1', 'abrir_boquilla_1']
-            header, data = ctrl_func.toggle_rem_do(command, keys, 1)
-
-        elif name == 'boquilla2':
-            keys = ['cerrar_boquilla_2', 'abrir_boquilla_2']
-            header, data = ctrl_func.toggle_rem_do(command, keys, 1)
-
-        elif name == 'boquilla3':
-            keys = ['cerrar_boquilla_3', 'abrir_boquilla_3']
-            header, data = ctrl_func.toggle_rem_do(command, keys, 1)
-
-        elif name == 'acoplaSol':
-            keys = 'expandir_acople_lubric'
-            header, data = ctrl_func.toggle_rem_do(command, keys, 1)
-
-        elif name == 'bombaSol':
-            keys = 'encender_bomba_soluble'
-            header, data = ctrl_func.toggle_rem_do(command, keys, 1)
+    def post(self, request):
+        post_req = request.POST
         
-        elif name == 'bombaHidr':
-            keys = 'encender_bomba_hidraulica'
-            header, data = ctrl_func.toggle_rem_do(command, keys, 1)
-    
-    if ch_info:
-        print(header.get_values(), data.get_values())
-        send_message(header, ch_info, data)
-    return JsonResponse({})
+        req_data = []
+        
+        for item in post_req.items():   # Item is in (key, value) format
+            req_data.append(item)
 
+        command = int(req_data[0][1])
+        menu = req_data[1][1]
+        name = req_data[2][1]
+        btn = req_data[3][1]
+        send_msg = True
+        print('NOMBRE:', name)
+        print('BOTON:', btn)
+        if menu == 'carga':
+            if name == 'horizontalCarga':
+                keys = ['contraer_puntera_carga', 'expandir_puntera_carga']
+                group = 0
+                if btn == 'On':
+                    bool_value_1  = 0
+                    bool_value_2  = 1
+                
+                else:
+                    bool_value_1  = 1
+                    bool_value_2  = 0
+                
+                self.set_rem_do(command, keys[0], group, bool_value_1, keys[1], bool_value_2)
+                send_msg = False
+
+            elif name == 'verticalCarga':
+                key = 'expandir_vertical_carga'
+                group = 0
+                if btn == 'On':
+                    bool_value  = 1
+                
+                else:
+                    bool_value  = 0
+                
+                self.set_rem_do(command, key, group, bool_value)
+                send_msg = False
+
+            elif name == 'BoquillaCarga':
+                key = 'contraer_boquilla_carga'
+                group = 0
+                if btn == 'On':
+                    bool_value  = 1
+                
+                else:
+                    bool_value  = 0
+                
+                self.set_rem_do(command, key, group, bool_value)
+                send_msg = False
+
+            elif name =='giroCarga':
+                keys = ['contraer_brazo_cargador', 'expandir_brazo_cargador']
+                group = 0
+                if btn == 'On':
+                    bool_value_1  = 1
+                    bool_value_2  = 0
+                
+                else:
+                    bool_value_1  = 0
+                    bool_value_2  = 1
+                
+                self.set_rem_do(command, keys[0], group, bool_value_1, keys[1], bool_value_2)
+                send_msg = False
+        
+        elif menu == 'descarga':
+            if name == 'horizontalDesc':
+                keys = ['contraer_puntera_descarga', 'expandir_puntera_descarga']
+                group = 0
+                if btn == 'On':
+                    bool_value_1  = 0
+                    bool_value_2  = 1
+                
+                else:
+                    bool_value_1  = 1
+                    bool_value_2  = 0
+                
+                self.set_rem_do(command, keys[0], group, bool_value_1, keys[1], bool_value_2)
+                send_msg = False
+                
+            elif name == 'giroDesc':
+                keys = ['contraer_brazo_descargador', 'expandir_brazo_descargador']
+                group = 0
+                if btn == 'On':
+                    bool_value_1  = 1
+                    bool_value_2  = 0
+                
+                else:
+                    bool_value_1  = 0
+                    bool_value_2  = 1
+                
+                self.set_rem_do(command, keys[0], group, bool_value_1, keys[1], bool_value_2)
+                send_msg = False
+
+            elif name == 'horizontalGr':
+                key = 'expandir_horiz_pinza_desc'
+                group = 1
+                if btn == 'On':
+                    bool_value  = 1
+                
+                else:
+                    bool_value  = 0
+                
+                self.set_rem_do(command, key, group, bool_value)
+                send_msg = False
+
+            elif name == 'verticalGr':
+                key = 'expandir_vert_pinza_desc'
+                group = 1
+                if btn == 'On':
+                    bool_value  = 1
+                
+                else:
+                    bool_value  = 0
+                
+                self.set_rem_do(command, key, group, bool_value)
+                send_msg = False
+
+            elif name == 'BoquillaDesc':
+                key = 'contraer_boquilla_descarga'
+                group = 0
+                if btn == 'On':
+                    bool_value  = 1
+                
+                else:
+                    bool_value  = 0
+                
+                self.set_rem_do(command, key, group, bool_value)
+                send_msg = False
+
+            elif name == 'gripperDesc':
+                keys = ['cerrar_pinza_descargadora', 'abrir_pinza_descargadora']
+                group = 0
+                if btn == 'On':
+                    bool_value_1  = 1
+                    bool_value_2  = 0
+                
+                else:
+                    bool_value_1  = 0
+                    bool_value_2  = 1
+                
+                self.set_rem_do(command, keys[0], group, bool_value_1, keys[1], bool_value_2)
+                send_msg = False
+        
+        elif menu == 'cabezal':
+            if name == 'clampeo':
+                keys = ['contraer_clampeo_plato', 'expandir_clampeo_plato']
+                group = 1
+                if btn == 'On':
+                    bool_value_1  = 0
+                    bool_value_2  = 1
+                
+                else:
+                    bool_value_1  = 1
+                    bool_value_2  = 0
+                
+                self.set_rem_do(command, keys[0], group, bool_value_1, keys[1], bool_value_2)
+                send_msg = False
+
+            elif name == 'presion':
+                key = 'presurizar'
+                group = 1
+                if btn == 'On':
+                    bool_value  = 1
+                
+                else:
+                    bool_value  = 0
+                
+                self.set_rem_do(command, key, group, bool_value)
+                send_msg = False
+
+            elif name == 'boquilla1':
+                keys = ['cerrar_boquilla_1', 'abrir_boquilla_1']
+                group = 1
+                if btn == 'On':
+                    bool_value_1  = 1
+                    bool_value_2  = 0
+                
+                elif btn == 'Off':
+                    bool_value_1  = 0
+                    bool_value_2  = 1
+                
+                else:
+                    bool_value_1  = 0
+                    bool_value_2  = 0
+                
+                self.set_rem_do(command, keys[0], group, bool_value_1, keys[1], bool_value_2)
+                send_msg = False
+
+            elif name == 'boquilla2':
+                keys = ['cerrar_boquilla_2', 'abrir_boquilla_2']
+                group = 1
+                if btn == 'On':
+                    bool_value_1  = 1
+                    bool_value_2  = 0
+                
+                elif btn == 'Off':
+                    bool_value_1  = 0
+                    bool_value_2  = 1
+                
+                else:
+                    bool_value_1  = 0
+                    bool_value_2  = 0
+                
+                self.set_rem_do(command, keys[0], group, bool_value_1, keys[1], bool_value_2)
+                send_msg = False
+
+            elif name == 'boquilla3':
+                keys = ['cerrar_boquilla_3', 'abrir_boquilla_3']
+                group = 1
+                if btn == 'On':
+                    bool_value_1  = 1
+                    bool_value_2  = 0
+                
+                elif btn == 'Off':
+                    bool_value_1  = 0
+                    bool_value_2  = 1
+                
+                else:
+                    bool_value_1  = 0
+                    bool_value_2  = 0
+                
+                self.set_rem_do(command, keys[0], group, bool_value_1, keys[1], bool_value_2)
+                send_msg = False
+
+            elif name == 'acoplaSol':
+                key = 'expandir_acople_lubric'
+                group = 1
+                if btn == 'On':
+                    bool_value  = 1
+                
+                else:
+                    bool_value  = 0
+                
+                self.set_rem_do(command, key, group, bool_value)
+                send_msg = False
+
+            elif name == 'bombaSol':
+                key = 'encender_bomba_soluble'
+                group = 1
+                if btn == 'On':
+                    bool_value  = 1
+                
+                else:
+                    bool_value  = 0
+                
+                self.set_rem_do(command, key, group, bool_value)
+                send_msg = False
+            
+            elif name == 'bombaHidr':
+                key = 'encender_bomba_hidraulica'
+                group = 1
+                if btn == 'On':
+                    bool_value  = 1
+                
+                else:
+                    bool_value  = 0
+                
+                self.set_rem_do(command, key, group, bool_value)
+                send_msg = False
+        
+        if send_msg:
+            self.send_message(header, data)
+            print(header.get_values(), data.get_values())
+            
+        return JsonResponse({})
+
+    def send_message(self, header, data):
+        ch_info = get_ch_info(ChannelInfo, 'micro')
+        if ch_info:
+            send_message(header, ch_info, data)
+            return True
+        return False
+
+
+    def set_rem_do(self, command, key, group, bool_value, second_key=None, second_bool_value=None):
+        header, data = ctrl_func.set_rem_do(command, key, group, bool_value)
+        if not self.send_message(header, data):
+            return False
+        if second_key:
+            header, data = ctrl_func.set_rem_do(command, second_key, group, second_bool_value)
+            return self.send_message(header, data)
+        return True
 
 @csrf_exempt
 def stop_axis(request):
@@ -265,65 +460,7 @@ class StartRoutine(View):
             print('Master ya está ejecutándose')
         
         else:
-            MicroState.master_running = True
-            MicroState.master_stop = False
-            MicroState.iteration = 0
-            roscado_id = ctrl_vars.ROUTINE_IDS['roscado']
-            carga_id = ctrl_vars.ROUTINE_IDS['carga']
-            descarga_id = ctrl_vars.ROUTINE_IDS['descarga']
-            indexar_id = ctrl_vars.ROUTINE_IDS['cabezal_indexar']
-
-            while MicroState.master_stop == False:
-                running_ids = self.get_running_routines()
-                print('\nRUNNING RTNS', running_ids)
-                if carga_id not in running_ids:
-                    print('RUTINA CARGA')
-                    RoutineHandler(carga_id).start()
-
-                    while carga_id not in running_ids:
-                        time.sleep(0.2)
-                        running_ids = self.get_running_routines()
-                
-                if MicroState.iteration >= 1:
-                    if roscado_id not in running_ids:
-                        print('RUTINA ROSCADO')
-                        RoutineHandler(roscado_id).start()
-                    
-                    while roscado_id not in running_ids:
-                        time.sleep(0.2)
-                        running_ids = self.get_running_routines()
-                
-                if MicroState.iteration >= 2:
-                    if descarga_id not in running_ids:
-                        print('RUTINA DESCARGA')
-                        RoutineHandler(descarga_id).start()
-                    while descarga_id not in running_ids:
-                        time.sleep(0.2)
-                        running_ids = self.get_running_routines()
-
-                while MicroState.routine_ongoing == True:
-                    time.sleep(0.5)
-                
-                if MicroState.master_stop == False:
-                    running_ids = self.get_running_routines()
-                    if indexar_id not in running_ids:
-                        print('RUTINA INDEXAR')
-                        RoutineHandler(indexar_id).start()
-                    
-                    while indexar_id not in running_ids:
-                        time.sleep(0.5)
-                        running_ids = self.get_running_routines()
-                
-                while indexar_id in running_ids:
-                    time.sleep(0.5)
-                    running_ids = self.get_running_routines()
-                
-                MicroState.iteration += 1
-                if MicroState.iteration > 2:
-                    MicroState.iteration = 2
-                
-                if MicroState.master_stop == True:
-                    MicroState.master_running = False
+            MasterHandler().start()
         
         return JsonResponse({})
     
