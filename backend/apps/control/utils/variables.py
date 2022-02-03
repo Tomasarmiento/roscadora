@@ -38,21 +38,20 @@ ROUTINE_IDS = {
     'roscado':  5
 }
 
-ROUTINE_NAMES = [
-    'cerado',
-    'carga',
-    'descarga',
-    'roscado'
-]
+ROUTINE_NAMES = {
+    ROUTINE_IDS['cerado']: 'cerado',
+    ROUTINE_IDS['carga']: 'carga',
+    ROUTINE_IDS['descarga']: 'descarga',
+    ROUTINE_IDS['roscado']: 'roscado',
+    ROUTINE_IDS['cabezal_indexar']: 'cabezal_indexar'
+}
 
 ROSCADO_CONSTANTES = {
-   #'posicion_de_aproximacion': -20,
-    'posicion_de_aproximacion': -35,
-    'velocidad_en_vacio': 10,
-    #'posicion_final_de_roscado': -110,
-    'posicion_final_de_roscado': -195,
-    'velocidad_de_roscado': 4,
-    'posicion_salida_de_roscado': -20,
+    'posicion_de_aproximacion': -80,
+    'velocidad_en_vacio': 25,
+    'posicion_final_de_roscado': -205,
+    'velocidad_de_roscado': 6,
+    'posicion_salida_de_roscado': -80,
     'velocidad_de_retraccion': 10,
     'paso_de_rosca': 2.54,
     'posicion_de_inicio': 5,
@@ -119,6 +118,13 @@ BOQUILLA_ROSCADO = {
 # -------------------------------------------------------------------------------------------- #
 # --------------------------------- Remote/Local outputs ------------------------------------- #
 # -------------------------------------------------------------------------------------------- #
+
+TIMEOUT_GENERAL         = 10
+TIMEOUT_PNEUMATIC       = 20
+TIMEOUT_LOAD            = 10
+TIMEOUT_LINEAL          = 30
+TIMEOUT_STATE_CHANGE    = 5
+
 
 LOC_DI_STATES = {}
 
@@ -218,7 +224,7 @@ REM_DI_G2_BITS = {
     'cupla_por_tobogan_descarga':   12,
                                     # 13 not implemented
                                     # 14 not implemented
-    'baja_presion':                 15,
+    'presion_normal':               15,
 }
 
 
@@ -307,5 +313,5 @@ REM_DI_G2_ARR = [
     'cupla_por_tobogan_descarga',   # 29 - 12
     '',                             # 30 - 13
     '',                             # 31 - 14
-    'baja_presion',                 # 32 - 15
+    'presion_normal',               # 32 - 15
 ]

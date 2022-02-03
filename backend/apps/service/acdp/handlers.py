@@ -2,7 +2,7 @@ from datetime import datetime
 from apps.service.acdp.acdp import ACDP_VERSION, ACDP_UDP_PORT, ACDP_IP_ADDR
 from apps.service.acdp.acdp import AcdpHeader
 from apps.service.acdp.messages_app import AcdpPc, AcdpMsgCodes, AcdpMsgParams, AcdpAxisMovementEnums
-from apps.service.acdp.messages_base import AcdpMsgCmdParam, BaseStructure, AcdpMsgCxn, AcdpMsgCmd, AcdpMsgCmdParamSetZeroDrvFbk
+from apps.service.acdp.messages_base import AcdpMsgCmdParam, BaseStructure, AcdpMsgCxn, AcdpMsgCmd, AcdpMsgCmdParamSetZeroDrvFbk, AcdpMsgCmd
 
 
 class AcdpMessage(BaseStructure):
@@ -35,6 +35,9 @@ class AcdpMessage(BaseStructure):
             transport.sendto(tx_header.pacself(), addr)
             update_front = False
         
+        elif msg_code == AcdpMsgCmd.CD_REJECTED:
+            print('Comando rechazado')
+
         return update_front
 
 
@@ -61,6 +64,9 @@ def build_msg(code, host_ip="192.168.0.100", dest_ip=ACDP_IP_ADDR, params={}, *a
         or code == AcdpMsgCxn.CD_CONNECT or code == AcdpMsgCxn.CD_ECHO_REPLY:     # open/close/force connection / echo reply
         tx_header.ctrl.msg_id = 0
         tx_header.ctrl.data_len8 = 0
+    
+    elif code == AcdpMsgCmd.CD_STOP_ALL:
+        pass
     
     elif code == AcdpMsgCodes.Cmd.Cd_MovEje_RunZeroing:
         axis = kwargs['eje']
