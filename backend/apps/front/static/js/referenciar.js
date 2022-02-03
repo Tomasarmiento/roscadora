@@ -6,7 +6,21 @@ document.addEventListener("DOMContentLoaded", (e) => {
         startRoutine(routine);
     });
 });
+socket.onmessage = function (event) {
+    const datosWs = JSON.parse(event.data);
 
+    //Cabezal
+    const homeok = document.querySelector("#homeOk")
+
+    (datosWs.estado_eje_carga == 'homing')
+    && (datosWs.estado_eje_avance == 'homing')
+    && (datosWs.estado_eje_giro == 'homing')
+     ? (homeok.className = "bg-success rounded-pill text-white text-center p-3")
+     : (homeok.className = "bg-secondary rounded-pill text-white text-center p-3");
+        
+}
+
+homeOk
 function startRoutine(routine){
     let url = "http://localhost:8000/control/semiautomatico/";
     let params = "routine=" + routine;
