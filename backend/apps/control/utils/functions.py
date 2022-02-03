@@ -375,13 +375,14 @@ def set_rem_do(command, key, group, bool_value):
 def toggle_rem_do(command, keys, group):
     msg_id = ws_vars.MicroState.last_rx_header.get_msg_id() + 1
     ws_vars.MicroState.msg_id = msg_id
-
+    print('*********')
     mask = None
     out_value = None
     
     if type(keys) == type([]):
         key_1 = keys[0]
         key_2 = keys[1]
+        print(key_1, key_2)
 
         if group == 0:
             bit_1 = 0x0000 + 1 << ctrl_vars.REM_DO_G1_BITS[key_1]
