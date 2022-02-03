@@ -178,6 +178,7 @@ window.onload = function() {
     switch (e.target.id) {
       case "resetZoom":
         xAccelChartInstance.resetZoom()
+    break;
       case "destroy":
         xAccelChartInstance.destroy();
     break;
