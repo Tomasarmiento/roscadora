@@ -39,7 +39,6 @@ class UDPProtocol(asyncio.DatagramProtocol):
         
     def datagram_received(self, data, addr):    # addr is tuple (IP, PORT), example ('192.168.0.28', 54208)
         self.rx_msg.store_from_raw(data)
-        last_rx_msg = self.rx_msg
         WsStates.updata_front = self.rx_msg.process_rx_msg(transport=self.transport)
         
     def error_received(self, exc: Exception) -> None:

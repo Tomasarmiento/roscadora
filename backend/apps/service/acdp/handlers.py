@@ -2,7 +2,7 @@ from datetime import datetime
 from apps.service.acdp.acdp import ACDP_VERSION, ACDP_UDP_PORT, ACDP_IP_ADDR
 from apps.service.acdp.acdp import AcdpHeader
 from apps.service.acdp.messages_app import AcdpPc, AcdpMsgCodes, AcdpMsgParams, AcdpAxisMovementEnums
-from apps.service.acdp.messages_base import AcdpMsgCmdParam, BaseStructure, AcdpMsgCxn, AcdpMsgCmd, AcdpMsgCmdParamSetZeroDrvFbk
+from apps.service.acdp.messages_base import AcdpMsgCmdParam, BaseStructure, AcdpMsgCxn, AcdpMsgCmd, AcdpMsgCmdParamSetZeroDrvFbk, AcdpMsgCmd
 
 
 class AcdpMessage(BaseStructure):
@@ -35,6 +35,9 @@ class AcdpMessage(BaseStructure):
             transport.sendto(tx_header.pacself(), addr)
             update_front = False
         
+        elif msg_code == AcdpMsgCmd.CD_REJECTED:
+            print('Comando rechazado')
+
         return update_front
 
 

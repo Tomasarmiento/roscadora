@@ -1192,6 +1192,9 @@ class RoutineHandler(threading.Thread):
             time.sleep(self.wait_time)
             timer += self.wait_time
             stop_flags_ok = self.check_stop_flags(err_msg=err_msg, timer=timer, timeout=timeout, axis=axis)
+        print('Estado eje:', current_state_value)
+        if stop_flags_ok == False:
+            return False
 
         if current_state_value != target_state:
             return False
