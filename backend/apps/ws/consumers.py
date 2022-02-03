@@ -81,7 +81,11 @@ def show_states(header, data):
     print("-"*50)
     # for key, value in MicroState.rem_o_states[1].items():
     #     print(key, value)
-    print(ws_vars.MicroState.axis_flags[ctrl_var.AXIS_IDS['carga']]['drv_flags'] & msg_base.DrvFbkDataFlags.ENABLED)
+    # print(ws_vars.MicroState.axis_flags[ctrl_var.AXIS_IDS['carga']]['drv_flags'] & msg_base.DrvFbkDataFlags.ENABLED)
+    print(ws_vars.MicroState.rem_o_states)
+    # print(len(ws_vars.MicroState.position_values))
+    # print(len(ws_vars.MicroState.torque_values))
+    # print(ws_vars.MicroState.graph_duration)
     # print (MicroState.axis_measures[ctrl_var.AXIS_IDS['carga']])
     # for axis in MicroState.axis_measures:
     #     print(axis)

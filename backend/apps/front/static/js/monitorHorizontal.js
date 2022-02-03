@@ -73,9 +73,9 @@ window.onload = function() {
         type: 'line',
         data: {
             datasets: [{
-                label: "cabezal_pos",
+                label: "Torque",
                 data: 0,
-                pointRadius: 1,
+                pointRadius: 0.5,
                 fill: false,
                 borderColor: '#00aeef',
                 backgroundColor: 'blue',
@@ -187,7 +187,7 @@ window.onload = function() {
     
 socket.onmessage = function (event) {
   const datosWs = JSON.parse(event.data);
-  
+  console.log(datosWs);
 
   // Tabla de datos
   const rpmActual = document.querySelector("#frRPMH");
@@ -228,4 +228,4 @@ socket.onmessage = function (event) {
       
         
 }
-}}
+}};

@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'apps.parameters',
     'apps.control',
     'apps.ws',
+    'apps.graphs',
 
     'corsheaders',
     'channels',

@@ -1,5 +1,9 @@
 from apps.service.acdp.messages_app import AcdpAxisMovementEnums
 
+# -------------------------------------------------------------------------------------------- #
+# --------------------------------------- Commands ------------------------------------------- #
+# -------------------------------------------------------------------------------------------- #
+
 COMMAND_DEFAULT_VALUES = {
     'vel_giro': 360.0,
     'vel_avance': 5.0,
@@ -14,6 +18,13 @@ AXIS_IDS = {
 }
 
 COMMAND_REF_RATES = {}
+
+
+# -------------------------------------------------------------------------------------------- #
+# --------------------------------------- Timeouts ------------------------------------------- #
+# -------------------------------------------------------------------------------------------- #
+
+CABEZAL_ON_TIMEOFF = 30         # Tiempo máximo que el cabezal puede estar encendido mientras está clampeado
 
 # -------------------------------------------------------------------------------------------- #
 # --------------------------------------- Routines ------------------------------------------- #
@@ -35,9 +46,11 @@ ROUTINE_NAMES = [
 ]
 
 ROSCADO_CONSTANTES = {
-    'posicion_de_aproximacion': -20,
+   #'posicion_de_aproximacion': -20,
+    'posicion_de_aproximacion': -35,
     'velocidad_en_vacio': 10,
-    'posicion_final_de_roscado': -110,
+    #'posicion_final_de_roscado': -110,
+    'posicion_final_de_roscado': -195,
     'velocidad_de_roscado': 4,
     'posicion_salida_de_roscado': -20,
     'velocidad_de_retraccion': 10,

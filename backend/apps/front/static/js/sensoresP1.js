@@ -182,7 +182,7 @@ socket.onmessage = function (event) {
          ? (cuplaPorTobogánDescarga.className = "led led-grey")
          : (cuplaPorTobogánDescarga.className = "led led-green");
 
-        //PLATO
+        //PLATO//
         //Acople Lubricante Extendido	
         datosWs.remote_inputs[1].acople_lubric_expandido == false
          ? (acopleLubricanteExtendido.className = "led led-grey")
@@ -201,6 +201,22 @@ socket.onmessage = function (event) {
         datosWs.remote_inputs[1].clampeo_plato_contraido == true
          ? (neumaticoClampeoPlatoContraido.className = "led led-grey")
          : (neumaticoClampeoPlatoContraido.className = "led led-green");
+
+
+
+        //MOTORES SENSORES EN EL DRIVE//
+        //Eje lineal limite Forward//preguntar si hay sensor de fin de carrera
+        //Eje lineal Homing
+        datosWs.estado_eje_avance == 'homing'
+         ? (ejeLinealHoming.className = "led led-green")
+         : (ejeLinealHoming.className = "led led-grey");
+        //Eje Cabezal Homing
+        datosWs.estado_eje_carga == 'homing'
+         ? (ejeCabezalHoming.className = "led led-green")
+         : (ejeCabezalHoming.className = "led led-grey");
+
+
+
 
         console.log(datosWs);
     }

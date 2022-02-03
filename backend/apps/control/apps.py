@@ -10,4 +10,3 @@ class ControlConfig(AppConfig):
         functions.init_routine_info(RoutineInfo)
         functions.init_rem_io()
         functions.init_comands_ref_rates()
-        functions.FrontWs().start()
