@@ -50,6 +50,9 @@ class MicroState:
     graph_flag          = True
     graph_duration      = 0
 
+    # General
+    load_on_timer       = datetime.now()
+    turn_load_drv_off   = False
 
 class WsCodes:
     states          = 0

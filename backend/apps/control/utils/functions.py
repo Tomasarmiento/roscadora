@@ -9,28 +9,9 @@ from apps.service.acdp import messages_base as msg_base
 from apps.control.utils import variables as ctrl_vars
 
 from apps.ws.utils.handlers import send_message
-from apps.ws.utils.functions import send_front_message
+from apps.ws.utils.functions import send_front_message, get_ch_info
 from apps.ws.utils import variables as ws_vars
 
-class FrontWs(threading.Thread):
-
-    def __init__(self, **kwargs):
-        super(FrontWs, self).__init__(**kwargs)
-    
-    def run(self):
-        while 1:
-            data = {
-                'husillo_rpm': float(random.randint(1,10)),
-                'husillo_torque': float(random.randint(1,10)),
-
-                'cabezal_pos': float(random.randint(-10,10)),
-                'cabezal_vel': float(random.randint(1,10)),
-
-                'avance_pos': float(random.randint(1,10)),
-                'avance_vel': float(random.randint(1,10)),
-            }
-            send_front_message(data)
-            time.sleep(0.2)
 
 # -------------------------------------------------------------------------------------------- #
 # ----------------------------------- Initialization ----------------------------------------- #
@@ -236,6 +217,14 @@ def update_axis_data(micro_data):
         ws_vars.MicroState.axis_measures[i]['vel_fil'] = micro_data.data.ctrl.eje[i].mov_pos.med_drv.vel_fil
         ws_vars.MicroState.axis_measures[i]['torque_fil'] = micro_data.data.ctrl.eje[i].mov_pos.med_drv.torque_fil
         ws_vars.MicroState.axis_measures[i]['pos_abs'] = micro_data.data.ctrl.eje[i].mov_pos.med_drv.drv_fbk.pos_abs
+    
+    if ws_vars.MicroState.axis_flags[ctrl_vars.AXIS_IDS['carga']]['estado'] == 'initial' and ws_vars.MicroState.rem_i_states[1]['clampeo_plato_expandido']:
+        time_diff = datetime.now() - ws_vars.MicroState.load_on_timer
+        if time_diff.total_seconds() >= ctrl_vars.CABEZAL_ON_TIMEOFF:
+            print('Cabezal timeout excedido')
+            ws_vars.MicroState.turn_load_drv_off = True
+    else:
+        ws_vars.MicroState.load_on_timer = datetime.now()
 
 def update_rem_io_states(micro_data):
     g_1_i = {}
@@ -334,6 +323,7 @@ def check_timeouts():
                 msg_id = get_message_id()
                 cmd = Commands.power_off
                 header = build_msg(cmd, eje=axis, msg_id=msg_id)
+                ch_info = get_ch_info
                 send_message(header)
                 ws_vars.MicroState.cabezal_on_timer = datetime.now()    # Resetea timer
 
