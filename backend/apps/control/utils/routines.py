@@ -245,6 +245,7 @@ class RoutineHandler(threading.Thread):
         if not self.wait_for_remote_in_flag(wait_key, wait_group):
             return False
         print('Paso 1 - Expandir vertical carga')
+        ws_vars.MicroState.log_messages.append('Paso 1 - Expandir vertical carga')
         
         # Paso 1.1 - Abrir válvula de boquilla hidráulica
         boquilla = self.get_current_boquilla_carga()
@@ -988,11 +989,15 @@ class RoutineHandler(threading.Thread):
         if False in init_flags:
             return False
 
+        ws_vars.MicroState.log_messages.append('Homing')
+
         # Paso 0.1 - Encender bomba hidráulica
         key = 'encender_bomba_hidraulica'
         group = 1
         if not self.send_pneumatic(key, group, 1):
             return False
+        
+        ws_vars.MicroState.log_messages.append('0.1 - Encender bomba hidráulica')
 
         # Paso 1 - Cerado eje avance
         command = Commands.run_zeroing
@@ -1008,12 +1013,14 @@ class RoutineHandler(threading.Thread):
             time.sleep(self.wait_time)
         print('PASO 1')
         print('HOME SW ACTIVADO')
+        ws_vars.MicroState.log_messages.append('1 - Home switch activado')
 
         # Paso 1.1 - Chequeo cero
         if not self.wait_for_lineal_mov(0):
             return False
         print('Paso 1.1 - Chequeo cero')
         time.sleep(1)
+        ws_vars.MicroState.log_messages.append('1.1 - Chequeo cerado')
         
         # Paso 1.2 - Mover a posición de inicio
         pos_inicio = ctrl_vars.ROSCADO_CONSTANTES['posicion_de_inicio']
@@ -1025,6 +1032,7 @@ class RoutineHandler(threading.Thread):
         if not self.wait_for_lineal_mov(pos_inicio):
             return False
         print('Paso 1.2 - Mover a posición de inicio')
+        ws_vars.MicroState.log_messages.append('1.2 - Mover a posición de inicio')
 
         # Paso 2 - Liberar plato
         key_1 = 'contraer_clampeo_plato'
@@ -1035,6 +1043,7 @@ class RoutineHandler(threading.Thread):
         if not self.wait_for_remote_in_flag('clampeo_plato_contraido', 1):
             return False
         print('PASO 2')
+        ws_vars.MicroState.log_messages.append('2 - Liberar plato')
 
         # Paso 2.1 - Encender servo
         command = Commands.power_on
@@ -1048,6 +1057,7 @@ class RoutineHandler(threading.Thread):
         if not self.wait_for_axis_state(target_state, axis):
             return False
         print('Paso 2.1 - Encender servo')
+        ws_vars.MicroState.log_messages.append('2.1 - Encender servo')
 
         # Paso 3 - Cerado eje carga
         print("CERAR EJE CARGA")
@@ -1058,6 +1068,7 @@ class RoutineHandler(threading.Thread):
         if not self.send_message(header):
             return False
         print('PASO 3')
+        ws_vars.MicroState.log_messages.append('3 - Cerar eje de carga')
 
         # Paso 4 - Esperar sensor homing activado
         state = ws_vars.MicroState.axis_flags[axis]['home_switch']
@@ -1066,11 +1077,13 @@ class RoutineHandler(threading.Thread):
             # print(state)
             time.sleep(0.01)
         print('HOME SW ACTIVADO')
+        ws_vars.MicroState.log_messages.append('4.1 - Home switch activado')
         # Espera a que salga de la chapa
         while state:
             state = ws_vars.MicroState.axis_flags[axis]['home_switch']
             time.sleep(0.01)
         print('HOME SW DESACTIVADO')
+        ws_vars.MicroState.log_messages.append('4.2 - Home switch desactivado')
         # Esperar fin de secuencia de homing
         time.sleep(1)
         current_pos = round(ws_vars.MicroState.axis_measures[axis]['pos_abs'], 2)
@@ -1082,6 +1095,7 @@ class RoutineHandler(threading.Thread):
             current_pos = round(ws_vars.MicroState.axis_measures[axis]['pos_abs'], 2)
         print(current_pos)
         print("FIN COMANDO HOMING")
+        ws_vars.MicroState.log_messages.append('4.3 - Fin comando homing')
         time.sleep(2)
         # gira una posición buscando la chapa
         command = Commands.mov_to_pos
@@ -1090,6 +1104,7 @@ class RoutineHandler(threading.Thread):
         if not self.send_message(header, data):
             return False
         print('gira una posición buscando la chapa')
+        ws_vars.MicroState.log_messages.append('4.4 - Gira posición buscando la chapa')
         # Espera sensor home activado
         state = ws_vars.MicroState.axis_flags[axis]['home_switch']
         while not state:
@@ -1098,6 +1113,7 @@ class RoutineHandler(threading.Thread):
         pos = ws_vars.MicroState.axis_measures[axis]['pos_fil']
         print('Espera sensor home activado')
         print("POSICION EN CHAPA", pos)
+        ws_vars.MicroState.log_messages.append('4.5 - Posición en chapa')
         # Detener eje
         command = Commands.stop
         msg_id = self.get_message_id()
@@ -1106,6 +1122,7 @@ class RoutineHandler(threading.Thread):
             return False
         time.sleep(0.5)
         print('Detener eje')
+        ws_vars.MicroState.log_messages.append('4.6 - Detener eje')
         # Configura cero
         header = None
         data = None
@@ -1134,6 +1151,7 @@ class RoutineHandler(threading.Thread):
             return False
         print('Configura cero')
         print('PASO 4')
+        ws_vars.MicroState.log_messages.append('4.7 - Configura cero')
 
         # Paso 5 - Clampea plato
         key_1 = 'expandir_clampeo_plato'
@@ -1145,6 +1163,7 @@ class RoutineHandler(threading.Thread):
         if not self.wait_for_remote_in_flag('clampeo_plato_expandido', group):
             return False
         print('PASO 5 - Clampea plato')
+        ws_vars.MicroState.log_messages.append('5 - Clampea plato')
 
         # Paso 6 - Power off
         command = Commands.power_off
@@ -1159,7 +1178,9 @@ class RoutineHandler(threading.Thread):
             return False
         print('PASO 6 - Power off')
 
+        ws_vars.MicroState.log_messages.append('6 - Apaga eje carga')
         print('FIN RUTINA HOMING')
+        ws_vars.MicroState.log_messages.append('Fin rutina homing')
         return True
        
 

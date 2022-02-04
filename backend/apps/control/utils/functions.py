@@ -387,7 +387,11 @@ def get_front_states():
         'graph': False,
         'graph_flag': ws_vars.MicroState.graph_flag,
 
-        'posicion_de_inicio': ctrl_vars.ROSCADO_CONSTANTES['posicion_de_inicio']
+        'posicion_de_inicio': ctrl_vars.ROSCADO_CONSTANTES['posicion_de_inicio'],
+
+        # Messages
+        'mensajes_log': ws_vars.MicroState.log_messages,
+        'mensajes_error': ws_vars.MicroState.err_messages,
     }
     return data
 
@@ -395,6 +399,8 @@ def get_front_states():
 def update_front_states():
     data = get_front_states()
     send_front_message(data)
+    ws_vars.MicroState.log_messages = []
+    ws_vars.MicroState.err_messages = []
 
 ################################################################################################
 ######################################## COMMANDS ##############################################

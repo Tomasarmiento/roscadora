@@ -9,6 +9,10 @@ class MicroState:
     msg_id          = 0         # Id of last msg sent
     cmd_rejected    = False
     cmd_ok          = False
+    
+    # Front
+    log_messages    = []
+    err_messages    = []
 
     # Remote/Local digital I/O
     rem_i_states        = []        # A dictionary with boolean values for each flag

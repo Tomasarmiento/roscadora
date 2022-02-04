@@ -188,27 +188,27 @@ window.onload = function() {
     });
 
     function InsertarTexto(datosWs) {
-        // console.log(datosWs);
+         console.log(datosWs);
         let datosCabezal = datosWs
         var ul = document.getElementById("cuadroMensajes");
-        console.log(datosCabezal);
+     
 
-        for (let i = 0; i < datosWs; i++) {
+        for (let i = 0; i < datosWs.length; i++) {
             const li = document.createElement("li");
-            li.setAttribute("style", "list-style: none;");
+            li.setAttribute("style", "list-style: none;" );
             li.innerHTML = datosWs[i];
             ul.prepend(li);
         }
     }
     
+    var listaMensajes = []; 
 socket.onmessage = function (event) {
   const datosWs = JSON.parse(event.data);
 
-  var listaMensajes = []; 
-    if (datosWs) {
-        listaMensajes.push(datosWs.cabezal_vel);
+    if (datosWs.mensajes_log.length > 0) {
+        listaMensajes.push(datosWs.mensajes_log);
         sessionStorage.setItem("mensajes", listaMensajes);
-        InsertarTexto(datosWs.cabezal_vel);
+        InsertarTexto(datosWs.mensajes_log);
     };
 
 
