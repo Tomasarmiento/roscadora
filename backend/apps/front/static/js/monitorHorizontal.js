@@ -26,6 +26,8 @@ window.addEventListener("DOMContentLoaded", () => {                         //to
     (window.location.hash);
     monitor = document.querySelector("#component-monitor");
     monitorHorizontal = document.querySelector("#component-monitor-horizontal");
+
+    
 });
 const totalDuration = 10000;
     const delayBetweenPoints = totalDuration / data.length;
@@ -184,10 +186,31 @@ window.onload = function() {
     break;
     }
     });
+
+    function InsertarTexto(datosWs) {
+        // console.log(datosWs);
+        let datosCabezal = datosWs
+        var ul = document.getElementById("cuadroMensajes");
+        console.log(datosCabezal);
+
+        for (let i = 0; i < datosWs; i++) {
+            const li = document.createElement("li");
+            li.setAttribute("style", "list-style: none;");
+            li.innerHTML = datosWs[i];
+            ul.prepend(li);
+        }
+    }
     
 socket.onmessage = function (event) {
   const datosWs = JSON.parse(event.data);
-  console.log(datosWs);
+
+  var listaMensajes = []; 
+    if (datosWs) {
+        listaMensajes.push(datosWs.cabezal_vel);
+        sessionStorage.setItem("mensajes", listaMensajes);
+        InsertarTexto(datosWs.cabezal_vel);
+    };
+
 
   // Tabla de datos
   const rpmActual = document.querySelector("#frRPMH");

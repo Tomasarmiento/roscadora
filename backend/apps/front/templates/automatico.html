@@ -137,27 +137,21 @@
             
         </div>
         
-		<div id="contenedor-continuarDetener" class="col-md-3 col-12 text-center">
-		<button type="button" class="btn btn-success mb-3" style="min-width: 205px; min-height: 65px" id="continue">Continuar</button>
-		<button type="button" class="btn btn-warning mb-3 detener" style="min-width: 205px; min-height: 65px" id="stop" cmd="{{ stop_all }}">Cancelar</button>
-		<!--<button type="button" class="btn btn-secondary mb-3" style="min-width: 205px; min-height: 65px" id="refrescar">Refrescar grafico</button>-->	
-	</div>
-    <!--<div class="col-md-4 mb-2 float-left justify-content-around px-1">
-        <div id="contenedor-terminal-texto" class="card col-md-12 text-left my-4 mx-auto border shadow rounded bg-white p-1" style="height: auto;">
-            <div id="salidaDeTexto"></div>
+		<div id="contenedor-continuarDetener" class="col-md-1 col-12 text-center">
+            <button type="button" class="btn btn-success mb-3" style="min-width: 205px; min-height: 65px" id="continue">Continuar</button>
+            <button type="button" class="btn btn-warning mb-3 detener" style="min-width: 205px; min-height: 65px" id="stop" cmd="{{ stop_all }}">Cancelar</button>	
         </div>
-    </div>-->
-	
-	
+        
+        <div class="col-md-4 mb-2 float-left justify-content-around px-1">
+            <div id="contenedor-terminal-texto" class="card col-md-12 text-left my-4 mx-auto border shadow rounded bg-white p-1" style="height: auto;">
+                <div id="salidaDeTexto"></div>
+                {% include 'cuadroDeTexto.html' %}
+            </div>
+        </div>
+
 </div>
+
 <script src="{% static 'js/automatico.js' %}"></script>
 <script src="{% static 'js/stopAll.js' %}"></script>
 </body>
 {% endblock %}
- 
-<!--<div class="col-md-4 mb-2 float-left justify-content-around px-1">
-	<div id="contenedor-terminal-texto" class="card col-md-12 text-left my-4 mx-auto border shadow rounded bg-white p-1" style="height: auto;">
-		<div id="salidaDeTexto"></div>
-	</div>
-</div>
-<div id="component-grafico-cedencia" class="col-md-9 col-12 bg-white border shadow rounded d-inline-flex p-1"></div>

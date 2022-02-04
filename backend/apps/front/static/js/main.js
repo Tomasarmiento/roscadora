@@ -59,7 +59,7 @@ socket.onmessage = function (event) {
 
   if (datosWs) {
     //Monitor
-    rpmActual.innerHTML = datosWs.husillo_rpm.toFixed(1)/6;
+    rpmActual.innerHTML = datosWs.husillo_rpm.toFixed(1);
     torqueActual.innerHTML = datosWs.husillo_torque.toFixed(1);
 
     posicionActualV.innerHTML = datosWs.cabezal_pos.toFixed(1);
