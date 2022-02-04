@@ -21,13 +21,24 @@ class MicroState:
     loc_o               = None
 
     # Flags
-    micro_flags         = {}            # Flags on the data part of the rx message
-    axis_flags          = [{}, {}, {}]  # Indexes corresponds with axis index
-
-    cabezal_on_timer    = datetime.now()
+    micro_flags     = {}            # Flags on the data part of the rx message
+    axis_flags      = [{}, {}, {}]  # Indexes corresponds with axis index
+    stopped         = False         # Raised when command/movemnt is interrupted
+    stop_messages   = []            # Describes stop cause
 
     # Measurements
-    axis_measures       = [{}, {}, {}]
+    axis_measures   = [{}, {}, {}]
+
+    # Routines flags
+    routine_stopped = False
+    routine_ongoing = False
+    load_allow_presure_off      = True
+    roscado_allow_presure_off   = True
+
+    # Master routine flags
+    master_running  = False
+    master_stop     = False
+    iteration       = 0
 
     # Graph
     position_values     = []

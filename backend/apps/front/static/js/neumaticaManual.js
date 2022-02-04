@@ -183,11 +183,11 @@ socket.onmessage = function (event) {
           : (verticalAbajo.className = "led led-grey");
 
           //Boquilla carga
-          datosWs.remote_inputs[0].boquilla_carga_contraida == true
+          datosWs.remote_inputs[0].boquilla_carga_contraida == false
           ? (boquillaCargaCierra.className = "led led-grey")
           : (boquillaCargaCierra.className = "led led-green");
 
-          datosWs.remote_inputs[0].boquilla_carga_expandida == true
+          datosWs.remote_inputs[0].boquilla_carga_expandida == false
           ? (boquillaCargaAbre.className = "led led-grey")
           : (boquillaCargaAbre.className = "led led-green");
 
@@ -221,11 +221,11 @@ socket.onmessage = function (event) {
           : (giroDescargaAbajo.className = "led led-green");
 
           //Boquilla descarga
-          datosWs.remote_inputs[0].boquilla_descarga_contraida == true
+          datosWs.remote_inputs[0].boquilla_descarga_contraida == false
           ? (boquillaDescargaCierra.className = "led led-grey")
           : (boquillaDescargaCierra.className = "led led-green");
 
-          datosWs.remote_inputs[0].boquilla_descarga_expandida == true
+          datosWs.remote_inputs[0].boquilla_descarga_expandida == false
           ? (boquillaDescargaAbre.className = "led led-grey")
           : (boquillaDescargaAbre.className = "led led-green");
 
@@ -329,7 +329,7 @@ socket.onmessage = function (event) {
           datosWs.remote_outputs[1].encender_bomba_hidraulica == true
           ? (bombaHidraulicaOff.className = "led led-grey")
           : (bombaHidraulicaOff.className = "led led-green");
-
+        console.log(datosWs);
           
         }
     }
@@ -339,25 +339,26 @@ socket.onmessage = function (event) {
 
 document.addEventListener("DOMContentLoaded", (e) => {
 
-    let btns_carga = document.getElementsByTagName('button');
+    let btns = document.getElementsByTagName('button');
     
-    for(let i=0; i < btns_carga.length; i++){
-        if(btns_carga[i].hasAttribute('menu')){
-            btns_carga[i].addEventListener('click', (e) => {
-                let menu = btns_carga[i].getAttribute('menu');
-                let cmd = btns_carga[i].getAttribute('cmd');
-                let name = btns_carga[i].getAttribute('id');
-                name = name.slice(0, name.indexOf('OnOff'));
-                sendCommand(cmd, menu, name);
+    for(let i=0; i < btns.length; i++){
+        if(btns[i].hasAttribute('menu')){
+            btns[i].addEventListener('click', (e) => {
+                let menu = btns[i].getAttribute('menu');
+                let cmd = btns[i].getAttribute('cmd');
+                let name = btns[i].getAttribute('id');
+                let btn = name.slice(name.indexOf('X')+1)
+                name = name.slice(0, name.indexOf('X'));
+                sendCommand(cmd, menu, name, btn);
             });
         }
     }
 });
 
 
-function sendCommand(cmd, menu, name){
+function sendCommand(cmd, menu, name, btn){
     let url = "http://localhost:8000/control/manual/neummatica/";
-    let params = "command=" + cmd + "&menu=" + menu + "&name=" + name;
+    let params = "command=" + cmd + "&menu=" + menu + "&name=" + name + "&btn=" + btn;
 
     // var params = "lorem=ipsum&name=alpha";
     let xhr = new XMLHttpRequest();

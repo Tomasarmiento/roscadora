@@ -60,7 +60,9 @@ def init_routine_info(routine_model):
     rtn_names = []
     for routine in routines:
         rtn_names.append(routine.name)
-    for rtn_name in ctrl_vars.ROUTINE_NAMES:
+        routine.running = 0
+        routine.save()
+    for rtn_name in ctrl_vars.ROUTINE_NAMES.values():
         if rtn_name not in rtn_names:
             routine_model.objects.create(name=rtn_name, running=0)
 
@@ -68,6 +70,12 @@ def init_routine_info(routine_model):
 def init_comands_ref_rates():
     for key, value in ctrl_vars.COMMAND_DEFAULT_VALUES.items():
         ctrl_vars.COMMAND_REF_RATES[key] = value
+
+
+def init_master_flags():
+    ws_vars.MicroState.master_running = False
+    ws_vars.MicroState.master_stop = False
+    ws_vars.MicroState.iteration = 0
 
 # -------------------------------------------------------------------------------------------- #
 # --------------------------------------- Routines ------------------------------------------- #
@@ -81,6 +89,34 @@ def get_running_routines(routine_model):
         if rtn.running == 1:
             running_routines.append(rtn.name)
     return running_routines
+
+
+def check_routine_allowed(routine_model, routine):
+    running_rtns = get_running_routines(routine_model)
+    homing_name = ctrl_vars.ROUTINE_NAMES[ctrl_vars.ROUTINE_IDS['cerado']]
+    cabezal_indexar = ctrl_vars.ROUTINE_NAMES[ctrl_vars.ROUTINE_IDS['cabezal_indexar']]
+    roscado = ctrl_vars.ROUTINE_NAMES[ctrl_vars.ROUTINE_IDS['roscado']]
+    routine_name = ctrl_vars.ROUTINE_NAMES[routine]
+
+    if running_rtns:
+
+        if homing_name in running_rtns:
+            print('Cerado en proceso')
+            return False
+
+        if cabezal_indexar in running_rtns:
+            print('indexado en proceso')
+            return False
+    
+        if routine_name == homing_name or routine_name in running_rtns:
+            print('Rutina en proceso')
+            return False
+    
+        if routine_name == cabezal_indexar and roscado in running_rtns:
+            print('Indexar prohibido: roscado en proceso')
+            return False
+    
+    return True
 
 
 # -------------------------------------------------------------------------------------------- #
@@ -124,7 +160,9 @@ def check_end_flags(flags_value):
     invalid_state_bit       = msg_app.AxisFlagsFin.FLGFIN_INVALID_STATE
     drv_not_enabled_bit     = msg_app.AxisFlagsFin.FLGFIN_DRV_NOT_ENABLED
     axis_disabled_bit       = msg_app.AxisFlagsFin.FLGFIN_AXIS_DISABLED
+
     end_states = []
+
     if flags_value & ok_bit == ok_bit:
         end_states = 'ok'
     else:
@@ -311,6 +349,7 @@ def update_states(micro_data):
 
 def get_front_states():
     data = {
+        # Measures
         'husillo_rpm': ws_vars.MicroState.axis_measures[ctrl_vars.AXIS_IDS['giro']]['vel_fil'],
         'husillo_torque': ws_vars.MicroState.axis_measures[ctrl_vars.AXIS_IDS['giro']]['torque_fil'],
 
@@ -320,9 +359,14 @@ def get_front_states():
         'avance_pos': ws_vars.MicroState.axis_measures[ctrl_vars.AXIS_IDS['avance']]['pos_fil'],
         'avance_vel': ws_vars.MicroState.axis_measures[ctrl_vars.AXIS_IDS['avance']]['vel_fil'],
 
+        # Axis states
         'lineal_enable': ws_vars.MicroState.axis_flags[ctrl_vars.AXIS_IDS['avance']]['estado'] == 'initial',
         'cabezal_enable': ws_vars.MicroState.axis_flags[ctrl_vars.AXIS_IDS['carga']]['estado'] == 'initial',
         'husillo_enable': ws_vars.MicroState.axis_flags[ctrl_vars.AXIS_IDS['giro']]['estado'] == 'initial',
+
+        'lineal_cero_desconocido': ws_vars.MicroState.axis_flags[ctrl_vars.AXIS_IDS['avance']]['cero_desconocido'],
+        'cabezal_cero_desconocido': ws_vars.MicroState.axis_flags[ctrl_vars.AXIS_IDS['carga']]['cero_desconocido'],
+        'husillo_cero_desconocido': ws_vars.MicroState.axis_flags[ctrl_vars.AXIS_IDS['giro']]['cero_desconocido'],
 
         'remote_inputs': ws_vars.MicroState.rem_i_states,
         'remote_outputs': ws_vars.MicroState.rem_o_states,
@@ -384,13 +428,14 @@ def set_rem_do(command, key, group, bool_value):
 def toggle_rem_do(command, keys, group):
     msg_id = ws_vars.MicroState.last_rx_header.get_msg_id() + 1
     ws_vars.MicroState.msg_id = msg_id
-
+    print('*********')
     mask = None
     out_value = None
     
     if type(keys) == type([]):
         key_1 = keys[0]
         key_2 = keys[1]
+        print(key_1, key_2)
 
         if group == 0:
             bit_1 = 0x0000 + 1 << ctrl_vars.REM_DO_G1_BITS[key_1]
