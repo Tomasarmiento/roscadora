@@ -119,7 +119,7 @@ BOQUILLA_ROSCADO = {
 # --------------------------------- Remote/Local outputs ------------------------------------- #
 # -------------------------------------------------------------------------------------------- #
 
-TIMEOUT_GENERAL         = 10
+TIMEOUT_GENERAL         = 20
 TIMEOUT_PNEUMATIC       = 20
 TIMEOUT_LOAD            = 10
 TIMEOUT_LINEAL          = 30

@@ -5,6 +5,7 @@ from .variables import back_channel_name
 
 def send_message(header, ch_info=None, data=None):        # Converts msg to bytes and sends it to ws micro connection
     
+    print('TX MSG ID:', header.get_msg_id())
     msg = header.pacself()
 
     if data:

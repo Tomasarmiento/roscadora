@@ -1026,7 +1026,7 @@ class RoutineHandler(threading.Thread):
         if not self.wait_for_lineal_mov(0):
             return False
         print('Paso 1.1 - Chequeo cero')
-        time.sleep(1)
+        time.sleep(10)
         ws_vars.MicroState.log_messages.append('1.1 - Chequeo cerado')
         
         # Paso 1.2 - Mover a posición de inicio
@@ -1034,10 +1034,11 @@ class RoutineHandler(threading.Thread):
         if not self.mov_to_pos_lineal(pos_inicio):
             return False
         print('Mov to pos')
-        time.sleep(1)
-
+        time.sleep(2)
+        print('Posicion actual de paso 1.2:', ws_vars.MicroState.axis_measures[eje_avance]['pos_fil'])
         if not self.wait_for_lineal_mov(pos_inicio):
             return False
+        
         print('Paso 1.2 - Mover a posición de inicio')
         ws_vars.MicroState.log_messages.append('1.2 - Mover a posición de inicio')
 

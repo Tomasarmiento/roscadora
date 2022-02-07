@@ -222,6 +222,7 @@ def update_axis_data(micro_data):
         time_diff = datetime.now() - ws_vars.MicroState.load_on_timer
         if time_diff.total_seconds() >= ctrl_vars.CABEZAL_ON_TIMEOFF:
             print('Cabezal timeout excedido')
+            ws_vars.MicroState.err_messages.append('Tiempo de cabezal encendido con clampeo excedido')
             ws_vars.MicroState.turn_load_drv_off = True
     else:
         ws_vars.MicroState.load_on_timer = datetime.now()

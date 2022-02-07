@@ -48,7 +48,7 @@ class FrontConsumer(AsyncWebsocketConsumer):
         channel_info = ChannelInfo.objects.get(name=self.channel_name)
         channel_info.delete()
 
-class MicroConsumer(WebsocketConsumer):
+class MicroDataConsumer(WebsocketConsumer):
 
     def connect(self):
         ChannelInfo.objects.create(
@@ -57,14 +57,16 @@ class MicroConsumer(WebsocketConsumer):
             )
         ws_vars.back_channel_name = self.channel_name
         self.accept()
-        print('Micro WS connected')
+        print('Micro WS data connected')
 
     def receive(self, text_data=None, bytes_data=None):
+
         h_bytes_len = MicroState.last_rx_header.bytes_length
         if len(bytes_data) > h_bytes_len:
             MicroState.last_rx_header.store_from_raw(bytes_data[:h_bytes_len])
             MicroState.last_rx_data.store_from_raw(bytes_data[h_bytes_len:])
             ctrl_fun.update_states(micro_data=MicroState.last_rx_data)
+            
             if MicroState.turn_load_drv_off:
                 MicroState.turn_load_drv_off = False
                 command = Commands.power_off
@@ -77,6 +79,33 @@ class MicroConsumer(WebsocketConsumer):
             # show_states(MicroState.last_rx_header, MicroState.last_rx_data)
         else:
             MicroState.last_rx_header.store_from_raw(bytes_data)
+
+    def micro_command(self, event):
+        self.send(bytes_data=event['bytes_data'])
+
+    def disconnect(self, close_code):
+        print("DISCONNECED CODE: ", close_code)
+
+        channel_info = ChannelInfo.objects.get(name=self.channel_name)
+        channel_info.delete()
+
+        self.close()
+
+
+class MicroLogConsumer(WebsocketConsumer):
+
+    def connect(self):
+        ChannelInfo.objects.create(
+            source='micro',
+            name = self.channel_name,
+            log = 1
+            )
+        ws_vars.back_channel_name = self.channel_name
+        self.accept()
+        print('Micro WS log connected')
+    
+    def receive(self, text_data=None, bytes_data=None):
+        print(text_data)
 
     def micro_command(self, event):
         self.send(bytes_data=event['bytes_data'])

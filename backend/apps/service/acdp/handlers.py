@@ -2,12 +2,14 @@ from datetime import datetime
 from apps.service.acdp.acdp import ACDP_VERSION, ACDP_UDP_PORT, ACDP_IP_ADDR
 from apps.service.acdp.acdp import AcdpHeader
 from apps.service.acdp.messages_app import AcdpPc, AcdpMsgCodes, AcdpMsgParams, AcdpAxisMovementEnums
-from apps.service.acdp.messages_base import AcdpMsgCmdParam, BaseStructure, AcdpMsgCxn, AcdpMsgCmd, AcdpMsgCmdParamSetZeroDrvFbk, AcdpMsgCmd
+from apps.service.acdp.messages_base import AcdpMsgCmdParam, BaseStructure, AcdpMsgCxn, AcdpMsgCmd, AcdpMsgCmdParamSetZeroDrvFbk, AcdpMsgCmd, AcdpMsgData, AcdpMsgCfgSet
+from apps.service.acdp import messages_base as msg_base
 
 
 class AcdpMessage(BaseStructure):
     last_rx_data = AcdpPc()
     last_rx_header = AcdpHeader()
+    log_messages = []
 
     _fields_ = [
         ('header', AcdpHeader),
@@ -35,9 +37,24 @@ class AcdpMessage(BaseStructure):
             transport.sendto(tx_header.pacself(), addr)
             update_front = False
         
-        elif msg_code == AcdpMsgCmd.CD_REJECTED:
-            print('Comando rechazado')
+        else:
+            msg = None
+            
+            if msg_code != AcdpMsgData.CD_ALL:
+                msg = 'RX MESSAGE ID:' + str(self.header.get_msg_id())
 
+            if msg_code == AcdpMsgCmd.CD_REJECTED:
+                msg = 'RX CODE - Comando rechazado'
+            
+            elif msg_code == AcdpMsgCxn.CD_ECHO_TIMEOUT:
+                msg = 'RX CODE - ECHO TIMEOUT'
+
+            elif msg_code == AcdpMsgCfgSet.CD_SUCCESSFUL:
+                msg = 'RX CODE - Configuración exitosa'
+            
+            if msg:
+                AcdpMessage.log_messages.append(msg)
+            
         return update_front
 
 

@@ -55,8 +55,8 @@ async def ws_graphs_client():
     while True:
         await asyncio.sleep(10)
 
-async def ws_client():
-    uri = "ws://localhost:8000/ws/micro/"
+async def ws_client_data():
+    uri = "ws://localhost:8000/ws/micro/data/"
     while True:
         try:
             async with websockets.connect(uri) as websocket:
@@ -71,20 +71,47 @@ async def ws_client():
             break
 
 
+async def ws_client_log():
+    uri = "ws://localhost:8000/ws/micro/log/"
+    while True:
+        try:
+            async with websockets.connect(uri) as websocket:
+                producer_task = asyncio.ensure_future(ws_msg_response(websocket))
+                done, pending = await asyncio.wait(
+                    [producer_task],
+                    return_when = asyncio.FIRST_COMPLETED
+                )
+                for task in pending:
+                    task.cancel()
+                while websocket.open:
+                    await asyncio.sleep(1)
+
+        except ConnectionRefusedError:
+            await asyncio.sleep(1)
+
+        except KeyboardInterrupt:
+            break
+
 class WsStates:
+    # Micro data
     REFRESH_TIME = 0.1
     update_front = False
     micro_connected = False
     updata_front = False
     timestamp = 0
 
+    # Responses
+    pending_messages = False
+    log_messages = []
+    msg_id = -1
+
 
 async def ws_handler(websocket):
     consumer_task = asyncio.ensure_future(ws_consumer(websocket))
     producer_task_1 = asyncio.ensure_future(ws_states_update(websocket))
-    producer_task_2 = asyncio.ensure_future(ws_msg_response(websocket))
+    # producer_task_2 = asyncio.ensure_future(ws_msg_response(websocket))
     done, pending = await asyncio.wait(
-        [consumer_task, producer_task_1, producer_task_2],
+        [consumer_task, producer_task_1],
         return_when = asyncio.FIRST_COMPLETED
         )
     for task in pending:
@@ -126,21 +153,17 @@ async def ws_states_update(websocket):
 
 async def ws_msg_response(websocket):
     while True:
-        await asyncio.sleep(5)
-        # try:
-        #     while MicroWSHandler.pending_msg == False:
-        #         await asyncio.sleep(0.01)
-            
-        #     MicroWSHandler.pending_msg = False
-        #     msg = {
-        #         "code": MicroWSHandler.code,
-        #         "message": MicroWSHandler.message
-        #     }
-
-        #     await websocket.send(json.dumps(msg))
-
-        # except websockets.exceptions.ConnectionClosed:
-        #     break
+        try:
+            if AcdpMessage.log_messages:
+                msg = {
+                    'msg_id': AcdpMessage.last_rx_header.get_msg_id(),
+                    'messages': AcdpMessage.log_messages
+                }
+                await websocket.send(json.dumps(msg))
+                AcdpMessage.log_messages = []
+            await asyncio.sleep(0.5)
+        except websockets.exceptions.ConnectionClosed:
+            break
 
 
 def get_states_msg():
