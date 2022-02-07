@@ -5,7 +5,7 @@ from django.http import response
 import websockets
 
 from apps.service.acdp.acdp import ACDP_UDP_PORT, ACDP_IP_ADDR, AcdpHeader
-from apps.service.acdp.handlers import AcdpMessage
+from apps.service.acdp.handlers import AcdpMessage, AcdpMessagesControl
 
 from apps.service.api.functions import force_connection, open_connection, send_message
 from apps.service.api.variables import last_rx_msg
@@ -40,6 +40,7 @@ class UDPProtocol(asyncio.DatagramProtocol):
     def datagram_received(self, data, addr):    # addr is tuple (IP, PORT), example ('192.168.0.28', 54208)
         self.rx_msg.store_from_raw(data)
         WsStates.updata_front = self.rx_msg.process_rx_msg(transport=self.transport)
+        AcdpMessagesControl.last_rx_msg.store_from_raw(self.rx_msg.pacself())
         
     def error_received(self, exc: Exception) -> None:
         return super().error_received(exc)
@@ -134,10 +135,10 @@ async def ws_consumer(websocket):       # Fordwards message to micro. Message is
 async def ws_states_update(websocket):
     while True:
         try:
-            if WsStates.timestamp != AcdpMessage.last_rx_header.ctrl.timestamp:
-                WsStates.timestamp = AcdpMessage.last_rx_header.ctrl.timestamp
+            if WsStates.timestamp != AcdpMessagesControl.last_rx_msg.header.ctrl.timestamp:
+                WsStates.timestamp = AcdpMessagesControl.last_rx_msg.header.ctrl.timestamp
                 if WsStates.updata_front:
-                    msg = AcdpMessage.last_rx_header.pacself() + AcdpMessage.last_rx_data.pacself()
+                    msg = AcdpMessagesControl.last_rx_msg.header.pacself() + AcdpMessagesControl.last_rx_msg.data.pacself()
                     await websocket.send(msg)
                     WsStates.updata_front = False
             
@@ -154,13 +155,13 @@ async def ws_states_update(websocket):
 async def ws_msg_response(websocket):
     while True:
         try:
-            if AcdpMessage.log_messages:
+            if AcdpMessagesControl.log_messages:
                 msg = {
                     'msg_id': AcdpMessage.last_rx_header.get_msg_id(),
-                    'messages': AcdpMessage.log_messages
+                    'messages': AcdpMessagesControl.log_messages
                 }
                 await websocket.send(json.dumps(msg))
-                AcdpMessage.log_messages = []
+                AcdpMessagesControl.log_messages = []
             await asyncio.sleep(0.5)
         except websockets.exceptions.ConnectionClosed:
             break

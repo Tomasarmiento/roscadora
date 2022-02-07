@@ -9,7 +9,6 @@ from apps.service.acdp import messages_base as msg_base
 class AcdpMessage(BaseStructure):
     last_rx_data = AcdpPc()
     last_rx_header = AcdpHeader()
-    log_messages = []
 
     _fields_ = [
         ('header', AcdpHeader),
@@ -53,9 +52,20 @@ class AcdpMessage(BaseStructure):
                 msg = 'RX CODE - Configuración exitosa'
             
             if msg:
-                AcdpMessage.log_messages.append(msg)
+                AcdpMessagesControl.log_messages.append(msg)
             
         return update_front
+
+
+class AcdpMessagesControl:
+    last_rx_msg = AcdpMessage()
+    log_messages = []
+
+    def get_last_msg_id():
+        return AcdpMessagesControl.last_rx_msg.header.get_msg_id()
+    
+    def get_last_msg_toggle_flags():
+        return AcdpMessagesControl.last_rx_msg.data.data.flags
 
 
 def build_msg(code, host_ip="192.168.0.100", dest_ip=ACDP_IP_ADDR, params={}, *args, **kwargs):
