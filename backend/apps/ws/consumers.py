@@ -53,7 +53,8 @@ class MicroConsumer(WebsocketConsumer):
     def connect(self):
         ChannelInfo.objects.create(
             source='micro',
-            name = self.channel_name
+            name = self.channel_name,
+            log = 0
             )
         ws_vars.back_channel_name = self.channel_name
         self.accept()
