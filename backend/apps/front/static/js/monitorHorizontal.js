@@ -50,6 +50,7 @@ window.onload = function() {
     
 
     const btnContainer = document.querySelector("#resetZoomDiv");
+    // const btnSemiContainer = document.querySelector("#contenedor-semiAutomaticoRutinas");
    
     var commonOptions = {
         scales: {
@@ -174,8 +175,6 @@ window.onload = function() {
         }   
     });
     
-    
-   
     btnContainer.addEventListener("click", (e) => {
     switch (e.target.id) {
       case "resetZoom":
@@ -187,12 +186,28 @@ window.onload = function() {
     }
     });
 
-    function InsertarTexto(datosWs) {
-         console.log(datosWs);
-        let datosCabezal = datosWs
-        var ul = document.getElementById("cuadroMensajes");
-     
+    // btnSemiContainer.addEventListener("click", (e) => {
+    //     switch (e.target.id) {
+    //       case "roscado":
+    //         xAccelChartInstance.destroy();
+    //     break;
+    //     }
+    // });
 
+    
+
+    function InsertarTexto(datosWs) {
+        var ul = document.getElementById("cuadroMensajes");
+        for (let i = 0; i < datosWs.length; i++) {
+            const li = document.createElement("li");
+            li.setAttribute("style", "list-style: none;" );
+            li.innerHTML = datosWs[i];
+            ul.prepend(li);
+        }
+    }
+
+    function InsertarTextoErrores(datosWs) {
+        var ul = document.getElementById("cuadroMensajesErrores");
         for (let i = 0; i < datosWs.length; i++) {
             const li = document.createElement("li");
             li.setAttribute("style", "list-style: none;" );
@@ -202,13 +217,19 @@ window.onload = function() {
     }
     
     var listaMensajes = []; 
-socket.onmessage = function (event) {
-  const datosWs = JSON.parse(event.data);
+    var listaMensajesErrores = [];
+    socket.onmessage = function (event) {
+     const datosWs = JSON.parse(event.data);
 
     if (datosWs.mensajes_log.length > 0) {
         listaMensajes.push(datosWs.mensajes_log);
         sessionStorage.setItem("mensajes", listaMensajes);
         InsertarTexto(datosWs.mensajes_log);
+    };
+    if (datosWs.mensajes_error.length > 0) {
+        listaMensajesErrores.push(datosWs.mensajes_error);
+        sessionStorage.setItem("mensajes", listaMensajesErrores);
+        InsertarTextoErrores(datosWs.mensajes_error);
     };
 
 

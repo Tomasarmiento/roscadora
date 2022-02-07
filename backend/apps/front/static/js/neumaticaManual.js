@@ -37,6 +37,10 @@ socket.onmessage = function (event) {
         const indexar = document.querySelector("#statusIndex");
         //Roscado
         const roscado = document.querySelector("#statusRoscado")
+
+        
+        
+        
       
         //Carga
         const horizontalCargaAdelante = document.querySelector("#horizontalCargaAdelanteOk");
@@ -99,23 +103,27 @@ socket.onmessage = function (event) {
 
 
             //cabezal
-            datosWs.estado_eje_carga == 'initial'
-            ? (cabezal.className = "bg-success indicadorMon") && (cabezal.innerHTML = 'Cabezal <br/> Initial')
-            : (cabezal.className = "bg-secondary indicadorMon");
+            if (datosWs.estado_eje_carga == 'initial'){
+            (cabezal.className = "bg-success indicadorMon") && (cabezal.innerHTML = 'Cabezal <br/> Initial') 
+            }
 
-            datosWs.estado_eje_carga == 'homing'
-            ? (cabezal.className = "bg-warning indicadorMon") && (cabezal.innerHTML = 'Cabezal <br/> Homming')
-            : (cabezal.className = "bg-secondary indicadorMon");
+                else if (datosWs.estado_eje_carga == 'homing'){
+                (cabezal.className = "bg-warning indicadorMon") && (cabezal.innerHTML = 'Cabezal <br/> Homming')
+                }
 
+            else (cabezal.className = "bg-secondary indicadorMon");
+            
+            
             //eje lineal
-            datosWs.estado_eje_avance == 'initial'
-            ? (ejeLineal.className = "bg-success indicadorMon") && (ejeLineal.innerHTML = 'Eje lineal <br/> Initial')
-            : (ejeLineal.className = "bg-secondary indicadorMon");
+            if (datosWs.estado_eje_avance == 'initial'){
+            (ejeLineal.className = "bg-success indicadorMon") && (ejeLineal.innerHTML = 'Eje lineal <br/> Initial') 
+            }
 
-            datosWs.estado_eje_avance == 'homing'
-            ? (ejeLineal.className = "bg-warning indicadorMon") && (ejeLineal.innerHTML = 'Eje lineal <br/> Homming')
-            : (ejeLineal.className = "bg-secondary indicadorMon");
+                else if (datosWs.estado_eje_avance == 'homing'){
+                (ejeLineal.className = "bg-warning indicadorMon") && (ejeLineal.innerHTML = 'Eje lineal <br/> Homming')
+                }
 
+            else (ejeLineal.className = "bg-secondary indicadorMon");
 
             //descarga
             datosWs.remote_outputs[1].encender_bomba_hidraulica == true 

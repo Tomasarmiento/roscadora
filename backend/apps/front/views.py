@@ -45,3 +45,6 @@ def semiAutomatico(request):
 
 def parametrosPagina1(request):
     return render(request, "parametrosP1.html")
+
+def logAlarma(request):
+    return render(request, "logAlarma.html")
