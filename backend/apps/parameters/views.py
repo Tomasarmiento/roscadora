@@ -24,7 +24,7 @@ class ParameterListView(ListView):
 
 class ParameterView(View):
 
-    def post(request):
+    def post(self, request):
         post_req = request.POST
         req_data = {}
         
@@ -40,13 +40,31 @@ class ParameterView(View):
                 param.value = req_data[param.name]
                 param.save()
                 param_vars.PARAMS[param.name] = param.value
-
-        response = HttpResponse()
-        response.status_code = 200
-        return render(request, 'parameters.html')
+        
+        return render(request, 'parameters.html', self.get_context())
     
-    def get(request):
-        return render(request, 'parameters.html')
+    def get(self, request):
+        context = self.get_context()
+        return render(request, 'parameters.html', context)
+    
+    def get_context(self):
+        params = Parameter.objects.all()
+        context = {}
+        for option in param_vars.PART_MODEL_OPTIONS:
+            f_params = params.filter(part_model=option)
+            ctx_params = []
+            for name in param_vars.PARAM_NAMES:
+                param = f_params.get(name=name)
+                ctx_params.append({
+                    'name': name,
+                    'description': param.description,
+                    'value': param.value,
+                    'unit': param.unit
+                })
+            option_key = 'model_' + str(option)
+            context[option_key] = ctx_params
+        return context
+
 
 
 def update_parameters(request):
