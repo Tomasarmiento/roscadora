@@ -51,8 +51,10 @@ class MicroState:
     graph_duration      = 0
 
     # General
-    load_on_timer       = datetime.now()
+    load_on_timer       = datetime.now()    # Timer para apagar eje de carga con cabezal clampeado
+    turn_on_timer       = datetime.now()    # Timer para apagar eje de husillo con velocidad 0
     turn_load_drv_off   = False
+    turn_turn_drv_off   = False
 
 class WsCodes:
     states          = 0

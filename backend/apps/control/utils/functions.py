@@ -1,4 +1,4 @@
-import threading
+import django
 import random, time
 from datetime import datetime
 from apps.service.acdp.handlers import build_msg
@@ -149,32 +149,45 @@ def check_end_flags(flags_value):
     else:
         if flags_value & cancel_bit == cancel_bit:
             end_states.append('cancel')
+            ws_vars.MicroState.err_messages.append('Comando cancelado')
         if flags_value & em_stop_bit == em_stop_bit:
             end_states.append('em_stop')
+            ws_vars.MicroState.err_messages.append('Parada de emergencia')
         if flags_value & drv_homing_err_bit == drv_homing_err_bit:
             end_states.append('homming_error')
+            ws_vars.MicroState.err_messages.append('Error de cerado')
         if flags_value & echo_timeout_bit == echo_timeout_bit:
             end_states.append('echo_timeout')
+            ws_vars.MicroState.err_messages.append('Eco tiemout')
         if flags_value & pos_abs_disabled_bit == pos_abs_disabled_bit:
             end_states.append('pos_abs_disabled')
+            ws_vars.MicroState.err_messages.append('Posicion absuluta deshabilitada')
         if flags_value & unkown_zero_bit == unkown_zero_bit:
             end_states.append('unkown_zero')
+            ws_vars.MicroState.err_messages.append('Cero desconocido')
         if flags_value & pos_fbk_err_bit == pos_fbk_err_bit:
             end_states.append('pos_fbk_err')
+            ws_vars.MicroState.err_messages.append('Position feedback error')
         if flags_value & limit_vel_exceeded_bit == limit_vel_exceeded_bit:
             end_states.append('limit_vel_exceeded')
+            ws_vars.MicroState.err_messages.append('Limite de velocidad exedido')
         if flags_value & limit_pos_exceeded_bit == limit_pos_exceeded_bit:
             end_states.append('limit_pos_exceeded')
+            ws_vars.MicroState.err_messages.append('Limite de posicion exedido')
         if flags_value & limit_fza_exceeded_bit == limit_fza_exceeded_bit:
             end_states.append('limit_fza_exceeded')
+            ws_vars.MicroState.err_messages.append('Limite de fuerza exedido')
         if flags_value & yield_bit == yield_bit:
             end_states.append('yield')
         if flags_value & invalid_state_bit == invalid_state_bit:
             end_states.append('invalid_state')
+            ws_vars.MicroState.err_messages.append('Estado invalido')
         if flags_value & drv_not_enabled_bit == drv_not_enabled_bit:
             end_states.append('drv_not_enabled')
+            ws_vars.MicroState.err_messages.append('Driver not enabled')
         if flags_value & axis_disabled_bit == axis_disabled_bit:
             end_states.append('axis_disabled')
+            ws_vars.MicroState.err_messages.append('Axis disabled')
     
     return end_states
 
@@ -226,6 +239,21 @@ def update_axis_data(micro_data):
             ws_vars.MicroState.turn_load_drv_off = True
     else:
         ws_vars.MicroState.load_on_timer = datetime.now()
+    
+    if ws_vars.MicroState.axis_flags[ctrl_vars.AXIS_IDS['giro']]['estado'] == 'initial' and \
+        round(ws_vars.MicroState.axis_measures[ctrl_vars.AXIS_IDS['giro']]['vel_fil'], 0) == 0:
+        
+        from apps.control.models import RoutineInfo
+        roscado_info = RoutineInfo.objects.get(name='roscado')
+
+        if roscado_info.running == 0:
+            time_diff = datetime.now() - ws_vars.MicroState.turn_on_timer
+            if time_diff.total_seconds() >= ctrl_vars.GIRO_ON_TIMEOUT:
+                ws_vars.MicroState.turn_turn_drv_off = True
+    
+    else:
+        ws_vars.MicroState.turn_on_timer = datetime.now()
+
 
 def update_rem_io_states(micro_data):
     g_1_i = {}
@@ -310,31 +338,11 @@ def update_graph():
         ws_vars.MicroState.torque_values.append(torque_value)
 
 
-def check_timeouts():
-    flag = msg_base.DrvFbkDataFlags.ENABLED
-    key_1 = 'contraer_clampeo_plato'
-    key_2 = 'expandir_clampeo_plato'
-    axis = ctrl_vars.AXIS_IDS['carga']
-    if ws_vars.MicroState.rem_o_states[1][key_1] == False and ws_vars.MicroState.rem_o_states[1][key_2] == True:  # Plato clampeado
-        if ws_vars.MicroState.axis_flags[axis]['drv_flags'] & flag == 0:     # Servo de carga apagado
-            ws_vars.MicroState.cabezal_on_timer = datetime.now()    # Resetea timer
-        else:
-            ws_vars.MicroState.cabezal_on_timer = datetime.now() - ws_vars.MicroState.cabezal_on_timer
-            if ws_vars.MicroState.cabezal_on_timer > ctrl_vars.CABEZAL_ON_TIMEOFF:
-                msg_id = get_message_id()
-                cmd = Commands.power_off
-                header = build_msg(cmd, eje=axis, msg_id=msg_id)
-                ch_info = get_ch_info
-                send_message(header)
-                ws_vars.MicroState.cabezal_on_timer = datetime.now()    # Resetea timer
-
-
 def update_states(micro_data):
     update_io_states(micro_data)
     update_data_flags(micro_data)
     update_axis_data(micro_data)
     update_graph()
-    # check_timeouts()
     update_front_states()           # Should always be called at the end
 
 

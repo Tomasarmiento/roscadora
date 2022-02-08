@@ -42,6 +42,15 @@ class AcdpMessage(BaseStructure):
             if msg_code != AcdpMsgData.CD_ALL:
                 msg = 'RX MESSAGE ID:' + str(self.header.get_msg_id())
 
+            elif msg_code == AcdpMsgData.CD_ALL:
+                last_data_flags = AcdpMessagesControl.last_rx_msg.data.data.flags
+                new_data_flags = self.data.data.flags
+                if last_data_flags != new_data_flags:
+                    if new_data_flags == ~last_data_flags:
+                        print('Comando recibido. ID:', self.header.get_msg_id())
+                    # print('old:', f'{last_data_flags:03b}')
+                    # print('new:', f'{new_data_flags:03b}')
+
             if msg_code == AcdpMsgCmd.CD_REJECTED:
                 msg = 'RX CODE - Comando rechazado'
             

@@ -76,6 +76,17 @@ class MicroDataConsumer(WebsocketConsumer):
                 header = build_msg(command, eje=axis, msg_id=msg_id)
                 header = header.pacself()
                 self.send(bytes_data=header)
+            
+            if MicroState.turn_turn_drv_off:
+                MicroState.turn_turn_drv_off = False
+                command = Commands.power_off
+                axis = ctrl_vars.AXIS_IDS['giro']
+                msg_id = ws_vars.MicroState.last_rx_header.get_msg_id() + 1
+                ws_vars.MicroState.msg_id = msg_id
+                header = build_msg(command, eje=axis, msg_id=msg_id)
+                header = header.pacself()
+                self.send(bytes_data=header)
+
             # show_states(MicroState.last_rx_header, MicroState.last_rx_data)
         else:
             MicroState.last_rx_header.store_from_raw(bytes_data)
