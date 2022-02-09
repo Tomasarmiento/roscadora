@@ -14,7 +14,7 @@ def init_channel_info(ch_model):
 
 def get_ch_info(ch_model, source):
     try:
-        return ch_model.objects.get(source=source)
+        return ch_model.objects.filter(source=source).get(log=0)
     
     except ch_model.DoesNotExist:
         return False

@@ -7,5 +7,5 @@ class ParametersConfig(AppConfig):
     name = 'apps.parameters'
 
     def ready(self):
-        from .models import Parameter
-        init_params(Parameter)
+        # from .models import Parameter
+        init_params()

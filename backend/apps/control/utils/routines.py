@@ -466,14 +466,22 @@ class RoutineHandler(threading.Thread):
         if False in init_flags:
             return
         
-        # Paso 0.1 - expandir_horiz_pinza_desc
+        # Paso 0.1 - Abrir válvula de boquilla hidráulica
+        boquilla = self.get_current_boquilla_descarga()
+        key_1 = 'abrir_boquilla_' + str(boquilla)
+        key_2 = 'cerrar_boquilla_' + str(boquilla)
+        group = 1
+        self.send_pneumatic(key_1, group, 1, key_2, 0)
+        print('0.1 - Abrir válvula de boquilla hidráulica')
+
+        # Paso 0.2 - expandir_horiz_pinza_desc
         key = 'expandir_horiz_pinza_desc'
         group = 1
         if not self.send_pneumatic(key, group, 1):
             return False
         print('expandir_horiz_pinza_desc')
-        print('Paso 0.1')
-
+        print('Paso 0.2')
+        
         # Paso 1 - Expandir puntera descarga
         unload_init_flags = [
             ws_vars.MicroState.rem_i_states[1]['clampeo_plato_expandido'],          # Plato clampeado
@@ -499,7 +507,7 @@ class RoutineHandler(threading.Thread):
         if not self.wait_for_not_remote_in_flag(wait_key, wait_group):
             return False
 
-        time.sleep(2)
+        time.sleep(5)
         print('Paso 1 - Expandir puntera descarga')
 
         # Paso 1.1 - Verifica paso 0.1
@@ -508,14 +516,14 @@ class RoutineHandler(threading.Thread):
         if not self.wait_for_remote_in_flag(wait_key, wait_group):
             return False
 
-        # Paso 1.2 - expandir_vert_pinza_desc
+        # Paso 2 - expandir_vert_pinza_desc
         key = 'expandir_vert_pinza_desc'
         group = 1
         if not self.send_pneumatic(key, group, 1):
             return False
-        print('PASO 1.1')
+        print('PASO 2')
 
-        # Paso 2 - Boquilla descarga contraida
+        # Paso 3 - Boquilla descarga contraida
         key = 'contraer_boquilla_descarga'
         wait_key = 'boquilla_descarga_expandida'
         group = 0
@@ -527,21 +535,12 @@ class RoutineHandler(threading.Thread):
         time.sleep(1)
         print('contraer_boquilla_descarga')
 
-        # Paso 3 - Verifica paso 1.2
+        # Paso 4 - Verifica paso 2
         wait_key = 'vert_pinza_desc_expandido'
         wait_group = 1
         if not self.wait_for_remote_in_flag(wait_key, wait_group):
             return False
         print('expandir_vert_pinza_desc')
-
-        # Paso 4 - Abrir válvula de boquilla hidráulica
-        boquilla = self.get_current_boquilla_descarga()
-        key_1 = 'abrir_boquilla_' + str(boquilla)
-        key_2 = 'cerrar_boquilla_' + str(boquilla)
-        group = 1
-        self.send_pneumatic(key_1, group, 1, key_2, 0)
-        print('CERRAR VALVULA HIDRAULICA')
-        time.sleep(5)
 
         # Paso 5 - Puntera descargador contraída
         key_1 = 'contraer_puntera_descarga'
@@ -930,6 +929,14 @@ class RoutineHandler(threading.Thread):
             return False
         print('Paso 13 - Enable husillo OFF')
 
+        # Paso 13.1 - Abrir válvula de boquilla hidráulica
+        boquilla = self.get_current_boquilla_roscado()
+        key_1 = 'abrir_boquilla_' + str(boquilla)
+        key_2 = 'cerrar_boquilla_' + str(boquilla)
+        group = 1
+        self.send_pneumatic(key_1, group, 1, key_2, 0)
+        print('13.1 - Abrir válvula de boquilla hidráulica')
+
         # Paso 14 - Avance a posicion de inicio
         axis = ctrl_vars.AXIS_IDS['avance']
         command = Commands.mov_to_pos
@@ -1019,7 +1026,7 @@ class RoutineHandler(threading.Thread):
         if not self.wait_for_lineal_mov(0):
             return False
         print('Paso 1.1 - Chequeo cero')
-        time.sleep(1)
+        time.sleep(10)
         ws_vars.MicroState.log_messages.append('1.1 - Chequeo cerado')
         
         # Paso 1.2 - Mover a posición de inicio
@@ -1027,10 +1034,11 @@ class RoutineHandler(threading.Thread):
         if not self.mov_to_pos_lineal(pos_inicio):
             return False
         print('Mov to pos')
-        time.sleep(1)
-
+        time.sleep(2)
+        print('Posicion actual de paso 1.2:', ws_vars.MicroState.axis_measures[eje_avance]['pos_fil'])
         if not self.wait_for_lineal_mov(pos_inicio):
             return False
+        
         print('Paso 1.2 - Mover a posición de inicio')
         ws_vars.MicroState.log_messages.append('1.2 - Mover a posición de inicio')
 
