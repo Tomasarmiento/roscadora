@@ -139,7 +139,10 @@ def show_states(header, data):
     # print(len(ws_vars.MicroState.position_values))
     # print(len(ws_vars.MicroState.torque_values))
     # print(ws_vars.MicroState.graph_duration)
-    print(ws_vars.MicroState.rem_i_states[1]['presion_normal'])
+    # print(ws_vars.MicroState.rem_i_states[1]['presion_normal'])
+    for key, value in ws_vars.MicroState.loc_i.items():
+        print(f'{key}:', f'{value:06b}')
+    # print(ws_vars.MicroState.loc_i)
     # print (MicroState.axis_measures[ctrl_var.AXIS_IDS['carga']])
     # for axis in MicroState.axis_measures:
     #     print(axis)

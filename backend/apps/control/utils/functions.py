@@ -309,12 +309,14 @@ def update_loc_io_states(micro_data):
         key = ctrl_vars.LOC_DI_ARR[i]
         loc_in[key] = (micro_data.data.ctrl.loc_io.di16 & flag == flag)
         ctrl_vars.LOC_DI_STATES[key] = loc_in[key]
+        ws_vars.MicroState.loc_i[key] = micro_data.data.ctrl.loc_io.di16 & flag
     
     for i in range(len(ctrl_vars.LOC_DO_ARR)):
         flag = 1 << i
         key = ctrl_vars.LOC_DO_ARR[i]
         loc_out[key] = (micro_data.data.ctrl.loc_io.do16 & flag == flag)
         ctrl_vars.LOC_DO_STATES[key] = loc_out[key]
+        ws_vars.MicroState.loc_o[key] = micro_data.data.ctrl.loc_io.do16 & flag
     
     states = {
         'i': loc_in,

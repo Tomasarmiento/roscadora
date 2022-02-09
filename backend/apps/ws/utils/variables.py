@@ -21,8 +21,8 @@ class MicroState:
     rem_o               = []
     loc_i_states        = None
     loc_o_states        = None
-    loc_i               = None
-    loc_o               = None
+    loc_i               = {}
+    loc_o               = {}
 
     # Flags
     micro_flags     = {}            # Flags on the data part of the rx message
