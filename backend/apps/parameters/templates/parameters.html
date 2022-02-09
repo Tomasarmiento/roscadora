@@ -107,6 +107,42 @@
     </form>
     
 </div>
+
+<div class="card  mx-auto my-3 py-1 px-1 float-left" style="color: black; left: 200px;">
+    <form action="{% url 'parameters' %}" method="post" id="{{0}}">
+        {% csrf_token%}
+        <table class="table table-sm table-striped table-borderless" style="color: black;" id="tablaCuplaModelo3">
+            <thead>
+                <tr>
+                    <th colspan="4" style="text-align: center; background-color: #52D5DA; color:black; border-top-right-radius: 8px; border-top-left-radius: 8px;">Parámetros de Cerado
+                    </th>
+                </tr>
+                <tr>
+                    <th>Concepto</th>
+                    <th>Descripcion</th>
+                    <th>Valor</th>
+                    <th>Unidad</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for parameter in model_0 %}
+                <tr>
+                    <td>{{ parameter.name }}</td>
+                    <td>{{ parameter.description }}</td>
+                    <td>
+                        <input class="form-control-xs" type="number" step=0.01 value="{{ parameter.value }}" name="{{ parameter.name }}">
+                    </td>
+                    <td>{{ parameter.unit }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <input type="hidden" name="part_model" value="3">
+        <input type="submit" value="" class="d-none">
+    </form>
+    
+</div>
+
 <div class="row justify-content-center container-fluid">
     <div class="col-md-12 text-right justify-content-center" style="bottom: 63px;right: 70px;">
         <a type="button" class="btn btn-primary btn-lg" href="{% url 'home' %}">Volver</a>

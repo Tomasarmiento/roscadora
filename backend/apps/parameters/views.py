@@ -50,6 +50,7 @@ class ParameterView(View):
     def get_context(self):
         params = Parameter.objects.all()
         context = {}
+        homming_params = []
         for option in param_vars.PART_MODEL_OPTIONS:
             f_params = params.filter(part_model=option)
             ctx_params = []
@@ -63,6 +64,17 @@ class ParameterView(View):
                 })
             option_key = 'model_' + str(option)
             context[option_key] = ctx_params
+        
+        f_params = params.filter(part_model=0)
+        for name in param_vars.HOMING_PARAM_NAMES:
+            param = f_params.get(name=name)
+            homming_params.append({
+                    'name': name,
+                    'description': param.description,
+                    'value': param.value,
+                    'unit': param.unit
+                })
+        context['model_0'] = homming_params
         return context
 
 
