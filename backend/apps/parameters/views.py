@@ -59,7 +59,7 @@ class ParameterView(View):
             f_params = params.filter(part_model=option)
             ctx_params = []
             for name in param_vars.PARAM_NAMES:
-                print('PARAM NAME:', name)
+                # print('PARAM NAME:', name)
                 param = f_params.get(name=name)
                 ctx_params.append({
                     'name': name,

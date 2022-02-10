@@ -31,16 +31,16 @@ def init_params():        # params: query with all parameters in database
                 value = param_vars.HOMING_PARAMS_DEFAULT_VALUES[homing_param_name],
                 part_model = 0
             )
-        ctrl_vars.HOMING_CONSTANTES[homing_param_name] = params.get(name=homing_param_name)
-    
+        ctrl_vars.HOMING_CONSTANTES[homing_param_name] = params.get(name=homing_param_name).value
     update_roscado_params()
 
 
 def update_homing_params():
     from apps.parameters.models import Parameter
-    params = Parameter.objects.all()
+    params = Parameter.objects.filter(part_model=0)
     for homing_param_name in param_vars.HOMING_PARAM_NAMES:
-        ctrl_vars.HOMING_CONSTANTES[homing_param_name] = params.filter(part_model=0).get(name=homing_param_name)
+        param = params.get(name=homing_param_name)
+        ctrl_vars.HOMING_CONSTANTES[homing_param_name] = param.value
 
 def update_roscado_params():
     from apps.parameters.models import Parameter

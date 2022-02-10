@@ -16,39 +16,39 @@ PARAM_NAMES = [
 
 
 PARAM_DEFAULT_VALUES_1 = {
-    'paso_de_rosca': 0.0,
-    'posicion_de_aproximacion': 0.0,
-    'velocidad_en_vacio': 0.0,
-    'posicion_final_de_roscado': 0.0,
-    'velocidad_de_roscado': 0.0,
-    'posicion_salida_de_roscado': 0.0,
-    'velocidad_de_retraccion': 0.0,
-    'posicion_de_inicio':0.0,
-    'torque_tolerado': 0.0,
+    'paso_de_rosca': 2.54,
+    'posicion_de_aproximacion': -80,
+    'velocidad_en_vacio': 50,
+    'posicion_final_de_roscado': -205,
+    'velocidad_de_roscado': 6,
+    'posicion_salida_de_roscado': -81,
+    'velocidad_de_retraccion': 10,
+    'posicion_de_inicio': 5,
+    'torque_tolerado': 100,
 }
 
 PARAM_DEFAULT_VALUES_2 = {
-    'paso_de_rosca': 0.0,
-    'posicion_de_aproximacion': 0.0,
-    'velocidad_en_vacio': 0.0,
-    'posicion_final_de_roscado': 0.0,
-    'velocidad_de_roscado': 0.0,
-    'posicion_salida_de_roscado': 0.0,
-    'velocidad_de_retraccion': 0.0,
-    'posicion_de_inicio':0.0,
-    'torque_tolerado': 0.0,
+    'paso_de_rosca': 2.54,
+    'posicion_de_aproximacion': -80,
+    'velocidad_en_vacio': 50,
+    'posicion_final_de_roscado': -205,
+    'velocidad_de_roscado': 6,
+    'posicion_salida_de_roscado': -82,
+    'velocidad_de_retraccion': 10,
+    'posicion_de_inicio': 5,
+    'torque_tolerado': 100,
 }
 
 PARAM_DEFAULT_VALUES_3 = {
-    'paso_de_rosca': 0.0,
-    'posicion_de_aproximacion': 0.0,
-    'velocidad_en_vacio': 0.0,
-    'posicion_final_de_roscado': 0.0,
-    'velocidad_de_roscado': 0.0,
-    'posicion_salida_de_roscado': 0.0,
-    'velocidad_de_retraccion': 0.0,
-    'posicion_de_inicio':0.0,
-    'torque_tolerado': 0.0,
+    'paso_de_rosca': 2.54,
+    'posicion_de_aproximacion': -80,
+    'velocidad_en_vacio': 50,
+    'posicion_final_de_roscado': -205,
+    'velocidad_de_roscado': 6,
+    'posicion_salida_de_roscado': -83,
+    'velocidad_de_retraccion': 10,
+    'posicion_de_inicio': 5,
+    'torque_tolerado': 100,
 }
 
 PARAM_DEFAULT_VALUES = {
