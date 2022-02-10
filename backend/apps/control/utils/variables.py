@@ -25,6 +25,7 @@ COMMAND_REF_RATES = {}
 # -------------------------------------------------------------------------------------------- #
 
 CABEZAL_ON_TIMEOFF = 30         # Tiempo máximo que el cabezal puede estar encendido mientras está clampeado
+GIRO_ON_TIMEOUT = 60         # Tiempo máximo de husillo encendido con velocidad 0
 
 # -------------------------------------------------------------------------------------------- #
 # --------------------------------------- Routines ------------------------------------------- #
@@ -48,7 +49,7 @@ ROUTINE_NAMES = {
 
 ROSCADO_CONSTANTES = {
     'posicion_de_aproximacion': -80,
-    'velocidad_en_vacio': 25,
+    'velocidad_en_vacio': 50,
     'posicion_final_de_roscado': -205,
     'velocidad_de_roscado': 6,
     'posicion_salida_de_roscado': -80,
@@ -119,7 +120,7 @@ BOQUILLA_ROSCADO = {
 # --------------------------------- Remote/Local outputs ------------------------------------- #
 # -------------------------------------------------------------------------------------------- #
 
-TIMEOUT_GENERAL         = 10
+TIMEOUT_GENERAL         = 20
 TIMEOUT_PNEUMATIC       = 20
 TIMEOUT_LOAD            = 10
 TIMEOUT_LINEAL          = 30

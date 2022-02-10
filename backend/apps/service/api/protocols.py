@@ -5,7 +5,7 @@ from django.http import response
 import websockets
 
 from apps.service.acdp.acdp import ACDP_UDP_PORT, ACDP_IP_ADDR, AcdpHeader
-from apps.service.acdp.handlers import AcdpMessage
+from apps.service.acdp.handlers import AcdpMessage, AcdpMessagesControl
 
 from apps.service.api.functions import force_connection, open_connection, send_message
 from apps.service.api.variables import last_rx_msg
@@ -40,6 +40,7 @@ class UDPProtocol(asyncio.DatagramProtocol):
     def datagram_received(self, data, addr):    # addr is tuple (IP, PORT), example ('192.168.0.28', 54208)
         self.rx_msg.store_from_raw(data)
         WsStates.updata_front = self.rx_msg.process_rx_msg(transport=self.transport)
+        AcdpMessagesControl.last_rx_msg.store_from_raw(self.rx_msg.pacself())
         
     def error_received(self, exc: Exception) -> None:
         return super().error_received(exc)
@@ -55,8 +56,8 @@ async def ws_graphs_client():
     while True:
         await asyncio.sleep(10)
 
-async def ws_client():
-    uri = "ws://localhost:8000/ws/micro/"
+async def ws_client_data():
+    uri = "ws://localhost:8000/ws/micro/data/"
     while True:
         try:
             async with websockets.connect(uri) as websocket:
@@ -71,20 +72,47 @@ async def ws_client():
             break
 
 
+async def ws_client_log():
+    uri = "ws://localhost:8000/ws/micro/log/"
+    while True:
+        try:
+            async with websockets.connect(uri) as websocket:
+                producer_task = asyncio.ensure_future(ws_msg_response(websocket))
+                done, pending = await asyncio.wait(
+                    [producer_task],
+                    return_when = asyncio.FIRST_COMPLETED
+                )
+                for task in pending:
+                    task.cancel()
+                while websocket.open:
+                    await asyncio.sleep(1)
+
+        except ConnectionRefusedError:
+            await asyncio.sleep(1)
+
+        except KeyboardInterrupt:
+            break
+
 class WsStates:
+    # Micro data
     REFRESH_TIME = 0.1
     update_front = False
     micro_connected = False
     updata_front = False
     timestamp = 0
 
+    # Responses
+    pending_messages = False
+    log_messages = []
+    msg_id = -1
+
 
 async def ws_handler(websocket):
     consumer_task = asyncio.ensure_future(ws_consumer(websocket))
     producer_task_1 = asyncio.ensure_future(ws_states_update(websocket))
-    producer_task_2 = asyncio.ensure_future(ws_msg_response(websocket))
+    # producer_task_2 = asyncio.ensure_future(ws_msg_response(websocket))
     done, pending = await asyncio.wait(
-        [consumer_task, producer_task_1, producer_task_2],
+        [consumer_task, producer_task_1],
         return_when = asyncio.FIRST_COMPLETED
         )
     for task in pending:
@@ -107,10 +135,10 @@ async def ws_consumer(websocket):       # Fordwards message to micro. Message is
 async def ws_states_update(websocket):
     while True:
         try:
-            if WsStates.timestamp != AcdpMessage.last_rx_header.ctrl.timestamp:
-                WsStates.timestamp = AcdpMessage.last_rx_header.ctrl.timestamp
+            if WsStates.timestamp != AcdpMessagesControl.last_rx_msg.header.ctrl.timestamp:
+                WsStates.timestamp = AcdpMessagesControl.last_rx_msg.header.ctrl.timestamp
                 if WsStates.updata_front:
-                    msg = AcdpMessage.last_rx_header.pacself() + AcdpMessage.last_rx_data.pacself()
+                    msg = AcdpMessagesControl.last_rx_msg.header.pacself() + AcdpMessagesControl.last_rx_msg.data.pacself()
                     await websocket.send(msg)
                     WsStates.updata_front = False
             
@@ -126,21 +154,17 @@ async def ws_states_update(websocket):
 
 async def ws_msg_response(websocket):
     while True:
-        await asyncio.sleep(5)
-        # try:
-        #     while MicroWSHandler.pending_msg == False:
-        #         await asyncio.sleep(0.01)
-            
-        #     MicroWSHandler.pending_msg = False
-        #     msg = {
-        #         "code": MicroWSHandler.code,
-        #         "message": MicroWSHandler.message
-        #     }
-
-        #     await websocket.send(json.dumps(msg))
-
-        # except websockets.exceptions.ConnectionClosed:
-        #     break
+        try:
+            if AcdpMessagesControl.log_messages:
+                msg = {
+                    'msg_id': AcdpMessage.last_rx_header.get_msg_id(),
+                    'messages': AcdpMessagesControl.log_messages
+                }
+                await websocket.send(json.dumps(msg))
+                AcdpMessagesControl.log_messages = []
+            await asyncio.sleep(0.5)
+        except websockets.exceptions.ConnectionClosed:
+            break
 
 
 def get_states_msg():
