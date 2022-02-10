@@ -21,8 +21,8 @@ class MicroState:
     rem_o               = []
     loc_i_states        = None
     loc_o_states        = None
-    loc_i               = None
-    loc_o               = None
+    loc_i               = {}
+    loc_o               = {}
 
     # Flags
     micro_flags     = {}            # Flags on the data part of the rx message
@@ -50,6 +50,11 @@ class MicroState:
     graph_flag          = True
     graph_duration      = 0
 
+    # General
+    load_on_timer       = datetime.now()    # Timer para apagar eje de carga con cabezal clampeado
+    turn_on_timer       = datetime.now()    # Timer para apagar eje de husillo con velocidad 0
+    turn_load_drv_off   = False
+    turn_turn_drv_off   = False
 
 class WsCodes:
     states          = 0

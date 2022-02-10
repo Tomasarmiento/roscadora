@@ -26,19 +26,6 @@ document.addEventListener("DOMContentLoaded", (e) => {
     let btn_off_sync = document.getElementById('offSync');
 
 
-    //Cabezal
-    const cabezal = document.querySelector("#statusHead")
-    //Eje Lineal
-    const ejeLineal = document.querySelector("#statusLinealAxis")
-    //Descarga
-    const descarga = document.querySelector("#statusDownloader");
-    //Carga
-    const carga = document.querySelector("#statusLoader");
-    //Indexar
-    const indexar = document.querySelector("#statusIndex");
-    //Roscado
-    const roscado = document.querySelector("#statusRoscado")
-
     // Enables Motores Manual
     const enableLineal = document.querySelector("#linealEnable")
     const enableCabezal = document.querySelector("#cabezalEnable")

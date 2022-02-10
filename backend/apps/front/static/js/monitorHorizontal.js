@@ -195,7 +195,6 @@ window.onload = function() {
     // });
 
     
-
     function InsertarTexto(datosWs) {
         var ul = document.getElementById("cuadroMensajes");
         for (let i = 0; i < datosWs.length; i++) {
@@ -272,4 +271,5 @@ window.onload = function() {
       
         
 }
-}};
+}
+};

@@ -422,7 +422,7 @@ def enable_axis(request):
     print(cmd, axis)
     msg_id = MicroState.last_rx_header.get_msg_id() + 1
     header = service_handlers.build_msg(cmd, msg_id=msg_id, eje=axis)
-    ch_info = ChannelInfo.objects.get(source='micro')
+    ch_info = get_ch_info(ChannelInfo, 'micro')
     if ch_info:
         send_message(header, ch_info)
     return JsonResponse({})
@@ -433,7 +433,7 @@ def sync_axis(request):
     post_req = request.POST
     msg_id = MicroState.last_rx_header.get_msg_id() + 1
     cmd = int(post_req['command'])
-    ch_info = ChannelInfo.objects.get(source='micro')
+    ch_info = get_ch_info(ChannelInfo, 'micro')
     paso = None
     data = None
     header = None

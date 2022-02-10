@@ -8,7 +8,7 @@ from threading import Thread
 from ctypes import *
 
 from apps.service.acdp.acdp import ACDP_UDP_PORT, ACDP_IP_ADDR
-from .protocols import UDPProtocol, ws_client, ws_graphs_client
+from .protocols import UDPProtocol, ws_client_data, ws_client_log, ws_graphs_client
 
 TIME_TO_SEC = 150 * 1000000
 HOST = '192.168.0.100'
@@ -25,7 +25,8 @@ async def service():
         lambda: UDPProtocol(),
         local_addr=(HOST,PORT)
     )
-    asyncio.ensure_future(ws_client())
+    asyncio.ensure_future(ws_client_data())
+    asyncio.ensure_future(ws_client_log())
     asyncio.ensure_future(ws_graphs_client())
 
     try:

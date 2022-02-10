@@ -1,5 +1,5 @@
 var monitor = null;
-var monitorHorizontal = null;
+
 
     const socket = new WebSocket("ws://127.0.0.1:8000/ws/front/");
     socket.addEventListener("open", function (event) {
@@ -17,7 +17,6 @@ var monitorHorizontal = null;
 window.addEventListener("hashchange", () => {                  //cuando tocas f5
     (window.location.hash);
     monitor = document.querySelector("#component-monitor");
-
 });
 
 window.addEventListener("DOMContentLoaded", () => {                         //todo el tiempo
@@ -54,8 +53,10 @@ socket.onmessage = function (event) {
   const indexar = document.querySelector("#statusIndex");
   //Roscado
   const roscado = document.querySelector("#statusRoscado")
-
+  
   if (datosWs) {
+    console.log('levanta main.js');
+    console.log(datosWs)
     //Monitor
     rpmActual.innerHTML = datosWs.husillo_rpm.toFixed(1);
     torqueActual.innerHTML = datosWs.husillo_torque.toFixed(1);
@@ -141,6 +142,8 @@ socket.onmessage = function (event) {
      
   }
 }
+
+console.log('levanta main.js');
     
 
 

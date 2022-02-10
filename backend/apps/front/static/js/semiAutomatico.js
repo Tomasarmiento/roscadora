@@ -325,7 +325,7 @@ window.onload = function() {
     };
     if (datosWs.mensajes_error.length > 0) {
         listaMensajesErrores.push(datosWs.mensajes_error);
-        sessionStorage.setItem("mensajes", listaMensajesErrores);
+        sessionStorage.setItem("mensajesError", listaMensajesErrores);
         InsertarTextoErrores(datosWs.mensajes_error);
     };
 
