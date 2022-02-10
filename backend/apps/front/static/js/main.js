@@ -23,6 +23,32 @@ window.addEventListener("hashchange", () => {                  //cuando tocas f5
 window.addEventListener("DOMContentLoaded", () => {                         //todo el tiempo
     (window.location.hash);
     monitor = document.querySelector("#component-monitor");
+
+    cuadroDeTextoIndex = document.querySelector("#terminalDeTexto");
+    if (sessionStorage.getItem("mensajes") && cuadroDeTextoIndex) {
+        console.log('aca');
+        let ul = document.getElementById("cuadroMensajes");
+        const listaMensajes = sessionStorage.getItem("mensajes").split(",");
+        for (let i = 0; i < listaMensajes.length; i++) {
+            const li = document.createElement("li");
+            li.setAttribute("style", "list-style: none;");
+            li.innerHTML = listaMensajes[i];
+            ul.appendChild(li);
+        }
+    }
+
+    cuadroDeErrores = document.querySelector("#terminalDeTexto");
+    if (sessionStorage.getItem("mensajesError") && cuadroDeErrores) {
+        console.log('aca');
+        let ul = document.getElementById("cuadroMensajesErrores");
+        const listaMensajes = sessionStorage.getItem("mensajesError").split(",");
+        for (let i = 0; i < listaMensajes.length; i++) {
+            const li = document.createElement("li");
+            li.setAttribute("style", "list-style: none;");
+            li.innerHTML = listaMensajes[i];
+            ul.appendChild(li);
+        }
+    }
 });
 
 socket.onmessage = function (event) {
