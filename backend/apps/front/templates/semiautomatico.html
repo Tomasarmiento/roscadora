@@ -1,9 +1,7 @@
-{% extends 'indexNoData.html'%}
+{% extends 'index.html'%}
 {% load static %}
 {% block content %}
 <head>
- <script src="{% static 'js/semiAutomatico.js' %}"></script>
- 
     <style>
 		canvas {
 			user-select: none;
@@ -24,23 +22,20 @@
 
 
 <body>
-    
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.1"></script>
-    <script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8"></script>
-    <script src="../static/zoomplugin/chartjs-plugin-zoom.min.js"></script>
+    <script src="{% static 'js/semiAutomatico.js' %}"></script>
+    <script src="{% static 'js/graficoRutinas.js' %}"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.1"></script>
+	<script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8"></script>
+	<script src="../static/zoomplugin/chartjs-plugin-zoom.min.js"></script>
 
-
-
-    <div id="accelContainer" class="col-10">
-        <div id="xAccel" class="x">
-            <canvas id="xAccelChart" style="min-width: 430px;" class="border border-primary"></canvas>
-        </div><!--xAccel-->
-    </div> 
     
-    
-    
-    
+        <div id="accelContainer" class="container-fluid col-md-12">
+            <div id="xAccel" class="x">        
+                <canvas id="xAccelChart" style="width: 450px;" class="border border-primary"></canvas>
+            </div><!--xAccel-->
+        </div> 
+            
     <!-- <div id="resetZoomDiv">
         <button type="button" class=" btn-primary btn-lg mb-3" style="float: right;margin-right: 10px;" id="resetZoom">Reset</button>
         <button type="button" class=" btn-primary btn-lg mb-3" style="float: right;margin-right: 10px;" id="destroy">Destroy</button>
@@ -173,7 +168,7 @@
     </div>
 
 
-    <script src="{% static 'js/semiAutomatico.js' %}"></script>
-    <script src="{% static 'js/stopAll.js' %}"></script>
-    </body>
-    {% endblock %}
+
+<script src="{% static 'js/stopAll.js' %}"></script>
+</body>
+{% endblock %}

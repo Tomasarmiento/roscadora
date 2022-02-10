@@ -186,13 +186,11 @@ window.onload = function() {
     }
     });
 
-    // btnSemiContainer.addEventListener("click", (e) => {
-    //     switch (e.target.id) {
-    //       case "roscado":
-    //         xAccelChartInstance.destroy();
-    //     break;
-    //     }
-    // });
+    
+    function InsertarTexto(datosWs) {
+        let datosCabezal = datosWs
+        var ul = document.getElementById("cuadroMensajes");
+     
 
     
 
@@ -249,6 +247,7 @@ window.onload = function() {
   const contenedorGrafico = document.querySelector("#component-grafico-roscado");
 
   if (datosWs) {
+    console.log(datosWs);
     //Monitor
     rpmActual.innerHTML = datosWs.husillo_rpm.toFixed(1);
     torqueActual.innerHTML = datosWs.husillo_torque.toFixed(1);
@@ -271,5 +270,6 @@ window.onload = function() {
         }
       
         
+}
 }
 }};

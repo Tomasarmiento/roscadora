@@ -20,16 +20,47 @@ window.addEventListener("hashchange", () => {                  //cuando tocas f5
     monitorHorizontal = document.querySelector("#component-monitor-horizontal");
 
 });
-
+console.log('levanta main.js');
 window.addEventListener("DOMContentLoaded", () => {                         //todo el tiempo
     (window.location.hash);
     monitor = document.querySelector("#component-monitor");
     monitorHorizontal = document.querySelector("#component-monitor-horizontal");
+    cuadroDeTextoIndex = document.querySelector("#terminalDeTexto");
+    if (sessionStorage.getItem("mensajes") && cuadroDeTextoIndex) {
+        console.log('aca');
+        let ul = document.getElementById("cuadroMensajes");
+        const listaMensajes = sessionStorage.getItem("mensajes").split(",");
+        for (let i = 0; i < listaMensajes.length; i++) {
+            const li = document.createElement("li");
+            li.setAttribute("style", "list-style: none;");
+            li.innerHTML = listaMensajes[i];
+            ul.appendChild(li);
+        }
+    }
 });
 
+
+function InsertarTexto(datosWs) {
+  var ul = document.getElementById("cuadroMensajes");
+
+  for (let i = 0; i < datosWs.length; i++) {
+    const li = document.createElement("li");
+    li.setAttribute("style", "list-style: none;" );
+    li.innerHTML = datosWs[i];
+    ul.prepend(li);
+  }
+};
+
+var listaMensajes = [];
 socket.onmessage = function (event) {
   const datosWs = JSON.parse(event.data);
   console.log(datosWs)
+
+    if (datosWs.mensajes_log.length > 0) {
+      listaMensajes.push(datosWs.mensajes_log);
+      sessionStorage.setItem("mensajes", listaMensajes);
+      InsertarTexto(datosWs.mensajes_log);
+    }
 
   // Tabla de datos
   const rpmActual = document.querySelector("#frRPM");
