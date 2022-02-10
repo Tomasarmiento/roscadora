@@ -3,9 +3,10 @@ from django.views.generic.list import ListView
 from django.views.generic import View
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
+
 from apps.parameters.models import Parameter
 from apps.parameters.utils import variables as param_vars
-
+from apps.parameters.utils import functions as param_func
 
 
 
@@ -41,6 +42,9 @@ class ParameterView(View):
                 param.save()
                 param_vars.PARAMS[param.name] = param.value
         
+        param_func.update_homing_params()
+        param_func.update_roscado_params()
+        
         return render(request, 'parameters.html', self.get_context())
     
     def get(self, request):
@@ -55,6 +59,7 @@ class ParameterView(View):
             f_params = params.filter(part_model=option)
             ctx_params = []
             for name in param_vars.PARAM_NAMES:
+                print('PARAM NAME:', name)
                 param = f_params.get(name=name)
                 ctx_params.append({
                     'name': name,

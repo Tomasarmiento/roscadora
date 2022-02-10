@@ -9,8 +9,11 @@ def init_params():        # params: query with all parameters in database
     saved_keys = saved_params.keys()
 
     for option in param_vars.PART_MODEL_OPTIONS:
+        f_params = params.filter(part_model=option)
+        f_saved_params = dict([(param.name, param.value) for param in f_params])
+        f_saved_keys = f_saved_params.keys()
         for key, value in param_vars.PARAM_DEFAULT_VALUES[option].items():           
-            if key not in saved_keys:
+            if key not in f_saved_keys:
                 Parameter.objects.create(
                     name = key,
                     value = value,
@@ -32,6 +35,12 @@ def init_params():        # params: query with all parameters in database
     
     update_roscado_params()
 
+
+def update_homing_params():
+    from apps.parameters.models import Parameter
+    params = Parameter.objects.all()
+    for homing_param_name in param_vars.HOMING_PARAM_NAMES:
+        ctrl_vars.HOMING_CONSTANTES[homing_param_name] = params.filter(part_model=0).get(name=homing_param_name)
 
 def update_roscado_params():
     from apps.parameters.models import Parameter
