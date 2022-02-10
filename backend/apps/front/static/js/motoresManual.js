@@ -38,9 +38,23 @@ document.addEventListener("DOMContentLoaded", (e) => {
 
     socket.onmessage = function (event) {
         const datosWs = JSON.parse(event.data);
-        
+            
+        //Cabezal
+        const cabezal = document.querySelector("#statusHead")
+        //Eje Lineal
+        const ejeLineal = document.querySelector("#statusLinealAxis")
+        //Descarga
+        const descarga = document.querySelector("#statusDownloader");
+        //Carga
+        const carga = document.querySelector("#statusLoader");
+        //Indexar
+        const indexar = document.querySelector("#statusIndex");
+        //Roscado
+  const roscado = document.querySelector("#statusRoscado")
 
         if (datosWs) {
+
+
             
             // Tabla de datos
             const rpmActual = document.querySelector("#frRPM");
