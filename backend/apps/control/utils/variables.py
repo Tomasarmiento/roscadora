@@ -48,21 +48,21 @@ ROUTINE_NAMES = {
 }
 
 ROSCADO_CONSTANTES = {
-    'posicion_de_aproximacion': -80,
-    'velocidad_en_vacio': 50,
-    'posicion_final_de_roscado': -205,
-    'velocidad_de_roscado': 6,
-    'posicion_salida_de_roscado': -80,
-    'velocidad_de_retraccion': 10,
-    'paso_de_rosca': 2.54,
-    'posicion_de_inicio': 5,
+    # 'posicion_de_aproximacion': -80,
+    # 'velocidad_en_vacio': 50,
+    # 'posicion_final_de_roscado': -205,
+    # 'velocidad_de_roscado': 6,
+    # 'posicion_salida_de_roscado': -80,
+    # 'velocidad_de_retraccion': 10,
+    # 'paso_de_rosca': 2.54,
+    # 'posicion_de_inicio': 5,
 }
 
 HOMING_CONSTANTES = {
-    'position_positive_7': 4,
-    'position_mid_low': -3,
-    'position_mid_high': 1,
-    'position_negative_7': -4,
+    # 'position_positive_7': 4,
+    # 'position_mid_low': -3,
+    # 'position_mid_high': 1,
+    # 'position_negative_7': -4,
 }
 
 LOAD_STEPS = [
