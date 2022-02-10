@@ -2,7 +2,8 @@
 {% load static %}
 {% block content %}
 <head>
- <script src="{% static 'js/monitorHorizontal.js' %}"></script>
+    
+
     <style>
 		canvas {
 			user-select: none;
@@ -16,7 +17,15 @@
 		</style>
 </head>
 
-
+<body>
+    <script src="{% static 'js/main.js' %}"></script>
+    <script src="{% static 'js/automatico.js' %}"></script>
+    <script src="{% static 'js/graficoRutinas.js' %}"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.1"></script>
+	<script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8"></script>
+	<script src="../static/zoomplugin/chartjs-plugin-zoom.min.js"></script>
+</body>
 
 <body>
   
@@ -36,10 +45,7 @@
 
 
     <div class="col-md-8 col-12 float-left mb-8 px-0">
-        <div class="col-md-9 my-2 py-1 d-flex justify-content-around" id="component-monitor-horizontal">
-            {% include 'monitorHorizontal.component.html' %}
-            
-        </div>
+        
         <div class="col-12 mb-3 d-inline-flex">
 		<div class="card p-1 mb-3">
             <form action="{% url 'parameters-update' %}" method="post" id="id={{3}}">
@@ -142,16 +148,18 @@
             <button type="button" class="btn btn-warning mb-3 detener" style="min-width: 205px; min-height: 65px" id="stop" cmd="{{ stop_all }}">Cancelar</button>	
         </div>
         
-        <div class="col-md-4 mb-2 float-left justify-content-around px-1">
-            <div id="contenedor-terminal-texto" class="card col-md-12 text-left my-4 mx-auto border shadow rounded bg-white p-1" style="height: auto;">
-                <div id="salidaDeTexto"></div>
-                {% include 'cuadroDeTexto.html' %}
-            </div>
-        </div>
-
+        
+    </div>
+</div>
+<div class="col-md-4 mb-2 float-left justify-content-around px-1">
+    <div id="contenedor-terminal-texto" class="card col-md-12 text-left my-4 mx-auto border shadow rounded bg-white p-1" style="height: auto;">
+        <div id="salidaDeTexto"></div>
+        {% include 'cuadroDeTexto.html' %}
+    </div>
 </div>
 
-<script src="{% static 'js/automatico.js' %}"></script>
+
+
 <script src="{% static 'js/stopAll.js' %}"></script>
 </body>
 {% endblock %}

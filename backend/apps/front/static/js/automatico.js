@@ -1,3 +1,8 @@
+var data = []
+var monitor = null;
+
+
+
 
 document.addEventListener("DOMContentLoaded", (e) => {
     let btn_continue = document.getElementById('continue');
@@ -16,37 +21,7 @@ document.addEventListener("DOMContentLoaded", (e) => {
     });
 
     
-    cuadroDeTextoIndex = document.querySelector("#terminalDeTexto");
-    if (sessionStorage.getItem("mensajes") && cuadroDeTextoIndex) {
-        console.log('aca');
-        let ul = document.getElementById("cuadroMensajes");
-        const listaMensajes = sessionStorage.getItem("mensajes").split(",");
-        for (let i = 0; i < listaMensajes.length; i++) {
-            const li = document.createElement("li");
-            li.setAttribute("style", "list-style: none;");
-            li.innerHTML = listaMensajes[i];
-            ul.appendChild(li);
-        }
-    }
+   
 });
-    function InsertarTexto(datosWs) {
-        var ul = document.getElementById("cuadroMensajes");
-        for (let i = 0; i < datosWs.length; i++) {
-        const li = document.createElement("li");
-        li.setAttribute("style", "list-style: none;");
-        li.innerHTML = datosWs[i];
-        ul.prepend(li);
-        }
-    }
 
-    var listaMensajes = [];
-    socket.onmessage = function (event) {
-       
-        
-    const datosWs = JSON.parse(event.data);
-    if (datosWs) {
-        listaMensajes.push(datosWs);
-        sessionStorage.setItem("mensajes", listaMensajes);
-        InsertarTexto(datosWs);
-    }
-    };
+console.log('levanta automatico.js');
