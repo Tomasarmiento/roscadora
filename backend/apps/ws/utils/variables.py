@@ -40,9 +40,10 @@ class MicroState:
     roscado_allow_presure_off   = True
 
     # Master routine flags
-    master_running  = False
-    master_stop     = False
-    iteration       = 0
+    master_running      = False
+    master_stop         = False
+    end_master_routine  = False
+    iteration           = 0
 
     # Graph
     position_values     = []

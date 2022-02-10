@@ -10,5 +10,6 @@ urlpatterns = [
     path('semiautomatico/', views.semiauto, name='semiauto'),
     path('manual/stop-axis/', views.stop_axis, name='stop-axis'),
     path('stop-all/', views.stop_all, name='stop-all'),
+    path('end-master-routine/', views.end_master_routine, name='end-master-routine'),
     path('auto/', views.StartRoutine.as_view(), name='auto')
 ]

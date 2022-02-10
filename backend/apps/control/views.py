@@ -404,6 +404,13 @@ def stop_all(request):
 
 
 @csrf_exempt
+def end_master_routine(request):
+    MicroState.end_master_routine = True
+    print('END MASTER FLAG LEVANTADO')
+    return JsonResponse({})
+
+
+@csrf_exempt
 def semiauto(request):
     post_req = request.POST
     routine = int(post_req['routine'])

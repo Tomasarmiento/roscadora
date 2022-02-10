@@ -394,11 +394,12 @@ class RoutineHandler(threading.Thread):
             return False
         print('CARGA - Paso 12 - Puntera cargador contraída')
 
-        # Paso 13 - Verificar que no haya pieza en boquilla carga
+        # Paso 13 - Verificar que no haya pieza en boquilla carga. Levanta flag cupla presente en boquilla
         if ws_vars.MicroState.rem_i_states[1]['pieza_en_boquilla_carga']:
             print('Estado sensor boquilla: ',ws_vars.MicroState.rem_i_states[1]['pieza_en_boquilla_carga'])
             return False
-        print('CARGA - Paso 13 - Verificar no pieza en boquilla carga')
+        ctrl_vars.part_present_indicator[boquilla] = True
+        print('CARGA - Paso 13 - Verificar no pieza en boquilla carga. Levanta flag cupla presente en boquilla')
 
         # Paso 14 - Poner abrir y cerrar en OFF boquilla hidráulica
         key_1 = 'cerrar_boquilla_' + str(boquilla)
@@ -560,11 +561,11 @@ class RoutineHandler(threading.Thread):
             return False
         print("DESCARGA - Paso 5 - PUNTERA DESCARGA CONTRAIDA")
 
-        # Paso 6 - Verificar pieza en boquilla descarga
+        # Paso 6 - Verificar pieza en boquilla descarga. Baja flag cupla presente en boquilla
         if not ws_vars.MicroState.rem_i_states[1]['pieza_en_boquilla_descarga']:
             return False
         print('CUPLA PRESENTE')
-        print('DESCARGA - Paso 6 - Verificar pieza en boquilla descarga')
+        print('DESCARGA - Paso 6 - Verificar pieza en boquilla descarga. Baja flag cupla presente en boquilla')
 
         ctrl_vars.part_present_indicator[boquilla] = False
 
@@ -735,10 +736,10 @@ class RoutineHandler(threading.Thread):
         eje_carga = ctrl_vars.AXIS_IDS['carga']
         initial_state = msg_app.StateMachine.EST_INITIAL
         safe_state = msg_app.StateMachine.EST_SAFE
-        boquilla = self.get_current_boquilla_roscado
+        # boquilla = self.get_current_boquilla_roscado
         # Paso 0 - Chequear condiciones iniciales - Todos los valores deben ser True par que empiece la rutina
         init_flags = [
-            ctrl_vars.part_present_indicator[boquilla],                                                     # Cupla presente en boquilla
+            # ctrl_vars.part_present_indicator[boquilla],                                                     # Cupla presente en boquilla
             ws_vars.MicroState.rem_o_states[1]['encender_bomba_hidraulica'],                                # hidráulica ON
             ws_vars.MicroState.rem_i_states[1]['clampeo_plato_expandido'],                                  # Plato clampeado
             ws_vars.MicroState.axis_flags[eje_avance]['maq_est_val'] == initial_state,                      # eje avance ON
@@ -1514,7 +1515,7 @@ class RoutineHandler(threading.Thread):
         if stop_flags_ok == False:
             return False
 
-        return True
+        return True    
 
 
 
@@ -1528,6 +1529,7 @@ class MasterHandler(threading.Thread):
         self.init_rtn_timeout = 20
         ws_vars.MicroState.master_running = True
         ws_vars.MicroState.master_stop = False
+        ws_vars.MicroState.end_master_routine = False
         ws_vars.MicroState.iteration = 0
     
 
@@ -1551,14 +1553,18 @@ class MasterHandler(threading.Thread):
                     running_ids = self.get_running_routines()
                     time.sleep(self.wait_rtn_time)
 
-            if carga_id not in running_ids:
+            if carga_id not in running_ids and ws_vars.MicroState.end_master_routine == False:
                 print('RUTINA CARGA')
                 RoutineHandler(carga_id).start()
                 
                 if self.wait_init_rtn(carga_id) == False:
                     return
 
-            if ws_vars.MicroState.iteration >= 1:
+            boquilla = self.get_current_boquilla_roscado()
+            part_present = ctrl_vars.part_present_indicator[boquilla]
+            print('Boquilla presente en roscado:', part_present)
+            print('Numero de iteracion:', ws_vars.MicroState.iteration)
+            if ws_vars.MicroState.iteration >= 1 and part_present == True:
                 if roscado_id not in running_ids:
                     print('RUTINA ROSCADO')
                     RoutineHandler(roscado_id).start()
@@ -1566,18 +1572,47 @@ class MasterHandler(threading.Thread):
                     if self.wait_init_rtn(roscado_id) == False:
                         return
             
-            if ws_vars.MicroState.iteration >= 2:
+            if ws_vars.MicroState.iteration >= 1 and ws_vars.MicroState.end_master_routine == False and part_present == False:
+                print('Error en master. Pieza en roscado no presente')
+                ws_vars.MicroState.err_messages.append('Error en rutina master. Pieza en roscado no presente')
+                return
+
+
+            boquilla = self.get_current_boquilla_descarga()
+            part_present = ctrl_vars.part_present_indicator[boquilla]
+            print('Boquilla presente en descarga:', part_present)
+            print('Numero de iteracion:', ws_vars.MicroState.iteration)
+            if ws_vars.MicroState.iteration >= 2 and part_present == True:
                 if descarga_id not in running_ids:
                     print('RUTINA DESCARGA')
                     RoutineHandler(descarga_id).start()
 
                     if self.wait_init_rtn(descarga_id) == False:
                         return
+            
+            if ws_vars.MicroState.iteration >= 2 and ws_vars.MicroState.end_master_routine == False and part_present == False:
+                print('Error en master. Pieza en descarga no presente')
+                ws_vars.MicroState.err_messages.append('Error en rutina master. Pieza en descarga no presente')
+                return
+            
 
             while ws_vars.MicroState.routine_ongoing == True and ws_vars.MicroState.master_stop == False:
                 time.sleep(self.wait_rtn_time)
             
-            if ws_vars.MicroState.master_stop:
+            
+            part_present_descarga = ctrl_vars.part_present_indicator[boquilla]
+            part_present_roscar = ctrl_vars.part_present_indicator[self.get_current_boquilla_roscado()]
+            part_present = part_present_descarga or part_present_roscar
+            print('Boquilla presente en descarga:', part_present)
+            print('Numero de iteracion:', ws_vars.MicroState.iteration)
+            if ws_vars.MicroState.iteration >= 2 and ws_vars.MicroState.end_master_routine == True and part_present == False:
+                print('Fin de rutina master')
+                ws_vars.MicroState.master_running = False
+                ws_vars.MicroState.log_messages.append('Fin de rutina master')
+                return
+            
+            
+            if ws_vars.MicroState.master_stop == True:
                 ws_vars.MicroState.master_running = False
                 return
             
@@ -1599,10 +1634,7 @@ class MasterHandler(threading.Thread):
 
             # if ws_vars.MicroState.iteration < 2:
             ws_vars.MicroState.iteration += 1
-            
-            if ws_vars.MicroState.master_stop == True:
-                ws_vars.MicroState.master_running = False
-                return
+
         return
         
     def get_running_routines(self):
@@ -1767,3 +1799,51 @@ class MasterHandler(threading.Thread):
             
             return False
         return True
+
+
+    def get_current_boquilla_carga(self):
+        axis = ctrl_vars.AXIS_IDS['carga']
+        pos = ws_vars.MicroState.axis_measures[axis]['pos_fil']
+        steps = ctrl_vars.LOAD_STEPS
+        current_step = -1
+        steps_count = len(steps)
+        for i in range(steps_count):
+            step = steps[i]
+            if pos <= step + 2 and pos >= step - 2:
+                current_step = i
+                break
+        if current_step >= 0:
+            return ctrl_vars.BOQUILLA_CARGADOR[current_step]
+        return False
+
+
+    def get_current_boquilla_descarga(self):
+        axis = ctrl_vars.AXIS_IDS['carga']
+        pos = ws_vars.MicroState.axis_measures[axis]['pos_fil']
+        steps = ctrl_vars.LOAD_STEPS
+        current_step = -1
+        steps_count = len(steps)
+        for i in range(steps_count):
+            step = steps[i]
+            if pos <= step + 2 and pos >= step - 2:
+                current_step = i
+                break
+        if current_step >= 0:
+            return ctrl_vars.BOQUILLA_DESCARGADOR[current_step]
+        return False
+
+
+    def get_current_boquilla_roscado(self):
+        axis = ctrl_vars.AXIS_IDS['carga']
+        pos = ws_vars.MicroState.axis_measures[axis]['pos_fil']
+        steps = ctrl_vars.LOAD_STEPS
+        current_step = -1
+        steps_count = len(steps)
+        for i in range(steps_count):
+            step = steps[i]
+            if pos <= step + 2 and pos >= step - 2:
+                current_step = i
+                break
+        if current_step >= 0:
+            return ctrl_vars.BOQUILLA_ROSCADO[current_step]
+        return False
