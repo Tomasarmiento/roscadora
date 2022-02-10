@@ -278,9 +278,7 @@ window.onload = function() {
     };
 
 
-  if (datosWs) {
-
-        if(datosWs){
+        if(datosWs.graph_flag == true){
             xAccelChartInstance.data.labels.push(new Date());            //(datosWs.cabezal_pos).toFixed(1);
             xAccelChartInstance.data.datasets.forEach((dataset) =>{dataset.data.push(datosWs.husillo_torque).toFixed(1)});
         if(updateCount > numberElements){
@@ -293,7 +291,7 @@ window.onload = function() {
       
         
 }
-}};
+};
 
 
 

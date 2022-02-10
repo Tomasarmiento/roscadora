@@ -217,6 +217,7 @@ window.onload = function() {
 
     function InsertarTexto(datosWs) {
         var ul = document.getElementById("cuadroMensajes");
+        console.log(datosWs)
         for (let i = 0; i < datosWs.length; i++) {
             const li = document.createElement("li");
             li.setAttribute("style", "list-style: none;" );
@@ -234,7 +235,7 @@ window.onload = function() {
             ul.prepend(li);
         }
     }
-    
+   console.log(datosWs); 
     var listaMensajes = []; 
     var listaMensajesErrores = [];
     socket.onmessage = function (event) {
@@ -247,14 +248,11 @@ window.onload = function() {
     };
     if (datosWs.mensajes_error.length > 0) {
         listaMensajesErrores.push(datosWs.mensajes_error);
-        sessionStorage.setItem("mensajes", listaMensajesErrores);
+        sessionStorage.setItem("mensajesError", listaMensajesErrores);
         InsertarTextoErrores(datosWs.mensajes_error);
     };
 
-
-  if (datosWs) {
-
-        if(datosWs){
+        if(datosWs.graph_flag == false){
             xAccelChartInstance.data.labels.push(new Date());            //(datosWs.cabezal_pos).toFixed(1);
             xAccelChartInstance.data.datasets.forEach((dataset) =>{dataset.data.push(datosWs.husillo_torque).toFixed(1)});
         if(updateCount > numberElements){
@@ -267,4 +265,4 @@ window.onload = function() {
       
         
 }
-}};
+};
