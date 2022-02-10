@@ -304,7 +304,7 @@ window.onload = function() {
 
     
 
-        if(datosWs){
+        if(datosWs.graph_flag == false){
             console.log(datosWs)
             xAccelChartInstance.data.labels.push(new Date());            //(datosWs.cabezal_pos).toFixed(1);
             xAccelChartInstance.data.datasets.forEach((dataset) =>{dataset.data.push(datosWs.husillo_torque).toFixed(1)});
@@ -315,7 +315,7 @@ window.onload = function() {
         else updateCount++;
         xAccelChartInstance.update();
         }
-
+        if(datosWs){
         //Monitor
     rpmActual.innerHTML = datosWs.husillo_rpm.toFixed(1);
     torqueActual.innerHTML = datosWs.husillo_torque.toFixed(1);
@@ -399,6 +399,6 @@ window.onload = function() {
      : (roscado.className = "bg-secondary indicadorMon");
      
       
-        
+    }     
 }
 };
