@@ -397,9 +397,11 @@ class RoutineHandler(threading.Thread):
         if ws_vars.MicroState.rem_i_states[1]['pieza_en_boquilla_carga']:
             return False
         print('Paso 13 - Verificar no pieza en boquilla carga')
+        
+        boquilla = self.get_current_boquilla_carga()
+        ctrl_vars.part_present_indicator[boquilla] = True
 
         # Paso 14 - Poner abrir y cerrar en OFF boquilla hidráulica
-        boquilla = self.get_current_boquilla_carga()
         key_1 = 'cerrar_boquilla_' + str(boquilla)
         key_2 = 'abrir_boquilla_' + str(boquilla)
         group = 1
@@ -558,6 +560,8 @@ class RoutineHandler(threading.Thread):
         if not ws_vars.MicroState.rem_i_states[1]['pieza_en_boquilla_descarga']:
             return False
         print('CUPLA PRESENTE')
+
+        ctrl_vars.part_present_indicator[boquilla] = False
 
         # Paso 7 - Contraer brazo descargador
         key_1 = 'contraer_brazo_descargador'
@@ -726,8 +730,10 @@ class RoutineHandler(threading.Thread):
         eje_carga = ctrl_vars.AXIS_IDS['carga']
         initial_state = msg_app.StateMachine.EST_INITIAL
         safe_state = msg_app.StateMachine.EST_SAFE
+        boquilla = self.get_current_boquilla_roscado
         # Paso 0 - Chequear condiciones iniciales - Todos los valores deben ser True par que empiece la rutina
         init_flags = [
+            ctrl_vars.part_present_indicator[boquilla],                                                     # Cupla presente en boquilla
             ws_vars.MicroState.rem_o_states[1]['encender_bomba_hidraulica'],                                # hidráulica ON
             ws_vars.MicroState.rem_i_states[1]['clampeo_plato_expandido'],                                  # Plato clampeado
             ws_vars.MicroState.axis_flags[eje_avance]['maq_est_val'] == initial_state,                      # eje avance ON
@@ -1377,7 +1383,6 @@ class RoutineHandler(threading.Thread):
         steps = ctrl_vars.LOAD_STEPS
         current_step = -1
         steps_count = len(steps)
-        print("POS", pos)
         for i in range(steps_count):
             step = steps[i]
             if pos <= step + 2 and pos >= step - 2:
@@ -1394,7 +1399,6 @@ class RoutineHandler(threading.Thread):
         steps = ctrl_vars.LOAD_STEPS
         current_step = -1
         steps_count = len(steps)
-        print("POS", pos)
         for i in range(steps_count):
             step = steps[i]
             if pos <= step + 2 and pos >= step - 2:

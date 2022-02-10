@@ -30,6 +30,13 @@ CABEZAL_ON_TIMEOFF = 30         # Tiempo máximo que el cabezal puede estar ence
 # --------------------------------------- Routines ------------------------------------------- #
 # -------------------------------------------------------------------------------------------- #
 
+# Indica si hay presencia de cupla en boquilla de cabezal. El número corresponde al de la boquilla
+part_present_indicator = {
+    1: False,
+    2: False,
+    3: False,
+}
+
 ROUTINE_IDS = {
     'cerado':   1,
     'carga':    2,
@@ -64,6 +71,7 @@ HOMING_CONSTANTES = {
     'position_negative_7': -4,
 }
 
+# Valores válidos de posición de eje de carga durante una rutina
 LOAD_STEPS = [
     0,
     -120,
@@ -76,6 +84,7 @@ LOAD_STEPS = [
     120
 ]
 
+# Se corresponde con LOAD_STEPS. Indica el número de la boquilla que se está cargando
 BOQUILLA_CARGADOR = {
     0: 2,
     1: 3,
@@ -89,6 +98,7 @@ BOQUILLA_CARGADOR = {
     9: 2
 }
 
+# Se corresponde con LOAD_STEPS. Indica el número de la boquilla que se está descargando
 BOQUILLA_DESCARGADOR = {
     0: 3,
     1: 1,
@@ -102,6 +112,7 @@ BOQUILLA_DESCARGADOR = {
     9: 3
 }
 
+# Se corresponde con LOAD_STEPS. Indica el número de la boquilla que se está roscando
 BOQUILLA_ROSCADO = {
     0: 1,
     1: 2,
