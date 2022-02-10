@@ -1,3 +1,4 @@
+from cmath import log
 import json
 
 from channels.generic.websocket import AsyncWebsocketConsumer, WebsocketConsumer
@@ -36,7 +37,8 @@ class FrontConsumer(AsyncWebsocketConsumer):
     def set_channel_info(self):
         ChannelInfo.objects.create(
             source = 'front',
-            name = self.channel_name
+            name = self.channel_name,
+            log = 0
         )
     
     @database_sync_to_async
@@ -49,7 +51,8 @@ class MicroConsumer(WebsocketConsumer):
     def connect(self):
         ChannelInfo.objects.create(
             source='micro',
-            name = self.channel_name
+            name = self.channel_name,
+            log = 0
             )
         ws_vars.back_channel_name = self.channel_name
         self.accept()

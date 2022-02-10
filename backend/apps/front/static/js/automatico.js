@@ -18,7 +18,6 @@ var monitorHorizontal = null;
 window.addEventListener("hashchange", () => {                  //cuando tocas f5
     (window.location.hash);
     monitor = document.querySelector("#component-monitor");
-    monitorHorizontal = document.querySelector("#component-monitor-horizontal");
 
 });
 
@@ -40,10 +39,36 @@ window.addEventListener("DOMContentLoaded", () => {                         //to
             xhr.send();
         });
     monitor = document.querySelector("#component-monitor");
-    monitorHorizontal = document.querySelector("#component-monitor-horizontal");
 
-    
+
+
+    cuadroDeTextoIndex = document.querySelector("#terminalDeTexto");
+    if (sessionStorage.getItem("mensajes") && cuadroDeTextoIndex) {
+        console.log('aca');
+        let ul = document.getElementById("cuadroMensajes");
+        const listaMensajes = sessionStorage.getItem("mensajes").split(",");
+        for (let i = 0; i < listaMensajes.length; i++) {
+            const li = document.createElement("li");
+            li.setAttribute("style", "list-style: none;");
+            li.innerHTML = listaMensajes[i];
+            ul.appendChild(li);
+        }
+    }
+
+    cuadroDeErrores = document.querySelector("#terminalDeTexto");
+    if (sessionStorage.getItem("mensajesError") && cuadroDeErrores) {
+        console.log('aca');
+        let ul = document.getElementById("cuadroMensajes");
+        const listaMensajes = sessionStorage.getItem("mensajesError").split(",");
+        for (let i = 0; i < listaMensajes.length; i++) {
+            const li = document.createElement("li");
+            li.setAttribute("style", "list-style: none;");
+            li.innerHTML = listaMensajes[i];
+            ul.appendChild(li);
+        }
+    }
 });
+
 const totalDuration = 10000;
     const delayBetweenPoints = totalDuration / data.length;
     const previousY = (ctx) => ctx.index === 0 
@@ -247,7 +272,7 @@ window.onload = function() {
     };
     if (datosWs.mensajes_error.length > 0) {
         listaMensajesErrores.push(datosWs.mensajes_error);
-        sessionStorage.setItem("mensajes", listaMensajesErrores);
+        sessionStorage.setItem("mensajesError", listaMensajesErrores);
         InsertarTextoErrores(datosWs.mensajes_error);
     };
 

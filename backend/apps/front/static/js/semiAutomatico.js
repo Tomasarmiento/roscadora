@@ -18,7 +18,7 @@ var monitorHorizontal = null;
 window.addEventListener("hashchange", () => {                  //cuando tocas f5
     (window.location.hash);
     monitor = document.querySelector("#component-monitor");
-    monitorHorizontal = document.querySelector("#component-monitor-horizontal");
+
 
 });
 
@@ -49,7 +49,7 @@ window.addEventListener("DOMContentLoaded", () => {                         //to
         startRoutine(routine);
     });
     monitor = document.querySelector("#component-monitor");
-    monitorHorizontal = document.querySelector("#component-monitor-horizontal");
+
 
     function startRoutine(routine){
         let url = "http://localhost:8000/control/semiautomatico/";
@@ -64,7 +64,31 @@ window.addEventListener("DOMContentLoaded", () => {                         //to
     
         xhr.send(params);
     }
+    cuadroDeTextoIndex = document.querySelector("#terminalDeTexto");
+    if (sessionStorage.getItem("mensajes") && cuadroDeTextoIndex) {
+        console.log('aca');
+        let ul = document.getElementById("cuadroMensajes");
+        const listaMensajes = sessionStorage.getItem("mensajes").split(",");
+        for (let i = 0; i < listaMensajes.length; i++) {
+            const li = document.createElement("li");
+            li.setAttribute("style", "list-style: none;");
+            li.innerHTML = listaMensajes[i];
+            ul.appendChild(li);
+        }
+    }
 
+    cuadroDeErrores = document.querySelector("#terminalDeTexto");
+    if (sessionStorage.getItem("mensajesError") && cuadroDeErrores) {
+        console.log('aca');
+        let ul = document.getElementById("cuadroMensajes");
+        const listaMensajes = sessionStorage.getItem("mensajesError").split(",");
+        for (let i = 0; i < listaMensajes.length; i++) {
+            const li = document.createElement("li");
+            li.setAttribute("style", "list-style: none;");
+            li.innerHTML = listaMensajes[i];
+            ul.appendChild(li);
+        }
+    }
     
 });
 const totalDuration = 10000;
@@ -278,7 +302,6 @@ window.onload = function() {
     };
 
 
-  if (datosWs) {
 
         if(datosWs){
             xAccelChartInstance.data.labels.push(new Date());            //(datosWs.cabezal_pos).toFixed(1);
@@ -293,7 +316,7 @@ window.onload = function() {
       
         
 }
-}};
+};
 
 
 

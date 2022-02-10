@@ -17,14 +17,12 @@ var monitorHorizontal = null;
 window.addEventListener("hashchange", () => {                  //cuando tocas f5
     (window.location.hash);
     monitor = document.querySelector("#component-monitor");
-    monitorHorizontal = document.querySelector("#component-monitor-horizontal");
 
 });
 
 window.addEventListener("DOMContentLoaded", () => {                         //todo el tiempo
     (window.location.hash);
     monitor = document.querySelector("#component-monitor");
-    monitorHorizontal = document.querySelector("#component-monitor-horizontal");
 });
 
 socket.onmessage = function (event) {
