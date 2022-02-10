@@ -1,12 +1,5 @@
-
-
-
-      const totalDuration = 10000;
-      const delayBetweenPoints = totalDuration / data.length;
-      const previousY = (ctx) => ctx.index === 0 
-      ? ctx.chart.scales.y.getPixelForValue(100) 
-      : ctx.chart.getDatasetMeta(ctx.datasetIndex).data[ctx.index - 1].getProps(['y'], true).y;
-      console.log('levanta grafico.js');
+var data = []
+      
 document.addEventListener("DOMContentLoaded", (e) => {
   
       //Configuration variables
@@ -20,7 +13,8 @@ document.addEventListener("DOMContentLoaded", (e) => {
       var xAccelChart = $("#xAccelChart");
       //chart instances & configuration
       
-  
+      var totalDuration = 10000;
+      var delayBetweenPoints = totalDuration / data.length;
       const btnContainer = document.querySelector("#resetZoomDiv");
      
       var commonOptions = {
@@ -160,5 +154,9 @@ document.addEventListener("DOMContentLoaded", (e) => {
     xAccelChartInstance.update();
     }
     };
-
+   
+    var previousY = (ctx) => ctx.index === 0 
+    ? ctx.chart.scales.y.getPixelForValue(100) 
+    : ctx.chart.getDatasetMeta(ctx.datasetIndex).data[ctx.index - 1].getProps(['y'], true).y;
+    console.log('levanta grafico.js');
 });
