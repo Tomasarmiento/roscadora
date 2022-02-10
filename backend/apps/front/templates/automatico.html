@@ -1,4 +1,4 @@
-{% extends 'index.html'%}
+{% extends 'indexNoData.html'%}
 {% load static %}
 {% block content %}
 <head>
@@ -163,19 +163,15 @@
             <div id="salidaDeTextoErrores"></div>
             {% include 'cuadroDeErrores.html' %}
         </div>
-        
-        
     </div>
-</div>
-<div class="col-md-4 mb-2 float-left justify-content-around px-1">
-    <div id="contenedor-terminal-texto" class="card col-md-12 text-left my-4 mx-auto border shadow rounded bg-white p-1" style="height: auto;">
-        <div id="salidaDeTexto"></div>
-        {% include 'cuadroDeTexto.html' %}
+    <div class="col-md-6 col-12   border shadow rounded bg-white  px-1 py-1" style="bottom:318px;right: 20px;height: 560px;">
+        {% include 'monitorComponent.html' %}
+        <div id="component-monitor"></div>
+        </div>
     </div>
-</div>
 
 
-<script src="{% static 'js/automatico.js' %}"></script>
-<script src="{% static 'js/stopAll.js' %}"></script>
-</body>
-{% endblock %}
+    <script src="{% static 'js/automatico.js' %}"></script>
+    <script src="{% static 'js/stopAll.js' %}"></script>
+    </body>
+    {% endblock %}
