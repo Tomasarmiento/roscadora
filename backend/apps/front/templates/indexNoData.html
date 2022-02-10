@@ -16,9 +16,9 @@
     
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light" style="height: 56px;">
         <div class="container-fluid">
-          <a class="navbar-brand" href="{% url 'home' %}">Moltech</a>
+          <a class="navbar-brand" href="{% url 'home' %}"><img src="../static/img/moltech-logo.png" alt="Moltech"></a>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
           </button>
@@ -32,6 +32,9 @@
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="{% url 'semiAutomatico' %}">Semiautomatico</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'logAlarma' %}">Alarma</a>
               </li>
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLinkManual" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

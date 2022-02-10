@@ -25,6 +25,7 @@ COMMAND_REF_RATES = {}
 # -------------------------------------------------------------------------------------------- #
 
 CABEZAL_ON_TIMEOFF = 30         # Tiempo máximo que el cabezal puede estar encendido mientras está clampeado
+GIRO_ON_TIMEOUT = 60         # Tiempo máximo de husillo encendido con velocidad 0
 
 # -------------------------------------------------------------------------------------------- #
 # --------------------------------------- Routines ------------------------------------------- #
@@ -54,21 +55,21 @@ ROUTINE_NAMES = {
 }
 
 ROSCADO_CONSTANTES = {
-    'posicion_de_aproximacion': -80,
-    'velocidad_en_vacio': 50,
-    'posicion_final_de_roscado': -205,
-    'velocidad_de_roscado': 6,
-    'posicion_salida_de_roscado': -80,
-    'velocidad_de_retraccion': 10,
-    'paso_de_rosca': 2.54,
-    'posicion_de_inicio': 5,
+    # 'posicion_de_aproximacion': -80,
+    # 'velocidad_en_vacio': 50,
+    # 'posicion_final_de_roscado': -205,
+    # 'velocidad_de_roscado': 6,
+    # 'posicion_salida_de_roscado': -80,
+    # 'velocidad_de_retraccion': 10,
+    # 'paso_de_rosca': 2.54,
+    # 'posicion_de_inicio': 5,
 }
 
 HOMING_CONSTANTES = {
-    'position_positive_7': 4,
-    'position_mid_low': -3,
-    'position_mid_high': 1,
-    'position_negative_7': -4,
+    # 'position_positive_7': 4,
+    # 'position_mid_low': -3,
+    # 'position_mid_high': 1,
+    # 'position_negative_7': -4,
 }
 
 # Valores válidos de posición de eje de carga durante una rutina
@@ -130,7 +131,7 @@ BOQUILLA_ROSCADO = {
 # --------------------------------- Remote/Local outputs ------------------------------------- #
 # -------------------------------------------------------------------------------------------- #
 
-TIMEOUT_GENERAL         = 10
+TIMEOUT_GENERAL         = 20
 TIMEOUT_PNEUMATIC       = 20
 TIMEOUT_LOAD            = 10
 TIMEOUT_LINEAL          = 30

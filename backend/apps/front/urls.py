@@ -12,4 +12,5 @@ urlpatterns = [
     path('monitorEstados/', views.monitorEstados, name="monitorEstados"),
     path('semiAutomatico/', views.semiAutomatico, name="semiAutomatico"),
     path('parametrosPagina1/', views.parametrosPagina1, name="parametrosPagina1"),
+    path('logAlarma/', views.logAlarma, name="logAlarma"),
 ]

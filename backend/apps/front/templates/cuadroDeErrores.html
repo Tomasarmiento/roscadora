@@ -1,0 +1,15 @@
+{% load static %}
+{% block content %}
+<div class="row p-0 m-0">
+    <div class="col bg-danger text-center font-weight-bold text-white rounded-top">
+        MENSAJE DE ERROR
+    </div>
+</div>
+<div id="terminalDeTextoErrores" class="overflow-auto row py-1 m-0" style="height: 330px; color: #8B0000;">
+<ul id="cuadroMensajesErrores"></ul>
+</div>
+<script src="{% static 'js/cuadroDeTexto.js' %}"></script>
+<script src="{% static 'js/semiAutomatico.js' %}"></script>
+<script src="{% static 'js/monitorHorizontal.js' %}"></script>
+<script src="{% static 'js/automatico.js' %}"></script>
+{% endblock %}

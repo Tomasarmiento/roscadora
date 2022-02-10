@@ -48,7 +48,7 @@ class FrontConsumer(AsyncWebsocketConsumer):
         channel_info = ChannelInfo.objects.get(name=self.channel_name)
         channel_info.delete()
 
-class MicroConsumer(WebsocketConsumer):
+class MicroDataConsumer(WebsocketConsumer):
 
     def connect(self):
         ChannelInfo.objects.create(
@@ -58,14 +58,16 @@ class MicroConsumer(WebsocketConsumer):
             )
         ws_vars.back_channel_name = self.channel_name
         self.accept()
-        print('Micro WS connected')
+        print('Micro WS data connected')
 
     def receive(self, text_data=None, bytes_data=None):
+
         h_bytes_len = MicroState.last_rx_header.bytes_length
         if len(bytes_data) > h_bytes_len:
             MicroState.last_rx_header.store_from_raw(bytes_data[:h_bytes_len])
             MicroState.last_rx_data.store_from_raw(bytes_data[h_bytes_len:])
             ctrl_fun.update_states(micro_data=MicroState.last_rx_data)
+            
             if MicroState.turn_load_drv_off:
                 MicroState.turn_load_drv_off = False
                 command = Commands.power_off
@@ -75,9 +77,47 @@ class MicroConsumer(WebsocketConsumer):
                 header = build_msg(command, eje=axis, msg_id=msg_id)
                 header = header.pacself()
                 self.send(bytes_data=header)
+            
+            if MicroState.turn_turn_drv_off:
+                MicroState.turn_turn_drv_off = False
+                command = Commands.power_off
+                axis = ctrl_vars.AXIS_IDS['giro']
+                msg_id = ws_vars.MicroState.last_rx_header.get_msg_id() + 1
+                ws_vars.MicroState.msg_id = msg_id
+                header = build_msg(command, eje=axis, msg_id=msg_id)
+                header = header.pacself()
+                self.send(bytes_data=header)
+
             # show_states(MicroState.last_rx_header, MicroState.last_rx_data)
         else:
             MicroState.last_rx_header.store_from_raw(bytes_data)
+
+    def micro_command(self, event):
+        self.send(bytes_data=event['bytes_data'])
+
+    def disconnect(self, close_code):
+        print("DISCONNECED CODE: ", close_code)
+
+        channel_info = ChannelInfo.objects.get(name=self.channel_name)
+        channel_info.delete()
+
+        self.close()
+
+
+class MicroLogConsumer(WebsocketConsumer):
+
+    def connect(self):
+        ChannelInfo.objects.create(
+            source='micro',
+            name = self.channel_name,
+            log = 1
+            )
+        ws_vars.back_channel_name = self.channel_name
+        self.accept()
+        print('Micro WS log connected')
+    
+    def receive(self, text_data=None, bytes_data=None):
+        print(text_data)
 
     def micro_command(self, event):
         self.send(bytes_data=event['bytes_data'])
@@ -100,7 +140,10 @@ def show_states(header, data):
     # print(len(ws_vars.MicroState.position_values))
     # print(len(ws_vars.MicroState.torque_values))
     # print(ws_vars.MicroState.graph_duration)
-    print(ws_vars.MicroState.rem_i_states[1]['presion_normal'])
+    # print(ws_vars.MicroState.rem_i_states[1]['presion_normal'])
+    for key, value in ws_vars.MicroState.loc_i.items():
+        print(f'{key}:', f'{value:06b}')
+    # print(ws_vars.MicroState.loc_i)
     # print (MicroState.axis_measures[ctrl_var.AXIS_IDS['carga']])
     # for axis in MicroState.axis_measures:
     #     print(axis)

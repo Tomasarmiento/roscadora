@@ -1,0 +1,16 @@
+{% extends 'indexNoData.html'%}
+{% load static %}
+{% block content %}
+
+<div class="col-md-7 mb-2 float-left justify-content-around px-1" style="top: 25px;height: 412px;left: 270px;">
+    <div id="contenedor-terminal-texto-errores" class="card col-md-12 text-left my-4 mx-auto border shadow rounded bg-white p-1" style="height: auto;">
+        <div id="salidaDeTextoErrores"></div>
+        {% include 'cuadroDeErrores.html' %}
+    </div>
+    <div class="col-md-13 text-right justify-content-center">
+        <a type="button" class="btn btn-primary btn-lg" href="javascript:history.back()">Volver</a>
+        </div>
+</div>
+
+
+{% endblock %}
