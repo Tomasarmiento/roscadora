@@ -4,3 +4,4 @@ from django.db import models
 class ChannelInfo(models.Model):
     source = models.CharField(blank=True, max_length=10)
     name = models.CharField(max_length=255, blank=True)
+    log = models.IntegerField(default=0)
