@@ -143,7 +143,7 @@ document.addEventListener("DOMContentLoaded", (e) => {
     socket.onmessage = function (event) {
     const datosWs = JSON.parse(event.data);
     
-    if(datosWs){
+    if(datosWs.graph_flag == true){
         xAccelChartInstance.data.labels.push(new Date());            //(datosWs.cabezal_pos).toFixed(1);
         xAccelChartInstance.data.datasets.forEach((dataset) =>{dataset.data.push(datosWs.husillo_torque).toFixed(1)});
     if(updateCount > numberElements){

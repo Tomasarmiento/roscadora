@@ -18,13 +18,13 @@
 <body>
     <script src="{% static 'js/automatico.js' %}"></script>
     <script src="{% static 'js/graficoRutinas.js' %}"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.2.1/moment.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.1"></script>
 	<script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8"></script>
 	<script src="../static/zoomplugin/chartjs-plugin-zoom.min.js"></script>
-
+    <!-- <script type="text/javascript" src="https://unpkg.com/default-passive-events"></script> -->
   
-<div id="accelContainer" class="container-fluid col-md-12">
+<div id="accelContainer" class="col-md-10">
     <div id="xAccel" class="x">      
       <canvas id="xAccelChart" style="width: 450px;" class="border border-primary"></canvas>
     </div><!--xAccel-->
@@ -163,7 +163,7 @@
     </div>
 
 
-    <script src="{% static 'js/automatico.js' %}"></script>
+
     <script src="{% static 'js/stopAll.js' %}"></script>
     </body>
     {% endblock %}

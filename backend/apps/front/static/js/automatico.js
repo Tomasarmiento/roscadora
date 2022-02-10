@@ -1,26 +1,11 @@
 var data = []
 var monitor = null;
 
-
-
-
-    const socket = new WebSocket("ws://127.0.0.1:8000/ws/front/");
-    socket.addEventListener("open", function (event) {
-        socket.send(
-          JSON.stringify({
-            message: "datos",      
-          })
-        );
-    });
-    // Escucha cierre de WebSocket
-    socket.onclose = function (event) {
-        window.location.reload();
-      };
     
 window.addEventListener("hashchange", () => {                  //cuando tocas f5
     (window.location.hash);
     monitor = document.querySelector("#component-monitor");
-    monitorHorizontal = document.querySelector("#component-monitor-horizontal");
+
 
 });
 
