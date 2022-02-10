@@ -51,8 +51,6 @@ document.addEventListener("DOMContentLoaded", (e) => {
 
     socket.onmessage = function (event) {
         const datosWs = JSON.parse(event.data);
-        
-
         if (datosWs) {
             
             // Tabla de datos

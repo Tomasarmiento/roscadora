@@ -249,6 +249,7 @@ window.onload = function() {
   const contenedorGrafico = document.querySelector("#component-grafico-roscado");
 
   if (datosWs) {
+    console.log(datosWs);
     //Monitor
     rpmActual.innerHTML = datosWs.husillo_rpm.toFixed(1);
     torqueActual.innerHTML = datosWs.husillo_torque.toFixed(1);
