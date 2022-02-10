@@ -58,7 +58,7 @@ window.addEventListener("DOMContentLoaded", () => {                         //to
     cuadroDeErrores = document.querySelector("#terminalDeTexto");
     if (sessionStorage.getItem("mensajesError") && cuadroDeErrores) {
         console.log('aca');
-        let ul = document.getElementById("cuadroMensajes");
+        let ul = document.getElementById("cuadroMensajesErrores");
         const listaMensajes = sessionStorage.getItem("mensajesError").split(",");
         for (let i = 0; i < listaMensajes.length; i++) {
             const li = document.createElement("li");
@@ -277,8 +277,6 @@ window.onload = function() {
     };
 
 
-  if (datosWs) {
-
         if(datosWs){
             xAccelChartInstance.data.labels.push(new Date());            //(datosWs.cabezal_pos).toFixed(1);
             xAccelChartInstance.data.datasets.forEach((dataset) =>{dataset.data.push(datosWs.husillo_torque).toFixed(1)});
@@ -292,4 +290,4 @@ window.onload = function() {
       
         
 }
-}};
+};
