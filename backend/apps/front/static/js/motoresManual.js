@@ -55,9 +55,6 @@ document.addEventListener("DOMContentLoaded", (e) => {
         const safe = document.querySelector("#statusSafe");
 
         if (datosWs) {
-
-
-            
             // Tabla de datos
             const rpmActual = document.querySelector("#frRPM");
             const torqueActual = document.querySelector("#fTorque");
@@ -69,39 +66,47 @@ document.addEventListener("DOMContentLoaded", (e) => {
             // Datos Eje Horizontal
             const posicionActualH = document.querySelector("#posHorizontal");
             const velocidadActualH = document.querySelector("#velHorizontal");
-            
+
+            // Estados De los Ejes
+            const estadoActualHusillo = document.querySelector("#fHusillo");
+            const estadoActualV = document.querySelector("#estVertical");
+            const estadoActualH = document.querySelector("#estHorizontal");
+                        
             //Monitor
             rpmActual.innerHTML = datosWs.husillo_rpm.toFixed(1)/6;
             torqueActual.innerHTML = datosWs.husillo_torque.toFixed(1);
+            estadoActualHusillo.innerHTML = datosWs.estado_eje_giro;
 
             posicionActualV.innerHTML = datosWs.cabezal_pos.toFixed(1);
             velocidadActualV.innerHTML = datosWs.cabezal_vel.toFixed(1);
+            estadoActualV.innerHTML = datosWs.estado_eje_carga;
 
             posicionActualH.innerHTML = datosWs.avance_pos.toFixed(1);
             velocidadActualH.innerHTML = datosWs.avance_vel.toFixed(1);
+            estadoActualH.innerHTML = datosWs.estado_eje_avance;
 
-            //cabezal
-            if (datosWs.estado_eje_carga == 'initial'){
-            (cabezal.className = "bg-success indicadorMon") && (cabezal.innerHTML = 'Cabezal <br/> Initial') 
-            }
+            // //cabezal
+            // if (datosWs.estado_eje_carga == 'initial'){
+            // (cabezal.className = "bg-success indicadorMon") && (cabezal.innerHTML = 'Cabezal <br/> Initial') 
+            // }
 
-                else if (datosWs.estado_eje_carga == 'homing'){
-                (cabezal.className = "bg-warning indicadorMon") && (cabezal.innerHTML = 'Cabezal <br/> Homming')
-                }
+            //     else if (datosWs.estado_eje_carga == 'homing'){
+            //     (cabezal.className = "bg-warning indicadorMon") && (cabezal.innerHTML = 'Cabezal <br/> Homming')
+            //     }
 
-            else (cabezal.className = "bg-secondary indicadorMon");
+            // else (cabezal.className = "bg-secondary indicadorMon");
             
             
-            //eje lineal
-            if (datosWs.estado_eje_avance == 'initial'){
-            (ejeLineal.className = "bg-success indicadorMon") && (ejeLineal.innerHTML = 'Eje lineal <br/> Initial') 
-            }
+            // //eje lineal
+            // if (datosWs.estado_eje_avance == 'initial'){
+            // (ejeLineal.className = "bg-success indicadorMon") && (ejeLineal.innerHTML = 'Eje lineal <br/> Initial') 
+            // }
 
-                else if (datosWs.estado_eje_avance == 'homing'){
-                (ejeLineal.className = "bg-warning indicadorMon") && (ejeLineal.innerHTML = 'Eje lineal <br/> Homming')
-                }
+            //     else if (datosWs.estado_eje_avance == 'homing'){
+            //     (ejeLineal.className = "bg-warning indicadorMon") && (ejeLineal.innerHTML = 'Eje lineal <br/> Homming')
+            //     }
 
-            else (ejeLineal.className = "bg-secondary indicadorMon");
+            // else (ejeLineal.className = "bg-secondary indicadorMon");
 
 
             //descarga
@@ -154,8 +159,8 @@ document.addEventListener("DOMContentLoaded", (e) => {
             (datosWs.estado_eje_carga == 'safe')
             && (datosWs.estado_eje_avance == 'safe')
             && (datosWs.estado_eje_giro == 'safe')
-            ?  (safe.className = "bg-danger indicadorMon")
-            :  (safe.className = "bg-secondary indicadorMon");
+            ?  (safe.className = "bg-danger indicadorMonSafe")
+            :  (safe.className = "bg-secondary indicadorMonSafe");
 
             //Enables
             datosWs.lineal_enable == true
