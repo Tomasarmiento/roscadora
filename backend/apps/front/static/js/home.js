@@ -34,6 +34,8 @@ window.addEventListener("DOMContentLoaded", () => {                         //to
             xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         
             xhr.send(params);
+
+            location.reload(true)
         });
     }
 
