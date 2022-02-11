@@ -32,9 +32,18 @@
                 <a class="nav-link" href="{% url 'semiAutomatico' %}">Semiautomatico</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="{% url 'logAlarma' %}">Alarma</a>
+                <a class="nav-link" href="{% url 'motoresManual' %}">Motores</a>
               </li>
-              <li class="nav-item dropdown">
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'neumaticaManual' %}">Neumatica</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'sensores' %}">Sensores</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" style="color: red;" href="{% url 'logAlarma' %}">Alarma</a>
+              </li>
+              <!-- <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLinkManual" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     Modo Manual
                 </a>
@@ -42,7 +51,7 @@
                     <li><a class="dropdown-item" href="{% url 'neumaticaManual' %}">Neumatica</a></li>
                     <li><a class="dropdown-item" href="{% url 'motoresManual' %}">Motores</a></li>
                 </ul>
-              </li>
+              </li> -->
              
             </ul>
           </div>

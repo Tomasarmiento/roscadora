@@ -173,9 +173,10 @@ document.addEventListener("DOMContentLoaded", (e) => {
 
     btn_mov_husillo.addEventListener("click", (e) => {
         let rpm = document.getElementById('rpmValue').value;
+        rpmMultiply = rpm*6;
         cmd = btn_mov_husillo.getAttribute('cmd');
         eje = parseInt(btn_mov_husillo.getAttribute('eje'));
-        sendCommand(cmd, eje, {'ref': parseFloat(rpm)});
+        sendCommand(cmd, eje, {'ref': parseFloat(rpmMultiply)});
     });
 
     btn_mov_abs_lin.addEventListener("click", (e) => {
