@@ -13,6 +13,7 @@ from apps.ws.utils import variables as ws_vars
 
 from apps.control.utils import variables as ctrl_vars
 from apps.control.utils import functions as ctrl_fun
+from apps.control.utils import routines as ctrl_rtns
 
 from apps.service.acdp import messages_base as msg_base
 from apps.service.api.variables import Commands
@@ -65,12 +66,12 @@ class MicroDataConsumer(WebsocketConsumer):
     def receive(self, text_data=None, bytes_data=None):
 
         h_bytes_len = MicroState.last_rx_header.bytes_length
-        if len(bytes_data) > h_bytes_len:
+        if len(bytes_data) > h_bytes_len:               # Longitud de datos mayor que cabecera. Si no es echo request
             MicroState.last_rx_header.store_from_raw(bytes_data[:h_bytes_len])
             MicroState.last_rx_data.store_from_raw(bytes_data[h_bytes_len:])
             ctrl_fun.update_states(micro_data=MicroState.last_rx_data)
             
-            if MicroState.turn_load_drv_off:
+            if MicroState.turn_load_drv_off:        # Flag de apagar driver de cabezal cuando el plato está clampeado
                 MicroState.turn_load_drv_off = False
                 command = Commands.power_off
                 axis = ctrl_vars.AXIS_IDS['carga']
@@ -80,7 +81,7 @@ class MicroDataConsumer(WebsocketConsumer):
                 header = header.pacself()
                 self.send(bytes_data=header)
             
-            if MicroState.turn_turn_drv_off:
+            if MicroState.turn_turn_drv_off:        # Flag de apagar driver de husillo cuando rpm es 0
                 MicroState.turn_turn_drv_off = False
                 command = Commands.power_off
                 axis = ctrl_vars.AXIS_IDS['giro']
@@ -89,6 +90,17 @@ class MicroDataConsumer(WebsocketConsumer):
                 header = build_msg(command, eje=axis, msg_id=msg_id)
                 header = header.pacself()
                 self.send(bytes_data=header)
+            
+            if ws_vars.MicroState.loc_i_states['end'] == False:     # Boton continuar presionado
+                ws_vars.MicroState.end_master_routine = True
+            
+            elif ws_vars.MicroState.loc_i_states['continue'] == True:     # Boton continuar presionado
+                if ws_vars.MicroState.master_running == True:
+                    print('Master ya está ejecutándose')
+                
+                else:
+                    ctrl_rtns.MasterHandler().start()
+            
 
             # show_states(MicroState.last_rx_header, MicroState.last_rx_data)
         else:

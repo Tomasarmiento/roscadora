@@ -31,6 +31,13 @@ GIRO_ON_TIMEOUT = 60         # Tiempo máximo de husillo encendido con velocidad
 # --------------------------------------- Routines ------------------------------------------- #
 # -------------------------------------------------------------------------------------------- #
 
+# Indica si hay presencia de cupla en boquilla de cabezal. El número corresponde al de la boquilla
+part_present_indicator = {
+    1: False,
+    2: False,
+    3: False,
+}
+
 ROUTINE_IDS = {
     'cerado':   1,
     'carga':    2,
@@ -48,23 +55,24 @@ ROUTINE_NAMES = {
 }
 
 ROSCADO_CONSTANTES = {
-    'posicion_de_aproximacion': -80,
-    'velocidad_en_vacio': 50,
-    'posicion_final_de_roscado': -205,
-    'velocidad_de_roscado': 6,
-    'posicion_salida_de_roscado': -80,
-    'velocidad_de_retraccion': 10,
-    'paso_de_rosca': 2.54,
-    'posicion_de_inicio': 5,
+    # 'posicion_de_aproximacion': -80,
+    # 'velocidad_en_vacio': 50,
+    # 'posicion_final_de_roscado': -205,
+    # 'velocidad_de_roscado': 6,
+    # 'posicion_salida_de_roscado': -80,
+    # 'velocidad_de_retraccion': 10,
+    # 'paso_de_rosca': 2.54,
+    # 'posicion_de_inicio': 5,
 }
 
 HOMING_CONSTANTES = {
-    'position_positive_7': 4,
-    'position_mid_low': -3,
-    'position_mid_high': 1,
-    'position_negative_7': -4,
+    # 'position_positive_7': 4,
+    # 'position_mid_low': -3,
+    # 'position_mid_high': 1,
+    # 'position_negative_7': -4,
 }
 
+# Valores válidos de posición de eje de carga durante una rutina
 LOAD_STEPS = [
     0,
     -120,
@@ -77,6 +85,7 @@ LOAD_STEPS = [
     120
 ]
 
+# Se corresponde con LOAD_STEPS. Indica el número de la boquilla que se está cargando
 BOQUILLA_CARGADOR = {
     0: 2,
     1: 3,
@@ -90,6 +99,7 @@ BOQUILLA_CARGADOR = {
     9: 2
 }
 
+# Se corresponde con LOAD_STEPS. Indica el número de la boquilla que se está descargando
 BOQUILLA_DESCARGADOR = {
     0: 3,
     1: 1,
@@ -103,6 +113,7 @@ BOQUILLA_DESCARGADOR = {
     9: 3
 }
 
+# Se corresponde con LOAD_STEPS. Indica el número de la boquilla que se está roscando
 BOQUILLA_ROSCADO = {
     0: 1,
     1: 2,
@@ -142,7 +153,9 @@ REM_DI_G2_STATES = {}
 
 LOC_DI_BITS = {
     'em_stop':      0,
-    'fast_stop':    1
+    'fast_stop':    1,
+    'continue':     2,
+    'end':          3
 }
 
 LOC_DO_BITS = {
@@ -231,7 +244,9 @@ REM_DI_G2_BITS = {
 
 LOC_DI_ARR = [
     'em_stop',
-    'fast_stop'
+    'fast_stop',
+    'continue',
+    'end'
 ]
 
 LOC_DO_ARR = [

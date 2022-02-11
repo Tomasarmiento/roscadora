@@ -24,10 +24,23 @@ window.addEventListener("hashchange", () => {                  //cuando tocas f5
 window.addEventListener("DOMContentLoaded", () => {                         //todo el tiempo
     (window.location.hash);
     let btn_continue = document.getElementById('continue');
-    let btn_cancel = document.getElementById('cancel');
+    let btn_cancel = document.getElementById('cancel'); 
     
         btn_continue.addEventListener('click', (e) => {
             let url = "http://localhost:8000/control/auto/";
+    
+            let xhr = new XMLHttpRequest();
+    
+            xhr.open("POST", url, true);
+    
+            //Send the proper header information along with the request
+            xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    
+            xhr.send();
+        });
+
+        btn_cancel.addEventListener('click', (e) => {
+            let url = "http://localhost:8000/control/end-master-routine/";
     
             let xhr = new XMLHttpRequest();
     

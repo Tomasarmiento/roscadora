@@ -62,6 +62,236 @@ def init_master_flags():
 # --------------------------------------- Routines ------------------------------------------- #
 # -------------------------------------------------------------------------------------------- #
 
+def check_init_conditions_master():
+    
+    if ws_vars.MicroState.rem_i_states[1]['presion_normal'] == False:
+        err_msg = 'Baja presión'
+        print('\nBaja presión\n')
+        ws_vars.MicroState.err_messages.append(err_msg)
+        return False
+
+    pos = round(ws_vars.MicroState.axis_measures[ctrl_vars.AXIS_IDS['carga']]['pos_fil'], 0)
+    if pos not in ctrl_vars.LOAD_STEPS:
+        err_msg = 'Error en posicion de cabezal' 
+        print('\nError en posicion de cabezal\n')
+        ws_vars.MicroState.err_messages.append(err_msg)
+        return False
+
+    err_msg_index = check_init_conditions_index()
+    err_msg_load = check_init_conditions_load()
+    err_msg_unload = check_init_conditions_unload()
+    err_msg_tapping = check_init_conditions_tapping()
+    error_flag = False
+    
+    if err_msg_load:
+        print('\nError en condiciones iniciales de carga')
+        err_msg = 'Error en condiciones iniciales de carga'
+        ws_vars.MicroState.err_messages.append(err_msg)
+        for err in err_msg_load:
+            ws_vars.MicroState.err_messages.append(err)
+            print(err)
+        error_flag = True
+    else:
+        log_msg = 'Condiciones iniciales de carga OK'
+        print('Condiciones iniciales de carga OK')
+        ws_vars.MicroState.log_messages.append(log_msg)
+    
+    if err_msg_unload:
+        print('\nError en condiciones iniciales de descarga')
+        err_msg = 'Error en condiciones iniciales de descarga'
+        ws_vars.MicroState.err_messages.append(err_msg)
+        for err in err_msg_unload:
+            ws_vars.MicroState.err_messages.append(err)
+            print(err)
+        error_flag = True
+    else:
+        log_msg = 'Condiciones iniciales de descarga OK'
+        print('Condiciones iniciales de descarga OK')
+        ws_vars.MicroState.log_messages.append(log_msg)
+    
+    if err_msg_index:
+        print('\nError en condiciones iniciales de indexado')
+        err_msg = 'Error en condiciones iniciales de indexado'
+        ws_vars.MicroState.err_messages.append(err_msg)
+        for err in err_msg_index:
+            ws_vars.MicroState.err_messages.append(err)
+            print(err)
+        error_flag = True
+    else:
+        log_msg = 'Condiciones iniciales de indexado OK'
+        print('Condiciones iniciales de indexado OK')
+        ws_vars.MicroState.log_messages.append(log_msg)
+    
+    if err_msg_tapping:
+        print('\nError en condiciones iniciales de roscado')
+        err_msg = 'Error en condiciones iniciales de roscado'
+        ws_vars.MicroState.err_messages.append(err_msg)
+        for err in err_msg_tapping:
+            ws_vars.MicroState.err_messages.append(err)
+            print(err)
+        error_flag = True
+    else:
+        log_msg = 'Condiciones iniciales de roscado OK'
+        print('Condiciones iniciales de roscado OK')
+        ws_vars.MicroState.log_messages.append(log_msg)
+
+    if error_flag == True:
+        return False
+    return True
+
+
+def check_init_conditions_homing():
+    eje_avance = ctrl_vars.AXIS_IDS['avance']
+    eje_carga = ctrl_vars.AXIS_IDS['carga']
+    eje_giro = ctrl_vars.AXIS_IDS['giro']
+    error_messages = []
+    initial_state = msg_app.StateMachine.EST_INITIAL
+    # Paso 0 - Chequear condiciones iniciales - Todos los valores deben ser True par que empiece la rutina
+    init_flags = [
+        (ws_vars.MicroState.axis_flags[eje_carga]['estado'] != 'safe', 'Eje carga en safe'),      # Eje en safe
+        (ws_vars.MicroState.axis_flags[eje_giro]['estado'] != 'safe', 'Eje husillo en safe'),     # Eje en safe
+        (ws_vars.MicroState.axis_flags[eje_avance]['estado'] != 'safe', 'Eje avance en safe'),    # Eje en safe
+        (ws_vars.MicroState.rem_i_states[1]['presion_normal'], 'Baja presión'),                 # Presión normal
+
+        (ws_vars.MicroState.axis_flags[eje_avance]['maq_est_val'] == initial_state, 'Eje lineal apagado'),      # eje avance encendido
+        (ws_vars.MicroState.rem_i_states[1]['acople_lubric_contraido'], 'Acople lubricante afuera'),            # acople_lubricante_contraido
+        (ws_vars.MicroState.rem_i_states[0]['puntera_descarga_contraida'], 'Puntera descarga expandida'),       # puntera_descarga_contraida
+        (ws_vars.MicroState.rem_i_states[0]['puntera_carga_contraida'], 'Puntera carga expandida'),             # puntera_carga_contraida
+    ]
+
+    for flag, error in init_flags:
+        if flag == False:
+            error_messages.append(error)
+
+    return error_messages
+
+
+def check_init_conditions_index():
+    pos = round(ws_vars.MicroState.axis_measures[ctrl_vars.AXIS_IDS['carga']]['pos_fil'], 0)
+    eje_avance = ctrl_vars.AXIS_IDS['avance']
+    eje_carga = ctrl_vars.AXIS_IDS['carga']
+    eje_giro = ctrl_vars.AXIS_IDS['giro']
+    error_messages = []
+    eje_avance = ctrl_vars.AXIS_IDS['avance']
+    init_flags = [
+        (pos in ctrl_vars.LOAD_STEPS, 'Posición de plato errónea'),                                                                     # Plato alineado
+        (ws_vars.MicroState.axis_flags[ctrl_vars.AXIS_IDS['avance']]['cero_desconocido'] == False, 'Cero desconocido en eje lineal'),   # Eje lineal cerado
+        (ws_vars.MicroState.axis_flags[ctrl_vars.AXIS_IDS['carga']]['cero_desconocido'] == False, 'Cero desconocido en eje lineal'),    # Cabezal cerado
+        (ws_vars.MicroState.axis_flags[eje_carga]['estado'] != 'safe', 'Eje carga en safe'),                                              # Eje en safe
+        (ws_vars.MicroState.axis_flags[eje_giro]['estado'] != 'safe', 'Eje husillo en safe'),                                             # Eje en safe
+        (ws_vars.MicroState.axis_flags[eje_avance]['estado'] != 'safe', 'Eje avance en safe'),                                            # Eje en safe
+        (ws_vars.MicroState.rem_i_states[1]['presion_normal'], 'Baja presión'),                                                         # Presión normal
+
+        (ws_vars.MicroState.rem_i_states[1]['clampeo_plato_expandido'], 'Plato no clampeado'),                                          # plato_clampeado
+        (ws_vars.MicroState.rem_i_states[1]['acople_lubric_contraido'], 'Acople lubricante expandido'),                                 # acople_lubricante_contraido
+        (ws_vars.MicroState.rem_i_states[0]['puntera_descarga_contraida'], 'Puntera descarga expandida'),                               # puntera_descarga_contraida
+        (ws_vars.MicroState.rem_i_states[0]['puntera_carga_contraida'], 'Puntera carga expandida'),                                     # puntera_carga_contraida
+        (round(ws_vars.MicroState.axis_measures[eje_avance]['pos_fil'], 0) == round(ctrl_vars.ROSCADO_CONSTANTES['posicion_de_inicio'], 0), 'Posición de eje avance erróneo'),   # Eje avance en posición de inicio
+    ]
+    for flag, error in init_flags:
+        if flag == False:
+            error_messages.append(error)
+
+    return error_messages
+
+
+def check_init_conditions_load():
+    pos = round(ws_vars.MicroState.axis_measures[ctrl_vars.AXIS_IDS['carga']]['pos_fil'], 0)
+    eje_avance = ctrl_vars.AXIS_IDS['avance']
+    eje_carga = ctrl_vars.AXIS_IDS['carga']
+    eje_giro = ctrl_vars.AXIS_IDS['giro']
+    error_messages = []
+    init_flags = [
+        (pos in ctrl_vars.LOAD_STEPS, 'Posición de plato errónea'),                                                                     # Plato alineado
+        (ws_vars.MicroState.axis_flags[ctrl_vars.AXIS_IDS['avance']]['cero_desconocido'] == False, 'Cero desconocido en eje lineal'),   # Eje lineal cerado
+        (ws_vars.MicroState.axis_flags[ctrl_vars.AXIS_IDS['carga']]['cero_desconocido'] == False, 'Cero desconocido en eje lineal'),    # Cabezal cerado
+        (ws_vars.MicroState.rem_i_states[1]['presion_normal'], 'Baja presión'),                                                         # Presión normal
+
+        (ws_vars.MicroState.axis_flags[eje_carga]['estado'] != 'safe', 'Eje carga en safe'),                                              # Eje en safe
+        (ws_vars.MicroState.axis_flags[eje_giro]['estado'] != 'safe', 'Eje husillo en safe'),                                             # Eje en safe
+        (ws_vars.MicroState.axis_flags[eje_avance]['estado'] != 'safe', 'Eje avance en safe'),                                            # Eje en safe
+        (ws_vars.MicroState.rem_o_states[1]['encender_bomba_hidraulica'], 'Bomba hidráulica apagada'),              # hidráulica ON
+        (ws_vars.MicroState.rem_i_states[1]['clampeo_plato_expandido'], 'Plato no clampeado'),                      # Plato clampeado
+        (ws_vars.MicroState.rem_i_states[0]['vertical_carga_contraido'], 'Vertical de carga expandido'),            # vertical_carga_contraido
+        (ws_vars.MicroState.rem_i_states[0]['puntera_carga_contraida'], 'Puntera carga expandida'),                 # puntera_carga_contraida
+        (ws_vars.MicroState.rem_i_states[0]['brazo_cargador_expandido'], 'Brazo cargador cntraído'),                # brazo_cargador_expandido
+        (ws_vars.MicroState.rem_i_states[0]['boquilla_carga_expandida'], 'Boquilla de carga contraída'),            # ws_vars.MicroState.rem_i_states[0]
+        (ws_vars.MicroState.rem_i_states[1]['presencia_cupla_en_cargador'], 'Cupla en cargador no presente'),       # presencia_cupla_en_cargador
+        (not ws_vars.MicroState.rem_i_states[1]['pieza_en_boquilla_carga'], 'Pieza en boquilla de carga presente')  # pieza_en_boquilla_carga
+    ]
+
+    for flag, error in init_flags:
+        if flag == False:
+            error_messages.append(error)
+    
+    return error_messages
+
+
+def check_init_conditions_unload():
+    pos = round(ws_vars.MicroState.axis_measures[ctrl_vars.AXIS_IDS['carga']]['pos_fil'], 0)
+    eje_avance = ctrl_vars.AXIS_IDS['avance']
+    eje_carga = ctrl_vars.AXIS_IDS['carga']
+    eje_giro = ctrl_vars.AXIS_IDS['giro']
+    error_messages = []
+    init_flags = [
+        (pos in ctrl_vars.LOAD_STEPS, 'Posición de plato errónea'),                                                                     # Plato alineado
+        (ws_vars.MicroState.axis_flags[ctrl_vars.AXIS_IDS['avance']]['cero_desconocido'] == False, 'Cero desconocido en eje lineal'),   # Eje lineal cerado
+        (ws_vars.MicroState.axis_flags[ctrl_vars.AXIS_IDS['carga']]['cero_desconocido'] == False, 'Cero desconocido en eje lineal'),    # Cabezal cerado
+        (ws_vars.MicroState.rem_i_states[1]['presion_normal'], 'Baja presión'),                                                         # Presión normal
+
+        (ws_vars.MicroState.axis_flags[eje_carga]['estado'] != 'safe', 'Eje carga en safe'),                                              # Eje en safe
+        (ws_vars.MicroState.axis_flags[eje_giro]['estado'] != 'safe', 'Eje husillo en safe'),                                             # Eje en safe
+        (ws_vars.MicroState.axis_flags[eje_avance]['estado'] != 'safe', 'Eje avance en safe'),                                            # Eje en safe
+        (ws_vars.MicroState.rem_o_states[1]['encender_bomba_hidraulica'], 'Bomba hidráulica apagada'),                      # hidráulica ON
+        (ws_vars.MicroState.rem_i_states[1]['clampeo_plato_expandido'], 'Plato no clampeado'),                              # Plato clampeado
+        (ws_vars.MicroState.rem_i_states[0]['puntera_descarga_contraida'], 'Puntera descarga expandida'),                   # puntera_descarga_contraida
+        (ws_vars.MicroState.rem_i_states[0]['brazo_descarga_expandido'], 'Brazo descargador contraído'),                    # brazo_descarga_expandido
+        (ws_vars.MicroState.rem_i_states[0]['boquilla_descarga_expandida'], 'Boquilla descarga contraída'),                 # boquilla_descarga_expandida
+        (ws_vars.MicroState.rem_i_states[1]['cupla_por_tobogan_descarga'], 'Cupla presente en tobogán de descarga'),        # cupla_por_tobogan_descarga
+        (not ws_vars.MicroState.rem_i_states[1]['pieza_en_boquilla_descarga'], 'Cupla presente en boquilla de descarga'),   # pieza_en_boquilla_descarga
+        (ws_vars.MicroState.rem_i_states[1]['horiz_pinza_desc_contraido'], 'Horizontal pinza de descarga expandida'),       # horiz_pinza_desc_contraido
+        (ws_vars.MicroState.rem_i_states[1]['vert_pinza_desc_contraido'], 'Vertical pinza de descarga expandida'),          # vert_pinza_desc_contraido
+        (ws_vars.MicroState.rem_i_states[0]['pinza_descargadora_abierta'], 'Pinza descargadora cerrada')                    # pinza_descargadora_abierta
+    ]
+
+    for flag, error in init_flags:
+        if flag == False:
+            error_messages.append(error)
+    
+    return error_messages
+
+
+def check_init_conditions_tapping():
+    pos = round(ws_vars.MicroState.axis_measures[ctrl_vars.AXIS_IDS['carga']]['pos_fil'], 0)
+    eje_avance = ctrl_vars.AXIS_IDS['avance']
+    eje_carga = ctrl_vars.AXIS_IDS['carga']
+    eje_giro = ctrl_vars.AXIS_IDS['giro']
+    initial_state = msg_app.StateMachine.EST_INITIAL
+    error_messages = []
+
+    init_flags = [
+        (pos in ctrl_vars.LOAD_STEPS, 'Posición de plato errónea'),                                                                     # Plato alineado
+        (ws_vars.MicroState.axis_flags[ctrl_vars.AXIS_IDS['avance']]['cero_desconocido'] == False, 'Cero desconocido en eje lineal'),   # Eje lineal cerado
+        (ws_vars.MicroState.axis_flags[ctrl_vars.AXIS_IDS['carga']]['cero_desconocido'] == False, 'Cero desconocido en eje lineal'),    # Cabezal cerado
+        (ws_vars.MicroState.rem_i_states[1]['presion_normal'], 'Baja presión'),                                                         # Presión normal
+
+        (ws_vars.MicroState.axis_flags[eje_carga]['estado'] != 'safe', 'Eje carga en safe'),                                              # Eje en safe
+        (ws_vars.MicroState.axis_flags[eje_giro]['estado'] != 'safe', 'Eje husillo en safe'),                                             # Eje en safe
+        (ws_vars.MicroState.axis_flags[eje_avance]['estado'] != 'safe', 'Eje avance en safe'),                                            # Eje en safe
+        (ws_vars.MicroState.rem_o_states[1]['encender_bomba_hidraulica'], 'Bomba hidráulica apagada'),                                  # hidráulica ON
+        (ws_vars.MicroState.rem_i_states[1]['clampeo_plato_expandido'], 'Plato no clampeado'),                                          # Plato clampeado
+        (ws_vars.MicroState.axis_flags[eje_avance]['maq_est_val'] == initial_state, 'Eje de avance apagado'),                           # eje avance ON
+        (ws_vars.MicroState.axis_flags[eje_carga]['drv_flags'] & msg_base.DrvFbkDataFlags.ENABLED == 0, 'Eje de carga encendido'),      # eje carga OFF
+        (ws_vars.MicroState.axis_flags[eje_avance]['sync_on'] == 0, 'Sincronismo encendido'),                                           # Sincronismo OFF
+        (round(ws_vars.MicroState.axis_measures[eje_avance]['pos_fil'], 0) == round(ctrl_vars.ROSCADO_CONSTANTES['posicion_de_inicio'], 0), 'Posición de eje de avance errónea')   # Eje avance en posición de inicio
+    ]
+
+    for flag, error in init_flags:
+        if flag == False:
+            error_messages.append(error)
+    
+    return error_messages
+
 
 def get_running_routines(routine_model):
     routines = routine_model.objects.all()
@@ -324,6 +554,7 @@ def update_loc_io_states(micro_data):
     }
     ws_vars.MicroState.loc_i_states = loc_in
     ws_vars.MicroState.loc_o_states = loc_out
+    # print(ws_vars.MicroState.loc_i_states)
     return states
 
 
@@ -367,7 +598,6 @@ def get_front_states():
 
         'lineal_cero_desconocido': ws_vars.MicroState.axis_flags[ctrl_vars.AXIS_IDS['avance']]['cero_desconocido'],
         'cabezal_cero_desconocido': ws_vars.MicroState.axis_flags[ctrl_vars.AXIS_IDS['carga']]['cero_desconocido'],
-        'husillo_cero_desconocido': ws_vars.MicroState.axis_flags[ctrl_vars.AXIS_IDS['giro']]['cero_desconocido'],
 
         'remote_inputs': ws_vars.MicroState.rem_i_states,
         'remote_outputs': ws_vars.MicroState.rem_o_states,
