@@ -8,7 +8,7 @@ from apps.parameters.models import Parameter
 from apps.parameters.utils import variables as param_vars
 from apps.parameters.utils import functions as param_func
 
-
+from apps.control.utils import variables as ctr_vars
 
 class ParameterListView(ListView):
 
@@ -47,7 +47,8 @@ class ParameterView(View):
         
         param_func.update_homing_params()
         param_func.update_roscado_params()
-        
+        print(ctr_vars.ROSCADO_CONSTANTES)
+        print(ctr_vars.ROSCADO_CONSTANTES)
         return render(request, 'parameters.html', self.get_context())
     
     def get(self, request):
@@ -84,30 +85,3 @@ class ParameterView(View):
                 })
         context['model_0'] = homming_params
         return context
-
-
-
-def update_parameters(request):
-    if request.method == 'POST':
-        post_req = request.POST
-        req_data = {}
-        
-        for item in post_req.items():   # Item is in (key, value) format
-            req_data[item[0]] = item[1]
-
-        print(req_data)
-        part_model = req_data['part_model']
-        param_vars.SELECTED_MODEL = part_model
-        parameters = Parameter.objects.filter(part_model=part_model)
-        for param in parameters:
-            if req_data.get(param.name, None):
-                param.value = req_data[param.name]
-                param.save()
-                param_vars.PARAMS[param.name] = param.value
-
-        response = HttpResponse()
-        response.status_code = 200
-    return render(request, 'parameters.html')
-
-
-    

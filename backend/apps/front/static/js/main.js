@@ -23,10 +23,10 @@ window.addEventListener("DOMContentLoaded", () => {                         //to
     (window.location.hash);
     monitor = document.querySelector("#component-monitor");
 });
-
+console.log('main');
 socket.onmessage = function (event) {
   const datosWs = JSON.parse(event.data);
-  console.log(datosWs)
+ 
 
   // Tabla de datos
   const rpmActual = document.querySelector("#frRPM");
@@ -62,8 +62,7 @@ socket.onmessage = function (event) {
   const safe = document.querySelector("#statusSafe");
   
   if (datosWs) {
-    console.log('levanta main.js');
-    console.log(datosWs)
+
     //Monitor
     rpmActual.innerHTML = datosWs.husillo_rpm.toFixed(1)/6;
     torqueActual.innerHTML = datosWs.husillo_torque.toFixed(1);
@@ -102,6 +101,16 @@ socket.onmessage = function (event) {
 
     // else (ejeLineal.className = "bg-secondary indicadorMon");
      
+    //Cabezal
+    const homeok = document.querySelector("#homeOk");
+
+    if (datosWs){
+        console.log('if datos');
+    (datosWs.lineal_cero_desconocido == false)
+     && (datosWs.cabezal_cero_desconocido == false)
+     ? (homeok.className = "bg-success rounded-pill text-white text-center p-3")
+     : (homeok.className = "bg-secondary rounded-pill text-white text-center p-3");
+    }
 
     //descarga
      datosWs.condiciones_init_descarga_ok == true
@@ -122,7 +131,6 @@ socket.onmessage = function (event) {
 
     //roscado
     datosWs.condiciones_init_roscado_ok == true
-    datosWs.condiciones_init_roscado_ok == true
      ? (roscado.className = "bg-success indicadorMon")
      : (roscado.className = "bg-secondary indicadorMon");
 
@@ -137,7 +145,7 @@ socket.onmessage = function (event) {
   }
 }
 
-console.log('levanta main.js');
+
     
 
 

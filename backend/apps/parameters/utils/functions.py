@@ -40,7 +40,7 @@ def update_homing_params():
     params = Parameter.objects.filter(part_model=0)
     for homing_param_name in param_vars.HOMING_PARAM_NAMES:
         param = params.get(name=homing_param_name)
-        ctrl_vars.HOMING_CONSTANTES[homing_param_name] = param.value
+        ctrl_vars.HOMING_CONSTANTES[homing_param_name] = float(param.value)
 
 def update_roscado_params():
     from apps.parameters.models import Parameter
@@ -48,4 +48,5 @@ def update_roscado_params():
     part_model = param_vars.SELECTED_MODEL
     for roscado_param_name in param_vars.ROSCADO_PARAMS_NAMES:
         param = params.filter(part_model=part_model).get(name=roscado_param_name)
-        ctrl_vars.ROSCADO_CONSTANTES[roscado_param_name] = int(param.value)
+        ctrl_vars.ROSCADO_CONSTANTES[roscado_param_name] = float(param.value)
+    print(ctrl_vars.ROSCADO_CONSTANTES)

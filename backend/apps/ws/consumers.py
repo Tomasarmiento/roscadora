@@ -147,11 +147,6 @@ class MicroLogConsumer(WebsocketConsumer):
 
 def show_states(header, data):
     print("-"*50)
-    home_sw_flag = msg_base.DrvFbkDataFlags.HOME_SWITCH
-    limit_fwd_flag = msg_base.DrvFbkDataFlags.POSITIVE_OT
-    drv_flags = MicroState.axis_flags[ctrl_vars.AXIS_IDS['avance']]['drv_fbk_flags']
-    print(f"{drv_flags:10b}")
-    print(drv_flags & limit_fwd_flag == limit_fwd_flag)
     # for key, value in MicroState.rem_o_states[1].items():
     #     print(key, value)
     # print(ws_vars.MicroState.axis_flags[ctrl_var.AXIS_IDS['carga']]['drv_flags'] & msg_base.DrvFbkDataFlags.ENABLED)
