@@ -153,7 +153,9 @@ REM_DI_G2_STATES = {}
 
 LOC_DI_BITS = {
     'em_stop':      0,
-    'fast_stop':    1
+    'fast_stop':    1,
+    'continue':     2,
+    'end':          3
 }
 
 LOC_DO_BITS = {
@@ -242,7 +244,9 @@ REM_DI_G2_BITS = {
 
 LOC_DI_ARR = [
     'em_stop',
-    'fast_stop'
+    'fast_stop',
+    'continue',
+    'end'
 ]
 
 LOC_DO_ARR = [

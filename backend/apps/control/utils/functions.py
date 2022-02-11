@@ -434,7 +434,6 @@ def update_axis_flags(micro_data, axis):
 
     ws_vars.MicroState.axis_flags[axis]['maq_est_val']      = micro_data.data.ctrl.eje[axis].maq_est.estado
     ws_vars.MicroState.axis_flags[axis]['estado']           = msg_app.StateMachine.get_state(ws_vars.MicroState.axis_flags[axis]['maq_est_val'])
-    # print(ws_vars.MicroState.axis_flags[axis]['estado'])
 
     flag = msg_base.DrvFbkDataFlags.UNKNOWN_ZERO
     ws_vars.MicroState.axis_flags[axis]['cero_desconocido'] = micro_data.data.ctrl.eje[axis].mov_pos.med_drv.drv_fbk.flags & flag  == flag
@@ -555,7 +554,7 @@ def update_loc_io_states(micro_data):
     }
     ws_vars.MicroState.loc_i_states = loc_in
     ws_vars.MicroState.loc_o_states = loc_out
-    # print(f'LOC IN: {micro_data.data.ctrl.loc_io.do16:04b}')
+    # print(ws_vars.MicroState.loc_i_states)
     return states
 
 
