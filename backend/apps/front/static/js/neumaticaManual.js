@@ -37,6 +37,8 @@ socket.onmessage = function (event) {
         const indexar = document.querySelector("#statusIndex");
         //Roscado
         const roscado = document.querySelector("#statusRoscado")
+        //Safe
+        const safe = document.querySelector("#statusSafe");
 
         
         
@@ -170,6 +172,14 @@ socket.onmessage = function (event) {
             && datosWs.avance_pos.toFixed(1) == datosWs.posicion_de_inicio
             ? (roscado.className = "bg-success indicadorMon")
             : (roscado.className = "bg-secondary indicadorMon");
+
+            //safe
+            (datosWs.estado_eje_carga == 'safe')
+            && (datosWs.estado_eje_avance == 'safe')
+            && (datosWs.estado_eje_giro == 'safe')
+            ?  (safe.className = "bg-danger indicadorMon")
+            :  (safe.className = "bg-secondary indicadorMon");
+
 
           //CARGA//
           //Horizontal

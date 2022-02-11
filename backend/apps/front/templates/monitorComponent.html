@@ -2,10 +2,10 @@
 {% load static %}
 {% block content %}
 <div class="container ">                                                 
-    <div class="row justify-content-center"> 
+    <!-- <div class="row justify-content-center"> 
         <article id="statusHead" class="bg-secondary indicadorMon">Cabezal</article>              
         <article id="statusLinealAxis" class="bg-secondary indicadorMon">Eje lineal</article>
-    </div>
+    </div> -->
     <div class="row justify-content-center">
         <article id="statusLoader" class="bg-secondary indicadorMon" title="Mensaje">Carga</article>
         <article id="statusDownloader" class="bg-secondary indicadorMon">Descarga</article>
@@ -15,7 +15,7 @@
         <article id="statusRoscado" class="bg-secondary indicadorMon">Roscado</article>
      </div>
     <div class="row justify-content-center">
-        <article id="statusSafeInitial" class="bg-secondary indicadorMonSafe"><FONT SIZE=6>Initial</FONT></article>
+        <article id="statusSafe" class="bg-secondary indicadorMonSafe"><FONT SIZE=6>Safe</FONT></article>
     </div>
 </div>
 
@@ -27,10 +27,12 @@
         <div class="col-8 h6">
             <article class="text-left">RPM</article>
             <article class="text-left">Torque</article>
+            <article class="text-left">Estado</article>
         </div>
         <div class="col-4 h6 text-right">
             <article id="frRPM">000.0</article>
-            <article id="fTorque">000.0</article>             
+            <article id="fTorque">000.0</article>
+            <article id="fHusillo">Estado</article>
         </div>
     </div> 
 </div>
@@ -44,10 +46,12 @@
         <div class="col-7 h6">
             <article class="text-left">Pos. [°]</article>
             <article class="text-left">Vel. [°/s]</article>
+            <article class="text-left">Estado</article>
         </div>
         <div class="col-5 h6 text-right">
             <article id="posVertical">000.0</article>
-            <article id="velVertical">000.0</article>    
+            <article id="velVertical">000.0</article>
+            <article id="estVertical">Estado</article>
         </div>
     </div>            
 </div>
@@ -61,10 +65,12 @@
         <div class="col-7 h6">
             <article class="text-left">Pos. [mm]</article>
             <article class="text-left">Vel. [mm/s]</article>
+            <article class="text-left">Estado</article>
         </div>
         <div class="col-5 h6 text-right">
             <article id="posHorizontal">000.0</article>
-            <article id="velHorizontal">000.0</article>    
+            <article id="velHorizontal">000.0</article>
+            <article id="estHorizontal">Estado</article>
         </div>
     </div>
 </div>

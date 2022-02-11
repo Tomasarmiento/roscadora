@@ -40,6 +40,11 @@ socket.onmessage = function (event) {
   const posicionActualH = document.querySelector("#posHorizontal");
   const velocidadActualH = document.querySelector("#velHorizontal");
 
+  // Estados De los Ejes
+  const estadoActualHusillo = document.querySelector("#fHusillo");
+  const estadoActualV = document.querySelector("#estVertical");
+  const estadoActualH = document.querySelector("#estHorizontal");
+
 
   //Cabezal
   const cabezal = document.querySelector("#statusHead")
@@ -52,7 +57,9 @@ socket.onmessage = function (event) {
   //Indexar
   const indexar = document.querySelector("#statusIndex");
   //Roscado
-  const roscado = document.querySelector("#statusRoscado")
+  const roscado = document.querySelector("#statusRoscado");
+  //Safe
+  const safe = document.querySelector("#statusSafe");
   
   if (datosWs) {
     console.log('levanta main.js');
@@ -60,12 +67,17 @@ socket.onmessage = function (event) {
     //Monitor
     rpmActual.innerHTML = datosWs.husillo_rpm.toFixed(1)/6;
     torqueActual.innerHTML = datosWs.husillo_torque.toFixed(1);
+    estadoActualHusillo.innerHTML = datosWs.estado_eje_giro;
 
     posicionActualV.innerHTML = datosWs.cabezal_pos.toFixed(1);
     velocidadActualV.innerHTML = datosWs.cabezal_vel.toFixed(1);
+    estadoActualV.innerHTML = datosWs.estado_eje_carga;
 
     posicionActualH.innerHTML = datosWs.avance_pos.toFixed(1);
     velocidadActualH.innerHTML = datosWs.avance_vel.toFixed(1);
+    estadoActualH.innerHTML = datosWs.estado_eje_lineal;
+
+
 
     //cabezal
     if (datosWs.estado_eje_carga == 'initial'){
@@ -90,8 +102,6 @@ socket.onmessage = function (event) {
 
     else (ejeLineal.className = "bg-secondary indicadorMon");
      
-     
-
 
     //descarga
     datosWs.remote_outputs[1].encender_bomba_hidraulica == true 
@@ -138,8 +148,15 @@ socket.onmessage = function (event) {
      && datosWs.avance_pos.toFixed(1) == datosWs.posicion_de_inicio
      ? (roscado.className = "bg-success indicadorMon")
      : (roscado.className = "bg-secondary indicadorMon");
-     
-     
+
+    //safe
+    (datosWs.estado_eje_carga == 'safe')
+     && (datosWs.estado_eje_avance == 'safe')
+     && (datosWs.estado_eje_giro == 'safe')
+     ?  (safe.className = "bg-danger indicadorMon")
+     :  (safe.className = "bg-secondary indicadorMon");
+
+
   }
 }
 
