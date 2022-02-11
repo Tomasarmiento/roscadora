@@ -60,10 +60,6 @@
                 {% csrf_token%}
                 <table class="table table-sm table-striped table-borderless" style="color: black;" id="tablaCuplaModelo3">
                     <thead>
-                        <tr>
-                            <th colspan="4" style="text-align: center; background-color: #008af3; color:white; border-top-right-radius: 8px; border-top-left-radius: 8px;">Datos proceso Cupla Modelo 3
-                            </th>
-                        </tr>
                         <!-- <tr>
                             <th>Concepto</th>
                             <th>Descripcion</th>
@@ -76,7 +72,7 @@
                             <td>paso_de_rosca</td>
                             <td>Descripcion</td>
                             <td>
-                                <input class="form-control-xs" type="number" step=0.01 value="" name="paso_de_rosca" disabled>
+                                <input class="form-control-xs" type="number" step=0.01 value="{{ paso_de_rosca }}" name="paso_de_rosca" disabled>
                             </td>
                             <td>mm/v</td>
                         </tr>
@@ -84,7 +80,7 @@
                             <td>posicion_de_aproximacion</td>
                             <td>Descripcion</td>
                             <td>
-                                <input class="form-control-xs" type="number" step=0.01 value="" name="posicion_de_aproximacion" disabled>
+                                <input class="form-control-xs" type="number" step=0.01 value="{{ posicion_de_aproximacion }}" name="posicion_de_aproximacion" disabled>
                             </td>
                             <td>mm</td>
                         </tr>
@@ -92,7 +88,7 @@
                             <td>velocidad_en_vacio</td>
                             <td>Descripcion</td>
                             <td>
-                                <input class="form-control-xs" type="number" step=0.01 value="" name="velocidad_en_vacio" disabled>
+                                <input class="form-control-xs" type="number" step=0.01 value="{{ velocidad_en_vacio }}" name="velocidad_en_vacio" disabled>
                             </td>
                             <td>mm/seg</td>
                         </tr>
@@ -100,7 +96,7 @@
                             <td>posicion_final_de_roscado</td>
                             <td>Descripcion</td>
                             <td>
-                                <input class="form-control-xs" type="number" step=0.01 value="" name="posicion_final_de_roscado" disabled>
+                                <input class="form-control-xs" type="number" step=0.01 value="{{ posicion_final_de_roscado }}" name="posicion_final_de_roscado" disabled>
                             </td>
                             <td>mm</td>
                         </tr>
@@ -108,7 +104,7 @@
                             <td>velocidad_de_roscado</td>
                             <td>Descripcion</td>
                             <td>
-                                <input class="form-control-xs" type="number" step=0.01 value="" name="velocidad_de_roscado" disabled>
+                                <input class="form-control-xs" type="number" step=0.01 value="{{ velocidad_de_roscado }}" name="velocidad_de_roscado" disabled>
                             </td>
                             <td>mm/seg</td>
                         </tr>
@@ -116,7 +112,7 @@
                             <td>posicion_salida_de_roscado</td>
                             <td>Descripcion</td>
                             <td>
-                                <input class="form-control-xs" type="number" step=0.01 value="" name="posicion_salida_de_roscado" disabled>
+                                <input class="form-control-xs" type="number" step=0.01 value="{{ posicion_salida_de_roscado }}" name="posicion_salida_de_roscado" disabled>
                             </td>
                             <td>mm</td>
                         </tr>
@@ -124,7 +120,7 @@
                             <td>velocidad_de_retraccion</td>
                             <td>Descripcion</td>
                             <td>
-                                <input class="form-control-xs" type="number" step=0.01 value="" name="velocidad_de_retraccion" disabled>
+                                <input class="form-control-xs" type="number" step=0.01 value="{{ velocidad_de_retraccion }}" name="velocidad_de_retraccion" disabled>
                             </td>
                             <td>mm/seg</td>
                         </tr>
@@ -132,7 +128,7 @@
                             <td>posicion_de_inicio</td>
                             <td>Descripcion</td>
                             <td>
-                                <input class="form-control-xs" type="number" step=0.01 value="" name="posicion_de_inicio" disabled>
+                                <input class="form-control-xs" type="number" step=0.01 value="{{ posicion_de_inicio }}" name="posicion_de_inicio" disabled>
                             </td>
                             <td>mm</td>
                         </tr>
@@ -140,7 +136,7 @@
                             <td>torque_tolerado</td>
                             <td>Descripcion</td>
                             <td>
-                                <input class="form-control-xs" type="number" step=0.01 value="" name="torque_tolerado" disabled>
+                                <input class="form-control-xs" type="number" step=0.01 value="{{ torque_tolerado }}" name="torque_tolerado" disabled>
                             </td>
                             <td>Nm</td>
                         </tr>

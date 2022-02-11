@@ -98,7 +98,7 @@ class RoutineHandler(threading.Thread):
                 duration = end_time - start_time
                 print('Routine OK')
                 print('ROUTINE TIME:', duration)
-                if ws_vars.MicroState.graph_flag == True:
+                if ws_vars.MicroState.graph_flag == True and routine == ctrl_vars.ROUTINE_IDS['roscado']:
                     ws_vars.MicroState.graph_flag = False
                     ws_vars.MicroState.graph_duration = duration
                     start_graph = datetime.now()

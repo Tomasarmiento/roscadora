@@ -22,7 +22,7 @@ window.addEventListener("DOMContentLoaded", () => {                         //to
         btn = document.getElementById(btn_id);
         csrf_token = btn.getAttribute('token');
         btn.addEventListener('click', (e) => {
-
+            btn.className = "badge lg-badge badge-pill badge-success indLargo";
             let url = "http://localhost:8000/parametros/";
             let params = "part_model=" + i + "&csrfmiddlewaretoken=" + csrf_token;
         

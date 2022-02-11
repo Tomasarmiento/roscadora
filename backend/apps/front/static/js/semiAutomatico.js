@@ -340,12 +340,12 @@ window.onload = function() {
 
 
 
-        if(datosWs.graph_flag == false){
+        if(datosWs.graph_flag == true){
             xAccelChartInstance.data.labels.push(new Date());            //(datosWs.cabezal_pos).toFixed(1);
             xAccelChartInstance.data.datasets.forEach((dataset) =>{dataset.data.push(datosWs.husillo_torque).toFixed(1)});
         if(updateCount > numberElements){
-            xAccelChartInstance.data.labels;
-            xAccelChartInstance.data.datasets[0].data;
+            xAccelChartInstance.data.labels.shift();
+            xAccelChartInstance.data.datasets[0].data.shift();
         }
         else updateCount++;
         xAccelChartInstance.update();

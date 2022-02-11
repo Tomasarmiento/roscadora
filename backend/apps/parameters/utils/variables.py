@@ -101,6 +101,7 @@ ROSCADO_PARAMS_NAMES = [
     'velocidad_de_retraccion',
     'paso_de_rosca',
     'posicion_de_inicio',
+    'torque_tolerado'
 ]
 
 ROSCADO_PARAMS_PARAMS_DEFAULT_VALUES = {

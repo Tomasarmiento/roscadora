@@ -3,7 +3,7 @@ from django.shortcuts import render
 from apps.service.api.variables import COMMANDS
 from apps.parameters.utils.variables import PART_MODEL_OPTIONS
 from apps.parameters.models import Parameter
-from apps.control.utils.variables import AXIS_IDS, ROUTINE_IDS
+from apps.control.utils.variables import AXIS_IDS, ROUTINE_IDS, ROSCADO_CONSTANTES
 
 # Create your views here.
 def index(request):
@@ -19,6 +19,7 @@ def referenciar(request):
 
 def automatico(request):
     context = COMMANDS
+    context.update(ROSCADO_CONSTANTES)
     return render(request, "automatico.html", context)
 
 def neumaticaManual(request):
@@ -43,6 +44,7 @@ def monitorEstados(request):
 
 def semiAutomatico(request):
     context = ROUTINE_IDS
+    context.update(ROSCADO_CONSTANTES)
     return render(request, "semiautomatico.html", context)
 
 def parametrosPagina1(request):
