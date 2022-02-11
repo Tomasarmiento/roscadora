@@ -32,10 +32,13 @@ class ParameterView(View):
         for item in post_req.items():   # Item is in (key, value) format
             req_data[item[0]] = item[1]
 
-        print(req_data)
         part_model = req_data['part_model']
         param_vars.SELECTED_MODEL = part_model
         parameters = Parameter.objects.filter(part_model=part_model)
+        saved_part_model = Parameter.objects.get(name='part_model')
+        if part_model != int(saved_part_model.value):
+            saved_part_model.value = int(part_model)
+            saved_part_model.save()
         for param in parameters:
             if req_data.get(param.name, None):
                 param.value = req_data[param.name]

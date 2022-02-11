@@ -433,8 +433,8 @@ class DrvFbkDataFlags:
     READY               = 1 << 0
     ENABLED             = 1 << 1
     FAULT               = 1 << 2
-    POSITIVE_0T         = 1 << 3
-    NEGATIVE_0T         = 1 << 4
+    POSITIVE_OT         = 1 << 3
+    NEGATIVE_OT         = 1 << 4
     HOME_SWITCH         = 1 << 5
     HOMMING_ENDED_OK    = 1 << 6
     HOMMING_ERROR       = 1 << 7
@@ -446,8 +446,8 @@ class AcdpDrvFbkDataFlagsBits(BaseStructure):
         ('ready', c_bool),
         ('enabled', c_bool),
         ('fault', c_bool),
-        ('positive_0t', c_bool),
-        ('negative_0t', c_bool),
+        ('positive_ot', c_bool),
+        ('negative_ot', c_bool),
         ('home_switch', c_bool),
         ('homming_ended_ok', c_bool),
         ('homming_error', c_bool),

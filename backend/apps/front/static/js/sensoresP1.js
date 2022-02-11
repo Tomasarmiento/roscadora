@@ -207,13 +207,17 @@ socket.onmessage = function (event) {
         //MOTORES SENSORES EN EL DRIVE//
         //Eje lineal limite Forward//preguntar si hay sensor de fin de carrera
         //Eje lineal Homing
-        datosWs.estado_eje_avance == 'homing'
+        datosWs.lineal_home_switch == true
          ? (ejeLinealHoming.className = "led led-green")
          : (ejeLinealHoming.className = "led led-grey");
         //Eje Cabezal Homing
-        datosWs.estado_eje_carga == 'homing'
+        datosWs.cabezal_home_switch == true
          ? (ejeCabezalHoming.className = "led led-green")
          : (ejeCabezalHoming.className = "led led-grey");
+         //Eje lineal limite Forward
+         datosWs.lineal_limite_forward == true
+         ? (ejelinealLimiteForward.className = "led led-green")
+         : (ejelinealLimiteForward.className = "led led-grey");
 
 
 

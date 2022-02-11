@@ -441,11 +441,8 @@ def update_axis_flags(micro_data, axis):
     flag = msg_base.DrvFbkDataFlags.HOME_SWITCH
     ws_vars.MicroState.axis_flags[axis]['home_switch']      = micro_data.data.ctrl.eje[axis].mov_pos.med_drv.drv_fbk.flags & flag == flag
     
-    # if axis == ctrl_vars.AXIS_IDS['carga']:
-        # print(flag)
-        # print(micro_data.data.ctrl.eje[axis].mov_pos.med_drv.drv_fbk.flags)
-        # print(ws_vars.MicroState.axis_flags[axis]['homming_ended_ok'])
-    
+    ws_vars.MicroState.axis_flags[axis]['drv_fbk_flags']    = micro_data.data.ctrl.eje[axis].mov_pos.med_drv.drv_fbk.flags
+
     ws_vars.MicroState.axis_flags[axis]['flags_fin']        = micro_data.data.ctrl.eje[axis].maq_est.flags_fin
     ws_vars.MicroState.axis_flags[axis]['fin']              = check_end_flags(ws_vars.MicroState.axis_flags[axis]['flags_fin'])
     ws_vars.MicroState.axis_flags[axis]['axis_id']          = axis
@@ -580,6 +577,8 @@ def update_states(micro_data):
 
 
 def get_front_states():
+    limit_fwd_flag = msg_base.DrvFbkDataFlags.POSITIVE_OT
+    home_sw_flag = msg_base.DrvFbkDataFlags.HOME_SWITCH
     data = {
         # Measures
         'husillo_rpm': ws_vars.MicroState.axis_measures[ctrl_vars.AXIS_IDS['giro']]['vel_fil'],
@@ -613,6 +612,16 @@ def get_front_states():
 
         'sync_on_avance': ws_vars.MicroState.axis_flags[ctrl_vars.AXIS_IDS['avance']]['sync_on'],
         'slave_giro': ws_vars.MicroState.axis_flags[ctrl_vars.AXIS_IDS['giro']]['slave'],
+
+        'lineal_limite_forward': ws_vars.MicroState.axis_flags[ctrl_vars.AXIS_IDS['avance']]['drv_fbk_flags'] & limit_fwd_flag == 0,
+        'lineal_home_switch': ws_vars.MicroState.axis_flags[ctrl_vars.AXIS_IDS['avance']]['drv_fbk_flags'] & home_sw_flag == home_sw_flag,
+        'cabezal_home_switch': ws_vars.MicroState.axis_flags[ctrl_vars.AXIS_IDS['carga']]['drv_fbk_flags'] & home_sw_flag == home_sw_flag,
+
+        # Routines
+        'condiciones_init_carga_ok': len(check_init_conditions_load()) == 0,
+        'condiciones_init_descarga_ok': len(check_init_conditions_unload()) == 0,
+        'condiciones_init_indexar_ok': len(check_init_conditions_index()) == 0,
+        'condiciones_init_roscado_ok': len(check_init_conditions_tapping()) == 0,
 
         # 'graph': ws_vars.MicroState.graph_flag
         'graph': False,

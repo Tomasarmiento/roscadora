@@ -48,6 +48,4 @@ def update_roscado_params():
     part_model = param_vars.SELECTED_MODEL
     for roscado_param_name in param_vars.ROSCADO_PARAMS_NAMES:
         param = params.filter(part_model=part_model).get(name=roscado_param_name)
-        # param.value = param_vars.ROSCADO_PARAMS_PARAMS_DEFAULT_VALUES[roscado_param_name]
-        # param.save()
         ctrl_vars.ROSCADO_CONSTANTES[roscado_param_name] = int(param.value)

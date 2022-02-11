@@ -68,7 +68,7 @@ window.addEventListener("DOMContentLoaded", () => {                         //to
     if (sessionStorage.getItem("mensajes") && cuadroDeTextoIndex) {
         console.log('aca');
         let ul = document.getElementById("cuadroMensajes");
-        const listaMensajes = sessionStorage.getItem("mensajes").split(",");
+        const listaMensajes = sessionStorage.getItem("mensajes").split(",").reverse();
         for (let i = 0; i < listaMensajes.length; i++) {
             const li = document.createElement("li");
             li.setAttribute("style", "list-style: none;");
@@ -80,8 +80,8 @@ window.addEventListener("DOMContentLoaded", () => {                         //to
     cuadroDeErrores = document.querySelector("#terminalDeTexto");
     if (sessionStorage.getItem("mensajesError") && cuadroDeErrores) {
         console.log('aca');
-        let ul = document.getElementById("cuadroMensajes");
-        const listaMensajes = sessionStorage.getItem("mensajesError").split(",");
+        let ul = document.getElementById("cuadroMensajesErrores");
+        const listaMensajes = sessionStorage.getItem("mensajesError").split(",").reverse();
         for (let i = 0; i < listaMensajes.length; i++) {
             const li = document.createElement("li");
             li.setAttribute("style", "list-style: none;");
@@ -285,8 +285,7 @@ window.onload = function() {
    
     
     
-    var listaMensajes = []; 
-    var listaMensajesErrores = [];
+  
 
 
     // Tabla de datos
@@ -323,7 +322,8 @@ window.onload = function() {
     const roscado = document.querySelector("#statusRoscado")
     //Safe
     const safe = document.querySelector("#statusSafe");
-
+    var listaMensajes = []; 
+    var listaMensajesErrores = [];
     socket.onmessage = function (event) {
      const datosWs = JSON.parse(event.data);
 
@@ -391,48 +391,24 @@ window.onload = function() {
 
 
     //descarga
-    datosWs.remote_outputs[1].encender_bomba_hidraulica == true 
-     && datosWs.remote_inputs[1].clampeo_plato_expandido == true
-     && datosWs.remote_inputs[0].puntera_descarga_contraida == true
-     && datosWs.remote_inputs[0].brazo_descarga_expandido == true
-     && datosWs.remote_inputs[0].boquilla_descarga_expandida == true
-     && datosWs.remote_inputs[1].cupla_por_tobogan_descarga == true
-     && datosWs.remote_inputs[1].pieza_en_boquilla_descarga == true
-     && datosWs.remote_inputs[1].horiz_pinza_desc_contraido == true
-     && datosWs.remote_inputs[1].vert_pinza_desc_contraido == true
-     && datosWs.remote_inputs[0].pinza_descargadora_abierta == true && datosWs.remote_inputs[0].pinza_descargadora_cerrada == false
+    datosWs.condiciones_init_descarga_ok == true
     ? (descarga.className = "bg-success indicadorMon")
     : (descarga.className = "bg-secondary indicadorMon");
 
 
     //carga
-    datosWs.remote_outputs[1].encender_bomba_hidraulica == true
-     && datosWs.remote_inputs[1].clampeo_plato_expandido == true
-     && datosWs.remote_inputs[0].vertical_carga_contraido == true
-     && datosWs.remote_inputs[0].puntera_carga_expandida == false && datosWs.remote_inputs[0].puntera_carga_contraida == true
-     && datosWs.remote_inputs[0].brazo_cargador_expandido == true && datosWs.remote_inputs[0].brazo_cargador_contraido == false
-     && datosWs.remote_inputs[0].boquilla_carga_expandida == true
-     && datosWs.remote_inputs[1].presencia_cupla_en_cargador == true
-     && datosWs.remote_inputs[1].pieza_en_boquilla_carga == true
+    datosWs.condiciones_init_carga_ok == true
     ? (carga.className = "bg-success indicadorMon")
     : (carga.className = "bg-secondary indicadorMon");
 
     //indexar
-    datosWs.remote_inputs[1].clampeo_plato_contraido == false && datosWs.remote_inputs[1].clampeo_plato_expandido == true
-     && datosWs.remote_inputs[1].acople_lubric_contraido == true
-     && datosWs.remote_inputs[0].puntera_descarga_expandida == false && datosWs.remote_inputs[0].puntera_descarga_contraida == true
-     && datosWs.remote_inputs[0].puntera_carga_expandida == false && datosWs.remote_inputs[0].puntera_carga_contraida == true
-     && datosWs.avance_pos.toFixed(1) >= datosWs.posicion_de_inicio
+    datosWs.condiciones_init_indexar_ok == true
      ? (indexar.className = "bg-success indicadorMon")
      : (indexar.className = "bg-secondary indicadorMon");
 
 
     //roscado
-    datosWs.remote_outputs[1].encender_bomba_hidraulica == true
-     && datosWs.remote_inputs[1].clampeo_plato_contraido == false && datosWs.remote_inputs[1].clampeo_plato_expandido == true
-     && datosWs.estado_eje_avance == 'initial'
-     && datosWs.cabezal_enable == false
-     && datosWs.avance_pos.toFixed(1) == datosWs.posicion_de_inicio
+    datosWs.condiciones_init_roscado_ok == true
      ? (roscado.className = "bg-success indicadorMon")
      : (roscado.className = "bg-secondary indicadorMon");
 

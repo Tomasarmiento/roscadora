@@ -12,9 +12,9 @@ document.addEventListener("DOMContentLoaded", (e) => {
 //     //Cabezal
 //     const homeok = document.querySelector("#homeOk");
 
-//     (datosWs.estado_eje_carga == 'homing')
-//     && (datosWs.estado_eje_avance == 'homing')
-//     && (datosWs.estado_eje_giro == 'homing')
+//     (datosWs.lineal_cero_desconocido == false)
+//      && (datosWs.cabezal_cero_desconocido == false)
+
 //      ? (homeok.className = "bg-success rounded-pill text-white text-center p-3")
 //      : (homeok.className = "bg-secondary rounded-pill text-white text-center p-3");
         

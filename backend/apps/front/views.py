@@ -2,6 +2,7 @@ from django.shortcuts import render
 
 from apps.service.api.variables import COMMANDS
 from apps.parameters.utils.variables import PART_MODEL_OPTIONS
+from apps.parameters.models import Parameter
 from apps.control.utils.variables import AXIS_IDS, ROUTINE_IDS
 
 # Create your views here.
@@ -9,7 +10,8 @@ def index(request):
     return render(request, "index.html")
   
 def home(request):
-    return render(request, "home.html")
+    part_model = Parameter.objects.get(name='part_model')
+    return render(request, "home.html", {'part_model': int(part_model.value)})
 
 def referenciar(request):
     context = {'routine': ROUTINE_IDS['cerado']}
