@@ -39,7 +39,6 @@ class RoutineHandler(threading.Thread):
             routine_ok = None
             
             start_time = datetime.now()
-            pos = round(ws_vars.MicroState.axis_measures[ctrl_vars.AXIS_IDS['carga']]['pos_fil'], 0)
             
             try:
                 routine_info = RoutineInfo.objects.get(name=ctrl_vars.ROUTINE_NAMES[routine])
@@ -58,20 +57,12 @@ class RoutineHandler(threading.Thread):
                 if ws_vars.MicroState.routine_ongoing == True:
                     print('Rutina en proceso. No se puede cerar')
                     return False
-                print('CERADO')
                 ws_vars.MicroState.routine_ongoing = True
                 routine_info.running = 1
                 routine_info.save()
                 routine_ok = self.routine_homing()
             
-            elif pos not in ctrl_vars.LOAD_STEPS:
-                routine_ok = False
-                print('Error en posicion de cabezal')
-            
-            elif ws_vars.MicroState.rem_i_states[1]['presion_normal'] == False:
-                routine_ok = False
-                print('Baja presión')
-            
+
             elif routine == ctrl_vars.ROUTINE_IDS['cabezal_indexar']:
                 if ws_vars.MicroState.routine_ongoing == True:
                     print('Rutina en proceso. No se puede indexar')
@@ -123,8 +114,8 @@ class RoutineHandler(threading.Thread):
             else:
                 ws_vars.MicroState.graph_flag = False
                 ws_vars.MicroState.graph_duration = -1
-                print('ROUTINE ERR')
                 ws_vars.MicroState.master_stop = True
+                print('ROUTINE ERR')
                 for msg in self.err_msg:
                     print('MENSAJE DE ERROR:', msg)
                 return False
@@ -133,20 +124,29 @@ class RoutineHandler(threading.Thread):
     
 
     def routine_cabezal_indexar(self):
+        # eje_avance = ctrl_vars.AXIS_IDS['avance']
+        # init_flags = [
+        #     ws_vars.MicroState.rem_i_states[1]['clampeo_plato_expandido'],      # plato_clampeado
+        #     ws_vars.MicroState.rem_i_states[1]['acople_lubric_contraido'],      # acople_lubricante_contraido
+        #     ws_vars.MicroState.rem_i_states[0]['puntera_descarga_contraida'],   # puntera_descarga_contraida
+        #     ws_vars.MicroState.rem_i_states[0]['puntera_carga_contraida'],      # puntera_carga_contraida
+        #     round(ws_vars.MicroState.axis_measures[eje_avance]['pos_fil'], 0) == round(ctrl_vars.ROSCADO_CONSTANTES['posicion_de_inicio'], 0)   # Eje avance en posición de inicio
+        # ]
+        # print('INDEXAR - Paso 0 - Chequear condiciones iniciales')
+        # print(init_flags)
+        # if False in init_flags:
+        #     return
+        
         # Paso 0 - Chequear condiciones iniciales
-        eje_avance = ctrl_vars.AXIS_IDS['avance']
-        init_flags = [
-            ws_vars.MicroState.rem_i_states[1]['clampeo_plato_expandido'],      # plato_clampeado
-            ws_vars.MicroState.rem_i_states[1]['acople_lubric_contraido'],      # acople_lubricante_contraido
-            ws_vars.MicroState.rem_i_states[0]['puntera_descarga_contraida'],   # puntera_descarga_contraida
-            ws_vars.MicroState.rem_i_states[0]['puntera_carga_contraida'],      # puntera_carga_contraida
-            round(ws_vars.MicroState.axis_measures[eje_avance]['pos_fil'], 0) == round(ctrl_vars.ROSCADO_CONSTANTES['posicion_de_inicio'], 0)   # Eje avance en posición de inicio
-        ]
-        print('INDEXAR - Paso 0 - Chequear condiciones iniciales')
-        print(init_flags)
-        if False in init_flags:
-            return
-
+        init_conditions_error_messages = ctrl_fun.check_init_conditions_index()
+        if init_conditions_error_messages:
+            print('\nError en condiciones iniciales de indexado')
+            err_msg = 'Error en condiciones iniciales de indexado'
+            ws_vars.MicroState.err_messages.append(err_msg)
+            for err in init_conditions_error_messages:
+                ws_vars.MicroState.err_messages.append(err)
+                print(err)
+            return False
 
         # Paso 1 - Liberar plato
         key_1 = 'contraer_clampeo_plato'
@@ -173,6 +173,7 @@ class RoutineHandler(threading.Thread):
        
 
         # Paso 3 - Avanza 120° al siguiente paso
+        eje_avance = ctrl_vars.AXIS_IDS['avance']
         turn_init_flags = [
             ws_vars.MicroState.rem_i_states[1]['acople_lubric_contraido'],      # acople_lubricante_contraido
             ws_vars.MicroState.rem_i_states[0]['puntera_descarga_contraida'],   # puntera_descarga_contraida
@@ -220,20 +221,30 @@ class RoutineHandler(threading.Thread):
 
 
     def routine_carga(self):
+        # init_flags = [
+        #     ws_vars.MicroState.rem_o_states[1]['encender_bomba_hidraulica'],        # hidráulica ON
+        #     ws_vars.MicroState.rem_i_states[1]['clampeo_plato_expandido'],          # Plato clampeado
+        #     ws_vars.MicroState.rem_i_states[0]['vertical_carga_contraido'],         # vertical_carga_contraido
+        #     ws_vars.MicroState.rem_i_states[0]['puntera_carga_contraida'],          # puntera_carga_contraida
+        #     ws_vars.MicroState.rem_i_states[0]['brazo_cargador_expandido'],         # brazo_cargador_expandido
+        #     ws_vars.MicroState.rem_i_states[0]['boquilla_carga_expandida'],         # ws_vars.MicroState.rem_i_states[0]
+        #     ws_vars.MicroState.rem_i_states[1]['presencia_cupla_en_cargador'],      # presencia_cupla_en_cargador
+        #     not ws_vars.MicroState.rem_i_states[1]['pieza_en_boquilla_carga']       # pieza_en_boquilla_carga
+        # ]
+        # print(init_flags)
+        # if False in init_flags:
+        #     return
+        
         # Paso 0 - Chequear condiciones iniciales - Todos los valores deben ser True par que empiece la rutina
-        init_flags = [
-            ws_vars.MicroState.rem_o_states[1]['encender_bomba_hidraulica'],        # hidráulica ON
-            ws_vars.MicroState.rem_i_states[1]['clampeo_plato_expandido'],          # Plato clampeado
-            ws_vars.MicroState.rem_i_states[0]['vertical_carga_contraido'],         # vertical_carga_contraido
-            ws_vars.MicroState.rem_i_states[0]['puntera_carga_contraida'],          # puntera_carga_contraida
-            ws_vars.MicroState.rem_i_states[0]['brazo_cargador_expandido'],         # brazo_cargador_expandido
-            ws_vars.MicroState.rem_i_states[0]['boquilla_carga_expandida'],         # ws_vars.MicroState.rem_i_states[0]
-            ws_vars.MicroState.rem_i_states[1]['presencia_cupla_en_cargador'],      # presencia_cupla_en_cargador
-            not ws_vars.MicroState.rem_i_states[1]['pieza_en_boquilla_carga']       # pieza_en_boquilla_carga
-        ]
-        print(init_flags)
-        if False in init_flags:
-            return
+        init_conditions_error_messages = ctrl_fun.check_init_conditions_load()
+        if init_conditions_error_messages:
+            print('\nError en condiciones iniciales de carga')
+            err_msg = 'Error en condiciones iniciales de carga'
+            ws_vars.MicroState.err_messages.append(err_msg)
+            for err in init_conditions_error_messages:
+                ws_vars.MicroState.err_messages.append(err)
+                print(err)
+            return False
         print('CARGA - Paso 0 - Chequear condiciones iniciales - Todos los valores deben ser True par que empiece la rutina')
 
         # Paso 1 - Expandir vertical carga
@@ -447,26 +458,33 @@ class RoutineHandler(threading.Thread):
 
 
     def routine_descarga(self):
-        # Paso 0 - Chequear condiciones iniciales - Todos los valores deben ser True par que empiece la rutina
-        init_flags = [
-            ws_vars.MicroState.rem_o_states[1]['encender_bomba_hidraulica'],        # hidráulica ON
-            ws_vars.MicroState.rem_i_states[1]['clampeo_plato_expandido'],          # Plato clampeado
-            ws_vars.MicroState.rem_i_states[0]['puntera_descarga_contraida'],       # puntera_descarga_contraida
-            ws_vars.MicroState.rem_i_states[0]['brazo_descarga_expandido'],         # brazo_descarga_expandido
-            ws_vars.MicroState.rem_i_states[0]['boquilla_descarga_expandida'],      # boquilla_descarga_expandida
-            ws_vars.MicroState.rem_i_states[1]['cupla_por_tobogan_descarga'],       # cupla_por_tobogan_descarga
-            not ws_vars.MicroState.rem_i_states[1]['pieza_en_boquilla_descarga'],   # pieza_en_boquilla_descarga
-            ws_vars.MicroState.rem_i_states[1]['horiz_pinza_desc_contraido'],       # horiz_pinza_desc_contraido
-            ws_vars.MicroState.rem_i_states[1]['vert_pinza_desc_contraido'],        # vert_pinza_desc_contraido
-            ws_vars.MicroState.rem_i_states[0]['pinza_descargadora_abierta']        # pinza_descargadora_abierta
-        ]
-        print(init_flags)
+        # init_flags = [
+        #     ws_vars.MicroState.rem_o_states[1]['encender_bomba_hidraulica'],        # hidráulica ON
+        #     ws_vars.MicroState.rem_i_states[1]['clampeo_plato_expandido'],          # Plato clampeado
+        #     ws_vars.MicroState.rem_i_states[0]['puntera_descarga_contraida'],       # puntera_descarga_contraida
+        #     ws_vars.MicroState.rem_i_states[0]['brazo_descarga_expandido'],         # brazo_descarga_expandido
+        #     ws_vars.MicroState.rem_i_states[0]['boquilla_descarga_expandida'],      # boquilla_descarga_expandida
+        #     ws_vars.MicroState.rem_i_states[1]['cupla_por_tobogan_descarga'],       # cupla_por_tobogan_descarga
+        #     not ws_vars.MicroState.rem_i_states[1]['pieza_en_boquilla_descarga'],   # pieza_en_boquilla_descarga
+        #     ws_vars.MicroState.rem_i_states[1]['horiz_pinza_desc_contraido'],       # horiz_pinza_desc_contraido
+        #     ws_vars.MicroState.rem_i_states[1]['vert_pinza_desc_contraido'],        # vert_pinza_desc_contraido
+        #     ws_vars.MicroState.rem_i_states[0]['pinza_descargadora_abierta']        # pinza_descargadora_abierta
+        # ]
+        # print(init_flags)
 
-        ws_vars.MicroState.position_values = []
-        ws_vars.MicroState.torque_values = []
+        # if False in init_flags:
+        #     return
         
-        if False in init_flags:
-            return
+        # Paso 0 - Chequear condiciones iniciales - Todos los valores deben ser True par que empiece la rutina
+        init_conditions_error_messages = ctrl_fun.check_init_conditions_unload()
+        if init_conditions_error_messages:
+            print('\nError en condiciones iniciales de descarga')
+            err_msg = 'Error en condiciones iniciales de descarga'
+            ws_vars.MicroState.err_messages.append(err_msg)
+            for err in init_conditions_error_messages:
+                ws_vars.MicroState.err_messages.append(err)
+                print(err)
+            return False
         
         # Paso 0.1 - Abrir válvula de boquilla hidráulica
         boquilla = self.get_current_boquilla_descarga()
@@ -732,23 +750,31 @@ class RoutineHandler(threading.Thread):
 
 
     def routine_roscado(self):
-        eje_avance = ctrl_vars.AXIS_IDS['avance']
-        eje_carga = ctrl_vars.AXIS_IDS['carga']
-        initial_state = msg_app.StateMachine.EST_INITIAL
-        safe_state = msg_app.StateMachine.EST_SAFE
-        # boquilla = self.get_current_boquilla_roscado
+        # eje_avance = ctrl_vars.AXIS_IDS['avance']
+        # eje_carga = ctrl_vars.AXIS_IDS['carga']
+        # initial_state = msg_app.StateMachine.EST_INITIAL
+        # init_flags = [
+        #     # ctrl_vars.part_present_indicator[boquilla],                                                     # Cupla presente en boquilla
+        #     ws_vars.MicroState.rem_o_states[1]['encender_bomba_hidraulica'],                                # hidráulica ON
+        #     ws_vars.MicroState.rem_i_states[1]['clampeo_plato_expandido'],                                  # Plato clampeado
+        #     ws_vars.MicroState.axis_flags[eje_avance]['maq_est_val'] == initial_state,                      # eje avance ON
+        #     ws_vars.MicroState.axis_flags[eje_carga]['drv_flags'] & msg_base.DrvFbkDataFlags.ENABLED == 0,  # eje carga OFF
+        #     ws_vars.MicroState.axis_flags[eje_avance]['sync_on'] == 0,                                            # Sincronismo OFF
+        #     round(ws_vars.MicroState.axis_measures[eje_avance]['pos_fil'], 0) == round(ctrl_vars.ROSCADO_CONSTANTES['posicion_de_inicio'], 0)   # Eje avance en posición de inicio
+        # ]
+        # print(init_flags)
+        # if False in init_flags:
+        #     return False
+        
         # Paso 0 - Chequear condiciones iniciales - Todos los valores deben ser True par que empiece la rutina
-        init_flags = [
-            # ctrl_vars.part_present_indicator[boquilla],                                                     # Cupla presente en boquilla
-            ws_vars.MicroState.rem_o_states[1]['encender_bomba_hidraulica'],                                # hidráulica ON
-            ws_vars.MicroState.rem_i_states[1]['clampeo_plato_expandido'],                                  # Plato clampeado
-            ws_vars.MicroState.axis_flags[eje_avance]['maq_est_val'] == initial_state,                      # eje avance ON
-            ws_vars.MicroState.axis_flags[eje_carga]['drv_flags'] & msg_base.DrvFbkDataFlags.ENABLED == 0,  # eje carga OFF
-            ws_vars.MicroState.axis_flags[eje_avance]['sync_on'] == 0,                                            # Sincronismo OFF
-            round(ws_vars.MicroState.axis_measures[eje_avance]['pos_fil'], 0) == round(ctrl_vars.ROSCADO_CONSTANTES['posicion_de_inicio'], 0)   # Eje avance en posición de inicio
-        ]
-        print(init_flags)
-        if False in init_flags:
+        init_conditions_error_messages = ctrl_fun.check_init_conditions_tapping()
+        if init_conditions_error_messages:
+            print('\nError en condiciones iniciales de roscado')
+            err_msg = 'Error en condiciones iniciales de roscado'
+            ws_vars.MicroState.err_messages.append(err_msg)
+            for err in init_conditions_error_messages:
+                ws_vars.MicroState.err_messages.append(err)
+                print(err)
             return False
         
         ws_vars.MicroState.position_values = []
@@ -989,18 +1015,28 @@ class RoutineHandler(threading.Thread):
 
 
     def routine_homing(self):
-        eje_avance = ctrl_vars.AXIS_IDS['avance']
-        eje_carga = ctrl_vars.AXIS_IDS['carga']
-        initial_state = msg_app.StateMachine.EST_INITIAL
-        # Paso 0 - Chequear condiciones iniciales - Todos los valores deben ser True par que empiece la rutina
-        init_flags = [
-            ws_vars.MicroState.axis_flags[eje_avance]['maq_est_val'] == initial_state,  # eje avance ON
-            ws_vars.MicroState.rem_i_states[1]['acople_lubric_contraido'],              # acople_lubricante_contraido
-            ws_vars.MicroState.rem_i_states[0]['puntera_descarga_contraida'],           # puntera_descarga_contraida
-            ws_vars.MicroState.rem_i_states[0]['puntera_carga_contraida']               # puntera_carga_contraida
-        ]
-        print(init_flags)
-        if False in init_flags:
+        # eje_avance = ctrl_vars.AXIS_IDS['avance']
+        # eje_carga = ctrl_vars.AXIS_IDS['carga']
+        # initial_state = msg_app.StateMachine.EST_INITIAL
+        # # Paso 0 - Chequear condiciones iniciales - Todos los valores deben ser True par que empiece la rutina
+        # init_flags = [
+        #     ws_vars.MicroState.axis_flags[eje_avance]['maq_est_val'] == initial_state,  # eje avance ON
+        #     ws_vars.MicroState.rem_i_states[1]['acople_lubric_contraido'],              # acople_lubricante_contraido
+        #     ws_vars.MicroState.rem_i_states[0]['puntera_descarga_contraida'],           # puntera_descarga_contraida
+        #     ws_vars.MicroState.rem_i_states[0]['puntera_carga_contraida']               # puntera_carga_contraida
+        # ]
+        # print(init_flags)
+        # if False in init_flags:
+        #     return False
+
+        init_conditions_error_messages = ctrl_fun.check_init_conditions_homing()
+        if init_conditions_error_messages:
+            print('\nError en condiciones iniciales de homing')
+            err_msg = 'Error en condiciones iniciales de homing'
+            ws_vars.MicroState.err_messages.append(err_msg)
+            for err in init_conditions_error_messages:
+                ws_vars.MicroState.err_messages.append(err)
+                print(err)
             return False
 
         ws_vars.MicroState.log_messages.append('Homing')
@@ -1037,6 +1073,7 @@ class RoutineHandler(threading.Thread):
         ws_vars.MicroState.log_messages.append('1.1 - Chequeo cerado')
         
         # Paso 1.2 - Mover a posición de inicio
+        eje_avance = ctrl_vars.AXIS_IDS['avance']
         pos_inicio = ctrl_vars.ROSCADO_CONSTANTES['posicion_de_inicio']
         if not self.mov_to_pos_lineal(pos_inicio):
             return False
@@ -1214,36 +1251,6 @@ class RoutineHandler(threading.Thread):
         msg_id = ws_vars.MicroState.last_rx_header.get_msg_id() + 1
         ws_vars.MicroState.msg_id = msg_id
         return msg_id
-
-
-    def check_initials(self, routine):
-        if routine == ctrl_vars.ROUTINE_IDS['cerado']:
-            pass
-        
-        if routine == ctrl_vars.ROUTINE_IDS['carga']:
-            micro_state = ws_vars.MicroState
-            flags = []
-            # plato_clampeado = micro_state.rem_i_states[1]['clampeo_plato_expandido']
-            acople_lubricante_contraido = micro_state.rem_i_states[1]['acople_lubric_contraido']
-            puntera_descarga_contraida = micro_state.rem_i_states[0]['puntera_descarga_contraida']
-            puntera_carga_contraida = micro_state.rem_i_states[0]['puntera_carga_contraida']
-            # print('plato_clampeado:', plato_clampeado)
-            print('acople_lubricante_contraido:', acople_lubricante_contraido)
-            print('puntera_descarga_contraida', puntera_descarga_contraida)
-            print('puntera_carga_contraida', puntera_carga_contraida)
-            # flags.append(plato_clampeado)
-            flags.append(acople_lubricante_contraido)
-            flags.append(puntera_descarga_contraida)
-            flags.append(puntera_carga_contraida)
-            if False in flags:
-                return False
-            return True
-            
-        if routine == ctrl_vars.ROUTINE_IDS['descarga']:
-            pass
-        
-        if routine == ctrl_vars.ROUTINE_IDS['roscado']:
-            pass
 
 
     def send_pneumatic(self, key, group, bool_value, second_key=None, second_bool_value=None):
@@ -1539,9 +1546,11 @@ class MasterHandler(threading.Thread):
         descarga_id = ctrl_vars.ROUTINE_IDS['descarga']
         indexar_id = ctrl_vars.ROUTINE_IDS['cabezal_indexar']
 
-        if self.check_init_conditions() == False:
+        if ctrl_fun.check_init_conditions_master() == False:
             ws_vars.MicroState.master_running = False
             return
+        
+        print('Inicio rutina master')
 
         while ws_vars.MicroState.master_stop == False:
             running_ids = self.get_running_routines()

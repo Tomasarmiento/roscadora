@@ -1,3 +1,4 @@
+from distutils import command
 import json
 import time
 
@@ -387,6 +388,35 @@ def stop_axis(request):
     
     return JsonResponse({})
 
+
+@csrf_exempt
+def enter_exit_safe(request):
+    command = None
+    command_2 = None
+    ch_info = get_ch_info(ChannelInfo, 'micro')
+    axis_count = ctrl_vars.AXIS_IDS['axis_amount']
+    for axis_id in range(0, axis_count):
+        if MicroState.axis_flags[axis_id]['estado'] != 'safe':
+            command = AcdpMsgCmd.CD_ENTER_SAFE_MODE
+        else:
+            command = AcdpMsgCmd.CD_EXIT_SAFE_MODE
+            if axis_id != ctrl_vars.AXIS_IDS['avance']:
+                command_2 = Commands.power_off
+            else:
+                command_2 = None
+        msg_id = MicroState.msg_id
+        header = service_handlers.build_msg(command, msg_id=msg_id, eje=axis_id)
+        header_2 = None
+        if command_2:
+            header_2 = service_handlers.build_msg(command_2, msg_id=msg_id, eje=axis_id)
+        if ch_info:
+            send_message(header, ch_info)
+            if header_2:
+                send_message(header_2, ch_info)
+        if MicroState.routine_ongoing == True:
+            MicroState.routine_stopped = True
+        MicroState.master_stop = True
+    return JsonResponse({})
 
 @csrf_exempt
 def stop_all(request):
