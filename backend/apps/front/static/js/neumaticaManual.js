@@ -287,6 +287,10 @@ socket.onmessage = function (event) {
           ? (boquilla1Abre.className = "led led-grey")
           : (boquilla1Abre.className = "led led-green");
 
+          if(datosWs.remote_outputs[1].abrir_boquilla_1 == false && datosWs.remote_outputs[1].cerrar_boquilla_1 == false){
+            (boquilla1Abre.className = "led led-grey") && (boquilla1Cierra.className = "led led-grey");
+          }
+
           //Boquilla 2
           datosWs.remote_outputs[1].abrir_boquilla_2 == true && datosWs.remote_outputs[1].cerrar_boquilla_2 == false
           ? (boquilla2Cierra.className = "led led-grey")
@@ -296,6 +300,10 @@ socket.onmessage = function (event) {
           ? (boquilla2Abre.className = "led led-grey")
           : (boquilla2Abre.className = "led led-green");
 
+          if(datosWs.remote_outputs[1].abrir_boquilla_2 == false && datosWs.remote_outputs[1].cerrar_boquilla_2 == false){
+            (boquilla2Abre.className = "led led-grey") && (boquilla2Cierra.className = "led led-grey");
+          }
+
           //Boquilla 3
           datosWs.remote_outputs[1].abrir_boquilla_3 == true && datosWs.remote_outputs[1].cerrar_boquilla_3 == false
           ? (boquilla3Cierra.className = "led led-grey")
@@ -304,6 +312,10 @@ socket.onmessage = function (event) {
           datosWs.remote_outputs[1].abrir_boquilla_3 == false && datosWs.remote_outputs[1].cerrar_boquilla_3 == true
           ? (boquilla3Abre.className = "led led-grey")
           : (boquilla3Abre.className = "led led-green");
+
+          if(datosWs.remote_outputs[1].abrir_boquilla_3 == false && datosWs.remote_outputs[1].cerrar_boquilla_3 == false){
+            (boquilla3Abre.className = "led led-grey") && (boquilla3Cierra.className = "led led-grey");
+          }
 
           //Acopla Soluble
           datosWs.remote_inputs[1].acople_lubric_expandido == false

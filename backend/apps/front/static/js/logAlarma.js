@@ -1,6 +1,5 @@
 var data = []
 var monitor = null;
-var monitorHorizontal = null;
 
     const socket = new WebSocket("ws://127.0.0.1:8000/ws/front/");
     socket.addEventListener("open", function (event) {
@@ -23,7 +22,7 @@ window.addEventListener("hashchange", () => {                  //cuando tocas f5
 
 window.addEventListener("DOMContentLoaded", () => {                         //todo el tiempo
     (window.location.hash);
-    cuadroDeErrores = document.querySelector("#terminalDeTexto");
+    cuadroDeErrores = document.querySelector("#terminalDeTextoErrores");
     if (sessionStorage.getItem("mensajesError") && cuadroDeErrores) {
         console.log('aca');
         let ul = document.getElementById("cuadroMensajesErrores");
@@ -81,17 +80,15 @@ window.addEventListener("DOMContentLoaded", () => {                         //to
             xhr.send();
         });
         
-});
-    window.onload = function() {
-    var listaMensajesErrores = [];
-    socket.onmessage = function (event) {
-    const datosWs = JSON.parse(event.data);
-    console.log(datosWs)
-
-
-    if (datosWs.mensajes_error.length > 0) {
-        listaMensajesErrores.push(datosWs.mensajes_error);
-        sessionStorage.setItem("mensajesError", listaMensajesErrores);
-        InsertarTextoErrores(datosWs.mensajes_error);
+        var listaMensajesErrores = [];
+        socket.onmessage = function (event) {
+        const datosWs = JSON.parse(event.data);
+        
+        if (datosWs.mensajes_error.length > 0) {
+            listaMensajesErrores.push(datosWs.mensajes_error);
+            sessionStorage.setItem("mensajesError", listaMensajesErrores);
+            InsertarTextoErrores(datosWs.mensajes_error);
+        };
+        
     };
-}};
+});

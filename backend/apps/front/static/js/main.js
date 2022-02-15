@@ -26,6 +26,11 @@ window.addEventListener("DOMContentLoaded", () => {                         //to
 
 socket.onmessage = function (event) {
   const datosWs = JSON.parse(event.data);
+  if (datosWs.mensajes_error.length > 0) {
+    listaMensajesErrores.push(datosWs.mensajes_error);
+    sessionStorage.setItem("mensajesError", listaMensajesErrores);
+  };
+
  
 
   // Tabla de datos
