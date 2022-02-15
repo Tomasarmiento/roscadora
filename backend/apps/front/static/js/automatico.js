@@ -2,6 +2,7 @@ var data = []
 var monitor = null;
 var monitorHorizontal = null;
 
+
     const socket = new WebSocket("ws://127.0.0.1:8000/ws/front/");
     socket.addEventListener("open", function (event) {
         socket.send(
@@ -41,7 +42,6 @@ window.addEventListener("DOMContentLoaded", () => {                         //to
     monitor = document.querySelector("#component-monitor");
 
 
-
     cuadroDeTextoIndex = document.querySelector("#terminalDeTexto");
     if (sessionStorage.getItem("mensajes") && cuadroDeTextoIndex) {
         console.log('aca');
@@ -75,8 +75,8 @@ const totalDuration = 10000;
     ? ctx.chart.scales.y.getPixelForValue(100) 
     : ctx.chart.getDatasetMeta(ctx.datasetIndex).data[ctx.index - 1].getProps(['y'], true).y;
 
-window.onload = function() {
 
+    window.onload = function() {
     //Configuration variables
     var updateInterval = 20 //in ms
     var numberElements = 200;
@@ -111,8 +111,7 @@ window.onload = function() {
           enabled: false
         },
     };
-    
-    var xAccelChartInstance = new Chart(xAccelChart, {
+    var configuration = {
         type: 'line',
         data: {
             datasets: [{
@@ -213,7 +212,10 @@ window.onload = function() {
                 }
             },
         }   
-    });
+    }
+
+
+    var xAccelChartInstance = new Chart(xAccelChart, configuration);
     let btn_reset_zoom = document.getElementById('resetLittleZoom');
     btn_reset_zoom.addEventListener('click', (e) => {
         xAccelChartInstance.resetZoom();
@@ -262,15 +264,16 @@ window.onload = function() {
     
     var listaMensajes = []; 
     var listaMensajesErrores = [];
+    var delete_graph = true;
     socket.onmessage = function (event) {
      const datosWs = JSON.parse(event.data);
 
-    if (datosWs.mensajes_log.length > 0) {
+    if (datosWs.mensajes_log) {
         listaMensajes.push(datosWs.mensajes_log);
         sessionStorage.setItem("mensajes", listaMensajes);
         InsertarTexto(datosWs.mensajes_log);
     };
-    if (datosWs.mensajes_error.length > 0) {
+    if (datosWs.mensajes_error) {
         listaMensajesErrores.push(datosWs.mensajes_error);
         sessionStorage.setItem("mensajesError", listaMensajesErrores);
         InsertarTextoErrores(datosWs.mensajes_error);
@@ -306,10 +309,28 @@ window.onload = function() {
 
     
 
-        if(datosWs.graph_flag == false){
-            console.log(datosWs)
-            xAccelChartInstance.data.labels.push(new Date());            //(datosWs.cabezal_pos).toFixed(1);
-            xAccelChartInstance.data.datasets.forEach((dataset) =>{dataset.data.push(datosWs.husillo_torque).toFixed(1)});
+    if(datosWs){
+        if(delete_graph == true){
+             
+             function sleep (time) {
+                 return new Promise((resolve) => setTimeout(resolve, time));              //time sleep
+                 }
+                 sleep(1800).then(() => {
+                    xAccelChartInstance.data.datasets[0].data = []
+
+                    
+                });
+                delete_graph = false;
+                console.log('aca');
+            }
+            
+            console.log(xAccelChartInstance.data.datasets[0].data);
+
+
+
+        xAccelChartInstance.data.labels.push(new Date());            //(datosWs.cabezal_pos).toFixed(1);
+        xAccelChartInstance.data.datasets.forEach((dataset) =>{dataset.data.push(datosWs.husillo_torque).toFixed(1)});
+        
         if(updateCount > numberElements){
             xAccelChartInstance.data.labels;
             xAccelChartInstance.data.datasets[0].data;
@@ -317,9 +338,15 @@ window.onload = function() {
         else updateCount++;
         xAccelChartInstance.update();
         }
-        if(datosWs){
-        //Monitor
-    rpmActual.innerHTML = datosWs.husillo_rpm.toFixed(1)/6;
+
+       
+       
+
+        
+          
+    if(datosWs){
+    //Monitor
+    rpmActual.innerHTML = datosWs.husillo_rpm.toFixed(1);
     torqueActual.innerHTML = datosWs.husillo_torque.toFixed(1);
 
     posicionActualV.innerHTML = datosWs.cabezal_pos.toFixed(1);
@@ -355,61 +382,61 @@ window.onload = function() {
 
 
     //descarga
-    datosWs.remote_outputs[1].encender_bomba_hidraulica == true 
-     && datosWs.remote_inputs[1].clampeo_plato_expandido == true
-     && datosWs.remote_inputs[0].puntera_descarga_contraida == true
-     && datosWs.remote_inputs[0].brazo_descarga_expandido == true
-     && datosWs.remote_inputs[0].boquilla_descarga_expandida == true
-     && datosWs.remote_inputs[1].cupla_por_tobogan_descarga == true
-     && datosWs.remote_inputs[1].pieza_en_boquilla_descarga == true
-     && datosWs.remote_inputs[1].horiz_pinza_desc_contraido == true
-     && datosWs.remote_inputs[1].vert_pinza_desc_contraido == true
-     && datosWs.remote_inputs[0].pinza_descargadora_abierta == true && datosWs.remote_inputs[0].pinza_descargadora_cerrada == false
-    ? (descarga.className = "bg-success indicadorMon")
-    : (descarga.className = "bg-secondary indicadorMon");
+    // datosWs.remote_outputs[1].encender_bomba_hidraulica == true 
+    //  && datosWs.remote_inputs[1].clampeo_plato_expandido == true
+    //  && datosWs.remote_inputs[0].puntera_descarga_contraida == true
+    //  && datosWs.remote_inputs[0].brazo_descarga_expandido == true
+    //  && datosWs.remote_inputs[0].boquilla_descarga_expandida == true
+    //  && datosWs.remote_inputs[1].cupla_por_tobogan_descarga == true
+    //  && datosWs.remote_inputs[1].pieza_en_boquilla_descarga == true
+    //  && datosWs.remote_inputs[1].horiz_pinza_desc_contraido == true
+    //  && datosWs.remote_inputs[1].vert_pinza_desc_contraido == true
+    //  && datosWs.remote_inputs[0].pinza_descargadora_abierta == true && datosWs.remote_inputs[0].pinza_descargadora_cerrada == false
+    // ? (descarga.className = "bg-success indicadorMon")
+    // : (descarga.className = "bg-secondary indicadorMon");
 
 
-    //carga
-    datosWs.remote_outputs[1].encender_bomba_hidraulica == true
-     && datosWs.remote_inputs[1].clampeo_plato_expandido == true
-     && datosWs.remote_inputs[0].vertical_carga_contraido == true
-     && datosWs.remote_inputs[0].puntera_carga_expandida == false && datosWs.remote_inputs[0].puntera_carga_contraida == true
-     && datosWs.remote_inputs[0].brazo_cargador_expandido == true && datosWs.remote_inputs[0].brazo_cargador_contraido == false
-     && datosWs.remote_inputs[0].boquilla_carga_expandida == true
-     && datosWs.remote_inputs[1].presencia_cupla_en_cargador == true
-     && datosWs.remote_inputs[1].pieza_en_boquilla_carga == true
-    ? (carga.className = "bg-success indicadorMon")
-    : (carga.className = "bg-secondary indicadorMon");
+    // //carga
+    // datosWs.remote_outputs[1].encender_bomba_hidraulica == true
+    //  && datosWs.remote_inputs[1].clampeo_plato_expandido == true
+    //  && datosWs.remote_inputs[0].vertical_carga_contraido == true
+    //  && datosWs.remote_inputs[0].puntera_carga_expandida == false && datosWs.remote_inputs[0].puntera_carga_contraida == true
+    //  && datosWs.remote_inputs[0].brazo_cargador_expandido == true && datosWs.remote_inputs[0].brazo_cargador_contraido == false
+    //  && datosWs.remote_inputs[0].boquilla_carga_expandida == true
+    //  && datosWs.remote_inputs[1].presencia_cupla_en_cargador == true
+    //  && datosWs.remote_inputs[1].pieza_en_boquilla_carga == true
+    // ? (carga.className = "bg-success indicadorMon")
+    // : (carga.className = "bg-secondary indicadorMon");
 
-    //indexar
-    datosWs.remote_inputs[1].clampeo_plato_contraido == false && datosWs.remote_inputs[1].clampeo_plato_expandido == true
-     && datosWs.remote_inputs[1].acople_lubric_contraido == true
-     && datosWs.remote_inputs[0].puntera_descarga_expandida == false && datosWs.remote_inputs[0].puntera_descarga_contraida == true
-     && datosWs.remote_inputs[0].puntera_carga_expandida == false && datosWs.remote_inputs[0].puntera_carga_contraida == true
-     && datosWs.avance_pos.toFixed(1) >= datosWs.posicion_de_inicio
-     ? (indexar.className = "bg-success indicadorMon")
-     : (indexar.className = "bg-secondary indicadorMon");
+    // //indexar
+    // datosWs.remote_inputs[1].clampeo_plato_contraido == false && datosWs.remote_inputs[1].clampeo_plato_expandido == true
+    //  && datosWs.remote_inputs[1].acople_lubric_contraido == true
+    //  && datosWs.remote_inputs[0].puntera_descarga_expandida == false && datosWs.remote_inputs[0].puntera_descarga_contraida == true
+    //  && datosWs.remote_inputs[0].puntera_carga_expandida == false && datosWs.remote_inputs[0].puntera_carga_contraida == true
+    //  && datosWs.avance_pos.toFixed(1) >= datosWs.posicion_de_inicio
+    //  ? (indexar.className = "bg-success indicadorMon")
+    //  : (indexar.className = "bg-secondary indicadorMon");
 
 
-    //roscado
-    datosWs.remote_outputs[1].encender_bomba_hidraulica == true
-     && datosWs.remote_inputs[1].clampeo_plato_contraido == false && datosWs.remote_inputs[1].clampeo_plato_expandido == true
-     && datosWs.estado_eje_avance == 'initial'
-     && datosWs.cabezal_enable == false
-     && datosWs.avance_pos.toFixed(1) == datosWs.posicion_de_inicio
-     ? (roscado.className = "bg-success indicadorMon")
-     : (roscado.className = "bg-secondary indicadorMon");
+    // //roscado
+    // datosWs.remote_outputs[1].encender_bomba_hidraulica == true
+    //  && datosWs.remote_inputs[1].clampeo_plato_contraido == false && datosWs.remote_inputs[1].clampeo_plato_expandido == true
+    //  && datosWs.estado_eje_avance == 'initial'
+    //  && datosWs.cabezal_enable == false
+    //  && datosWs.avance_pos.toFixed(1) == datosWs.posicion_de_inicio
+    //  ? (roscado.className = "bg-success indicadorMon")
+    //  : (roscado.className = "bg-secondary indicadorMon");
      
 
-     //safe
-    (datosWs.estado_eje_carga == 'safe')
-     && (datosWs.estado_eje_avance == 'safe')
-     && (datosWs.estado_eje_giro == 'safe')
-     ?  (safe.className = "bg-danger indicadorMon")
-     :  (safe.className = "bg-secondary indicadorMon");
+    //  //safe
+    // (datosWs.estado_eje_carga == 'safe')
+    //  && (datosWs.estado_eje_avance == 'safe')
+    //  && (datosWs.estado_eje_giro == 'safe')
+    //  ?  (safe.className = "bg-danger indicadorMon")
+    //  :  (safe.className = "bg-secondary indicadorMon");
 
     
       
     }
-}
-};
+}};
+

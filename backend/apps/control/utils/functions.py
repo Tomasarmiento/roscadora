@@ -11,6 +11,27 @@ from apps.control.utils import variables as ctrl_vars
 from apps.ws.utils.handlers import send_message
 from apps.ws.utils.functions import send_front_message, get_ch_info
 from apps.ws.utils import variables as ws_vars
+import threading
+
+class FrontWs(threading.Thread):
+
+    def __init__(self, **kwargs):
+        super(FrontWs, self).__init__(**kwargs)
+    
+    def run(self):
+        while 1:
+            data = {
+                'husillo_rpm': float(random.randint(1,10)),
+                'husillo_torque': float(random.randint(1,10)),
+
+                'cabezal_pos': float(random.randint(-10,10)),
+                'cabezal_vel': float(random.randint(1,10)),
+
+                'avance_pos': float(random.randint(1,10)),
+                'avance_vel': float(random.randint(1,10)),
+            }
+            send_front_message(data)
+            time.sleep(0.2)
 
 
 # -------------------------------------------------------------------------------------------- #

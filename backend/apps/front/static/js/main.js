@@ -65,7 +65,7 @@ socket.onmessage = function (event) {
     console.log('levanta main.js');
     console.log(datosWs)
     //Monitor
-    rpmActual.innerHTML = datosWs.husillo_rpm.toFixed(1)/6;
+    rpmActual.innerHTML = datosWs.husillo_rpm.toFixed(1);
     torqueActual.innerHTML = datosWs.husillo_torque.toFixed(1);
     estadoActualHusillo.innerHTML = datosWs.estado_eje_giro;
 
