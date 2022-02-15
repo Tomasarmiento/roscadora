@@ -335,7 +335,12 @@ window.onload = function() {
 
     if(datosWs.graph_flag == true){
         if(delete_graph == true){
-            xAccelChartInstance.update();
+            function sleep (time) {
+                return new Promise((resolve) => setTimeout(resolve, time));              //time sleep
+                }
+                sleep(1800).then(() => {
+                    xAccelChartInstance.data.datasets[0].data = []
+               });
             delete_graph = false;     
         }
         xAccelChartInstance.data.labels.push(new Date());            //(datosWs.cabezal_pos).toFixed(1);

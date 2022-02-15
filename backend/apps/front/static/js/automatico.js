@@ -122,8 +122,7 @@ window.onload = function() {
           enabled: false
         },
     };
-    
-    var xAccelChartInstance = new Chart(xAccelChart, {
+    var configuration = {
         type: 'line',
         data: {
             datasets: [{
@@ -224,7 +223,8 @@ window.onload = function() {
                 }
             },
         }   
-    });
+    };
+    var xAccelChartInstance = new Chart(xAccelChart, configuration);
     let btn_reset_zoom = document.getElementById('resetLittleZoom');
     btn_reset_zoom.addEventListener('click', (e) => {
         xAccelChartInstance.resetZoom();
@@ -320,9 +320,15 @@ window.onload = function() {
     //Safe
     const safe = document.querySelector("#statusSafe");
 
-    if(datosWs.graph_flag == false){
+    if(datosWs.graph_flag == true){
         if(delete_graph == true){
-            xAccelChartInstance.update();
+            
+            function sleep (time) {
+                return new Promise((resolve) => setTimeout(resolve, time));              //time sleep
+                }
+                sleep(1800).then(() => {
+                    xAccelChartInstance.data.datasets[0].data = []
+               });
             delete_graph = false;
         }
         xAccelChartInstance.data.labels.push(new Date());            //(datosWs.cabezal_pos).toFixed(1);
