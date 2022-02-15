@@ -260,7 +260,6 @@ window.onload = function() {
     //     }
     // });
 
-    
 
     function InsertarTexto(datosWs) {
         var ul = document.getElementById("cuadroMensajes");
@@ -282,11 +281,6 @@ window.onload = function() {
         }
     }
 
-   
-    
-    
-  
-
 
     // Tabla de datos
     const rpmActual = document.querySelector("#frRPM");
@@ -306,8 +300,6 @@ window.onload = function() {
     const estadoActualH = document.querySelector("#estHorizontal");
 
     
-
-
     //Cabezal
     const cabezal = document.querySelector("#statusHead")
     //Eje Lineal
@@ -322,8 +314,11 @@ window.onload = function() {
     const roscado = document.querySelector("#statusRoscado")
     //Safe
     const safe = document.querySelector("#statusSafe");
+
+
     var listaMensajes = []; 
     var listaMensajesErrores = [];
+    var delete_graph = true;
     socket.onmessage = function (event) {
      const datosWs = JSON.parse(event.data);
 
@@ -338,20 +333,24 @@ window.onload = function() {
         InsertarTextoErrores(datosWs.mensajes_error);
     };
 
+    if(datosWs.graph_flag == true){
+        if(delete_graph == true){
+            xAccelChartInstance.update();
+            delete_graph = false;     
+        }
+        xAccelChartInstance.data.labels.push(new Date());            //(datosWs.cabezal_pos).toFixed(1);
+        xAccelChartInstance.data.datasets.forEach((dataset) =>{dataset.data.push(datosWs.husillo_torque).toFixed(1)});
+    if(updateCount > numberElements){
+        xAccelChartInstance.data.labels.shift();
+        xAccelChartInstance.data.datasets[0].data.shift();
+    }
+    else updateCount++;
+    xAccelChartInstance.update();
+    }
 
 
-        if(datosWs.graph_flag == true){
-            xAccelChartInstance.data.labels.push(new Date());            //(datosWs.cabezal_pos).toFixed(1);
-            xAccelChartInstance.data.datasets.forEach((dataset) =>{dataset.data.push(datosWs.husillo_torque).toFixed(1)});
-        if(updateCount > numberElements){
-            xAccelChartInstance.data.labels.shift();
-            xAccelChartInstance.data.datasets[0].data.shift();
-        }
-        else updateCount++;
-        xAccelChartInstance.update();
-        }
     if(datosWs){
-        //Monitor
+    //Monitor
     rpmActual.innerHTML = datosWs.husillo_rpm.toFixed(1)/6;
     torqueActual.innerHTML = datosWs.husillo_torque.toFixed(1);
     estadoActualHusillo.innerHTML = datosWs.estado_eje_giro;

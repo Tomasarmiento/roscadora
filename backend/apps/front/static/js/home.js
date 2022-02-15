@@ -35,8 +35,36 @@ window.addEventListener("DOMContentLoaded", () => {                         //to
         
             xhr.send(params);
 
-            location.reload(true)
+            // location.reload(true)
         });
     }
+
+    const selectorCupla = document.querySelector("#selectorCupla");
+    selectorCupla.addEventListener("click", (e) => {
+    
+        switch (e.target.id) {
+        case "selCuple1":
+            console.log('aca');
+            document.getElementById(e.target.id).className =
+            "badge lg-badge badge-pill badge-success";
+            selCuple2.className = "badge lg-badge badge-pill badge-secondary";
+            selCuple3.className = "badge lg-badge badge-pill badge-secondary";
+            break;
+
+        case "selCuple2":
+            document.getElementById(e.target.id).className =
+            "badge lg-badge badge-pill badge-success";
+            selCuple1.className = "badge lg-badge badge-pill badge-secondary";
+            selCuple3.className = "badge lg-badge badge-pill badge-secondary";
+            break;
+
+        case "selCuple3":
+            document.getElementById(e.target.id).className =
+            "badge lg-badge badge-pill badge-success";
+            selCuple1.className = "badge lg-badge badge-pill badge-secondary";
+            selCuple2.className = "badge lg-badge badge-pill badge-secondary";
+            break;
+        }
+    });
 
 });

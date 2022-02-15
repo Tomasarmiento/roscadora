@@ -57,7 +57,6 @@ window.addEventListener("DOMContentLoaded", () => {                         //to
 
     cuadroDeTextoIndex = document.querySelector("#terminalDeTexto");
     if (sessionStorage.getItem("mensajes") && cuadroDeTextoIndex) {
-        console.log('aca');
         let ul = document.getElementById("cuadroMensajes");
         const listaMensajes = sessionStorage.getItem("mensajes").split(",").reverse();
         for (let i = 0; i < listaMensajes.length; i++) {
@@ -70,7 +69,6 @@ window.addEventListener("DOMContentLoaded", () => {                         //to
 
     cuadroDeErrores = document.querySelector("#terminalDeTexto");
     if (sessionStorage.getItem("mensajesError") && cuadroDeErrores) {
-        console.log('aca');
         let ul = document.getElementById("cuadroMensajesErrores");
         const listaMensajes = sessionStorage.getItem("mensajesError").split(",").reverse();
         for (let i = 0; i < listaMensajes.length; i++) {
@@ -275,6 +273,7 @@ window.onload = function() {
     
     var listaMensajes = []; 
     var listaMensajesErrores = [];
+    var delete_graph = true;
     socket.onmessage = function (event) {
      const datosWs = JSON.parse(event.data);
 
@@ -321,22 +320,24 @@ window.onload = function() {
     //Safe
     const safe = document.querySelector("#statusSafe");
 
-    
+    if(datosWs.graph_flag == false){
+        if(delete_graph == true){
+            xAccelChartInstance.update();
+            delete_graph = false;
+        }
+        xAccelChartInstance.data.labels.push(new Date());            //(datosWs.cabezal_pos).toFixed(1);
+        xAccelChartInstance.data.datasets.forEach((dataset) =>{dataset.data.push(datosWs.husillo_torque).toFixed(1)});
+    if(updateCount > numberElements){
+        xAccelChartInstance.data.labels;
+        xAccelChartInstance.data.datasets[0].data;
+    }
+    else updateCount++;
+    xAccelChartInstance.update();
+    }
 
-        if(datosWs.graph_flag == true){
-            console.log(datosWs)
-            xAccelChartInstance.data.labels.push(new Date());            //(datosWs.cabezal_pos).toFixed(1);
-            xAccelChartInstance.data.datasets.forEach((dataset) =>{dataset.data.push(datosWs.husillo_torque).toFixed(1)});
-        if(updateCount > numberElements){
-            xAccelChartInstance.data.labels.shift();
-            xAccelChartInstance.data.datasets[0].data.shift();
-        }
-        else updateCount++;
-        xAccelChartInstance.update();
-        }
     if(datosWs){
-        console.log(datosWs)
-        //Monitor
+        console.log(datosWs);
+    //Monitor
     rpmActual.innerHTML = datosWs.husillo_rpm.toFixed(1)/6;
     torqueActual.innerHTML = datosWs.husillo_torque.toFixed(1);
     estadoActualHusillo.innerHTML = datosWs.estado_eje_giro;
@@ -373,13 +374,10 @@ window.onload = function() {
     // else (ejeLineal.className = "bg-secondary indicadorMon");
      
      
-
-
     //descarga
     datosWs.condiciones_init_descarga_ok == true
     ? (descarga.className = "bg-success indicadorMon")
     : (descarga.className = "bg-secondary indicadorMon");
-
 
     //carga
     datosWs.condiciones_init_carga_ok == true
@@ -391,22 +389,17 @@ window.onload = function() {
      ? (indexar.className = "bg-success indicadorMon")
      : (indexar.className = "bg-secondary indicadorMon");
 
-
     //roscado
     datosWs.condiciones_init_roscado_ok == true
      ? (roscado.className = "bg-success indicadorMon")
      : (roscado.className = "bg-secondary indicadorMon");
      
-
-     //safe
+    //safe
     (datosWs.estado_eje_carga == 'safe')
      && (datosWs.estado_eje_avance == 'safe')
      && (datosWs.estado_eje_giro == 'safe')
      ?  (safe.className = "bg-danger indicadorMonSafe")
      :  (safe.className = "bg-secondary indicadorMonSafe");
-
-    
-      
     }
 }
 };

@@ -134,6 +134,7 @@ class RoutineHandler(threading.Thread):
                 ws_vars.MicroState.err_messages.append(err)
                 print(err)
             return False
+        print('INDEXAR - Paso 0 - Chequear condiciones iniciales')
 
         # Paso 1 - Liberar plato
         key_1 = 'contraer_clampeo_plato'
@@ -441,7 +442,8 @@ class RoutineHandler(threading.Thread):
                 ws_vars.MicroState.err_messages.append(err)
                 print(err)
             return False
-        
+        print('DESCARGA - Paso 0 - Chequear condiciones iniciales - Todos los valores deben ser True par que empiece la rutina')
+
         # Paso 0.1 - Abrir válvula de boquilla hidráulica
         boquilla = self.get_current_boquilla_descarga()
         key_1 = 'abrir_boquilla_' + str(boquilla)
@@ -706,6 +708,7 @@ class RoutineHandler(threading.Thread):
 
 
     def routine_roscado(self):
+
         # Paso 0 - Chequear condiciones iniciales - Todos los valores deben ser True par que empiece la rutina
         init_conditions_error_messages = ctrl_fun.check_init_conditions_tapping()
         if init_conditions_error_messages:
@@ -716,9 +719,16 @@ class RoutineHandler(threading.Thread):
                 ws_vars.MicroState.err_messages.append(err)
                 print(err)
             return False
-        
+
+        roscado_start_time = datetime.now()
+
         ws_vars.MicroState.position_values = []
         ws_vars.MicroState.torque_values = []
+
+        print("ROSCADO - Paso 0 - Chequear condiciones iniciales - Todos los valores deben ser True par que empiece la rutina")
+
+
+
 
         # Paso 1 - Acopla lubricante
         roscado_init_flags = [
@@ -742,14 +752,26 @@ class RoutineHandler(threading.Thread):
             return False
         if not self.wait_for_remote_in_flag(wait_key, wait_group):
             return False
+
+        roscado_delta_time_paso1=datetime.now()-roscado_start_time
+        print('Delta Time Paso 1: ', roscado_delta_time_paso1)
+
         print("ROSCADO - Paso 1 - Acopla lubricante")
+
+
 
         # Paso 2 - Encender bomba solube
         key = 'encender_bomba_soluble'
         group = 1
         if not self.send_pneumatic(key, group, 1):
             return False
+        
+        roscado_delta_time_paso2=datetime.now()-roscado_start_time
+        print('Delta Time Paso 2: ', roscado_delta_time_paso2)
+
         print("ROSCADO - Paso 2 - Encender bomba solube")
+
+
 
         # Paso 3 - Presurizar ON
         ws_vars.MicroState.roscado_allow_presure_off = False
@@ -757,7 +779,13 @@ class RoutineHandler(threading.Thread):
         group = 1
         if not self.send_pneumatic(key, group, 1):
             return False
+
+        roscado_delta_time_paso3=datetime.now()-roscado_start_time
+        print('Delta Time Paso 3: ', roscado_delta_time_paso3)
+        
         print("ROSCADO - Paso 3 - Presurizar ON")
+
+
 
         # Paso 4 - Cerrar boquilla hidráulica
         boquilla = self.get_current_boquilla_roscado()
@@ -765,7 +793,13 @@ class RoutineHandler(threading.Thread):
         key_2 = 'abrir_boquilla_' + str(boquilla)
         group = 1
         self.send_pneumatic(key_1, group, 1, key_2, 0)
+
+        roscado_delta_time_paso4=datetime.now()-roscado_start_time
+        print('Delta Time Paso 4: ', roscado_delta_time_paso4)
+
         print("ROSCADO - Paso 4 - Cerrar boquilla hidráulica")
+
+
 
         # Paso 5 - Avanzar a pos y vel de aproximacion
         axis = ctrl_vars.AXIS_IDS['avance']
@@ -783,7 +817,13 @@ class RoutineHandler(threading.Thread):
         
         if not self.wait_for_lineal_mov(ref):
             return False
+        
+        roscado_delta_time_paso5=datetime.now()-roscado_start_time
+        print('Delta Time Paso 5: ', roscado_delta_time_paso5)
+
         print("ROSCADO - Paso 5 - Avanzar a pos y vel de aproximacion")
+
+
 
         # Paso 6 - Dejar boquilla en centro cerrado
         boquilla = self.get_current_boquilla_roscado()
@@ -792,7 +832,12 @@ class RoutineHandler(threading.Thread):
         group = 1
         self.send_pneumatic(key_1, group, 0, key_2, 0)
         time.sleep(0.5)
+
+        roscado_delta_time_paso6=datetime.now()-roscado_start_time
+        print('Delta Time Paso 6: ', roscado_delta_time_paso6)
+
         print("ROSCADO - PASO 6 - Dejar boquilla en centro cerrado")
+
 
 
         # Paso 7 - Sale de safe para encender el husillo
@@ -806,7 +851,13 @@ class RoutineHandler(threading.Thread):
         target_state = msg_app.StateMachine.EST_INITIAL
         if not self.wait_for_axis_state(target_state, axis):
             return False
+
+        roscado_delta_time_paso7=datetime.now()-roscado_start_time
+        print('Delta Time Paso 7: ', roscado_delta_time_paso7)
+
         print('ROSCADO - PASO 7 - Sale de safe para encender el husillo')
+
+
 
         # Paso 8 - Sincronizado ON
         command = Commands.sync_on
@@ -821,11 +872,14 @@ class RoutineHandler(threading.Thread):
             state = ws_vars.MicroState.axis_flags[axis]['sync_on']
             time.sleep(self.wait_time)
 
+        roscado_delta_time_paso8=datetime.now()-roscado_start_time
+        print('Delta Time Paso 8: ', roscado_delta_time_paso8)
+
         print("ROSCADO - PASO 8 - Sincronizado ON")
 
 
-        # Paso 9 - Presurizar OFF
 
+        # Paso 9 - Presurizar OFF
         ws_vars.MicroState.roscado_allow_presure_off = True
 
         load_id = ctrl_vars.ROUTINE_IDS['carga']
@@ -838,7 +892,12 @@ class RoutineHandler(threading.Thread):
         key = 'presurizar'
         group = 1
         self.send_pneumatic(key, group, 0)
+
+        roscado_delta_time_paso9=datetime.now()-roscado_start_time
+        print('Delta Time Paso 9: ', roscado_delta_time_paso9)
+
         print('ROSCADO - PASO 9 - PRESURIZAR OFF')
+
 
 
         # Paso 10 - Avanzar a pos y vel final de roscado
@@ -859,7 +918,13 @@ class RoutineHandler(threading.Thread):
         
         if not self.wait_for_lineal_mov(ref):
             return False
+        
+        roscado_delta_time_paso10=datetime.now()-roscado_start_time
+        print('Delta Time Paso 10: ', roscado_delta_time_paso10)
+
         print("ROSCADO - PASO 10 - Avanzar a pos y vel final de roscado")
+
+
 
         # Paso 11 - Avanzar a pos y vel de salida de rosca
         axis = ctrl_vars.AXIS_IDS['avance']
@@ -877,7 +942,13 @@ class RoutineHandler(threading.Thread):
         
         if not self.wait_for_lineal_mov(ref):
             return False
+        
+        roscado_delta_time_paso11=datetime.now()-roscado_start_time
+        print('Delta Time Paso 11: ', roscado_delta_time_paso11)
+
         print("ROSCADO - Paso 11 - Avanzar a pos y vel de salida de rosca")
+
+
 
         # Paso 12 - Sincronizado OFF
         command = Commands.sync_off
@@ -890,7 +961,13 @@ class RoutineHandler(threading.Thread):
         while state:
             state = ws_vars.MicroState.axis_flags[axis]['sync_on']
             time.sleep(self.wait_time)
+        
+        roscado_delta_time_paso12=datetime.now()-roscado_start_time
+        print('Delta Time Paso 12: ', roscado_delta_time_paso12)
+
         print('ROSCADO - Paso 12 - Sincronizado OFF')
+
+
 
         # Paso 13 - Enable husillo OFF
         command = Commands.power_off
@@ -903,7 +980,13 @@ class RoutineHandler(threading.Thread):
         
         if not self.wait_for_drv_flag(drv_flag, axis, 0):
             return False
+
+        roscado_delta_time_paso13=datetime.now()-roscado_start_time
+        print('Delta Time Paso 13: ', roscado_delta_time_paso13)
+
         print('ROSCADO - Paso 13 - Enable husillo OFF')
+
+
 
         # Paso 13.1 - Abrir válvula de boquilla hidráulica
         boquilla = self.get_current_boquilla_roscado()
@@ -911,7 +994,13 @@ class RoutineHandler(threading.Thread):
         key_2 = 'cerrar_boquilla_' + str(boquilla)
         group = 1
         self.send_pneumatic(key_1, group, 1, key_2, 0)
+
+        roscado_delta_time_paso131=datetime.now()-roscado_start_time
+        print('Delta Time Paso 13.1: ', roscado_delta_time_paso131)
+
         print('ROSCADO - Paso 13.1 - Abrir válvula de boquilla hidráulica')
+
+
 
         # Paso 14 - Avance a posicion de inicio
         axis = ctrl_vars.AXIS_IDS['avance']
@@ -930,14 +1019,26 @@ class RoutineHandler(threading.Thread):
 
         if not self.wait_for_lineal_mov(ref):
             return False
+
+        roscado_delta_time_paso14=datetime.now()-roscado_start_time
+        print('Delta Time Paso 14: ', roscado_delta_time_paso14)
+
         print('ROSCADO - Paso 14 - Avance a posicion de inicio')
+
+
 
         # Paso 15 - Apagar bomba solube
         key = 'encender_bomba_soluble'
         group = 1
         if not self.send_pneumatic(key, group, 0):
             return False
+
+        roscado_delta_time_paso15=datetime.now()-roscado_start_time
+        print('Delta Time Paso 15: ', roscado_delta_time_paso15)
+
         print("ROSCADO - Paso 15 - Apagar bomba solube")
+
+
 
         # Paso 16 - Desacopla lubricante
         key = 'expandir_acople_lubric'
@@ -948,13 +1049,21 @@ class RoutineHandler(threading.Thread):
             return False
         if not self.wait_for_remote_in_flag(wait_key, wait_group):
             return False
+
+        roscado_delta_time_paso16=datetime.now()-roscado_start_time
+        print('Delta Time Paso 16: ', roscado_delta_time_paso16)
+
         print("ROSCADO - Paso 16 - Desacopla lubricante")
        
+
+
         print("ROSCADO - FIN RUTINA")
         return True
 
 
     def routine_homing(self):
+
+        # Paso 0 - Condiciones iniciales
         init_conditions_error_messages = ctrl_fun.check_init_conditions_homing()
         if init_conditions_error_messages:
             print('\nError en condiciones iniciales de homing')
@@ -966,14 +1075,19 @@ class RoutineHandler(threading.Thread):
             return False
 
         ws_vars.MicroState.log_messages.append('Homing')
+        print('HOMING - Paso 0 - Condiciones iniciales')
+
+
 
         # Paso 0.1 - Encender bomba hidráulica
         key = 'encender_bomba_hidraulica'
         group = 1
         if not self.send_pneumatic(key, group, 1):
             return False
-        
         ws_vars.MicroState.log_messages.append('0.1 - Encender bomba hidráulica')
+        print('HOMING - Paso 0.1 - Encender bomba hidráulica')
+
+
 
         # Paso 1 - Cerado eje avance
         command = Commands.run_zeroing
@@ -982,22 +1096,31 @@ class RoutineHandler(threading.Thread):
         header = build_msg(command, msg_id=msg_id, eje=axis)
         if not self.send_message(header):
             return False
-
         state = ws_vars.MicroState.axis_flags[axis]['home_switch']
         while not state:
             state = ws_vars.MicroState.axis_flags[axis]['home_switch']
             time.sleep(self.wait_time)
-        print('PASO 1')
         print('HOME SW ACTIVADO')
         ws_vars.MicroState.log_messages.append('1 - Home switch activado')
+        print('HOMING - Paso 1 - Cerado eje avance')
+
+
 
         # Paso 1.1 - Chequeo cero
+        print('Paso 1.1 - En la instrucción que sigue se suele parar la primera ves que se ejecuta')
         if not self.wait_for_lineal_mov(0):
+            time.sleep(1)
             return False
-        print('Paso 1.1 - Chequeo cero')
+        print('Paso 1.1 - Pasó bien instrucción con problema')
+
         time.sleep(10)
+        print('sleep')
+
         ws_vars.MicroState.log_messages.append('1.1 - Chequeo cerado')
+        print('HOMING - Paso 1.1 - Chequeo cero')
         
+
+
         # Paso 1.2 - Mover a posición de inicio
         eje_avance = ctrl_vars.AXIS_IDS['avance']
         pos_inicio = ctrl_vars.ROSCADO_CONSTANTES['posicion_de_inicio']
@@ -1008,9 +1131,10 @@ class RoutineHandler(threading.Thread):
         print('Posicion actual de paso 1.2:', ws_vars.MicroState.axis_measures[eje_avance]['pos_fil'])
         if not self.wait_for_lineal_mov(pos_inicio):
             return False
-        
-        print('Paso 1.2 - Mover a posición de inicio')
         ws_vars.MicroState.log_messages.append('1.2 - Mover a posición de inicio')
+        print('HOMING - Paso 1.2 - Mover a posición de inicio')
+
+
 
         # Paso 2 - Liberar plato
         key_1 = 'contraer_clampeo_plato'
@@ -1020,8 +1144,10 @@ class RoutineHandler(threading.Thread):
         
         if not self.wait_for_remote_in_flag('clampeo_plato_contraido', 1):
             return False
-        print('PASO 2')
         ws_vars.MicroState.log_messages.append('2 - Liberar plato')
+        print('HOMING - Paso 2 - Liberar plato')
+
+
 
         # Paso 2.1 - Encender servo
         command = Commands.power_on
@@ -1034,8 +1160,11 @@ class RoutineHandler(threading.Thread):
         target_state = msg_app.StateMachine.EST_INITIAL
         if not self.wait_for_axis_state(target_state, axis):
             return False
-        print('Paso 2.1 - Encender servo')
+
         ws_vars.MicroState.log_messages.append('2.1 - Encender servo')
+        print('HOMING - Paso 2.1 - Encender servo')
+
+
 
         # Paso 3 - Cerado eje carga
         print("CERAR EJE CARGA")
@@ -1045,8 +1174,10 @@ class RoutineHandler(threading.Thread):
         header = build_msg(command, msg_id=msg_id, eje=axis)
         if not self.send_message(header):
             return False
-        print('PASO 3')
         ws_vars.MicroState.log_messages.append('3 - Cerar eje de carga')
+        print('HOMING - Paso 3 - Cerado eje carga')
+
+
 
         # Paso 4 - Esperar sensor homing activado
         state = ws_vars.MicroState.axis_flags[axis]['home_switch']
@@ -1056,12 +1187,14 @@ class RoutineHandler(threading.Thread):
             time.sleep(0.01)
         print('HOME SW ACTIVADO')
         ws_vars.MicroState.log_messages.append('4.1 - Home switch activado')
+
         # Espera a que salga de la chapa
         while state:
             state = ws_vars.MicroState.axis_flags[axis]['home_switch']
             time.sleep(0.01)
         print('HOME SW DESACTIVADO')
         ws_vars.MicroState.log_messages.append('4.2 - Home switch desactivado')
+
         # Esperar fin de secuencia de homing
         time.sleep(1)
         current_pos = round(ws_vars.MicroState.axis_measures[axis]['pos_abs'], 2)
@@ -1075,6 +1208,7 @@ class RoutineHandler(threading.Thread):
         print("FIN COMANDO HOMING")
         ws_vars.MicroState.log_messages.append('4.3 - Fin comando homing')
         time.sleep(2)
+
         # gira una posición buscando la chapa
         command = Commands.mov_to_pos
         msg_id = self.get_message_id()
@@ -1083,6 +1217,7 @@ class RoutineHandler(threading.Thread):
             return False
         print('gira una posición buscando la chapa')
         ws_vars.MicroState.log_messages.append('4.4 - Gira posición buscando la chapa')
+
         # Espera sensor home activado
         state = ws_vars.MicroState.axis_flags[axis]['home_switch']
         while not state:
@@ -1092,6 +1227,7 @@ class RoutineHandler(threading.Thread):
         print('Espera sensor home activado')
         print("POSICION EN CHAPA", pos)
         ws_vars.MicroState.log_messages.append('4.5 - Posición en chapa')
+
         # Detener eje
         command = Commands.stop
         msg_id = self.get_message_id()
@@ -1101,6 +1237,7 @@ class RoutineHandler(threading.Thread):
         time.sleep(0.5)
         print('Detener eje')
         ws_vars.MicroState.log_messages.append('4.6 - Detener eje')
+
         # Configura cero
         header = None
         data = None
@@ -1128,8 +1265,10 @@ class RoutineHandler(threading.Thread):
         if not self.send_message(header, data):
             return False
         print('Configura cero')
-        print('PASO 4')
-        ws_vars.MicroState.log_messages.append('4.7 - Configura cero')
+        ws_vars.MicroState.log_messages.append('4 - Configura cero')
+        print('HOMING - Paso 4 - Esperar sensor homing activado')
+
+
 
         # Paso 5 - Clampea plato
         key_1 = 'expandir_clampeo_plato'
@@ -1140,8 +1279,10 @@ class RoutineHandler(threading.Thread):
         
         if not self.wait_for_remote_in_flag('clampeo_plato_expandido', group):
             return False
-        print('PASO 5 - Clampea plato')
         ws_vars.MicroState.log_messages.append('5 - Clampea plato')
+        print('HOMING - PASO 5 - Clampea plato')
+
+
 
         # Paso 6 - Power off
         command = Commands.power_off
@@ -1154,11 +1295,11 @@ class RoutineHandler(threading.Thread):
         
         if not self.wait_for_drv_flag(drv_flag, axis, 0):
             return False
-        print('PASO 6 - Power off')
-
         ws_vars.MicroState.log_messages.append('6 - Apaga eje carga')
-        print('FIN RUTINA HOMING')
-        ws_vars.MicroState.log_messages.append('Fin rutina homing')
+        print('HOMING - PASO 6 - Power off')
+
+        print('HOMING - FIN RUTINA')
+        ws_vars.MicroState.log_messages.append('HOMIN - Fin rutina')
         return True
        
 

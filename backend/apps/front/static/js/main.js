@@ -23,7 +23,7 @@ window.addEventListener("DOMContentLoaded", () => {                         //to
     (window.location.hash);
     monitor = document.querySelector("#component-monitor");
 });
-console.log('main');
+
 socket.onmessage = function (event) {
   const datosWs = JSON.parse(event.data);
  
@@ -105,7 +105,6 @@ socket.onmessage = function (event) {
     const homeok = document.querySelector("#homeOk");
 
     if (datosWs){
-        console.log('if datos');
     (datosWs.lineal_cero_desconocido == false)
      && (datosWs.cabezal_cero_desconocido == false)
      ? (homeok.className = "bg-success rounded-pill text-white text-center p-3")
