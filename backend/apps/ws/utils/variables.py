@@ -48,8 +48,13 @@ class MicroState:
     # Graph
     position_values     = []
     torque_values       = []
-    graph_flag          = True
+    graph_flag          = False # *** REVISAR *** pusimos para que ni bien arranque no grabe el grafico
     graph_duration      = 0
+
+    # Error log
+    last_err_msg            = None
+    last_err_time           = datetime.now()
+    err_msg_refresh_timer   = 10
 
     # General
     load_on_timer       = datetime.now()    # Timer para apagar eje de carga con cabezal clampeado

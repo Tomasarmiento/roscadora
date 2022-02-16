@@ -148,8 +148,8 @@ def build_msg(code, host_ip="192.168.0.100", dest_ip=ACDP_IP_ADDR, params={}, *a
                     ref_rate = kwargs['ref_rate']
                 print('ref:', ref, 'ref_rate', ref_rate)
                 param =  DataBuilder.build_mov_to_pos_data(ref, ref_rate)
-                print(param)
-                print("REF:",param.reference,"REF_RATE:", param.ref_rate)
+                # print(param)
+                print("REF:", param.reference,"REF_RATE:", param.ref_rate)
 
             elif code == AcdpMsgCodes.Cmd.Cd_MovEje_MovToPos_Yield:
                 if params:

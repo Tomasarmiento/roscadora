@@ -2,11 +2,13 @@ from apps.control.utils import variables as ctrl_vars
 from . import variables as param_vars
     
     
+# *** REVISAR *** al arrancar no lee de la base de datos, lo fuerza a 1
 def init_params():        # params: query with all parameters in database
     from apps.parameters.models import Parameter
     params = Parameter.objects.all()
     saved_params = dict([(param.name, param.value) for param in params])
     saved_keys = saved_params.keys()
+    param_vars.SELECTED_MODEL = saved_params['part_model']
 
     for option in param_vars.PART_MODEL_OPTIONS:
         f_params = params.filter(part_model=option)
@@ -33,6 +35,7 @@ def init_params():        # params: query with all parameters in database
             )
         ctrl_vars.HOMING_CONSTANTES[homing_param_name] = params.get(name=homing_param_name).value
     update_roscado_params()
+    update_homing_params()
 
 
 def update_homing_params():

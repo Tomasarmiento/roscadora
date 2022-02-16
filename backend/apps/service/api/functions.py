@@ -6,6 +6,7 @@ from apps.service.api.variables import COMMANDS, Commands, last_rx_msg
 def send_message(bytes_msg, transport, addr=(ACDP_IP_ADDR, ACDP_UDP_PORT)):
     if transport:
         transport.sendto(bytes_msg, addr)
+        print('msg sent')
     else:
         print("Sin conexion")
 
