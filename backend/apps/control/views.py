@@ -446,6 +446,7 @@ def semiauto(request):
     routine = int(post_req['routine'])
 
     if ctrl_func.check_routine_allowed(RoutineInfo, routine):
+        MicroState.routine_stopped = False
         RoutineHandler(routine).start()
     
     return JsonResponse({})

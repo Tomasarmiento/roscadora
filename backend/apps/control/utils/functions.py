@@ -283,6 +283,16 @@ def check_init_conditions_tapping():
     eje_carga = ctrl_vars.AXIS_IDS['carga']
     eje_giro = ctrl_vars.AXIS_IDS['giro']
     initial_state = msg_app.StateMachine.EST_INITIAL
+    
+    sync_flag = None
+    sync_err_msg = None
+    if ws_vars.MicroState.master_running == False or ws_vars.MicroState.iteration <= 1:
+        sync_flag = ws_vars.MicroState.axis_flags[eje_avance]['sync_on'] == 0   # Si master no está corriendo o la iteración es <= 1 (todavía no empezó a roscar)
+                                                                                # el sync tiene que estar apagado (sync_flag = 1)
+        sync_err_msg = 'Sincronismo encendido'
+    else:
+        sync_flag = ws_vars.MicroState.axis_flags[eje_avance]['sync_on'] == 1
+        sync_err_msg = 'Sincronismo apagado con master'
     error_messages = []
 
     init_flags = [
@@ -300,7 +310,7 @@ def check_init_conditions_tapping():
         (ws_vars.MicroState.rem_i_states[1]['acople_lubric_contraido'], 'Acople lubricante afuera'),                                    # acople_lubricante_contraido
         (ws_vars.MicroState.axis_flags[eje_avance]['maq_est_val'] == initial_state, 'Eje de avance apagado'),                           # eje avance ON
         (ws_vars.MicroState.axis_flags[eje_carga]['drv_flags'] & msg_base.DrvFbkDataFlags.ENABLED == 0, 'Eje de carga encendido'),      # eje carga OFF
-        (ws_vars.MicroState.axis_flags[eje_avance]['sync_on'] == 0, 'Sincronismo encendido'),                                           # Sincronismo OFF
+        (sync_flag, sync_err_msg),                                                                                                      # Sincronismo
         (round(ws_vars.MicroState.axis_measures[eje_avance]['pos_fil'], 0) == round(ctrl_vars.ROSCADO_CONSTANTES['posicion_de_inicio'], 0), 'Posición de eje de avance errónea')   # Eje avance en posición de inicio
     ]
 
@@ -596,7 +606,7 @@ def update_states(micro_data):
 
 def update_front_messages():
     now_time = datetime.now()
-    timestamp = now_time.strftime('%H:%M:%S')
+    timestamp = now_time.strftime("%m/%d/%y %H:%M:%S")
     if ws_vars.MicroState.log_messages:
         log_messages = []
         for msg in ws_vars.MicroState.log_messages:

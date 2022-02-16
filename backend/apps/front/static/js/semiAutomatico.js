@@ -334,15 +334,15 @@ window.onload = function() {
     };
 
     if(datosWs.graph_flag == true){
-        if(delete_graph == true){
-            function sleep (time) {
-                return new Promise((resolve) => setTimeout(resolve, time));              //time sleep
-                }
-                sleep(1800).then(() => {
-                    xAccelChartInstance.data.datasets[0].data = []
-               });
-            delete_graph = false;     
-        }
+        // if(delete_graph == true){
+        //     function sleep (time) {
+        //         return new Promise((resolve) => setTimeout(resolve, time));              //time sleep
+        //         }
+        //         sleep(1800).then(() => {
+        //             xAccelChartInstance.data.datasets[0].data = []
+        //        });
+        //     delete_graph = false;     
+        // }
         xAccelChartInstance.data.labels.push(new Date());            //(datosWs.cabezal_pos).toFixed(1);
         xAccelChartInstance.data.datasets.forEach((dataset) =>{dataset.data.push(datosWs.husillo_torque).toFixed(1)});
     if(updateCount > numberElements){
