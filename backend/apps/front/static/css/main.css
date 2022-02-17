@@ -1,6 +1,7 @@
 body {
     background: grey;
     color: white;
+    overflow-x: hidden;
 }
 
   

@@ -273,7 +273,7 @@ window.onload = function() {
     
     var listaMensajes = []; 
     var listaMensajesErrores = [];
-    var delete_graph = true;
+    var count = 0;
     socket.onmessage = function (event) {
      const datosWs = JSON.parse(event.data);
 
@@ -291,6 +291,7 @@ window.onload = function() {
     // Tabla de datos
     const rpmActual = document.querySelector("#frRPM");
     const torqueActual = document.querySelector("#fTorque");
+    const rpmText = document.querySelector("#rpm");
 
     // Datos Eje vertical
     const posicionActualV = document.querySelector("#posVertical");
@@ -320,7 +321,28 @@ window.onload = function() {
     //Safe
     const safe = document.querySelector("#statusSafe");
 
-    if(datosWs.graph_flag == true){
+    if(datosWs){//graph_flag == true
+        if(count == 0 && datosWs.graph_flag == true ){
+            xAccelChartInstance.data.datasets[0].data = []
+            xAccelChartInstance.data.labels = []
+            count ++;
+            //como le suma 1 a count no refresca
+        }
+        if(count == 1 && datosWs.graph_flag == false){
+            count --;
+        }    
+    }
+    console.log( xAccelChartInstance.data.labels);
+    if (datosWs.graph_flag == true){
+        xAccelChartInstance.data.labels.push(new Date());            //(datosWs.cabezal_pos).toFixed(1);
+        xAccelChartInstance.data.datasets.forEach((dataset) =>{dataset.data.push(datosWs.husillo_torque).toFixed(1)});
+    if(updateCount > numberElements){
+        xAccelChartInstance.data.labels;
+        xAccelChartInstance.data.datasets[0].data;
+    }
+    else updateCount++;
+    xAccelChartInstance.update();
+    }
         // if(delete_graph == true){
             
         //     function sleep (time) {
@@ -331,18 +353,10 @@ window.onload = function() {
         //        });
         //     delete_graph = false;
         // }
-        xAccelChartInstance.data.labels.push(new Date());            //(datosWs.cabezal_pos).toFixed(1);
-        xAccelChartInstance.data.datasets.forEach((dataset) =>{dataset.data.push(datosWs.husillo_torque).toFixed(1)});
-    if(updateCount > numberElements){
-        xAccelChartInstance.data.labels.shift();
-        xAccelChartInstance.data.datasets[0].data.shift();
-    }
-    else updateCount++;
-    xAccelChartInstance.update();
-    }
+        
 
     if(datosWs){
-        console.log(datosWs);
+        // console.log(datosWs);
     //Monitor
     rpmActual.innerHTML = datosWs.husillo_rpm.toFixed(1)/6;
     torqueActual.innerHTML = datosWs.husillo_torque.toFixed(1);
@@ -378,8 +392,16 @@ window.onload = function() {
     //   }
 
     // else (ejeLineal.className = "bg-secondary indicadorMon");
-     
-     
+    
+
+    //grafico
+    if (datosWs.graph_flag == true){
+      rpmActual.style.color = "#70ff43";
+    }
+    if (datosWs.graph_flag == true){
+      rpmText.style.color = "#70ff43";
+    }
+ 
     //descarga
     datosWs.condiciones_init_descarga_ok == true
     ? (descarga.className = "bg-success indicadorMon")

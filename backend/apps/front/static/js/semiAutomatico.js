@@ -41,7 +41,7 @@ window.addEventListener("DOMContentLoaded", () => {                         //to
 
     btn_roscado.addEventListener('click', (e) => {
         let routine = btn_roscado.getAttribute('rtn');
-        startRoutine(routine), xAccelChartInstance.destroy();
+        startRoutine(routine);
     });
 
     btn_descarga.addEventListener('click', (e) => {
@@ -285,6 +285,7 @@ window.onload = function() {
     // Tabla de datos
     const rpmActual = document.querySelector("#frRPM");
     const torqueActual = document.querySelector("#fTorque");
+    const rpmText = document.querySelector("#rpm");
 
     // Datos Eje vertical
     const posicionActualV = document.querySelector("#posVertical");
@@ -355,6 +356,7 @@ window.onload = function() {
 
 
     if(datosWs){
+        console.log(datosWs);
     //Monitor
     rpmActual.innerHTML = datosWs.husillo_rpm.toFixed(1)/6;
     torqueActual.innerHTML = datosWs.husillo_torque.toFixed(1);
@@ -392,6 +394,13 @@ window.onload = function() {
     // else (ejeLineal.className = "bg-secondary indicadorMon");
      
      
+    //grafico
+    if (datosWs.graph_flag == true){
+        rpmActual.style.color = "#70ff43";
+    }
+    if (datosWs.graph_flag == true){
+        rpmText.style.color = "#70ff43";
+    }
 
 
     //descarga
