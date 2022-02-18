@@ -67,7 +67,7 @@ socket.onmessage = function (event) {
   const safe = document.querySelector("#statusSafe");
   
   if (datosWs) {
-    console.log(datosWs.homing_on_going);
+
 
     //Monitor
     rpmActual.innerHTML = datosWs.husillo_rpm.toFixed(1)/6;
@@ -109,7 +109,9 @@ socket.onmessage = function (event) {
      
     //Cabezal
     const homeok = document.querySelector("#homeOk");
-
+    // datosWs.cabezal_cero_desconocido = false
+    // datosWs.lineal_cero_desconocido = false
+    // datosWs.homing_on_going = false
     if (datosWs){
       if (datosWs.lineal_cero_desconocido == false && datosWs.cabezal_cero_desconocido == false){
         (homeok.className = "bg-success rounded-pill text-white text-center p-3")   
@@ -117,9 +119,18 @@ socket.onmessage = function (event) {
       else (homeok.className = "bg-secondary rounded-pill text-white text-center p-3");
 
       if (datosWs.homing_on_going == true){
-        (homeok.className = "bg-warning rounded-pill text-white text-center p-3")  && (homeok.innerHTML = 'Ongoing <br/> Homming')
+        (homeok.className = "bg-warning rounded-pill text-white text-center p-3")  && (homeok.innerHTML = 'HOMMING')
         }
-      else (homeok.innerHTML = 'HOME OK')
+     
+
+      
+      // if (datosWs.lineal_cero_desconocido == false && datosWs.cabezal_cero_desconocido == false){
+      //   (homeok.className = "bg-success rounded-pill text-white text-center p-3")   
+      // }
+      // else if (datosWs.homing_on_going == true){
+      //   (homeok.className = "bg-warning rounded-pill text-white text-center p-3") && (homeok.innerHTML = 'HOMMING')
+      // }
+      // else (homeok.className = "bg-secondary rounded-pill text-white text-center p-3");
 
 
 console.log();

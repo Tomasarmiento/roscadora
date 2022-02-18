@@ -334,21 +334,24 @@ window.onload = function() {
         InsertarTextoErrores(datosWs.mensajes_error);
     };
 
-    if(datosWs.graph_flag == true){
-        // if(delete_graph == true){
-        //     function sleep (time) {
-        //         return new Promise((resolve) => setTimeout(resolve, time));              //time sleep
-        //         }
-        //         sleep(1800).then(() => {
-        //             xAccelChartInstance.data.datasets[0].data = []
-        //        });
-        //     delete_graph = false;     
-        // }
+    if(datosWs){//graph_flag == true
+        if(count == 0 && datosWs.graph_flag == true ){
+            xAccelChartInstance.data.datasets[0].data = []
+            xAccelChartInstance.data.labels = []
+            count ++;
+            //como le suma 1 a count no refresca
+        }
+        if(count == 1 && datosWs.graph_flag == false){
+            count --;
+        }
+    }
+    console.log( xAccelChartInstance.data.labels);
+    if (datosWs.graph_flag == true){
         xAccelChartInstance.data.labels.push(new Date());            //(datosWs.cabezal_pos).toFixed(1);
         xAccelChartInstance.data.datasets.forEach((dataset) =>{dataset.data.push(datosWs.husillo_torque).toFixed(1)});
     if(updateCount > numberElements){
-        xAccelChartInstance.data.labels.shift();
-        xAccelChartInstance.data.datasets[0].data.shift();
+        xAccelChartInstance.data.labels;
+        xAccelChartInstance.data.datasets[0].data;
     }
     else updateCount++;
     xAccelChartInstance.update();
@@ -396,13 +399,10 @@ window.onload = function() {
      
     //grafico
     if (datosWs.graph_flag == true){
-        rpmActual.style.color = "#70ff43";
+        (rpmActual.style.color = "#70ff43") && (rpmText.style.color = "#70ff43");
     }
-    if (datosWs.graph_flag == true){
-        rpmText.style.color = "#70ff43";
-    }
-
-
+    else(rpmActual.style.color = "white");
+  
     //descarga
     datosWs.condiciones_init_descarga_ok == true
     ? (descarga.className = "bg-success indicadorMon")

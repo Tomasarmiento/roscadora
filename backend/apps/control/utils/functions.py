@@ -687,6 +687,7 @@ def get_front_states():
         'condiciones_init_indexar_ok': len(check_init_conditions_index()) == 0,
         'condiciones_init_roscado_ok': len(check_init_conditions_tapping()) == 0,
         'homing_on_going': ws_vars.MicroState.homing_ongoing,
+        'end_master_routine': ws_vars.MicroState.end_master_routine,
 
         # 'graph': ws_vars.MicroState.graph_flag
         'graph': False,

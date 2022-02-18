@@ -310,6 +310,8 @@ window.onload = function() {
     const cabezal = document.querySelector("#statusHead")
     //Eje Lineal
     const ejeLineal = document.querySelector("#statusLinealAxis")
+    //Terminar
+    const terminar = document.querySelector('#cancel');
     //Descarga
     const descarga = document.querySelector("#statusDownloader");
     //Carga
@@ -332,7 +334,7 @@ window.onload = function() {
             count --;
         }
     }
-    console.log( xAccelChartInstance.data.labels);
+
     if (datosWs.graph_flag == true){
         xAccelChartInstance.data.labels.push(new Date());            //(datosWs.cabezal_pos).toFixed(1);
         xAccelChartInstance.data.datasets.forEach((dataset) =>{dataset.data.push(datosWs.husillo_torque).toFixed(1)});
@@ -394,14 +396,18 @@ window.onload = function() {
     // else (ejeLineal.className = "bg-secondary indicadorMon");
     
 
+    //terminar
+    console.log( datosWs.end_master_routine);
+    datosWs.end_master_routine == true
+    ? (terminar.className = "btn btn-primary mb-3") && (terminar.innerHTML = 'Terminando') && (terminar.style.fontSize = "25px")
+    : (terminar.className = "btn btn-warning mb-3")
+    
     //grafico
     if (datosWs.graph_flag == true){
-      rpmActual.style.color = "#70ff43";
+      (rpmActual.style.color = "#70ff43") && (rpmText.style.color = "#70ff43");
     }
-    if (datosWs.graph_flag == true){
-      rpmText.style.color = "#70ff43";
-    }
- 
+    else(rpmActual.style.color = "white");
+
     //descarga
     datosWs.condiciones_init_descarga_ok == true
     ? (descarga.className = "bg-success indicadorMon")
