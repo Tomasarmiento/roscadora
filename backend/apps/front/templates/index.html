@@ -6,9 +6,30 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>roscadora</title>
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-    <script src="//netdna.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+
+
+    <!-- <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script> -->
+    <script src="{% static '../static/ajax/ajax.min.js' %}"></script>
+
+
+    <!-- <script src="//netdna.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script> -->
+    <script src="{% static '../static/bootstrap/bootstrap.min.js' %}"></script>
+
+
+
+
+    <!-- <link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"> -->
+    <link rel="stylesheet"  href="{% static '../static/bootstrap/bootstrap.min.css' %}">
+
+
+
+
+    <!-- <script rel="stylesheet" type="text/css" src="../static/bootstrap/bootstrap.min.css.map"></script> -->
+    <link rel="stylesheet" type="text/css"  href="{% static '../static/bootstrap/bootstrap.min.css.map' %}">
+
+
+
+
     <link href="{% static 'css/main.css' %}" rel="stylesheet">
     <link href="{% static 'css/monitorComponent.css' %}" rel="stylesheet">
     <link href="{% static 'css/monitorHorizontal.component.css' %}" rel="stylesheet">
