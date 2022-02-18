@@ -36,8 +36,9 @@ def init_loc_io():
         ctrl_vars.LOC_DO_STATES[key] = None
 
 
-def init_routine_info(routine_model):
-    routines = routine_model.objects.all()
+def init_routine_info():
+    from apps.control.models import RoutineInfo
+    routines = RoutineInfo.objects.all()
     rtn_names = []
     for routine in routines:
         rtn_names.append(routine.name)
@@ -45,7 +46,7 @@ def init_routine_info(routine_model):
         routine.save()
     for rtn_name in ctrl_vars.ROUTINE_NAMES.values():
         if rtn_name not in rtn_names:
-            routine_model.objects.create(name=rtn_name, running=0)
+            RoutineInfo.objects.create(name=rtn_name, running=0)
 
 
 def init_comands_ref_rates():
@@ -321,8 +322,9 @@ def check_init_conditions_tapping():
     return error_messages
 
 
-def get_running_routines(routine_model):
-    routines = routine_model.objects.all()
+def get_running_routines():
+    from apps.control.models import RoutineInfo
+    routines = RoutineInfo.objects.all()
     running_routines = []
     for rtn in routines:
         if rtn.running == 1:
@@ -330,8 +332,8 @@ def get_running_routines(routine_model):
     return running_routines
 
 
-def check_routine_allowed(routine_model, routine):
-    running_rtns = get_running_routines(routine_model)
+def check_routine_allowed(routine):
+    running_rtns = get_running_routines()
     homing_name = ctrl_vars.ROUTINE_NAMES[ctrl_vars.ROUTINE_IDS['cerado']]
     cabezal_indexar = ctrl_vars.ROUTINE_NAMES[ctrl_vars.ROUTINE_IDS['cabezal_indexar']]
     roscado = ctrl_vars.ROUTINE_NAMES[ctrl_vars.ROUTINE_IDS['roscado']]
@@ -357,6 +359,13 @@ def check_routine_allowed(routine_model, routine):
     
     return True
 
+
+def reset_routines_info():
+    from apps.control.models import RoutineInfo
+    rtns_info = RoutineInfo.objects.all()
+    for rtn in rtns_info:
+        rtn.running = 0
+        rtn.save()
 
 # -------------------------------------------------------------------------------------------- #
 # -------------------------------- Update/Get States ----------------------------------------- #
@@ -502,7 +511,7 @@ def update_axis_data(micro_data):
         from apps.control.models import RoutineInfo
         roscado_info = RoutineInfo.objects.get(name='roscado')
 
-        if roscado_info.running == 0:
+        if roscado_info.running == 0 and ws_vars.MicroState.master_running == 0:
             time_diff = datetime.now() - ws_vars.MicroState.turn_on_timer
             if time_diff.total_seconds() >= ctrl_vars.GIRO_ON_TIMEOUT:
                 ws_vars.MicroState.turn_turn_drv_off = True

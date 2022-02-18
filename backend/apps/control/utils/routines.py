@@ -23,7 +23,7 @@ class RoutineHandler(threading.Thread):
 
     def __init__(self, routine=None, **kwargs):
         self.running_routines = []
-        self.runnng_routines = ctrl_fun.get_running_routines(RoutineInfo)
+        self.runnng_routines = ctrl_fun.get_running_routines()
         self.current_routine = routine
         self.ch_info = get_ch_info(ChannelInfo, 'micro')
         super(RoutineHandler, self).__init__(**kwargs)
@@ -1043,7 +1043,7 @@ class RoutineHandler(threading.Thread):
         if ws_vars.MicroState.master_running == False:
             command = Commands.sync_off
             axis = ctrl_vars.AXIS_IDS['avance']
-            header = build_msg(command, eje=axis, msg_id=msg_id, paso=paso)
+            header = build_msg(command, eje=axis, msg_id=msg_id)
             if not self.send_message(header):
                 return False
 

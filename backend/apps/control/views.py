@@ -430,6 +430,7 @@ def stop_all(request):
     if MicroState.routine_ongoing == True:
         MicroState.routine_stopped = True
     MicroState.master_stop = True
+    ctrl_func.reset_routines_info()
     return JsonResponse({})
 
 
@@ -445,7 +446,7 @@ def semiauto(request):
     post_req = request.POST
     routine = int(post_req['routine'])
 
-    if ctrl_func.check_routine_allowed(RoutineInfo, routine):
+    if ctrl_func.check_routine_allowed(routine):
         MicroState.routine_stopped = False
         RoutineHandler(routine).start()
     
