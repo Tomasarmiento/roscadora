@@ -36,6 +36,7 @@ class MicroState:
     # Routines flags
     routine_stopped = False
     routine_ongoing = False
+    homing_ongoing  = False
     load_allow_presure_off      = True
     roscado_allow_presure_off   = True
 

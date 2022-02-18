@@ -330,7 +330,7 @@ window.onload = function() {
         }
         if(count == 1 && datosWs.graph_flag == false){
             count --;
-        }    
+        }
     }
     console.log( xAccelChartInstance.data.labels);
     if (datosWs.graph_flag == true){

@@ -67,6 +67,7 @@ socket.onmessage = function (event) {
   const safe = document.querySelector("#statusSafe");
   
   if (datosWs) {
+    console.log(datosWs.homing_on_going);
 
     //Monitor
     rpmActual.innerHTML = datosWs.husillo_rpm.toFixed(1)/6;
@@ -110,12 +111,18 @@ socket.onmessage = function (event) {
     const homeok = document.querySelector("#homeOk");
 
     if (datosWs){
-    (datosWs.lineal_cero_desconocido == false)
-     && (datosWs.cabezal_cero_desconocido == false)
-     ? (homeok.className = "bg-success rounded-pill text-white text-center p-3")
-     : (homeok.className = "bg-secondary rounded-pill text-white text-center p-3");
-    }
+      if (datosWs.lineal_cero_desconocido == false && datosWs.cabezal_cero_desconocido == false){
+        (homeok.className = "bg-success rounded-pill text-white text-center p-3")   
+      }
+      else (homeok.className = "bg-secondary rounded-pill text-white text-center p-3");
 
+      if (datosWs.homing_on_going == true){
+        (homeok.className = "bg-warning rounded-pill text-white text-center p-3")  && (homeok.innerHTML = 'Ongoing <br/> Homming')
+        }
+      else (homeok.innerHTML = 'HOME OK')
+
+
+console.log();
     //descarga
      datosWs.condiciones_init_descarga_ok == true
     ? (descarga.className = "bg-success indicadorMon")
@@ -147,7 +154,7 @@ socket.onmessage = function (event) {
 
 
   }
-}
+}};
 
 
     

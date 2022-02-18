@@ -24,8 +24,8 @@ COMMAND_REF_RATES = {}
 # --------------------------------------- Timeouts ------------------------------------------- #
 # -------------------------------------------------------------------------------------------- #
 
-CABEZAL_ON_TIMEOFF = 30         # Tiempo máximo que el cabezal puede estar encendido mientras está clampeado
-GIRO_ON_TIMEOUT = 60         # Tiempo máximo de husillo encendido con velocidad 0
+CABEZAL_ON_TIMEOFF = 10         # Tiempo máximo que el cabezal puede estar encendido mientras está clampeado
+GIRO_ON_TIMEOUT = 2         # Tiempo máximo de husillo encendido con velocidad 0
 
 # -------------------------------------------------------------------------------------------- #
 # --------------------------------------- Routines ------------------------------------------- #

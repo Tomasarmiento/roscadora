@@ -495,7 +495,8 @@ def update_axis_data(micro_data):
     else:
         ws_vars.MicroState.load_on_timer = datetime.now()
     
-    if ws_vars.MicroState.axis_flags[ctrl_vars.AXIS_IDS['giro']]['estado'] == 'initial' and \
+    enable_flag = msg_base.DrvFbkDataFlags.ENABLED
+    if ws_vars.MicroState.axis_flags[ctrl_vars.AXIS_IDS['giro']]['drv_flags'] & enable_flag and \
         round(ws_vars.MicroState.axis_measures[ctrl_vars.AXIS_IDS['giro']]['vel_fil'], 0) == 0:
         
         from apps.control.models import RoutineInfo
@@ -676,6 +677,7 @@ def get_front_states():
         'condiciones_init_descarga_ok': len(check_init_conditions_unload()) == 0,
         'condiciones_init_indexar_ok': len(check_init_conditions_index()) == 0,
         'condiciones_init_roscado_ok': len(check_init_conditions_tapping()) == 0,
+        'homing_on_going': ws_vars.MicroState.homing_ongoing,
 
         # 'graph': ws_vars.MicroState.graph_flag
         'graph': False,

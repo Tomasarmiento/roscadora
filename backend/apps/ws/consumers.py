@@ -82,11 +82,22 @@ class MicroDataConsumer(WebsocketConsumer):
                 self.send(bytes_data=header)
             
             if MicroState.turn_turn_drv_off:        # Flag de apagar driver de husillo cuando rpm es 0
+                print('APAGAR EJE GIRO')
                 MicroState.turn_turn_drv_off = False
-                command = Commands.power_off
+
+                if ws_vars.MicroState.axis_flags[ctrl_vars.AXIS_IDS['giro']]['estado'] == 'slave':
+                    axis = ctrl_vars.AXIS_IDS['avance']
+                    msg_id = ws_vars.MicroState.last_rx_header.get_msg_id() + 1
+                    ws_vars.MicroState.msg_id = msg_id
+                    command = Commands.sync_off
+                    header = build_msg(command, msg_id=msg_id, eje=axis)
+                    header = header.pacself()
+                    self.send(bytes_data=header)
+
                 axis = ctrl_vars.AXIS_IDS['giro']
                 msg_id = ws_vars.MicroState.last_rx_header.get_msg_id() + 1
                 ws_vars.MicroState.msg_id = msg_id
+                command = Commands.power_off
                 header = build_msg(command, eje=axis, msg_id=msg_id)
                 header = header.pacself()
                 self.send(bytes_data=header)
@@ -147,17 +158,6 @@ class MicroLogConsumer(WebsocketConsumer):
 
 def show_states(header, data):
     print("-"*50)
-    # for key, value in MicroState.rem_o_states[1].items():
-    #     print(key, value)
-    # print(ws_vars.MicroState.axis_flags[ctrl_var.AXIS_IDS['carga']]['drv_flags'] & msg_base.DrvFbkDataFlags.ENABLED)
-    # print(ws_vars.MicroState.rem_o_states)
-    # print(len(ws_vars.MicroState.position_values))
-    # print(len(ws_vars.MicroState.torque_values))
-    # print(ws_vars.MicroState.graph_duration)
-    # print(ws_vars.MicroState.rem_i_states[1]['presion_normal'])
-    # for key, value in ws_vars.MicroState.loc_i.items():
-    #     print(f'{key}:', f'{value:06b}')
-    # print(ws_vars.MicroState.loc_i)
-    # print (MicroState.axis_measures[ctrl_var.AXIS_IDS['carga']])
-    # for axis in MicroState.axis_measures:
-    #     print(axis)
+    print(ws_vars.MicroState.axis_flags[ctrl_vars.AXIS_IDS['giro']]['drv_flags'] & msg_base.DrvFbkDataFlags.ENABLED)
+    print(ws_vars.MicroState.axis_flags[ctrl_vars.AXIS_IDS['giro']]['slave'])
+    print(ws_vars.MicroState.axis_flags[ctrl_vars.AXIS_IDS['giro']]['estado'])

@@ -58,6 +58,7 @@ class RoutineHandler(threading.Thread):
                 if ws_vars.MicroState.routine_ongoing == True:
                     print('Rutina en proceso. No se puede cerar')
                     return False
+                ws_vars.MicroState.homing_ongoing = True
                 ws_vars.MicroState.routine_ongoing = True
                 routine_info.running = 1
                 routine_info.save()
@@ -116,6 +117,7 @@ class RoutineHandler(threading.Thread):
                 ws_vars.MicroState.graph_flag = False
                 ws_vars.MicroState.graph_duration = -1
                 ws_vars.MicroState.master_stop = True
+                ws_vars.MicroState.homing_ongoing = False
 
                 print('Error en rutina de', ctrl_vars.ROUTINE_NAMES[self.current_routine])
                 for msg in self.err_msg:
@@ -140,6 +142,7 @@ class RoutineHandler(threading.Thread):
                 print(err)
             return False
         print('INDEXAR - Paso 0 - Chequear condiciones iniciales')
+        ws_vars.MicroState.log_messages.append('Inicio de rutina de indexar')
 
         # Paso 1 - Liberar plato
         key_1 = 'contraer_clampeo_plato'
@@ -210,6 +213,7 @@ class RoutineHandler(threading.Thread):
 
 
         print('INDEXAR - FIN RUTINA')
+        ws_vars.MicroState.log_messages.append('Fin de rutina de indexado')
         return True
 
 
@@ -228,6 +232,7 @@ class RoutineHandler(threading.Thread):
                 print(err)
             return False
         print('CARGA - Paso 0 - Chequear condiciones iniciales - Todos los valores deben ser True par que empiece la rutina')
+        ws_vars.MicroState.log_messages.append('Fin de rutina de carga')
 
 
 
@@ -241,7 +246,7 @@ class RoutineHandler(threading.Thread):
         if not self.wait_for_remote_in_flag(wait_key, wait_group):
             return False
         print('CARGA - Paso 1 - Expandir vertical carga')
-        ws_vars.MicroState.log_messages.append('Paso 1 - Expandir vertical carga')
+        # ws_vars.MicroState.log_messages.append('Paso 1 - Expandir vertical carga')
         
 
 
@@ -466,6 +471,7 @@ class RoutineHandler(threading.Thread):
         if not self.wait_for_remote_in_flag(wait_key, wait_group):
             return False
         print('CARGA - Paso 16 - Expandir brazo cargador')
+        ws_vars.MicroState.log_messages.append('Fin de rutina de carga')
 
 
 
@@ -487,6 +493,7 @@ class RoutineHandler(threading.Thread):
                 print(err)
             return False
         print('DESCARGA - Paso 0 - Chequear condiciones iniciales - Todos los valores deben ser True par que empiece la rutina')
+        ws_vars.MicroState.log_messages.append('Inicio de rutina de descarga')
 
         # Paso 0.1 - Abrir válvula de boquilla hidráulica
         boquilla = self.get_current_boquilla_descarga()
@@ -748,6 +755,7 @@ class RoutineHandler(threading.Thread):
         print('DESCARGA - Paso 22 - Expera presencia de cupla en tobogan')
 
         print('DESCARGA - FIN RUTINA')
+        ws_vars.MicroState.log_messages.append('Fin de rutina de descarga')
         return True
 
 
@@ -772,7 +780,7 @@ class RoutineHandler(threading.Thread):
         ws_vars.MicroState.torque_values = []
 
         print("ROSCADO - Paso 0 - Chequear condiciones iniciales - Todos los valores deben ser True par que empiece la rutina")
-
+        ws_vars.MicroState.log_messages.append('Inicio de rutina de roscado')
 
 
 
@@ -1150,6 +1158,7 @@ class RoutineHandler(threading.Thread):
 
 
         print("ROSCADO - FIN RUTINA")
+        ws_vars.MicroState.log_messages.append('Fin de rutina de roscado')
         return True
 
 
@@ -1170,6 +1179,7 @@ class RoutineHandler(threading.Thread):
 
         ws_vars.MicroState.log_messages.append('Homing')
         print('HOMING - Paso 0 - Condiciones iniciales')
+        ws_vars.MicroState.log_messages.append('Inicio de rutina de cerado')
 
 
 
@@ -1394,6 +1404,7 @@ class RoutineHandler(threading.Thread):
 
         print('HOMING - FIN RUTINA')
         ws_vars.MicroState.log_messages.append('HOMIN - Fin rutina')
+        ws_vars.MicroState.homing_ongoing = False
         return True
        
 
@@ -1736,6 +1747,7 @@ class MasterHandler(threading.Thread):
             return
         
         print('Inicio rutina master')
+        ws_vars.MicroState.log_messages.append('Inicio de modo automático')
 
         while ws_vars.MicroState.master_stop == False:
             running_ids = self.get_running_routines()
@@ -1802,7 +1814,7 @@ class MasterHandler(threading.Thread):
             if ws_vars.MicroState.iteration >= 2 and ws_vars.MicroState.end_master_routine == True and part_present == False:
                 print('Fin de rutina master')
                 ws_vars.MicroState.master_running = False
-                ws_vars.MicroState.log_messages.append('Fin de rutina master')
+                ws_vars.MicroState.log_messages.append('Modo automático finalizado')
                 
                 ch_info = get_ch_info(ChannelInfo, 'micro')
                 key = 'encender_bomba_soluble'
@@ -1826,6 +1838,7 @@ class MasterHandler(threading.Thread):
             running_ids = self.get_running_routines()
             if indexar_id not in running_ids:
                 print('RUTINA INDEXAR')
+                ws_vars.MicroState.log_messages.append('Inicio rutina indexar')
                 RoutineHandler(indexar_id).start()
 
                 if self.wait_init_rtn(indexar_id) == False:

@@ -518,6 +518,7 @@ class StateMachine:
     EST_MOV_TO_POS          = 10
     EST_MOV_TO_POS_LOAD     = 11
     EST_MOV_TO_FZA          = 12
+    EST_SLAVE               = 13
 
     def get_state(state_value):
         if state_value == StateMachine.EST_SAFE:
@@ -546,6 +547,8 @@ class StateMachine:
             return 'mov_to_pos_load'
         if state_value == StateMachine.EST_MOV_TO_FZA:
             return 'mov_to_fza'
+        if state_value == StateMachine.EST_SLAVE:
+            return 'slave'
 
 
 class AcdpAxisMovementsMovEjeDataFlagsBits:
