@@ -47,8 +47,6 @@ class ParameterView(View):
         
         param_func.update_homing_params()
         param_func.update_roscado_params()
-        print(ctr_vars.ROSCADO_CONSTANTES)
-        print(ctr_vars.ROSCADO_CONSTANTES)
         return render(request, 'parameters.html', self.get_context())
     
     def get(self, request):
