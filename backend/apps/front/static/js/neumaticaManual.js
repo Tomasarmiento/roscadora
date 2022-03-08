@@ -21,7 +21,7 @@ socket.onmessage = function (event) {
         const estadoActualH = document.querySelector("#estHorizontal");
         
         //Monitor
-        rpmActual.innerHTML = datosWs.husillo_rpm.toFixed(1)/6;
+        rpmActual.innerHTML = datosWs.husillo_rpm.toFixed(1);
         torqueActual.innerHTML = datosWs.husillo_torque.toFixed(1);
         estadoActualHusillo.innerHTML = datosWs.estado_eje_giro;
 

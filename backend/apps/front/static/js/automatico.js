@@ -2,6 +2,7 @@ var data = []
 var monitor = null;
 var monitorHorizontal = null;
 
+
     const socket = new WebSocket("ws://127.0.0.1:8000/ws/front/");
     socket.addEventListener("open", function (event) {
         socket.send(
@@ -54,7 +55,6 @@ window.addEventListener("DOMContentLoaded", () => {                         //to
     monitor = document.querySelector("#component-monitor");
 
 
-
     cuadroDeTextoIndex = document.querySelector("#terminalDeTexto");
     if (sessionStorage.getItem("mensajes") && cuadroDeTextoIndex) {
         let ul = document.getElementById("cuadroMensajes");
@@ -86,8 +86,8 @@ const totalDuration = 10000;
     ? ctx.chart.scales.y.getPixelForValue(100) 
     : ctx.chart.getDatasetMeta(ctx.datasetIndex).data[ctx.index - 1].getProps(['y'], true).y;
 
-window.onload = function() {
 
+    window.onload = function() {
     //Configuration variables
     var updateInterval = 20 //in ms
     var numberElements = 200;
@@ -277,12 +277,12 @@ window.onload = function() {
     socket.onmessage = function (event) {
      const datosWs = JSON.parse(event.data);
 
-    if (datosWs.mensajes_log.length > 0) {
+    if (datosWs.mensajes_log) {
         listaMensajes.push(datosWs.mensajes_log);
         sessionStorage.setItem("mensajes", listaMensajes);
         InsertarTexto(datosWs.mensajes_log);
     };
-    if (datosWs.mensajes_error.length > 0) {
+    if (datosWs.mensajes_error) {
         listaMensajesErrores.push(datosWs.mensajes_error);
         sessionStorage.setItem("mensajesError", listaMensajesErrores);
         InsertarTextoErrores(datosWs.mensajes_error);
@@ -435,5 +435,5 @@ window.onload = function() {
      ?  (safe.className = "bg-danger indicadorMonSafe")
      :  (safe.className = "bg-secondary indicadorMonSafe");
     }
-}
-};
+}};
+
