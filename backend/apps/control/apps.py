@@ -9,7 +9,5 @@ class ControlConfig(AppConfig):
         from apps.control.models import RoutineInfo
         functions.init_routine_info()
         functions.init_rem_io()
-        # functions.init_comands_ref_rates()
-        functions.init_master_flags()
         functions.init_comands_ref_rates()
-        functions.FrontWs().start()
+        functions.init_master_flags()
