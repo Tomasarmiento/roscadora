@@ -9,8 +9,8 @@
                 <div class="row justify-content-center h3">
                     <p>MODELO DE CUPLA</p>
                 </div>
+            {% if user.is_authenticated %}
                 <div class="row justify-content-around">
-
                     {% if part_model == 1 %}
                         <button class="badge lg-badge badge-pill badge-success indLargo" id="selCuple1" token="{{ csrf_token }}">1</button>
                         <button class="badge lg-badge badge-pill badge-secondary indLargo" id="selCuple2" token="{{ csrf_token }}">2</button>
@@ -35,6 +35,33 @@
                         <button class="badge lg-badge badge-pill badge-secondary indLargo" id="selCuple3" token="{{ csrf_token }}">3</button>
                     {% endif %}
                 </div>
+                {% else %}
+                <div class="row justify-content-around">
+                    {% if part_model == 1 %}
+                        <button class="badge lg-badge badge-pill badge-success indLargo" id="selCuple1" disabled token="{{ csrf_token }}">1</button>
+                        <button class="badge lg-badge badge-pill badge-secondary indLargo" id="selCuple2" disabled token="{{ csrf_token }}">2</button>
+                        <button class="badge lg-badge badge-pill badge-secondary indLargo" id="selCuple3" disabled token="{{ csrf_token }}">3</button>
+                    {% endif %}
+                    
+                    {% if part_model == 2 %}
+                        <button class="badge lg-badge badge-pill badge-secondary indLargo" id="selCuple1" disabled token="{{ csrf_token }}">1</button>
+                        <button class="badge lg-badge badge-pill badge-success indLargo" id="selCuple2" disabled token="{{ csrf_token }}">2</button>
+                        <button class="badge lg-badge badge-pill badge-secondary indLargo" id="selCuple3" disabled token="{{ csrf_token }}">3</button>
+                    {% endif %}
+
+                    {% if part_model == 3 %}
+                        <button class="badge lg-badge badge-pill badge-secondary indLargo" id="selCuple1" disabled token="{{ csrf_token }}">1</button>
+                        <button class="badge lg-badge badge-pill badge-secondary indLargo" id="selCuple2" disabled token="{{ csrf_token }}">2</button>
+                        <button class="badge lg-badge badge-pill badge-success indLargo" id="selCuple3" disabled token="{{ csrf_token }}">3</button>
+                    {% endif %}
+
+                    {% if part_model > 3 %}
+                        <button class="badge lg-badge badge-pill badge-secondary indLargo" id="selCuple1" disabled token="{{ csrf_token }}">1</button>
+                        <button class="badge lg-badge badge-pill badge-secondary indLargo" id="selCuple2" disabled token="{{ csrf_token }}">2</button>
+                        <button class="badge lg-badge badge-pill badge-secondary indLargo" id="selCuple3" disabled token="{{ csrf_token }}">3</button>
+                    {% endif %}
+                </div>
+            {% endif %} 
             </div>
         </div>
         <div class="row col-md-12 col-12 d-flex justify-content-around align-items-center mx-auto px-0">
