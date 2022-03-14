@@ -23,7 +23,7 @@ window.addEventListener("DOMContentLoaded", () => {                         //to
     (window.location.hash);
     monitor = document.querySelector("#component-monitor");
 });
-
+var listaMensajesErrores = [];
 socket.onmessage = function (event) {
   const datosWs = JSON.parse(event.data);
   if (datosWs.mensajes_error.length > 0) {

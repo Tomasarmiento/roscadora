@@ -406,7 +406,7 @@ const totalDuration = 10000;
     if (datosWs.graph_flag == true){
       (rpmActual.style.color = "#70ff43") && (rpmText.style.color = "#70ff43");
     }
-    else(rpmActual.style.color = "white");
+    else(rpmActual.style.color = "white") && (rpmText.style.color = "white");
 
     //descarga
     datosWs.condiciones_init_descarga_ok == true
