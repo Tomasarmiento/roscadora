@@ -19,6 +19,10 @@ socket.onmessage = function (event) {
         const estadoActualHusillo = document.querySelector("#fHusillo");
         const estadoActualV = document.querySelector("#estVertical");
         const estadoActualH = document.querySelector("#estHorizontal");
+
+        // Contador de cuplas
+        const contadorCuplas = document.querySelector("#countCuplas");
+    
         
         //Monitor
         rpmActual.innerHTML = datosWs.husillo_rpm.toFixed(1);
@@ -32,6 +36,9 @@ socket.onmessage = function (event) {
         posicionActualH.innerHTML = datosWs.avance_pos.toFixed(1);
         velocidadActualH.innerHTML = datosWs.avance_vel.toFixed(1);
         estadoActualH.innerHTML = datosWs.estado_eje_avance;
+
+        contadorCuplas.innerHTML = datosWs.roscado_contador;
+
 
         //Cabezal
         const cabezal = document.querySelector("#statusHead")

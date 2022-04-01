@@ -71,6 +71,10 @@ document.addEventListener("DOMContentLoaded", (e) => {
             const estadoActualHusillo = document.querySelector("#fHusillo");
             const estadoActualV = document.querySelector("#estVertical");
             const estadoActualH = document.querySelector("#estHorizontal");
+
+            // Contador de cuplas
+            const contadorCuplas = document.querySelector("#countCuplas");
+    
                         
             //Monitor
             rpmActual.innerHTML = datosWs.husillo_rpm.toFixed(1);
@@ -84,6 +88,9 @@ document.addEventListener("DOMContentLoaded", (e) => {
             posicionActualH.innerHTML = datosWs.avance_pos.toFixed(1);
             velocidadActualH.innerHTML = datosWs.avance_vel.toFixed(1);
             estadoActualH.innerHTML = datosWs.estado_eje_avance;
+
+            contadorCuplas.innerHTML = datosWs.roscado_contador;
+
 
             // //cabezal
             // if (datosWs.estado_eje_carga == 'initial'){
@@ -155,7 +162,7 @@ document.addEventListener("DOMContentLoaded", (e) => {
                 ? (syncHusillo.className = "box box-green")
                 : (syncHusillo.className = "box box-grey");
 
-                console.log(datosWs);
+                // console.log(datosWs);
         }
     }
 

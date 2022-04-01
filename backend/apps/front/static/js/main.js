@@ -50,6 +50,9 @@ socket.onmessage = function (event) {
   const estadoActualV = document.querySelector("#estVertical");
   const estadoActualH = document.querySelector("#estHorizontal");
 
+  // Contador de cuplas
+  const contadorCuplas = document.querySelector("#countCuplas");
+    
 
   //Cabezal
   const cabezal = document.querySelector("#statusHead")
@@ -82,6 +85,9 @@ socket.onmessage = function (event) {
     velocidadActualH.innerHTML = datosWs.avance_vel.toFixed(1);
     estadoActualH.innerHTML = datosWs.estado_eje_avance;
 
+    contadorCuplas.innerHTML = datosWs.roscado_contador;
+
+
 
 
     // //cabezal
@@ -109,18 +115,23 @@ socket.onmessage = function (event) {
      
     //Cabezal
     const homeok = document.querySelector("#homeOk");
-    // datosWs.cabezal_cero_desconocido = false
-    // datosWs.lineal_cero_desconocido = false
-    // datosWs.homing_on_going = false
+      // datosWs.cabezal_cero_desconocido = false
+      // datosWs.lineal_cero_desconocido = false
+      // datosWs.homing_on_going = false
     if (datosWs){
-      if (datosWs.lineal_cero_desconocido == false && datosWs.cabezal_cero_desconocido == false){
-        (homeok.className = "bg-success rounded-pill text-white text-center p-3")   
+      if (datosWs.lineal_cero_desconocido == false && datosWs.cabezal_cero_desconocido == false && datosWs.homing_on_going == true){
+        (homeok.className = "bg-warning rounded-pill text-white text-center p-3")  && (homeok.innerHTML = 'HOMING')
       }
-      else (homeok.className = "bg-secondary rounded-pill text-white text-center p-3");
+      else if (datosWs.lineal_cero_desconocido == false && datosWs.cabezal_cero_desconocido == false){
+        (homeok.className = "bg-success rounded-pill text-white text-center p-3") && (homeok.innerHTML = 'HOME OK')  
+      }
+      else if (datosWs.homing_on_going == true){
+        (homeok.className = "bg-warning rounded-pill text-white text-center p-3")  && (homeok.innerHTML = 'HOMING')
+      }
 
-      if (datosWs.homing_on_going == true){
-        (homeok.className = "bg-warning rounded-pill text-white text-center p-3")  && (homeok.innerHTML = 'HOMMING')
-        }
+      else (homeok.className = "bg-secondary rounded-pill text-white text-center p-3") && (homeok.innerHTML = 'HOME OK');
+
+      // else (homeok.className = "bg-secondary rounded-pill text-white text-center p-3");
      
 
       

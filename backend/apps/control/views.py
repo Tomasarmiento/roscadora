@@ -24,6 +24,10 @@ from apps.control.utils import variables as ctrl_vars
 from apps.control.utils import functions as ctrl_func
 from apps.control.models import RoutineInfo
 
+from apps.parameters.utils.functions import update_roscado_params
+from apps.parameters.models import Parameter
+from apps.parameters.utils import variables as param_vars
+
 
 @csrf_exempt
 def manual_lineal(request):
@@ -439,6 +443,24 @@ def end_master_routine(request):
     MicroState.end_master_routine = True
     print('END MASTER FLAG LEVANTADO')
     return JsonResponse({})
+
+@csrf_exempt
+def reset_cuplas_count(request):
+    MicroState.reset_cuplas_count = True
+    print('FLAG CONTADOR RESETEADO LEVANTADO')
+    # contable = Parameter.objects.get(name='roscado_contador')
+    params = Parameter.objects.all()
+    part_model = param_vars.SELECTED_MODEL
+    contable = params.filter(part_model=part_model).get(name='roscado_contador')
+    if(MicroState.reset_cuplas_count == True):
+        if (contable):
+            contable.value = 0
+            contable.save()
+    MicroState.reset_cuplas_count = False
+    print('roscado contador: ', contable)  #ctrl_vars.ROSCADO_CONSTANTES['roscado_contador']
+    update_roscado_params()
+    return JsonResponse({})
+
 
 
 @csrf_exempt

@@ -11,7 +11,8 @@ PARAM_NAMES = [
     'posicion_salida_de_roscado',
     'velocidad_de_retraccion',
     'posicion_de_inicio',
-    'torque_tolerado'
+    'torque_tolerado',
+    'roscado_contador',
 ]
 
 
@@ -101,7 +102,8 @@ ROSCADO_PARAMS_NAMES = [
     'velocidad_de_retraccion',
     'paso_de_rosca',
     'posicion_de_inicio',
-    'torque_tolerado'
+    'torque_tolerado',
+    'roscado_contador',
 ]
 
 ROSCADO_PARAMS_PARAMS_DEFAULT_VALUES = {

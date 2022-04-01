@@ -285,7 +285,7 @@ window.onload = function() {
     // Tabla de datos
     const rpmActual = document.querySelector("#frRPM");
     const torqueActual = document.querySelector("#fTorque");
-    const rpmText = document.querySelector("#rpm");
+    const torqueText = document.querySelector("#torque");
 
     // Datos Eje vertical
     const posicionActualV = document.querySelector("#posVertical");
@@ -299,6 +299,9 @@ window.onload = function() {
     const estadoActualHusillo = document.querySelector("#fHusillo");
     const estadoActualV = document.querySelector("#estVertical");
     const estadoActualH = document.querySelector("#estHorizontal");
+
+    // Contador de cuplas
+    const contadorCuplas = document.querySelector("#countCuplas");
 
     
     //Cabezal
@@ -359,6 +362,7 @@ window.onload = function() {
 
 
     if(datosWs){
+        console.log(datosWs.roscado_contador);
     
     //Monitor
     rpmActual.innerHTML = datosWs.husillo_rpm.toFixed(1)/6;
@@ -372,6 +376,9 @@ window.onload = function() {
     posicionActualH.innerHTML = datosWs.avance_pos.toFixed(1);
     velocidadActualH.innerHTML = datosWs.avance_vel.toFixed(1);
     estadoActualH.innerHTML = datosWs.estado_eje_avance;
+   
+
+    contadorCuplas.innerHTML = datosWs.roscado_contador;
 
     // //cabezal
     // if (datosWs.estado_eje_carga == 'initial'){
@@ -399,9 +406,9 @@ window.onload = function() {
      
     //grafico
     if (datosWs.graph_flag == true){
-        (rpmActual.style.color = "#70ff43") && (rpmText.style.color = "#70ff43");
+        (torqueActual.style.color = "#70ff43") && (torqueText.style.color = "#70ff43");
     }
-    else(rpmActual.style.color = "white") && (rpmText.style.color = "white");
+    else(torqueActual.style.color = "white") && (torqueText.style.color = "white");
   
     //descarga
     datosWs.condiciones_init_descarga_ok == true

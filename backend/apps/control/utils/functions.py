@@ -694,6 +694,8 @@ def get_front_states():
         'graph_flag': ws_vars.MicroState.graph_flag,
 
         'posicion_de_inicio': ctrl_vars.ROSCADO_CONSTANTES['posicion_de_inicio'],
+        'roscado_contador': ctrl_vars.ROSCADO_CONSTANTES['roscado_contador'],
+        'reset_roscado_contador' : ws_vars.MicroState.reset_cuplas_count,
 
         # Messages
         'mensajes_log': ws_vars.MicroState.log_messages,

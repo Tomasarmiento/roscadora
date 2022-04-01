@@ -291,7 +291,7 @@ const totalDuration = 10000;
     // Tabla de datos
     const rpmActual = document.querySelector("#frRPM");
     const torqueActual = document.querySelector("#fTorque");
-    const rpmText = document.querySelector("#rpm");
+    const torqueText = document.querySelector("#torque");
 
     // Datos Eje vertical
     const posicionActualV = document.querySelector("#posVertical");
@@ -305,6 +305,10 @@ const totalDuration = 10000;
     const estadoActualHusillo = document.querySelector("#fHusillo");
     const estadoActualV = document.querySelector("#estVertical");
     const estadoActualH = document.querySelector("#estHorizontal");
+
+    // Contador de cuplas
+    const contadorCuplas = document.querySelector("#countCuplas");
+    
 
     //Cabezal
     const cabezal = document.querySelector("#statusHead")
@@ -358,7 +362,7 @@ const totalDuration = 10000;
         
 
     if(datosWs){
-        // console.log(datosWs);
+        // console.log(datosWs.reset_roscado_contador);
     //Monitor
     rpmActual.innerHTML = datosWs.husillo_rpm.toFixed(1)/6;
     torqueActual.innerHTML = datosWs.husillo_torque.toFixed(1);
@@ -371,6 +375,8 @@ const totalDuration = 10000;
     posicionActualH.innerHTML = datosWs.avance_pos.toFixed(1);
     velocidadActualH.innerHTML = datosWs.avance_vel.toFixed(1);
     estadoActualH.innerHTML = datosWs.estado_eje_avance;
+
+    contadorCuplas.innerHTML = datosWs.roscado_contador;
 
     // //cabezal
     // if (datosWs.estado_eje_carga == 'initial'){
@@ -397,16 +403,16 @@ const totalDuration = 10000;
     
 
     //terminar
-    console.log( datosWs.end_master_routine);
+    //console.log( datosWs.end_master_routine);
     datosWs.end_master_routine == true
     ? (terminar.className = "btn btn-primary mb-3") && (terminar.innerHTML = 'Terminando') && (terminar.style.fontSize = "25px")
-    : (terminar.className = "btn btn-warning mb-3")
+    : (terminar.className = "btn btn-warning mb-3") && (terminar.innerHTML = 'Terminar')  && (terminar.style.fontSize = "25px")
     
     //grafico
     if (datosWs.graph_flag == true){
-      (rpmActual.style.color = "#70ff43") && (rpmText.style.color = "#70ff43");
+      (torqueActual.style.color = "#70ff43") && (torqueText.style.color = "#70ff43");
     }
-    else(rpmActual.style.color = "white") && (rpmText.style.color = "white");
+    else(torqueActual.style.color = "white") && (torqueText.style.color = "white");
 
     //descarga
     datosWs.condiciones_init_descarga_ok == true

@@ -41,6 +41,10 @@
   .bg-c-blue {
     background: linear-gradient(45deg, #4099ff, #73b4ff);
   }
+
+  .bg-c-black {
+    background: linear-gradient(45deg, #000000, #000000);
+  }
   
   .bg-c-grey {
     background: linear-gradient(45deg, #8d8d90, #cbcbcd);

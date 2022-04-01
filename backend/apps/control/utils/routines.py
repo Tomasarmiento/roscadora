@@ -19,6 +19,10 @@ from apps.ws.utils.functions import get_ch_info
 
 from apps.graphs.models import Graph
 
+from apps.parameters.models import Parameter
+from apps.parameters.utils.functions import update_roscado_params
+from apps.parameters.utils import variables as param_vars
+
 class RoutineHandler(threading.Thread):
 
     def __init__(self, routine=None, **kwargs):
@@ -209,7 +213,6 @@ class RoutineHandler(threading.Thread):
         if not self.wait_for_drv_flag(drv_flag, axis, 0):
             return False
         print('INDEXAR - Paso 5 - Power off')
-
 
 
         print('INDEXAR - FIN RUTINA')
@@ -501,6 +504,10 @@ class RoutineHandler(threading.Thread):
         key_2 = 'cerrar_boquilla_' + str(boquilla)
         group = 1
         self.send_pneumatic(key_1, group, 1, key_2, 0)
+        time.sleep(4)
+        self.send_pneumatic(key_2, group, 1, key_1, 0)
+        time.sleep(4)
+        self.send_pneumatic(key_1, group, 1, key_2, 0)
         print('DESCARGA - Paso 0.1 - Abrir válvula de boquilla hidráulica')
 
         # Paso 0.2 - expandir_horiz_pinza_desc
@@ -564,7 +571,7 @@ class RoutineHandler(threading.Thread):
             return False
         if not self.wait_for_not_remote_in_flag(wait_key, wait_group):
             return False
-        time.sleep(1)
+        time.sleep(4) #timer ts : espera a que termine de abrir la boquilla
         print('contraer_boquilla_descarga')
         print('DESCARGA - Paso 3 - Boquilla descarga contraid')
 
@@ -1154,9 +1161,23 @@ class RoutineHandler(threading.Thread):
         print('Delta Time Paso 16: ', roscado_delta_time_paso16)
 
         print("ROSCADO - Paso 16 - Desacopla lubricante")
+
+        
+        roscado_contador = int(ctrl_vars.ROSCADO_CONSTANTES['roscado_contador'])
+        # params = Parameter.objects.all()
+        # saved_params = dict([(param.name, param.value) for param in params])
+        params = Parameter.objects.all()
+        part_model = param_vars.SELECTED_MODEL
+        cont = params.filter(part_model=part_model).get(name='roscado_contador')
+        # cont = Parameter.objects.get(name='roscado_contador')
+        cont.value += 1
+        print('cont: ', roscado_contador)
+        cont.save()
+    
+        update_roscado_params()
        
 
-
+        
         print("ROSCADO - FIN RUTINA")
         ws_vars.MicroState.log_messages.append('Fin de rutina de roscado')
         return True
@@ -1732,6 +1753,7 @@ class MasterHandler(threading.Thread):
         ws_vars.MicroState.master_running = True
         ws_vars.MicroState.master_stop = False
         ws_vars.MicroState.end_master_routine = False
+        ws_vars.MicroState.reset_cuplas_count = False
         ws_vars.MicroState.iteration = 0
     
 

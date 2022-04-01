@@ -44,6 +44,7 @@ class MicroState:
     master_running      = False
     master_stop         = False
     end_master_routine  = False
+    reset_cuplas_count  = False
     iteration           = 0
 
     # Graph

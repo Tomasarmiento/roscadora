@@ -25,8 +25,8 @@
     </div>
     <div class="row">   
         <div class="col-6 h6">
-            <article id="rpm" class="text-left">RPM</article>
-            <article class="text-left">Torque</article>
+            <article class="text-left">RPM</article>
+            <article id="torque" class="text-left">Torque</article>
             <article class="text-left">State</article>
         </div>
         <div class="col-6 h6 text-right" style="padding-left:0px">
@@ -74,5 +74,22 @@
         </div>
     </div>
 </div>
+<div class="card bg-c-black text-white mt-3 p-1">
+    <div class="row justify-content-center mx-auto">
+        <div class="col-12 h5 font-weight-bold text-center">CUPLAS</div>
+    </div>
+    <div class="row">
+        <!-- <div class="col-6 h6">
+            <article class="text-left">Cuplas</article>
+        </div> -->
+        <div class="col-6 h4">
+            <article id="countCuplas">000.0</article>
+        </div>
+        <div class="col-6 text-right" id="resetCount">
+            <button>Reset</article>
+        </div>
+    </div>
+</div>
 <script src="{% static 'js/main.js' %}"></script>
+<script src="{% static 'js/monitorComponent.js' %}"></script>
     {% endblock %}

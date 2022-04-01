@@ -11,6 +11,7 @@ urlpatterns = [
     path('manual/stop-axis/', views.stop_axis, name='stop-axis'),
     path('stop-all/', views.stop_all, name='stop-all'),
     path('end-master-routine/', views.end_master_routine, name='end-master-routine'),
+    path('reset-cuplas-count/', views.reset_cuplas_count, name='reset_cuplas_count'),
     path('auto/', views.StartRoutine.as_view(), name='auto'),
     path('safe/', views.enter_exit_safe, name='toggle-safe')
 ]
