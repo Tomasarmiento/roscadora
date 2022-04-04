@@ -688,12 +688,15 @@ def get_front_states():
         'condiciones_init_roscado_ok': len(check_init_conditions_tapping()) == 0,
         'homing_on_going': ws_vars.MicroState.homing_ongoing,
         'end_master_routine': ws_vars.MicroState.end_master_routine,
+        'master_running': ws_vars.MicroState.master_running,
 
         # 'graph': ws_vars.MicroState.graph_flag
         'graph': False,
         'graph_flag': ws_vars.MicroState.graph_flag,
 
         'posicion_de_inicio': ctrl_vars.ROSCADO_CONSTANTES['posicion_de_inicio'],
+
+        # Contador de cuplas
         'roscado_contador': ctrl_vars.ROSCADO_CONSTANTES['roscado_contador'],
         'reset_roscado_contador' : ws_vars.MicroState.reset_cuplas_count,
 

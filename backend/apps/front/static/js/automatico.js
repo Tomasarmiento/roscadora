@@ -403,8 +403,8 @@ const totalDuration = 10000;
     
 
     //terminar
-    //console.log( datosWs.end_master_routine);
-    datosWs.end_master_routine == true
+    console.log( datosWs.end_master_routine, datosWs.master_running);
+    (datosWs.end_master_routine == true && datosWs.master_running == true)
     ? (terminar.className = "btn btn-primary mb-3") && (terminar.innerHTML = 'Terminando') && (terminar.style.fontSize = "25px")
     : (terminar.className = "btn btn-warning mb-3") && (terminar.innerHTML = 'Terminar')  && (terminar.style.fontSize = "25px")
     
