@@ -79,6 +79,8 @@ COMMANDS = {
     'mov_to_fza': AcdpMsgCodes.Cmd.Cd_MovEje_MovToFza,
     'mov_to_fza_yield': AcdpMsgCodes.Cmd.Cd_MovEje_MovToFza_Yield,
 
+    'reset_drv_faults': AcdpMsgCodes.Cmd.Cd_MovEje_ResetDriveFault,
+
     # Set refs
     'set_ref_pos': AcdpMsgCodes.Cmd.Cd_MovEje_SetRefPos,
     'set_ref_vel': AcdpMsgCodes.Cmd.Cd_MovEje_SetRefVel,

@@ -6,4 +6,4 @@ class Graph(models.Model):
     graph_data = models.JSONField(default=dict)
 
     def __str__(self) -> str:
-        return 'Grafico'
+        return 'Grafico ' + str(self.id)

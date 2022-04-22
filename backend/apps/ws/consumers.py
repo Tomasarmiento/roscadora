@@ -157,7 +157,8 @@ class MicroLogConsumer(WebsocketConsumer):
 
 
 def show_states(header, data):
+    drv_fault_flag = msg_base.DrvFbkDataFlags.FAULT
     print("-"*50)
-    print(ws_vars.MicroState.axis_flags[ctrl_vars.AXIS_IDS['giro']]['drv_flags'] & msg_base.DrvFbkDataFlags.ENABLED)
-    print(ws_vars.MicroState.axis_flags[ctrl_vars.AXIS_IDS['giro']]['slave'])
-    print(ws_vars.MicroState.axis_flags[ctrl_vars.AXIS_IDS['giro']]['estado'])
+    print(ws_vars.MicroState.axis_flags[ctrl_vars.AXIS_IDS['avance']]['drv_fbk_flags'] & drv_fault_flag == drv_fault_flag)
+    print(ws_vars.MicroState.axis_flags[ctrl_vars.AXIS_IDS['avance']]['drv_fbk_flags'] & drv_fault_flag == drv_fault_flag)
+    print(ws_vars.MicroState.axis_flags[ctrl_vars.AXIS_IDS['carga']]['drv_fbk_flags'] & drv_fault_flag == drv_fault_flag)

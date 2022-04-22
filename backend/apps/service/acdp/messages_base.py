@@ -241,6 +241,7 @@ class AcdpMsgCmd:
     CD_ENC_SET_ZERO_ABSOLUTELY      = AcdpMsgType.CMD + AcdpMsgLevel.BASE + 0X07   # Parametro: Param::tSetZero
     CD_DRV_FBK_SET_ZERO_RELATIVELY  = AcdpMsgType.CMD + AcdpMsgLevel.BASE + 0X08   # Parametro: Param::tSetZero
     CD_DRV_FBK_SET_ZERO_ABSOLUTELY  = AcdpMsgType.CMD + AcdpMsgLevel.BASE + 0X09   # Parametro: Param::tSetZero
+    CD_RESET_FAULTS                 = AcdpMsgType.CMD + AcdpMsgLevel.BASE + 0X10   # Resetea fallas de drivers general (todos los ejes)
 
     Param                           = AcdpMsgCmdParam
 

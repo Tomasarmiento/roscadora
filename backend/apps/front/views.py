@@ -1,9 +1,22 @@
 from django.shortcuts import render
+from django.http import JsonResponse
+from django.views.generic import View
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
 
+
+import apps.service.acdp.handlers as service_handlers
 from apps.service.api.variables import COMMANDS
+
 from apps.parameters.utils.variables import PART_MODEL_OPTIONS
 from apps.parameters.models import Parameter
+
 from apps.control.utils.variables import AXIS_IDS, ROUTINE_IDS, ROSCADO_CONSTANTES
+
+from apps.ws.utils import variables as ws_vars
+from apps.ws.utils.functions import get_ch_info
+from apps.ws.utils.handlers import send_message
+from apps.ws.models import ChannelInfo
 
 # Create your views here.
 def index(request):
@@ -51,4 +64,23 @@ def parametrosPagina1(request):
     return render(request, "parametrosP1.html")
 
 def logAlarma(request):
-    return render(request, "logAlarma.html")
+    return render(request, "logAlarma.html", AXIS_IDS)
+
+@method_decorator(csrf_exempt, name='dispatch')
+class LogAlarm(View):
+
+    def get(self, request):
+        context = AXIS_IDS
+        context['reset_drv_faults_cmd'] = COMMANDS['reset_drv_faults']
+        return render(request, "logAlarma.html", AXIS_IDS)
+    
+    def post(self, request):
+        post_req = request.POST
+        msg_id = ws_vars.MicroState.last_rx_header.get_msg_id() + 1
+        cmd = int(post_req['command'])
+        axis = int(post_req['axis'])
+        header = service_handlers.build_msg(cmd, msg_id=msg_id, eje=axis)
+        ch_info = get_ch_info(ChannelInfo, 'micro')
+        if ch_info:
+            send_message(header, ch_info)
+        return JsonResponse({"response": "ok"})

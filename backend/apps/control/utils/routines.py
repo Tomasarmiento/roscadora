@@ -103,7 +103,12 @@ class RoutineHandler(threading.Thread):
             if routine_ok:
                 duration = end_time - start_time
                 print('Routine OK')
-                print('ROUTINE TIME:', duration)
+                print('ROUTINE DURATION:', duration)
+
+                # agregado por AP - manda a el cuadro de mensajes el Nro d eiteracion
+                mensaje =  'ROUTINE DURATION: ' + str(duration.seconds)
+                ws_vars.MicroState.log_messages.append(mensaje)
+
                 if ws_vars.MicroState.graph_flag == True and routine == ctrl_vars.ROUTINE_IDS['roscado']:
                     ws_vars.MicroState.graph_flag = False
                     ws_vars.MicroState.graph_duration = duration
@@ -178,7 +183,7 @@ class RoutineHandler(threading.Thread):
             ws_vars.MicroState.rem_i_states[1]['acople_lubric_contraido'],      # acople_lubricante_contraido
             ws_vars.MicroState.rem_i_states[0]['puntera_descarga_contraida'],   # puntera_descarga_contraida
             ws_vars.MicroState.rem_i_states[0]['puntera_carga_contraida'],      # puntera_carga_contraida
-            round(ws_vars.MicroState.axis_measures[eje_avance]['pos_fil'], 0) == round(ctrl_vars.ROSCADO_CONSTANTES['posicion_de_inicio'], 0)   # Eje avance en posición de inicio
+            round(ws_vars.MicroState.axis_measures[eje_avance]['pos_fil'], 0) >= round(ctrl_vars.ROSCADO_CONSTANTES['posicion_de_inicio'], 0)   # Eje avance en posición de inicio
         ]
 
         if False in turn_init_flags:
@@ -235,7 +240,7 @@ class RoutineHandler(threading.Thread):
                 print(err)
             return False
         print('CARGA - Paso 0 - Chequear condiciones iniciales - Todos los valores deben ser True par que empiece la rutina')
-        ws_vars.MicroState.log_messages.append('Fin de rutina de carga')
+        ws_vars.MicroState.log_messages.append('Inicio de rutina de carga')
 
 
 
@@ -249,7 +254,7 @@ class RoutineHandler(threading.Thread):
         if not self.wait_for_remote_in_flag(wait_key, wait_group):
             return False
         print('CARGA - Paso 1 - Expandir vertical carga')
-        # ws_vars.MicroState.log_messages.append('Paso 1 - Expandir vertical carga')
+        
         
 
 
@@ -781,7 +786,7 @@ class RoutineHandler(threading.Thread):
                 print(err)
             return False
 
-        roscado_start_time = datetime.now()
+        roscado_start_time = datetime.now() # es para sacar los tiempos de cada paso de la rutina roscado
 
         ws_vars.MicroState.position_values = []
         ws_vars.MicroState.torque_values = []
@@ -1198,9 +1203,8 @@ class RoutineHandler(threading.Thread):
                 print(err)
             return False
 
-        ws_vars.MicroState.log_messages.append('Homing')
         print('HOMING - Paso 0 - Condiciones iniciales')
-        ws_vars.MicroState.log_messages.append('Inicio de rutina de cerado')
+        ws_vars.MicroState.log_messages.append('HOMING - Inicio rutina')
 
 
 
@@ -1341,7 +1345,7 @@ class RoutineHandler(threading.Thread):
         if not self.send_message(header, data):
             return False
         print('gira una posición buscando la chapa')
-        ws_vars.MicroState.log_messages.append('4.4 - Gira posición buscando la chapa')
+        ws_vars.MicroState.log_messages.append('4.4 - Gira posición buscando leva')
 
         # Espera sensor home activado
         state = ws_vars.MicroState.axis_flags[axis]['home_switch']
@@ -1351,7 +1355,7 @@ class RoutineHandler(threading.Thread):
         pos = ws_vars.MicroState.axis_measures[axis]['pos_fil']
         print('Espera sensor home activado')
         print("POSICION EN CHAPA", pos)
-        ws_vars.MicroState.log_messages.append('4.5 - Posición en chapa')
+        ws_vars.MicroState.log_messages.append('4.5 - Posición en leva')
 
         # Detener eje
         command = Commands.stop
@@ -1390,7 +1394,7 @@ class RoutineHandler(threading.Thread):
         if not self.send_message(header, data):
             return False
         print('Configura cero')
-        ws_vars.MicroState.log_messages.append('4 - Configura cero')
+        ws_vars.MicroState.log_messages.append('4.7 - Configura cero')
         print('HOMING - Paso 4 - Esperar sensor homing activado')
 
 
@@ -1424,7 +1428,7 @@ class RoutineHandler(threading.Thread):
         print('HOMING - PASO 6 - Power off')
 
         print('HOMING - FIN RUTINA')
-        ws_vars.MicroState.log_messages.append('HOMIN - Fin rutina')
+        ws_vars.MicroState.log_messages.append('HOMING - Fin rutina')
         ws_vars.MicroState.homing_ongoing = False
         return True
        
@@ -1769,7 +1773,7 @@ class MasterHandler(threading.Thread):
             return
         
         print('Inicio rutina master')
-        ws_vars.MicroState.log_messages.append('Inicio de modo automático')
+        ws_vars.MicroState.log_messages.append('MODO AUTOMATICO - Inicio')
 
         while ws_vars.MicroState.master_stop == False:
             running_ids = self.get_running_routines()
@@ -1791,7 +1795,12 @@ class MasterHandler(threading.Thread):
             boquilla = self.get_current_boquilla_roscado()
             part_present = ctrl_vars.part_present_indicator[boquilla]
             print('Boquilla presente en roscado:', part_present)
-            print('Numero de iteracion:', ws_vars.MicroState.iteration)
+            print('Numero iteracion:', ws_vars.MicroState.iteration)
+
+            # agregado por AP - manda a el cuadro de mensajes el Nro d eiteracion
+            mensaje = 'ROSCADO - Numero iteracion: ' + str(ws_vars.MicroState.iteration)
+            ws_vars.MicroState.log_messages.append(mensaje)
+
             if ws_vars.MicroState.iteration >= 1 and part_present == True:
                 if roscado_id not in running_ids:
                     print('RUTINA ROSCADO')
@@ -1809,7 +1818,7 @@ class MasterHandler(threading.Thread):
             boquilla = self.get_current_boquilla_descarga()
             part_present = ctrl_vars.part_present_indicator[boquilla]
             print('Boquilla presente en descarga:', part_present)
-            print('Numero de iteracion:', ws_vars.MicroState.iteration)
+            print('Numero iteracion:', ws_vars.MicroState.iteration)
             if ws_vars.MicroState.iteration >= 2 and part_present == True:
                 if descarga_id not in running_ids:
                     print('RUTINA DESCARGA')
@@ -1832,11 +1841,11 @@ class MasterHandler(threading.Thread):
             part_present_roscar = ctrl_vars.part_present_indicator[self.get_current_boquilla_roscado()]
             part_present = part_present_descarga or part_present_roscar
             print('Boquilla presente en descarga:', part_present)
-            print('Numero de iteracion:', ws_vars.MicroState.iteration)
+            print('Numero iteracion:', ws_vars.MicroState.iteration)
             if ws_vars.MicroState.iteration >= 2 and ws_vars.MicroState.end_master_routine == True and part_present == False:
                 print('Fin de rutina master')
                 ws_vars.MicroState.master_running = False
-                ws_vars.MicroState.log_messages.append('Modo automático finalizado')
+                ws_vars.MicroState.log_messages.append('MODO AUTOMATICO - fin')
                 
                 ch_info = get_ch_info(ChannelInfo, 'micro')
                 key = 'encender_bomba_soluble'
@@ -1860,7 +1869,7 @@ class MasterHandler(threading.Thread):
             running_ids = self.get_running_routines()
             if indexar_id not in running_ids:
                 print('RUTINA INDEXAR')
-                ws_vars.MicroState.log_messages.append('Inicio rutina indexar')
+                ws_vars.MicroState.log_messages.append('Inicio de rutina de indexar *')
                 RoutineHandler(indexar_id).start()
 
                 if self.wait_init_rtn(indexar_id) == False:

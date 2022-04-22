@@ -48,6 +48,7 @@ class AcdpMsgCodes:
         Cd_MovEje_MovToFza              = AcdpMsgType.CMD + AcdpMsgLevel.APPLICATION + 0x13     # Parametro: Param::tMovToFza
         Cd_MovEje_SetRefFza             = AcdpMsgType.CMD + AcdpMsgLevel.APPLICATION + 0x14     # Parametro: Param::tSetRefFza
         Cd_MovEje_MovToFza_Yield        = AcdpMsgType.CMD + AcdpMsgLevel.APPLICATION + 0x15     # Parametro: Param::tMovToFza_Yield
+        Cd_MovEje_ResetDriveFault       = AcdpMsgType.CMD + AcdpMsgLevel.APPLICATION + 0x16     # Resetea fallas de driver por eje (hay que mandar id de eje)
 
         Cd_LocDO_Set                    = AcdpMsgType.CMD + AcdpMsgLevel.APPLICATION + 0x21     # Parametro: Param::tDO_Set
         Cd_RemDO_Set                    = AcdpMsgType.CMD + AcdpMsgLevel.APPLICATION + 0x22     # Parametro: Param::tDO_Set

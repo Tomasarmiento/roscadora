@@ -195,7 +195,7 @@ def check_init_conditions_index():
         (ws_vars.MicroState.rem_i_states[1]['acople_lubric_contraido'], 'Acople lubricante expandido'),                                 # acople_lubricante_contraido
         (ws_vars.MicroState.rem_i_states[0]['puntera_descarga_contraida'], 'Puntera descarga expandida'),                               # puntera_descarga_contraida
         (ws_vars.MicroState.rem_i_states[0]['puntera_carga_contraida'], 'Puntera carga expandida'),                                     # puntera_carga_contraida
-        (round(ws_vars.MicroState.axis_measures[eje_avance]['pos_fil'], 0) == round(ctrl_vars.ROSCADO_CONSTANTES['posicion_de_inicio'], 0), 'Posición de eje avance erróneo'),   # Eje avance en posición de inicio
+        (round(ws_vars.MicroState.axis_measures[eje_avance]['pos_fil'], 0) >= round(ctrl_vars.ROSCADO_CONSTANTES['posicion_de_inicio'], 0), 'Posición de eje avance erróneo'),   # Eje avance en posición de inicio
     ]
     for flag, error in init_flags:
         if flag == False:
@@ -641,6 +641,7 @@ def update_front_messages():
 def get_front_states():
     limit_fwd_flag = msg_base.DrvFbkDataFlags.POSITIVE_OT
     home_sw_flag = msg_base.DrvFbkDataFlags.HOME_SWITCH
+    drv_fault_flag = msg_base.DrvFbkDataFlags.FAULT
     update_front_messages()
     
     data = {
@@ -680,6 +681,10 @@ def get_front_states():
         'lineal_limite_forward': ws_vars.MicroState.axis_flags[ctrl_vars.AXIS_IDS['avance']]['drv_fbk_flags'] & limit_fwd_flag == 0,
         'lineal_home_switch': ws_vars.MicroState.axis_flags[ctrl_vars.AXIS_IDS['avance']]['drv_fbk_flags'] & home_sw_flag == home_sw_flag,
         'cabezal_home_switch': ws_vars.MicroState.axis_flags[ctrl_vars.AXIS_IDS['carga']]['drv_fbk_flags'] & home_sw_flag == home_sw_flag,
+
+        'forward_drv_fault': ws_vars.MicroState.axis_flags[ctrl_vars.AXIS_IDS['avance']]['drv_fbk_flags'] & drv_fault_flag == drv_fault_flag,
+        'lineal_drv_fault': ws_vars.MicroState.axis_flags[ctrl_vars.AXIS_IDS['avance']]['drv_fbk_flags'] & drv_fault_flag == drv_fault_flag,
+        'cabezal_drv_fault': ws_vars.MicroState.axis_flags[ctrl_vars.AXIS_IDS['carga']]['drv_fbk_flags'] & drv_fault_flag == drv_fault_flag,
 
         # Routines
         'condiciones_init_carga_ok': len(check_init_conditions_load()) == 0,
