@@ -40,19 +40,36 @@ window.addEventListener("DOMContentLoaded", () => {                         //to
         sendResetDrvFalutsCmd(btn_servo1.getAttribute('cmd'), btn_servo1.getAttribute('axis_id'));
     });
 
-    let btn_servo2 = document.getElementById('servoGiro');
 
+    let btn_servo2 = document.getElementById('servoGiro');
     btn_servo2.addEventListener('click', (e) => {
         sendResetDrvFalutsCmd(btn_servo2.getAttribute('cmd'), btn_servo2.getAttribute('axis_id'));
     });
 
-    let btn_servo3 = document.getElementById('servoAvance');
 
+    let btn_servo3 = document.getElementById('servoAvance');
     btn_servo3.addEventListener('click', (e) => {
         sendResetDrvFalutsCmd(btn_servo3.getAttribute('cmd'), btn_servo3.getAttribute('axis_id'));
     });
-    
+
+   
     var listaMensajesErrores = [];
+
+    const resetLogAlarma = document.querySelector("#limpiarLogAlarma");
+    resetLogAlarma.addEventListener('click', (e) => {
+        sessionStorage.removeItem("mensajesError");
+        sessionStorage.setItem("mensajesError", listaMensajesErrores);
+        location.reload(true);
+        
+    });
+
+    const resetLogMensajes = document.querySelector("#limpiarLogMensajes");
+    resetLogMensajes.addEventListener('click', (e) => {
+        sessionStorage.removeItem("mensajes");
+        sessionStorage.setItem("mensajes", listaMensajesErrores);
+        location.reload(true);
+        
+    });
 
     socket.onmessage = function (event) {
         const datosWs = JSON.parse(event.data);
@@ -62,6 +79,34 @@ window.addEventListener("DOMContentLoaded", () => {                         //to
             sessionStorage.setItem("mensajesError", listaMensajesErrores);
             InsertarTextoErrores(datosWs.mensajes_error);
         };
+
+        const servoIndicator_carga = document.querySelector("#squareCarga");
+        const servoIndicator_giro = document.querySelector("#squareGiro");
+        const servoIndicator_avance = document.querySelector("#squareAvance");
+
+        //Falla servo husillo
+        if (datosWs.forward_drv_fault == true){
+            servoIndicator_giro.className = "square-red mb-5"
+        }
+        else{
+            servoIndicator_giro.className = "square mb-5"
+        }
+
+        //Falla servo avance
+        if (datosWs.lineal_drv_fault == true){
+            servoIndicator_avance.className = "square-red mb-5"
+        }
+        else{
+            servoIndicator_avance.className = "square mb-5"
+        }
+
+        //Falla servo carga
+        if (datosWs.cabezal_drv_fault == true){
+            servoIndicator_carga.className = "square-red mb-5"
+        }
+        else{
+            servoIndicator_carga.className = "square mb-5"
+        }
         
     };
 });

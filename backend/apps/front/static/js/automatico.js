@@ -154,7 +154,7 @@ const totalDuration = 10000;
                 xAxes: [{
                     scaleLabel: {
                         display: true,
-                        labelString: 'Posición'
+                        labelString: 'Tiempo'
                     },
                     type: 'time',
                     time: {
@@ -277,12 +277,12 @@ const totalDuration = 10000;
     socket.onmessage = function (event) {
      const datosWs = JSON.parse(event.data);
 
-    if (datosWs.mensajes_log) {
+    if (datosWs.mensajes_log.length > 0) {
         listaMensajes.push(datosWs.mensajes_log);
         sessionStorage.setItem("mensajes", listaMensajes);
         InsertarTexto(datosWs.mensajes_log);
     };
-    if (datosWs.mensajes_error) {
+    if (datosWs.mensajes_error.length > 0) {
         listaMensajesErrores.push(datosWs.mensajes_error);
         sessionStorage.setItem("mensajesError", listaMensajesErrores);
         InsertarTextoErrores(datosWs.mensajes_error);
@@ -308,6 +308,11 @@ const totalDuration = 10000;
 
     // Contador de cuplas
     const contadorCuplas = document.querySelector("#countCuplas");
+
+    // Contenedores de los ejes
+    const contentAvance = document.querySelector("#avanceContent");
+    const contentCarga = document.querySelector("#cargaContent");
+    const contentHusillo = document.querySelector("#husilloContent");
     
 
     //Cabezal
@@ -339,7 +344,7 @@ const totalDuration = 10000;
         }
     }
 
-    if (datosWs.graph_flag == true){
+    if(datosWs.graph_flag == true){
         xAccelChartInstance.data.labels.push(new Date());            //(datosWs.cabezal_pos).toFixed(1);
         xAccelChartInstance.data.datasets.forEach((dataset) =>{dataset.data.push(datosWs.husillo_torque).toFixed(1)});
     if(updateCount > numberElements){
@@ -362,7 +367,7 @@ const totalDuration = 10000;
         
 
     if(datosWs){
-        // console.log(datosWs.reset_roscado_contador);
+    // console.log(datosWs.reset_roscado_contador);
     //Monitor
     rpmActual.innerHTML = datosWs.husillo_rpm.toFixed(1)/6;
     torqueActual.innerHTML = datosWs.husillo_torque.toFixed(1);
@@ -377,6 +382,8 @@ const totalDuration = 10000;
     estadoActualH.innerHTML = datosWs.estado_eje_avance;
 
     contadorCuplas.innerHTML = datosWs.roscado_contador;
+
+
 
     // //cabezal
     // if (datosWs.estado_eje_carga == 'initial'){
@@ -400,10 +407,30 @@ const totalDuration = 10000;
     //   }
 
     // else (ejeLineal.className = "bg-secondary indicadorMon");
+
+
+    //Falla servo husillo
+    // datosWs.lineal_drv_fault = true
+    // datosWs.forward_drv_fault = true
+    // datosWs.cabezal_drv_fault = true
+
+    if (datosWs.forward_drv_fault == true){
+        contentHusillo.className = "card bg-danger text-white mt-3 p-1"
+    }
+
+    //Falla servo avance
+    if (datosWs.lineal_drv_fault == true){
+        contentAvance.className = "card bg-danger text-white mt-3 p-1"
+    }
+
+    //Falla servo carga
+    if (datosWs.cabezal_drv_fault == true){
+        contentCarga.className = "card bg-danger text-white mt-3 p-1"
+    }
     
 
     //terminar
-    console.log( datosWs.end_master_routine, datosWs.master_running);
+     console.log( datosWs.end_master_routine, datosWs.master_running, datosWs.master_stop);
     (datosWs.end_master_routine == true && datosWs.master_running == true)
     ? (terminar.className = "btn btn-primary mb-3") && (terminar.innerHTML = 'Terminando') && (terminar.style.fontSize = "25px")
     : (terminar.className = "btn btn-warning mb-3") && (terminar.innerHTML = 'Terminar')  && (terminar.style.fontSize = "25px")

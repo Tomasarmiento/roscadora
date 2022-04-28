@@ -682,7 +682,7 @@ def get_front_states():
         'lineal_home_switch': ws_vars.MicroState.axis_flags[ctrl_vars.AXIS_IDS['avance']]['drv_fbk_flags'] & home_sw_flag == home_sw_flag,
         'cabezal_home_switch': ws_vars.MicroState.axis_flags[ctrl_vars.AXIS_IDS['carga']]['drv_fbk_flags'] & home_sw_flag == home_sw_flag,
 
-        'forward_drv_fault': ws_vars.MicroState.axis_flags[ctrl_vars.AXIS_IDS['avance']]['drv_fbk_flags'] & drv_fault_flag == drv_fault_flag,
+        'forward_drv_fault': ws_vars.MicroState.axis_flags[ctrl_vars.AXIS_IDS['giro']]['drv_fbk_flags'] & drv_fault_flag == drv_fault_flag,
         'lineal_drv_fault': ws_vars.MicroState.axis_flags[ctrl_vars.AXIS_IDS['avance']]['drv_fbk_flags'] & drv_fault_flag == drv_fault_flag,
         'cabezal_drv_fault': ws_vars.MicroState.axis_flags[ctrl_vars.AXIS_IDS['carga']]['drv_fbk_flags'] & drv_fault_flag == drv_fault_flag,
 
@@ -694,6 +694,7 @@ def get_front_states():
         'homing_on_going': ws_vars.MicroState.homing_ongoing,
         'end_master_routine': ws_vars.MicroState.end_master_routine,
         'master_running': ws_vars.MicroState.master_running,
+        'master_stop':ws_vars.MicroState.master_stop,
 
         # 'graph': ws_vars.MicroState.graph_flag
         'graph': False,

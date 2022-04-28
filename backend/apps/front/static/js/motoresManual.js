@@ -74,6 +74,11 @@ document.addEventListener("DOMContentLoaded", (e) => {
 
             // Contador de cuplas
             const contadorCuplas = document.querySelector("#countCuplas");
+
+            // Contenedores de los ejes
+            const contentAvance = document.querySelector("#avanceContent");
+            const contentCarga = document.querySelector("#cargaContent");
+            const contentHusillo = document.querySelector("#husilloContent");
     
                         
             //Monitor
@@ -114,6 +119,21 @@ document.addEventListener("DOMContentLoaded", (e) => {
             //     }
 
             // else (ejeLineal.className = "bg-secondary indicadorMon");
+
+            //Falla servo husillo
+            if (datosWs.forward_drv_fault == true){
+                contentHusillo.className = "card bg-danger text-white mt-3 p-1"
+            }
+
+            //Falla servo avance
+            if (datosWs.lineal_drv_fault == true){
+                contentAvance.className = "card bg-danger text-white mt-3 p-1"
+            }
+
+            //Falla servo carga
+            if (datosWs.cabezal_drv_fault == true){
+                contentCarga.className = "card bg-danger text-white mt-3 p-1"
+            }
 
 
             //descarga

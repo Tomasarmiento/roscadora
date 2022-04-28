@@ -22,13 +22,76 @@ window.addEventListener("hashchange", () => {                  //cuando tocas f5
 window.addEventListener("DOMContentLoaded", () => {                         //todo el tiempo
     (window.location.hash);
     monitor = document.querySelector("#component-monitor");
+    cuadroDeTextoIndex = document.querySelector("#terminalDeTexto");
+    if (sessionStorage.getItem("mensajes") && cuadroDeTextoIndex) {
+        let ul = document.getElementById("cuadroMensajes");
+        const listaMensajes = sessionStorage.getItem("mensajes").split(",").reverse();
+        for (let i = 0; i < listaMensajes.length; i++) {
+            const li = document.createElement("li");
+            li.setAttribute("style", "list-style: none;");
+            li.innerHTML = listaMensajes[i];
+            ul.appendChild(li);
+        }
+    }
+
+    cuadroDeErrores = document.querySelector("#terminalDeTexto");
+    if (sessionStorage.getItem("mensajesError") && cuadroDeErrores) {
+        let ul = document.getElementById("cuadroMensajesErrores");
+        const listaMensajes = sessionStorage.getItem("mensajesError").split(",").reverse();
+        for (let i = 0; i < listaMensajes.length; i++) {
+            const li = document.createElement("li");
+            li.setAttribute("style", "list-style: none;");
+            li.innerHTML = listaMensajes[i];
+            ul.appendChild(li);
+        }
+    }
 });
+
+function InsertarTexto(datosWs) {
+  var ul = document.getElementById("cuadroMensajes");
+  if (ul){
+    for (let i = 0; i < datosWs.length; i++) {
+        const li = document.createElement("li");
+        li.setAttribute("style", "list-style: none;" );
+        li.innerHTML = datosWs[i];
+        ul.prepend(li);
+    }
+  }
+  else{
+    console.log('No hay mensaje');
+  }
+}
+
+function InsertarTextoErrores(datosWs) {
+  var ul = document.getElementById("cuadroMensajesErrores");
+  if (ul){
+    for (let i = 0; i < datosWs.length; i++) {
+        const li = document.createElement("li");
+        li.setAttribute("style", "list-style: none;" );
+        li.innerHTML = datosWs[i];
+        ul.prepend(li);
+    }
+  }
+  else{
+    console.log('No hay mensaje de error');
+  }
+}
+
 var listaMensajesErrores = [];
+var listaMensajes = [];
+
+
 socket.onmessage = function (event) {
   const datosWs = JSON.parse(event.data);
+  if (datosWs.mensajes_log.length > 0) {
+    listaMensajes.push(datosWs.mensajes_log);
+    sessionStorage.setItem("mensajes", listaMensajes);
+    InsertarTexto(datosWs.mensajes_log);
+  };
   if (datosWs.mensajes_error.length > 0) {
     listaMensajesErrores.push(datosWs.mensajes_error);
     sessionStorage.setItem("mensajesError", listaMensajesErrores);
+    InsertarTextoErrores(datosWs.mensajes_error);
   };
 
  
@@ -52,6 +115,11 @@ socket.onmessage = function (event) {
 
   // Contador de cuplas
   const contadorCuplas = document.querySelector("#countCuplas");
+
+  // Contenedores de los ejes
+  const contentAvance = document.querySelector("#avanceContent");
+  const contentCarga = document.querySelector("#cargaContent");
+  const contentHusillo = document.querySelector("#husilloContent");
     
 
   //Cabezal
@@ -70,6 +138,7 @@ socket.onmessage = function (event) {
   const safe = document.querySelector("#statusSafe");
   
   if (datosWs) {
+    // console.log(datosWs);
 
 
     //Monitor
@@ -143,8 +212,23 @@ socket.onmessage = function (event) {
       // }
       // else (homeok.className = "bg-secondary rounded-pill text-white text-center p-3");
 
+    //Falla servo husillo
+    if (datosWs.forward_drv_fault == true){
+      contentHusillo.className = "card bg-danger text-white mt-3 p-1"
+    }
 
-console.log();
+    //Falla servo avance
+    if (datosWs.lineal_drv_fault == true){
+        contentAvance.className = "card bg-danger text-white mt-3 p-1"
+    }
+
+    //Falla servo carga
+    if (datosWs.cabezal_drv_fault == true){
+        contentCarga.className = "card bg-danger text-white mt-3 p-1"
+    }
+
+
+
     //descarga
      datosWs.condiciones_init_descarga_ok == true
     ? (descarga.className = "bg-success indicadorMon")

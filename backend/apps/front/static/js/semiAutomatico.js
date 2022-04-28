@@ -166,7 +166,7 @@ window.onload = function() {
                 xAxes: [{
                     scaleLabel: {
                         display: true,
-                        labelString: 'Posición'
+                        labelString: 'Tiempo'
                     },
                     type: 'time',
                     time: {
@@ -303,6 +303,11 @@ window.onload = function() {
     // Contador de cuplas
     const contadorCuplas = document.querySelector("#countCuplas");
 
+    // Contenedores de los ejes
+    const contentAvance = document.querySelector("#avanceContent");
+    const contentCarga = document.querySelector("#cargaContent");
+    const contentHusillo = document.querySelector("#husilloContent");
+
     
     //Cabezal
     const cabezal = document.querySelector("#statusHead")
@@ -362,7 +367,7 @@ window.onload = function() {
 
 
     if(datosWs){
-        console.log(datosWs.roscado_contador);
+        // console.log(datosWs.roscado_contador);
     
     //Monitor
     rpmActual.innerHTML = datosWs.husillo_rpm.toFixed(1)/6;
@@ -402,6 +407,22 @@ window.onload = function() {
     //   }
 
     // else (ejeLineal.className = "bg-secondary indicadorMon");
+
+
+    //Falla servo husillo
+    if (datosWs.forward_drv_fault == true){
+        contentHusillo.className = "card bg-danger text-white mt-3 p-1"
+    }
+
+    //Falla servo avance
+    if (datosWs.lineal_drv_fault == true){
+        contentAvance.className = "card bg-danger text-white mt-3 p-1"
+    }
+
+    //Falla servo carga
+    if (datosWs.cabezal_drv_fault == true){
+        contentCarga.className = "card bg-danger text-white mt-3 p-1"
+    }
      
      
     //grafico

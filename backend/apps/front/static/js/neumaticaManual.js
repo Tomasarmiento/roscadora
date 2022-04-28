@@ -22,6 +22,11 @@ socket.onmessage = function (event) {
 
         // Contador de cuplas
         const contadorCuplas = document.querySelector("#countCuplas");
+  
+        // Contenedores de los ejes
+        const contentAvance = document.querySelector("#avanceContent");
+        const contentCarga = document.querySelector("#cargaContent");
+        const contentHusillo = document.querySelector("#husilloContent");
     
         
         //Monitor
@@ -118,29 +123,20 @@ socket.onmessage = function (event) {
         const bombaHidraulicaOn = document.querySelector("#bombaHidrOnOk");
         const bombaHidraulicaOff = document.querySelector("#bombaHidrOffOk");
 
+            //Falla servo husillo
+            if (datosWs.forward_drv_fault == true){
+              contentHusillo.className = "card bg-danger text-white mt-3 p-1"
+            }
 
-            // //cabezal
-            // if (datosWs.estado_eje_carga == 'initial'){
-            // (cabezal.className = "bg-success indicadorMon") && (cabezal.innerHTML = 'Cabezal <br/> Initial') 
-            // }
+            //Falla servo avance
+            if (datosWs.lineal_drv_fault == true){
+              contentAvance.className = "card bg-danger text-white mt-3 p-1"
+            }
 
-            //     else if (datosWs.estado_eje_carga == 'homing'){
-            //     (cabezal.className = "bg-warning indicadorMon") && (cabezal.innerHTML = 'Cabezal <br/> Homming')
-            //     }
-
-            // else (cabezal.className = "bg-secondary indicadorMon");
-            
-            
-            // //eje lineal
-            // if (datosWs.estado_eje_avance == 'initial'){
-            // (ejeLineal.className = "bg-success indicadorMon") && (ejeLineal.innerHTML = 'Eje lineal <br/> Initial') 
-            // }
-
-            //     else if (datosWs.estado_eje_avance == 'homing'){
-            //     (ejeLineal.className = "bg-warning indicadorMon") && (ejeLineal.innerHTML = 'Eje lineal <br/> Homming')
-            //     }
-
-            // else (ejeLineal.className = "bg-secondary indicadorMon");
+            //Falla servo carga
+            if (datosWs.cabezal_drv_fault == true){
+              contentCarga.className = "card bg-danger text-white mt-3 p-1"
+            }
 
             //descarga
             datosWs.condiciones_init_descarga_ok == true
