@@ -407,7 +407,7 @@ def check_end_flags(flags_value):
     yield_bit               = msg_app.AxisFlagsFin.FLGFIN_YIELD
     invalid_state_bit       = msg_app.AxisFlagsFin.FLGFIN_INVALID_STATE
     drv_not_enabled_bit     = msg_app.AxisFlagsFin.FLGFIN_DRV_NOT_ENABLED
-    axis_disabled_bit       = msg_app.AxisFlagsFin.FLGFIN_AXIS_DISABLED
+    axis_limit_torque       = msg_app.AxisFlagsFin.FLGFIN_AXIS_LIMIT_TORQUE_EXCEEDED
 
     end_states = []
 
@@ -452,7 +452,7 @@ def check_end_flags(flags_value):
         if flags_value & drv_not_enabled_bit == drv_not_enabled_bit:
             end_states.append('drv_not_enabled')
             ws_vars.MicroState.err_messages.append('Driver not enabled')
-        if flags_value & axis_disabled_bit == axis_disabled_bit:
+        if flags_value & axis_limit_torque == axis_limit_torque:
             end_states.append('axis_disabled')
             ws_vars.MicroState.err_messages.append('Axis disabled')
     

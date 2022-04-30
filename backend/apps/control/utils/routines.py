@@ -136,7 +136,6 @@ class RoutineHandler(threading.Thread):
                 ws_vars.MicroState.master_stop = True
                 ws_vars.MicroState.homing_ongoing = False
 
-                # *** REVISAR ***
                 print('Error en rutina de', ctrl_vars.ROUTINE_NAMES[self.current_routine])
                 for msg in self.err_msg:
                     print('MENSAJE DE ERROR:', msg)
@@ -2061,18 +2060,20 @@ class MasterHandler(threading.Thread):
         #  ws_vars.MicroState.master_stop == True
         ws_vars.MicroState.master_running = True
         ws_vars.MicroState.master_stop = False
+        ws_vars.MicroState.routine_stopped = False
         ws_vars.MicroState.end_master_routine = False
         ws_vars.MicroState.reset_cuplas_count = False
         ws_vars.MicroState.iteration = 0
+        
     
 
-
     def run(self):
+        print("Master stop:", ws_vars.MicroState.master_stop)
         roscado_id = ctrl_vars.ROUTINE_IDS['roscado']
         carga_id = ctrl_vars.ROUTINE_IDS['carga']
         descarga_id = ctrl_vars.ROUTINE_IDS['descarga']
         indexar_id = ctrl_vars.ROUTINE_IDS['cabezal_indexar']
-
+        
         if ctrl_fun.check_init_conditions_master() == False:
             ws_vars.MicroState.master_running = False
             return
@@ -2205,6 +2206,7 @@ class MasterHandler(threading.Thread):
 
 
     def check_timeout_exceeded(self, timeout):
+        print("*"*50,"\nCheck timeout exceeded", ws_vars.MicroState.master_stop)
         if self.timer >= timeout or ws_vars.MicroState.master_stop == True:
             ws_vars.MicroState.master_running = False
             return True
@@ -2223,9 +2225,12 @@ class MasterHandler(threading.Thread):
             timeout_exceeded = self.check_timeout_exceeded(self.init_rtn_timeout)
         
         if timeout_exceeded:
-            print('Timeout esperando inicio de rutina', routine_id)
-            ws_vars.MicroState.master_stop = True
-            ws_vars.MicroState.master_running = False
+            if self.timer >= self.init_rtn_timeout:
+                print('Timeout esperando inicio de rutina', routine_id)
+                ws_vars.MicroState.master_stop = True
+                ws_vars.MicroState.master_running = False
+            else:
+                print('Rutina master detenida')
             return False
         self.timer = 0
         return True

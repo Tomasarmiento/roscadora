@@ -502,7 +502,7 @@ class AxisFlagsFin:
     FLGFIN_YIELD                = 1 << 11
     FLGFIN_INVALID_STATE        = 1 << 12
     FLGFIN_DRV_NOT_ENABLED      = 1 << 13
-    FLGFIN_AXIS_DISABLED        = 1 << 14
+    FLGFIN_AXIS_LIMIT_TORQUE_EXCEEDED        = 1 << 14
 
 
 class StateMachine:
