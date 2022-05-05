@@ -70,6 +70,16 @@ class RoutineHandler(threading.Thread):
                 routine_info.running = 1
                 routine_info.save()
                 routine_ok = self.routine_homing()
+
+            elif routine == ctrl_vars.ROUTINE_IDS['cerado_lineal']:
+                if ws_vars.MicroState.routine_ongoing == True:
+                    print('Rutina en proceso. No se puede cerar Lineal')
+                    ws_vars.MicroState.err_messages.append('Error - Rutina en proceso. No se puede cerar Lineal')
+                    return False
+                ws_vars.MicroState.routine_ongoing = True
+                routine_info.running = 1
+                routine_info.save()
+                routine_ok = self.routine_homing_avance()
             
 
             elif routine == ctrl_vars.ROUTINE_IDS['cabezal_indexar']:
@@ -83,6 +93,7 @@ class RoutineHandler(threading.Thread):
                 print('RUTINA CABEZAL')
                 ws_vars.MicroState.log_messages.append('INDEXAR')
                 routine_ok = self.routine_cabezal_indexar()
+                
 
             else:
                 routine_info.running = 1
@@ -1746,6 +1757,31 @@ class RoutineHandler(threading.Thread):
             return True
         print('send msg false')
         return False
+
+
+
+# ******************** HOMING AVANCE********************
+    def routine_homing_avance(self):
+
+        print('LIBERAR LINEAL AVANCE INICIADO')
+        ws_vars.MicroState.log_messages.append('LIBERAR LINEAL AVANCE INICIADO')
+
+        command = Commands.run_zeroing
+        axis = ctrl_vars.AXIS_IDS['avance']
+        msg_id = self.get_message_id()
+        header = build_msg(command, msg_id=msg_id, eje=axis)
+
+        if not self.send_message(header):
+            ws_vars.MicroState.err_messages.append('Error Comnando - HOMING AVANCE')
+            return False
+      
+        if not self.wait_for_lineal_mov(0):
+            ws_vars.MicroState.err_messages.append('Error POS - HOMING AVANCE - Chequeo cero')
+            return False
+
+        print('LIBERAR LINEAL AVANCE FINALIZADO')
+        ws_vars.MicroState.log_messages.append('LIBERAR LINEAL AVANCE FINALIZADO')
+        return True
 
 
 

@@ -1,10 +1,15 @@
 document.addEventListener("DOMContentLoaded", (e) => {
     let btn_homming = document.getElementById('homeExec');
+    let btn_homming_lineal = document.getElementById('homeLineal');
     
 
     btn_homming.addEventListener('click', (e) => {
-        console.log('click referenciar')
-        let routine = btn_homming.getAttribute('routine');
+        let routine = btn_homming.getAttribute('rtn');
+        startRoutine(routine);
+    });
+
+    btn_homming_lineal.addEventListener('click', (e) => {
+        let routine = btn_homming_lineal.getAttribute('rtn');
         startRoutine(routine);
     });
 });

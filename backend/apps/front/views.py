@@ -27,7 +27,7 @@ def home(request):
     return render(request, "home.html", {'part_model': int(part_model.value)})
 
 def referenciar(request):
-    context = {'routine': ROUTINE_IDS['cerado']}
+    context = ROUTINE_IDS
     return render(request, "referenciar.html", context)
 
 def automatico(request):

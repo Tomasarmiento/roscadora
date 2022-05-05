@@ -466,6 +466,7 @@ def reset_cuplas_count(request):
 @csrf_exempt
 def semiauto(request):
     post_req = request.POST
+    print(post_req)
     routine = int(post_req['routine'])
 
     if ctrl_func.check_routine_allowed(routine):

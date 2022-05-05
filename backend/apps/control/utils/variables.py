@@ -43,7 +43,8 @@ ROUTINE_IDS = {
     'carga':    2,
     'descarga': 3,
     'cabezal_indexar': 4,
-    'roscado':  5
+    'roscado':  5,
+    'cerado_lineal': 6
 }
 
 ROUTINE_NAMES = {
@@ -51,7 +52,8 @@ ROUTINE_NAMES = {
     ROUTINE_IDS['carga']: 'carga',
     ROUTINE_IDS['descarga']: 'descarga',
     ROUTINE_IDS['roscado']: 'roscado',
-    ROUTINE_IDS['cabezal_indexar']: 'cabezal_indexar'
+    ROUTINE_IDS['cabezal_indexar']: 'cabezal_indexar',
+    ROUTINE_IDS['cerado_lineal']: 'cerado_lineal'
 }
 
 ROSCADO_CONSTANTES = {

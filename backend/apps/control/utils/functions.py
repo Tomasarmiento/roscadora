@@ -338,18 +338,23 @@ def check_routine_allowed(routine):
     cabezal_indexar = ctrl_vars.ROUTINE_NAMES[ctrl_vars.ROUTINE_IDS['cabezal_indexar']]
     roscado = ctrl_vars.ROUTINE_NAMES[ctrl_vars.ROUTINE_IDS['roscado']]
     routine_name = ctrl_vars.ROUTINE_NAMES[routine]
+    cerado_lineal = ctrl_vars.ROUTINE_NAMES[ctrl_vars.ROUTINE_IDS['cerado_lineal']]
 
     if running_rtns:
 
         if homing_name in running_rtns:
             print('Cerado en proceso')
             return False
+        
+        if cerado_lineal in running_rtns:
+            print('Cerado lineal en proceso')
+            return False
 
         if cabezal_indexar in running_rtns:
             print('indexado en proceso')
             return False
     
-        if routine_name == homing_name or routine_name in running_rtns:
+        if routine_name == homing_name or routine_name == cerado_lineal or routine_name in running_rtns:
             print('Rutina en proceso')
             return False
     
