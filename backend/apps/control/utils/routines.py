@@ -274,6 +274,25 @@ class RoutineHandler(threading.Thread):
 
 
 
+
+        # Paso 0.1 - Chequear presencia de cupla
+        if ws_vars.MicroState.rem_i_states[1]['presencia_cupla_en_cargador'] == 0:
+
+            ws_vars.MicroState.err_messages.append('**********************')
+            ws_vars.MicroState.err_messages.append('**** CARGAR CUPLA ****')
+            ws_vars.MicroState.err_messages.append('**********************')
+
+            wait_key = 'presencia_cupla_en_cargador'
+            wait_group = 1
+
+            if not self.wait_flag_presencia_cupla_en_cargador(wait_key, wait_group):
+                ws_vars.MicroState.err_messages.append('Error Flag - CARGA - Paso 0.1 - Presencia de cupla en cargador')
+                return False
+        print('CARGA - Paso 0.1 - Cupla cargada en vertical')
+        
+
+
+
         # Paso 1 - Expandir vertical carga
         key = 'expandir_vertical_carga'
         wait_key = 'vertical_carga_expandido'
@@ -659,7 +678,7 @@ class RoutineHandler(threading.Thread):
 
 
 
-        # Paso 2 - expandir_vert_pinza_desc
+        # Paso 2 - expandir_vert_pinza_desc, luego chequeamos los flags de que se haya movido
         key = 'expandir_vert_pinza_desc'
         group = 1
 
@@ -689,7 +708,7 @@ class RoutineHandler(threading.Thread):
 
 
 
-        # Paso 4 - Verifica FLAG expandir vertical pinza, comando en paso paso 2
+        # Paso 4 - Verifica FLAG expandir vertical pinza, comando en paso 2
         wait_key = 'vert_pinza_desc_expandido'
         wait_group = 1
 
@@ -721,13 +740,94 @@ class RoutineHandler(threading.Thread):
 
 
 
-        # Paso 6 - Verificar cupla en boquilla descarga. Baja flag cupla presente en boquilla
+        # Paso 6.1 - Verificar cupla en boquilla descarga. Si no está hace segundo intento
+        if not ws_vars.MicroState.rem_i_states[1]['pieza_en_boquilla_descarga']:
+            
+            ws_vars.MicroState.err_messages.append('Error Flag - DESCARGA - Paso 6.1 - No tomó cupla de boquilla hidraulica, hace segundo intento')
+
+            # Paso 6.1 A - Abrir boquilla descarga
+            key = 'contraer_boquilla_descarga'
+            wait_key = 'boquilla_descarga_expandida'
+            group = 0
+            wait_group = 0
+
+            if not self.send_pneumatic(key, group, 0):
+                ws_vars.MicroState.err_messages.append('Error Comando - DESCARGA - Paso 13 - Abrir boquilla descarga')
+                return False
+
+            if not self.wait_for_remote_in_flag(wait_key, wait_group):
+                ws_vars.MicroState.err_messages.append('Error Flag - DESCARGA - Paso 13 - Abrir boquilla descarga')
+                return False
+            time.sleep(4)
+            print('DESCARGA - PASO 6.1 A - Abrir boquilla descarga')
+
+
+            # Paso 6.1 B - Expandir horizontal puntera descarga
+            key_1 = 'expandir_puntera_descarga'
+            key_2 = 'contraer_puntera_descarga'
+            wait_key = 'puntera_descarga_contraida'
+            group = 0
+            wait_group = 0
+            print("EXPANDIR HORIZONTAL PUNTERA DESCARGA")
+
+            if not self.send_pneumatic(key_1, group, 1, key_2, 0):
+                ws_vars.MicroState.err_messages.append('Error Comando - DESCARGA - Paso 6.1 B - Expandir horizontal puntera descarga')
+                return False
+
+            if not self.wait_for_not_remote_in_flag(wait_key, wait_group):
+                ws_vars.MicroState.err_messages.append('Error Flag - DESCARGA - Paso 6.1 B - Expandir horizontal puntera descarga')
+                return False
+
+            time.sleep(1)
+            print('DESCARGA - Paso 6.1 B - Expandir horizontal puntera descarga')
+
+
+            # Paso 6.1 C - Boquilla descarga contraida
+            key = 'contraer_boquilla_descarga'
+            wait_key = 'boquilla_descarga_expandida'
+            group = 0
+            wait_group = 0
+
+            if not self.send_pneumatic(key, group, 1):
+                ws_vars.MicroState.err_messages.append('Error Comando - DESCARGA - Paso 6.1 C - Boquilla descarga contraida')
+                return False
+
+            if not self.wait_for_not_remote_in_flag(wait_key, wait_group):
+                ws_vars.MicroState.err_messages.append('Error Flag - DESCARGA - Paso 6.1 C - Boquilla descarga contraida')
+                return False
+
+            time.sleep(4)  # espera a que termine de abrir la boquilla hidraulica
+            print('DESCARGA - Paso 6.1 C - Boquilla descarga contraida')
+
+
+            # Paso 6.1 D - Puntera horizonal descarga contraída
+            key_1 = 'contraer_puntera_descarga'
+            key_2 = 'expandir_puntera_descarga'
+            wait_key = 'puntera_descarga_contraida'
+            group = 0
+            wait_group = 0
+
+            if not self.send_pneumatic(key_1, group, 1, key_2, 0):
+                ws_vars.MicroState.err_messages.append('Error Comando - DESCARGA - Paso 6.1 D - Puntera horizonal descarga contraída')
+                return False
+
+            if not self.wait_for_remote_in_flag(wait_key, wait_group):
+                ws_vars.MicroState.err_messages.append('Error Flag - DESCARGA - Paso 6.1 D - Puntera horizonal descarga contraída')
+                return False
+
+            print("DESCARGA - Paso 6.1 D - PUNTERA HORIZONTAL DESCARGA CONTRAIDA")
+
+        print("Paso 6.1 - Verificar cupla en boquilla descarga. Si no está hace segundo intento")
+
+
+
+        # Paso 6.2 - Verificar cupla en boquilla descarga. Baja flag cupla presente en boquilla
         if not ws_vars.MicroState.rem_i_states[1]['pieza_en_boquilla_descarga']:
             ws_vars.MicroState.err_messages.append('Error Flag - DESCARGA - Paso 6 - Verificar cupla en boquilla descarga')
             return False
-
+    
         print('CUPLA PRESENTE')
-        print('DESCARGA - Paso 6 - Verificar cupla en boquilla descarga. Baja flag cupla presente en boquilla')
+        print('DESCARGA - Paso 6.2 - Verificar cupla en boquilla descarga. Baja flag cupla presente en boquilla')
 
         ctrl_vars.part_present_indicator[boquilla] = False
 
@@ -773,7 +873,6 @@ class RoutineHandler(threading.Thread):
 
 
         # Paso 9 - Verificar cupla en boquilla descarga
-
         if not ws_vars.MicroState.rem_i_states[1]['pieza_en_boquilla_descarga']:
             ws_vars.MicroState.err_messages.append('Error Flag - DESCARGA - Paso 9 - Verificar cupla en boquilla descarga')
             return False
@@ -969,12 +1068,6 @@ class RoutineHandler(threading.Thread):
 
 
         # Paso 22 - Espera presencia de cupla en tobogan
-
-        #flag = ws_vars.MicroState.rem_i_states[1]['cupla_por_tobogan_descarga']
-        #while flag:
-        #    flag = ws_vars.MicroState.rem_i_states[1]['cupla_por_tobogan_descarga']
-        #    time.sleep(self.wait_time)
-        
         wait_key = 'cupla_por_tobogan_descarga'
         wait_group = 1
 
@@ -1047,6 +1140,30 @@ class RoutineHandler(threading.Thread):
         print('Delta Time Paso 1: ', roscado_delta_time_paso1)
 
         print("ROSCADO - Paso 1 - Acopla lubricante")
+
+
+
+        # *** Paso 1.5 - Expandir cerramiento de roscado
+        key = 'expandir_cerramiento_roscado'
+        wait_key = 'cerramiento_roscado_contraido'
+        group = 0
+        wait_group = 1
+
+        if not self.send_pneumatic(key, group, 1):
+            ws_vars.MicroState.err_messages.append('Error Comando - ROSCADO - Paso 1.5 - Expandir cerramiento de roscado')
+            return False
+
+        
+        if not self.wait_for_not_remote_in_flag(wait_key, wait_group):
+            ws_vars.MicroState.err_messages.append('Error Flag - ROSCADO - Paso 17 - Expandir cerramiento roscado')
+            return False
+
+        time.sleep(1) # Espera 1 seg para prender bomba soluble
+        
+        roscado_delta_time_paso_1_5 = datetime.now()-roscado_start_time
+        print('Delta Time Paso 1.5: ', roscado_delta_time_paso_1_5)
+
+        print("ROSCADO - Paso 1.5 - Expandir cerramiento roscado")
 
 
 
@@ -1384,8 +1501,8 @@ class RoutineHandler(threading.Thread):
 
 
 
-        # *** Paso 15 - Apagar bomba solube si está en semiautomático
-        if ws_vars.MicroState.master_running == False:
+        # *** Paso 15 - Apagar bomba solube si está en semiautomático o configurado por paramtreo
+        if ws_vars.MicroState.master_running == False or ctrl_vars.ROSCADO_CONSTANTES['soluble_intermitente'] == 1:
             key = 'encender_bomba_soluble'
             group = 1
 
@@ -1393,7 +1510,7 @@ class RoutineHandler(threading.Thread):
                 ws_vars.MicroState.err_messages.append('Error Comando - ROSCADO - Paso 15 - Apagar bomba solube')
                 return False
 
-            roscado_delta_time_paso15=datetime.now()-roscado_start_time
+            roscado_delta_time_paso15 = datetime.now() - roscado_start_time
             print('Delta Time Paso 15: ', roscado_delta_time_paso15)
 
             print("ROSCADO - Paso 15 - Apagar bomba solube si está en semiautomático")
@@ -1418,6 +1535,27 @@ class RoutineHandler(threading.Thread):
         print('Delta Time Paso 16: ', roscado_delta_time_paso16)
 
         print("ROSCADO - Paso 16 - Retira acople lubricante")
+
+
+
+        # *** Paso 17 - Contraer cerramiento de roscado
+        key = 'expandir_cerramiento_roscado'
+        wait_key = 'cerramiento_roscado_contraido'
+        group = 0
+        wait_group = 1
+
+        if not self.send_pneumatic(key, group, 0):
+            ws_vars.MicroState.err_messages.append('Error Comando - ROSCADO - Paso 17 - Contraer cerramiento roscado')
+            return False
+        
+        if not self.wait_for_remote_in_flag(wait_key, wait_group):
+            ws_vars.MicroState.err_messages.append('Error Flag - ROSCADO - Paso 17 - Contraer cerramiento roscado')
+            return False
+
+        roscado_delta_time_paso17 = datetime.now() - roscado_start_time
+        print('Delta Time Paso 17: ', roscado_delta_time_paso17)
+
+        print("ROSCADO - Paso 17 - Contraer cerramiento de roscado")
 
 
 
@@ -1812,6 +1950,21 @@ class RoutineHandler(threading.Thread):
             flag = ws_vars.MicroState.rem_i_states[group][flag_key]
             time.sleep(self.wait_time)
             stop_flags_ok = self.check_stop_flags(timer=timer, timeout=ctrl_vars.TIMEOUT_PNEUMATIC)
+            timer += self.wait_time
+        if not flag:
+            return False
+        return True
+
+
+
+    def wait_flag_presencia_cupla_en_cargador(self, flag_key, group): #AGREGADO 20220819 POR AP Y TS
+        flag = ws_vars.MicroState.rem_i_states[group][flag_key]
+        timer = 0
+        stop_flags_ok = self.check_stop_flags(timeout=ctrl_vars.TIMEOUT_CARGA_CUPLA)
+        while not flag and stop_flags_ok:     # Verifica que el flag está en HIGH
+            flag = ws_vars.MicroState.rem_i_states[group][flag_key]
+            time.sleep(self.wait_time)
+            stop_flags_ok = self.check_stop_flags(timer=timer, timeout=ctrl_vars.TIMEOUT_CARGA_CUPLA)
             timer += self.wait_time
         if not flag:
             return False

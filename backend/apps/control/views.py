@@ -232,7 +232,19 @@ class ManualPneumatic(View):
                 send_msg = False
         
         elif menu == 'cabezal':
-            if name == 'clampeo':
+            if name == 'cerramiento':
+                key = 'expandir_cerramiento_roscado'
+                group = 0
+                if btn == 'On':
+                    bool_value  = 1
+                
+                else:
+                    bool_value  = 0
+                
+                self.set_rem_do(command, key, group, bool_value)
+                send_msg = False
+                
+            elif name == 'clampeo':
                 keys = ['contraer_clampeo_plato', 'expandir_clampeo_plato']
                 group = 1
                 if btn == 'On':
@@ -349,8 +361,9 @@ class ManualPneumatic(View):
                 send_msg = False
         
         if send_msg:
-            self.send_message(header, data)
-            print(header.get_values(), data.get_values())
+            print("send_msg false")
+        #     self.send_message(header, data)
+        #     print(header.get_values(), data.get_values())
             
         return JsonResponse({})
 

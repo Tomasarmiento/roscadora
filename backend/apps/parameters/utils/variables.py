@@ -13,6 +13,8 @@ PARAM_NAMES = [
     'posicion_de_inicio',
     'torque_tolerado',
     'roscado_contador',
+    'soluble_intermitente',
+    'modelo',
 ]
 
 
@@ -26,6 +28,8 @@ PARAM_DEFAULT_VALUES_1 = {
     'velocidad_de_retraccion': 10,
     'posicion_de_inicio': 5,
     'torque_tolerado': 100,
+    'soluble_intermitente': 0,
+    'modelo': 0,
 }
 
 PARAM_DEFAULT_VALUES_2 = {
@@ -38,6 +42,8 @@ PARAM_DEFAULT_VALUES_2 = {
     'velocidad_de_retraccion': 10,
     'posicion_de_inicio': 5,
     'torque_tolerado': 100,
+    'soluble_intermitente': 0,
+    'modelo': 0,
 }
 
 PARAM_DEFAULT_VALUES_3 = {
@@ -50,6 +56,8 @@ PARAM_DEFAULT_VALUES_3 = {
     'velocidad_de_retraccion': 10,
     'posicion_de_inicio': 5,
     'torque_tolerado': 100,
+    'soluble_intermitente' : 0,
+    'modelo': 0,
 }
 
 PARAM_DEFAULT_VALUES = {
@@ -68,6 +76,8 @@ PARAMS_UNITS = {
     'tiempo_de_ciclo': 'seg',
     'torque_tolerado': 'Nm',
     't_inicio_soluble': 'seg',
+    'soluble_intermitente' : '-',
+    'modelo': '-',
 }
 
 SELECTED_MODEL = 1
@@ -104,6 +114,8 @@ ROSCADO_PARAMS_NAMES = [
     'posicion_de_inicio',
     'torque_tolerado',
     'roscado_contador',
+    'soluble_intermitente',
+    'modelo',
 ]
 
 ROSCADO_PARAMS_PARAMS_DEFAULT_VALUES = {

@@ -52,4 +52,4 @@ def update_roscado_params():
     for roscado_param_name in param_vars.ROSCADO_PARAMS_NAMES:
         param = params.filter(part_model=part_model).get(name=roscado_param_name)
         ctrl_vars.ROSCADO_CONSTANTES[roscado_param_name] = float(param.value)
-    print(ctrl_vars.ROSCADO_CONSTANTES)
+    print("init params",ctrl_vars.ROSCADO_CONSTANTES)

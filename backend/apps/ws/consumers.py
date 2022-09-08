@@ -48,6 +48,7 @@ class FrontConsumer(AsyncWebsocketConsumer):
     
     @database_sync_to_async
     def delete_channel_info(self):
+        print("dentro de delete channel info")
         channel_info = ChannelInfo.objects.get(name=self.channel_name)
         channel_info.delete()
 
@@ -70,6 +71,7 @@ class MicroDataConsumer(WebsocketConsumer):
             MicroState.last_rx_header.store_from_raw(bytes_data[:h_bytes_len])
             MicroState.last_rx_data.store_from_raw(bytes_data[h_bytes_len:])
             ctrl_fun.update_states(micro_data=MicroState.last_rx_data)
+            # print("dentro de receive",ctrl_fun.update_states(micro_data=MicroState.last_rx_data))
             
             if MicroState.turn_load_drv_off:        # Flag de apagar driver de cabezal cuando el plato está clampeado
                 MicroState.turn_load_drv_off = False
@@ -82,10 +84,10 @@ class MicroDataConsumer(WebsocketConsumer):
                 self.send(bytes_data=header)
             
             if MicroState.turn_turn_drv_off:        # Flag de apagar driver de husillo cuando rpm es 0
-                print('APAGAR EJE GIRO')
-                MicroState.turn_turn_drv_off = False
+                print('APAGAR HUSILLO')
 
                 if ws_vars.MicroState.axis_flags[ctrl_vars.AXIS_IDS['giro']]['estado'] == 'slave':
+                    print('apaga sincronismo husill')
                     axis = ctrl_vars.AXIS_IDS['avance']
                     msg_id = ws_vars.MicroState.last_rx_header.get_msg_id() + 1
                     ws_vars.MicroState.msg_id = msg_id
@@ -94,6 +96,7 @@ class MicroDataConsumer(WebsocketConsumer):
                     header = header.pacself()
                     self.send(bytes_data=header)
 
+                print('apaga enable husillo')
                 axis = ctrl_vars.AXIS_IDS['giro']
                 msg_id = ws_vars.MicroState.last_rx_header.get_msg_id() + 1
                 ws_vars.MicroState.msg_id = msg_id
@@ -102,6 +105,8 @@ class MicroDataConsumer(WebsocketConsumer):
                 header = header.pacself()
                 self.send(bytes_data=header)
             
+                MicroState.turn_turn_drv_off = False
+                
             if ws_vars.MicroState.loc_i_states['end'] == False:     # Boton continuar presionado
                 ws_vars.MicroState.end_master_routine = True
             

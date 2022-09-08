@@ -135,6 +135,7 @@ BOQUILLA_ROSCADO = {
 
 TIMEOUT_GENERAL         = 20
 TIMEOUT_PNEUMATIC       = 20
+TIMEOUT_CARGA_CUPLA     = 7200
 TIMEOUT_LOAD            = 10
 TIMEOUT_LINEAL          = 30
 TIMEOUT_STATE_CHANGE    = 5
@@ -179,7 +180,7 @@ REM_DO_G1_BITS = {
     'cerrar_pinza_descargadora':    8,      # Gripper Descarga (Cierra: 10-off y 9-on / Abre: 10-on y 9-off)
     'abrir_pinza_descargadora':     9,      # Gripper Descarga (Cierra: 10-off y 9-on / Abre: 10-on y 9-off)
     'contraer_boquilla_descarga':   10,     # Boquilla Descarga (Cierra: 11-on / Abre: 11-off)
-                                            # 11 not implemented
+    'expandir_cerramiento_roscado': 11,     # New output
     'contraer_boquilla_carga':      12,     # Boquilla Carga (Cierra: 13-on / Abre: 13-off)
                                             # 13 not implemented
     'expandir_vertical_carga':      14,     # Vertical Carga (Arriba: 15-on / Abajo: 15-off)
@@ -238,7 +239,7 @@ REM_DI_G2_BITS = {
     'presencia_cupla_en_cargador':  10,
                                     # 11 not implemented
     'cupla_por_tobogan_descarga':   12,
-                                    # 13 not implemented
+    'cerramiento_roscado_contraido':13,     # new input
                                     # 14 not implemented
     'presion_normal':               15,
 }
@@ -270,7 +271,7 @@ REM_DO_G1_ARR = [
     'cerrar_pinza_descargadora',    # 9 - 8
     'abrir_pinza_descargadora',     # 10 - 9
     'contraer_boquilla_descarga',   # 11 - 10
-    '',                             # 12 - 11
+    'expandir_cerramiento_roscado', # 12 - 11
     'contraer_boquilla_carga',      # 13 - 12
     '',                             # 14 - 13
     'expandir_vertical_carga',      # 15 - 14
@@ -329,7 +330,7 @@ REM_DI_G2_ARR = [
     'presencia_cupla_en_cargador',  # 27 - 10
     '',                             # 28 - 11
     'cupla_por_tobogan_descarga',   # 29 - 12
-    '',                             # 30 - 13
+    'cerramiento_roscado_contraido',# 30 - 13  new input
     '',                             # 31 - 14
     'presion_normal',               # 32 - 15
 ]

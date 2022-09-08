@@ -58,6 +58,7 @@ socket.onmessage = function (event) {
         const neumaticoClampeoPlatoExtendido = document.querySelector("#neumaticClampPlateExtended");
         const acopleLubricanteContraido = document.querySelector("#acopleLubricantContracted");
         const acopleLubricanteExtendido = document.querySelector("#acopleLubricantExtended");
+        const cerramientoRoscadoExtendido = document.querySelector("#cerramientoRoscadoExtended");
 
 
         //MOTORES SENSORES//
@@ -201,6 +202,10 @@ socket.onmessage = function (event) {
         datosWs.remote_inputs[1].clampeo_plato_contraido == true
          ? (neumaticoClampeoPlatoContraido.className = "led led-grey")
          : (neumaticoClampeoPlatoContraido.className = "led led-green");
+        //Neumático cerramiento roscado Extendido
+        datosWs.remote_inputs[1].cerramiento_roscado_contraido == false
+         ? (cerramientoRoscadoExtendido.className = "led led-grey")
+         : (cerramientoRoscadoExtendido.className = "led led-green");
 
 
 

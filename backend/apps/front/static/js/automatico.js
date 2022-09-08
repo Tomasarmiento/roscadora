@@ -275,7 +275,9 @@ const totalDuration = 10000;
     var listaMensajesErrores = [];
     var count = 0;
     socket.onmessage = function (event) {
-     const datosWs = JSON.parse(event.data);
+        const datosWs = JSON.parse(event.data);
+        // console.log("hola");
+
 
     if (datosWs.mensajes_log.length > 0) {
         listaMensajes.push(datosWs.mensajes_log);
@@ -430,7 +432,7 @@ const totalDuration = 10000;
     
 
     //terminar
-     console.log( datosWs.end_master_routine, datosWs.master_running, datosWs.master_stop);
+    //  console.log( datosWs.end_master_routine, datosWs.master_running, datosWs.master_stop);
     (datosWs.end_master_routine == true && datosWs.master_running == true)
     ? (terminar.className = "btn btn-primary mb-3") && (terminar.innerHTML = 'Terminando') && (terminar.style.fontSize = "25px")
     : (terminar.className = "btn btn-warning mb-3") && (terminar.innerHTML = 'Terminar')  && (terminar.style.fontSize = "25px")

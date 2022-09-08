@@ -99,6 +99,9 @@ socket.onmessage = function (event) {
         
         
         //Cabezal
+        const cerramientoSi = document.querySelector("#cerramientoSiOk");
+        const cerramientoNo = document.querySelector("#cerramientoNoOk");
+        
         const clampeoSi = document.querySelector("#clampeoSiOk");
         const clampeoNo = document.querySelector("#clampeoNoOk");
         
@@ -263,6 +266,15 @@ socket.onmessage = function (event) {
  
 
           //CABEZAL//
+          //Cerramiento
+          datosWs.remote_inputs[1].cerramiento_roscado_contraido == false
+          ? (cerramientoSi.className = "led led-grey")
+          : (cerramientoSi.className = "led led-green");
+
+          datosWs.remote_inputs[1].cerramiento_roscado_contraido == true
+          ? (cerramientoNo.className = "led led-grey")
+          : (cerramientoNo.className = "led led-green");
+
           //Clampeo
           datosWs.remote_inputs[1].clampeo_plato_contraido == true && datosWs.remote_inputs[1].clampeo_plato_expandido == false   
           ? (clampeoSi.className = "led led-grey")
@@ -346,7 +358,7 @@ socket.onmessage = function (event) {
           datosWs.remote_outputs[1].encender_bomba_hidraulica == true
           ? (bombaHidraulicaOff.className = "led led-grey")
           : (bombaHidraulicaOff.className = "led led-green");
-        console.log(datosWs);
+        // console.log(datosWs.remote_inputs[1].cerramiento_roscado_contraido);
           
         }
     }

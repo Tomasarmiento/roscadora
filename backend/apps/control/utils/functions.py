@@ -1,3 +1,4 @@
+import string
 import django
 import random, time
 from datetime import datetime
@@ -161,6 +162,7 @@ def check_init_conditions_homing():
 
         (ws_vars.MicroState.axis_flags[eje_avance]['maq_est_val'] == initial_state, 'Eje lineal apagado'),      # eje avance encendido
         (ws_vars.MicroState.rem_i_states[1]['acople_lubric_contraido'], 'Acople lubricante afuera'),            # acople_lubricante_contraido
+        (ws_vars.MicroState.rem_i_states[1]['cerramiento_roscado_contraido'], 'Cerramiento roscado expandido'), # cerramiento_roscado_contraido
         (ws_vars.MicroState.rem_i_states[0]['puntera_descarga_contraida'], 'Puntera descarga expandida'),       # puntera_descarga_contraida
         (ws_vars.MicroState.rem_i_states[0]['puntera_carga_contraida'], 'Puntera carga expandida'),             # puntera_carga_contraida
     ]
@@ -186,15 +188,16 @@ def check_init_conditions_index():
         (ws_vars.MicroState.axis_flags[ctrl_vars.AXIS_IDS['avance']]['cero_desconocido'] == False, 'Cero desconocido en eje lineal'),   # Eje lineal cerado
         (ws_vars.MicroState.axis_flags[ctrl_vars.AXIS_IDS['carga']]['cero_desconocido'] == False, 'Cero desconocido en eje lineal'),    # Cabezal cerado
         
-        (ws_vars.MicroState.axis_flags[eje_carga]['estado'] != 'safe', 'Eje carga en safe'),                                              # Eje en safe
-        (ws_vars.MicroState.axis_flags[eje_giro]['estado'] != 'safe', 'Eje husillo en safe'),                                             # Eje en safe
-        (ws_vars.MicroState.axis_flags[eje_avance]['estado'] != 'safe', 'Eje avance en safe'),                                            # Eje en safe
+        (ws_vars.MicroState.axis_flags[eje_carga]['estado'] != 'safe', 'Eje carga en safe'),                                            # Eje en safe
+        (ws_vars.MicroState.axis_flags[eje_giro]['estado'] != 'safe', 'Eje husillo en safe'),                                           # Eje en safe
+        (ws_vars.MicroState.axis_flags[eje_avance]['estado'] != 'safe', 'Eje avance en safe'),                                          # Eje en safe
         (ws_vars.MicroState.rem_i_states[1]['presion_normal'], 'Baja presión'),                                                         # Presión normal
 
         (ws_vars.MicroState.rem_i_states[1]['clampeo_plato_expandido'], 'Plato no clampeado'),                                          # plato_clampeado
         (ws_vars.MicroState.rem_i_states[1]['acople_lubric_contraido'], 'Acople lubricante expandido'),                                 # acople_lubricante_contraido
         (ws_vars.MicroState.rem_i_states[0]['puntera_descarga_contraida'], 'Puntera descarga expandida'),                               # puntera_descarga_contraida
         (ws_vars.MicroState.rem_i_states[0]['puntera_carga_contraida'], 'Puntera carga expandida'),                                     # puntera_carga_contraida
+        (ws_vars.MicroState.rem_i_states[1]['cerramiento_roscado_contraido'], 'Cerramiento roscado expandido'),                         # cerramiento_roscado_contraido
         (round(ws_vars.MicroState.axis_measures[eje_avance]['pos_fil'], 0) >= round(ctrl_vars.ROSCADO_CONSTANTES['posicion_de_inicio'], 0), 'Posición de eje avance erróneo'),   # Eje avance en posición de inicio
     ]
     for flag, error in init_flags:
@@ -228,7 +231,7 @@ def check_init_conditions_load():
         (ws_vars.MicroState.rem_i_states[0]['puntera_carga_contraida'], 'Puntera carga expandida'),                 # puntera_carga_contraida
         (ws_vars.MicroState.rem_i_states[0]['brazo_cargador_expandido'], 'Brazo cargador cntraído'),                # brazo_cargador_expandido
         (ws_vars.MicroState.rem_i_states[0]['boquilla_carga_expandida'], 'Boquilla de carga contraída'),            # boquilla de carga  liberada - ws_vars.MicroState.rem_i_states[0]
-        (ws_vars.MicroState.rem_i_states[1]['presencia_cupla_en_cargador'], 'Cupla en cargador no presente'),       # presencia_cupla_en_cargador
+        #(ws_vars.MicroState.rem_i_states[1]['presencia_cupla_en_cargador'], 'Cupla en cargador no presente'),       # presencia_cupla_en_cargador
         (not ws_vars.MicroState.rem_i_states[1]['pieza_en_boquilla_carga'], 'Pieza en boquilla de carga presente')  # pieza no presente en boquilla de carga
     ]
 
@@ -397,7 +400,7 @@ def update_data_flags(micro_data):
     return micro_flags
 
 
-def check_end_flags(flags_value):
+def check_end_flags(flags_value,axis):
     ok_bit                  = msg_app.AxisFlagsFin.FLGFIN_OK
     cancel_bit              = msg_app.AxisFlagsFin.FLGFIN_CANCELLED
     em_stop_bit             = msg_app.AxisFlagsFin.FLGFIN_EM_STOP
@@ -421,45 +424,45 @@ def check_end_flags(flags_value):
     else:
         if flags_value & cancel_bit == cancel_bit:
             end_states.append('cancel')
-            ws_vars.MicroState.err_messages.append('Comando cancelado')
+            ws_vars.MicroState.err_messages.append(f"Axis nro.{str(axis)} - Comando cancelado")
         if flags_value & em_stop_bit == em_stop_bit:
             end_states.append('em_stop')
-            ws_vars.MicroState.err_messages.append('Parada de emergencia')
+            ws_vars.MicroState.err_messages.append(f"Axis nro.{str(axis)} - Parada de emergencia")
         if flags_value & drv_homing_err_bit == drv_homing_err_bit:
             end_states.append('homming_error')
-            ws_vars.MicroState.err_messages.append('Error de cerado')
+            ws_vars.MicroState.err_messages.append(f"Axis nro.{str(axis)} - Error de cerado")
         if flags_value & echo_timeout_bit == echo_timeout_bit:
             end_states.append('echo_timeout')
-            ws_vars.MicroState.err_messages.append('Eco tiemout')
+            ws_vars.MicroState.err_messages.append(f"Axis nro.{str(axis)} - Eco tiemout")
         if flags_value & pos_abs_disabled_bit == pos_abs_disabled_bit:
             end_states.append('pos_abs_disabled')
-            ws_vars.MicroState.err_messages.append('Posicion absuluta deshabilitada')
+            ws_vars.MicroState.err_messages.append(f"Axis nro.{str(axis)} - Posicion absuluta deshabilitada")
         if flags_value & unkown_zero_bit == unkown_zero_bit:
             end_states.append('unkown_zero')
-            ws_vars.MicroState.err_messages.append('Cero desconocido')
+            ws_vars.MicroState.err_messages.append(f"Axis nro.{str(axis)} - Cero desconocido")
         if flags_value & pos_fbk_err_bit == pos_fbk_err_bit:
             end_states.append('pos_fbk_err')
-            ws_vars.MicroState.err_messages.append('Position feedback error')
+            ws_vars.MicroState.err_messages.append(f"Axis nro.{str(axis)} - Position feedback error")
         if flags_value & limit_vel_exceeded_bit == limit_vel_exceeded_bit:
             end_states.append('limit_vel_exceeded')
-            ws_vars.MicroState.err_messages.append('Limite de velocidad exedido')
+            ws_vars.MicroState.err_messages.append(f"Axis nro.{str(axis)} - Limite de velocidad exedido")
         if flags_value & limit_pos_exceeded_bit == limit_pos_exceeded_bit:
             end_states.append('limit_pos_exceeded')
-            ws_vars.MicroState.err_messages.append('Limite de posicion exedido')
+            ws_vars.MicroState.err_messages.append(f"Axis nro.{str(axis)} - Limite de posicion exedido")
         if flags_value & limit_fza_exceeded_bit == limit_fza_exceeded_bit:
             end_states.append('limit_fza_exceeded')
-            ws_vars.MicroState.err_messages.append('Limite de fuerza exedido')
+            ws_vars.MicroState.err_messages.append(f"Axis nro.{str(axis)} - Limite de fuerza exedido")
         if flags_value & yield_bit == yield_bit:
             end_states.append('yield')
         if flags_value & invalid_state_bit == invalid_state_bit:
             end_states.append('invalid_state')
-            ws_vars.MicroState.err_messages.append('Estado invalido')
+            ws_vars.MicroState.err_messages.append(f"Axis nro.{str(axis)} - Estado invalido")
         if flags_value & drv_not_enabled_bit == drv_not_enabled_bit:
             end_states.append('drv_not_enabled')
-            ws_vars.MicroState.err_messages.append('Driver not enabled')
+            ws_vars.MicroState.err_messages.append(f"Axis nro.{str(axis)} - Driver not enabled")
         if flags_value & axis_limit_torque == axis_limit_torque:
             end_states.append('axis_disabled')
-            ws_vars.MicroState.err_messages.append('Axis disabled')
+            ws_vars.MicroState.err_messages.append(f"Axis nro.{str(axis)} - Axis disabled")
     
     return end_states
 
@@ -486,7 +489,7 @@ def update_axis_flags(micro_data, axis):
     ws_vars.MicroState.axis_flags[axis]['drv_fbk_flags']    = micro_data.data.ctrl.eje[axis].mov_pos.med_drv.drv_fbk.flags
 
     ws_vars.MicroState.axis_flags[axis]['flags_fin']        = micro_data.data.ctrl.eje[axis].maq_est.flags_fin
-    ws_vars.MicroState.axis_flags[axis]['fin']              = check_end_flags(ws_vars.MicroState.axis_flags[axis]['flags_fin'])
+    ws_vars.MicroState.axis_flags[axis]['fin']              = check_end_flags(ws_vars.MicroState.axis_flags[axis]['flags_fin'],axis)
     ws_vars.MicroState.axis_flags[axis]['axis_id']          = axis
 
     ws_vars.MicroState.axis_flags[axis]['drv_flags']        = micro_data.data.ctrl.eje[axis].mov_pos.med_drv.drv_fbk.flags
@@ -510,15 +513,17 @@ def update_axis_data(micro_data):
         ws_vars.MicroState.load_on_timer = datetime.now()
     
     enable_flag = msg_base.DrvFbkDataFlags.ENABLED
-    if ws_vars.MicroState.axis_flags[ctrl_vars.AXIS_IDS['giro']]['drv_flags'] & enable_flag and \
-        round(ws_vars.MicroState.axis_measures[ctrl_vars.AXIS_IDS['giro']]['vel_fil'], 0) == 0:
-        
+    if (ws_vars.MicroState.axis_flags[ctrl_vars.AXIS_IDS['giro']]['drv_flags'] & enable_flag or ws_vars.MicroState.axis_flags[ctrl_vars.AXIS_IDS['giro']]['estado'] == 'slave') and round(ws_vars.MicroState.axis_measures[ctrl_vars.AXIS_IDS['giro']]['vel_fil'], 0) == 0:
+
+        #print("entra en condicion de apagar husillo")
+
         from apps.control.models import RoutineInfo
         roscado_info = RoutineInfo.objects.get(name='roscado')
 
         if roscado_info.running == 0 and ws_vars.MicroState.master_running == 0:
             time_diff = datetime.now() - ws_vars.MicroState.turn_on_timer
             if time_diff.total_seconds() >= ctrl_vars.GIRO_ON_TIMEOUT:
+                print("pone en true el apagar husillo")
                 ws_vars.MicroState.turn_turn_drv_off = True
     
     else:
@@ -542,6 +547,7 @@ def update_rem_io_states(micro_data):
             ctrl_vars.REM_DO_G2_ARR[i]
             )
         flag = 1 << i
+        # print(i)
         if keys[0]:
             g_1_i[keys[0]] = (micro_data.data.ctrl.rem_io.di16[0] & flag == flag)
             ctrl_vars.REM_DI_G1_STATES[keys[0]] = g_1_i[keys[0]]
@@ -617,6 +623,8 @@ def update_states(micro_data):
     update_axis_data(micro_data)
     update_graph()
     update_front_states()           # Should always be called at the end
+    # print(ws_vars.MicroState.rem_i_states[1]['cerramiento_roscado_contraido'],ws_vars.MicroState.rem_o_states[0]['expandir_cerramiento_roscado'])
+    # print(ws_vars.MicroState.rem_o_states[0]['new_output'])
 
 
 def update_front_messages():
