@@ -374,6 +374,370 @@ def reset_routines_info():
     for rtn in rtns_info:
         rtn.running = 0
         rtn.save()
+# -------------------------------------------------------------------------------------------- #
+# ------------------- Chequeo de condiciones iniciales neumatica(safe-mode) ------------------ #
+# -------------------------------------------------------------------------------------------- #
+
+
+def check_init_conditions_neumatic_test(param_name):
+    error_messages = []
+    if param_name == 'contraer_boquilla_carga':
+        #checkea
+        init_flags = [
+            (ws_vars.MicroState.rem_i_states[0]['boquilla_descarga_expandida'], 'Boquilla descarga contraída'),     
+        ]
+
+        for flag, error in init_flags:
+            if flag == False:
+                error_messages.append(error)
+        
+        return error_messages
+
+
+def check_init_conditions_neumatic_load(param_name):
+    error_messages = []
+    if param_name == 'contraer_puntera_carga':
+        #checkea
+        init_flags = [
+            (ws_vars.MicroState.rem_i_states[1]['clampeo_plato_expandido'],  'Plato no clampeado')    
+        ]
+
+        for flag, error in init_flags:
+            if flag == False:
+                error_messages.append(error)
+        
+        return error_messages
+
+    elif param_name == 'expandir_puntera_carga':
+        #checkea
+        init_flags = [
+            (ws_vars.MicroState.rem_i_states[1]['clampeo_plato_expandido'],  'Plato no clampeado')    
+        ]
+
+        for flag, error in init_flags:
+            if flag == False:
+                error_messages.append(error)
+        
+        return error_messages
+
+    elif param_name == 'expandir_vertical_carga':
+        #checkea
+        init_flags = [
+            (ws_vars.MicroState.rem_i_states[1]['clampeo_plato_expandido'],  'Plato no clampeado')    
+        ]
+
+        for flag, error in init_flags:
+            if flag == False:
+                error_messages.append(error)
+        
+        return error_messages
+
+    elif param_name == 'contraer_boquilla_carga':
+        #checkea
+        init_flags = [
+            (ws_vars.MicroState.rem_i_states[1]['clampeo_plato_expandido'],  'Plato no clampeado')    
+        ]
+
+        for flag, error in init_flags:
+            if flag == False:
+                error_messages.append(error)
+        
+        return error_messages
+
+    elif param_name == 'contraer_brazo_cargador':
+        #checkea
+        init_flags = [
+            (ws_vars.MicroState.rem_i_states[1]['clampeo_plato_expandido'],  'Plato no clampeado')    
+        ]
+
+        for flag, error in init_flags:
+            if flag == False:
+                error_messages.append(error)
+        
+        return error_messages
+
+    elif param_name == 'expandir_brazo_cargador':
+        #checkea
+        init_flags = [
+            (ws_vars.MicroState.rem_i_states[1]['clampeo_plato_expandido'],  'Plato no clampeado')    
+        ]
+
+        for flag, error in init_flags:
+            if flag == False:
+                error_messages.append(error)
+        
+        return error_messages
+    
+
+def check_init_conditions_neumatic_unload(param_name):
+    error_messages = []
+    if param_name == 'contraer_puntera_descarga':
+        #checkea
+        init_flags = [
+            (ws_vars.MicroState.rem_i_states[1]['clampeo_plato_expandido'],  'Plato no clampeado')    
+        ]
+
+        for flag, error in init_flags:
+            if flag == False:
+                error_messages.append(error)
+        
+        return error_messages
+
+    elif param_name == 'expandir_puntera_descarga':
+        #checkea
+        init_flags = [
+            (ws_vars.MicroState.rem_i_states[1]['clampeo_plato_expandido'],  'Plato no clampeado')    
+        ]
+
+        for flag, error in init_flags:
+            if flag == False:
+                error_messages.append(error)
+        
+        return error_messages
+
+    elif param_name == 'contraer_brazo_descargador':
+        #checkea
+        init_flags = [
+            (ws_vars.MicroState.rem_i_states[1]['clampeo_plato_expandido'],  'Plato no clampeado')    
+        ]
+
+        for flag, error in init_flags:
+            if flag == False:
+                error_messages.append(error)
+        
+        return error_messages
+
+    elif param_name == 'expandir_brazo_descargador':
+        #checkea
+        init_flags = [
+            (ws_vars.MicroState.rem_i_states[1]['clampeo_plato_expandido'],  'Plato no clampeado')    
+        ]
+
+        for flag, error in init_flags:
+            if flag == False:
+                error_messages.append(error)
+        
+        return error_messages
+
+    elif param_name == 'expandir_horiz_pinza_desc':
+        #checkea
+        init_flags = [
+            (ws_vars.MicroState.rem_i_states[1]['clampeo_plato_expandido'],  'Plato no clampeado')    
+        ]
+
+        for flag, error in init_flags:
+            if flag == False:
+                error_messages.append(error)
+        
+        return error_messages
+
+    elif param_name == 'expandir_vert_pinza_desc':
+        #checkea
+        init_flags = [
+            (ws_vars.MicroState.rem_i_states[1]['clampeo_plato_expandido'],  'Plato no clampeado')    
+        ]
+
+        for flag, error in init_flags:
+            if flag == False:
+                error_messages.append(error)
+        
+        return error_messages
+
+    elif param_name == 'contraer_boquilla_descarga':
+        #checkea
+        init_flags = [
+            (ws_vars.MicroState.rem_i_states[1]['clampeo_plato_expandido'],  'Plato no clampeado')    
+        ]
+
+        for flag, error in init_flags:
+            if flag == False:
+                error_messages.append(error)
+        
+        return error_messages
+
+    elif param_name == 'cerrar_pinza_descargadora':
+        #checkea
+        init_flags = [
+            (ws_vars.MicroState.rem_i_states[1]['clampeo_plato_expandido'],  'Plato no clampeado')    
+        ]
+
+        for flag, error in init_flags:
+            if flag == False:
+                error_messages.append(error)
+        
+        return error_messages
+
+    elif param_name == 'abrir_pinza_descargadora':
+        #checkea
+        init_flags = [
+            (ws_vars.MicroState.rem_i_states[1]['clampeo_plato_expandido'],  'Plato no clampeado')    
+        ]
+
+        for flag, error in init_flags:
+            if flag == False:
+                error_messages.append(error)
+        
+        return error_messages
+
+
+def check_init_conditions_neumatic_cabezal(param_name):
+    error_messages = []
+    if param_name == 'expandir_cerramiento_roscado':
+        #checkea
+        init_flags = [
+            (ws_vars.MicroState.rem_i_states[1]['clampeo_plato_expandido'],  'Plato no clampeado')    
+        ]
+
+        for flag, error in init_flags:
+            if flag == False:
+                error_messages.append(error)
+        
+        return error_messages
+
+    elif param_name == 'contraer_clampeo_plato':
+        #checkea
+        init_flags = [
+            (ws_vars.MicroState.rem_i_states[1]['clampeo_plato_expandido'],  'Plato no clampeado')    
+        ]
+
+        for flag, error in init_flags:
+            if flag == False:
+                error_messages.append(error)
+        
+        return error_messages
+
+    elif param_name == 'expandir_clampeo_plato':
+        #checkea
+        init_flags = [
+            (ws_vars.MicroState.rem_i_states[1]['clampeo_plato_expandido'],  'Plato no clampeado')    
+        ]
+
+        for flag, error in init_flags:
+            if flag == False:
+                error_messages.append(error)
+        
+        return error_messages
+
+    elif param_name == 'presurizar':
+        #checkea
+        init_flags = [
+            (ws_vars.MicroState.rem_i_states[1]['clampeo_plato_expandido'],  'Plato no clampeado')    
+        ]
+
+        for flag, error in init_flags:
+            if flag == False:
+                error_messages.append(error)
+        
+        return error_messages
+
+    elif param_name == 'cerrar_boquilla_1':
+        #checkea
+        init_flags = [
+            (ws_vars.MicroState.rem_i_states[1]['clampeo_plato_expandido'],  'Plato no clampeado')    
+        ]
+
+        for flag, error in init_flags:
+            if flag == False:
+                error_messages.append(error)
+        
+        return error_messages
+
+    elif param_name == 'abrir_boquilla_1':
+        #checkea
+        init_flags = [
+            (ws_vars.MicroState.rem_i_states[1]['clampeo_plato_expandido'],  'Plato no clampeado')    
+        ]
+
+        for flag, error in init_flags:
+            if flag == False:
+                error_messages.append(error)
+        
+        return error_messages
+
+    elif param_name == 'cerrar_boquilla_2':
+        #checkea
+        init_flags = [
+            (ws_vars.MicroState.rem_i_states[1]['clampeo_plato_expandido'],  'Plato no clampeado')    
+        ]
+
+        for flag, error in init_flags:
+            if flag == False:
+                error_messages.append(error)
+        
+        return error_messages
+
+    elif param_name == 'abrir_boquilla_2':
+        #checkea
+        init_flags = [
+            (ws_vars.MicroState.rem_i_states[1]['clampeo_plato_expandido'],  'Plato no clampeado')    
+        ]
+
+        for flag, error in init_flags:
+            if flag == False:
+                error_messages.append(error)
+        
+        return error_messages
+
+    elif param_name == 'cerrar_boquilla_3':
+        #checkea
+        init_flags = [
+            (ws_vars.MicroState.rem_i_states[1]['clampeo_plato_expandido'],  'Plato no clampeado')    
+        ]
+
+        for flag, error in init_flags:
+            if flag == False:
+                error_messages.append(error)
+        
+        return error_messages
+
+    elif param_name == 'abrir_boquilla_3':
+        #checkea
+        init_flags = [
+            (ws_vars.MicroState.rem_i_states[1]['clampeo_plato_expandido'],  'Plato no clampeado')    
+        ]
+
+        for flag, error in init_flags:
+            if flag == False:
+                error_messages.append(error)
+        
+        return error_messages
+
+    elif param_name == 'expandir_acople_lubric':
+        #checkea
+        init_flags = [
+            (ws_vars.MicroState.rem_i_states[1]['clampeo_plato_expandido'],  'Plato no clampeado')    
+        ]
+
+        for flag, error in init_flags:
+            if flag == False:
+                error_messages.append(error)
+        
+        return error_messages
+
+    elif param_name == 'encender_bomba_soluble':
+        #checkea
+        init_flags = [
+            (ws_vars.MicroState.rem_i_states[1]['clampeo_plato_expandido'],  'Plato no clampeado')    
+        ]
+
+        for flag, error in init_flags:
+            if flag == False:
+                error_messages.append(error)
+        
+        return error_messages
+
+    elif param_name == 'encender_bomba_hidraulica':
+        #checkea
+        init_flags = [
+            (ws_vars.MicroState.rem_i_states[1]['clampeo_plato_expandido'],  'Plato no clampeado')    
+        ]
+
+        for flag, error in init_flags:
+            if flag == False:
+                error_messages.append(error)
+        
+        return error_messages
+
 
 # -------------------------------------------------------------------------------------------- #
 # -------------------------------- Update/Get States ----------------------------------------- #
@@ -722,6 +1086,9 @@ def get_front_states():
         # Messages
         'mensajes_log': ws_vars.MicroState.log_messages,
         'mensajes_error': ws_vars.MicroState.err_messages,
+
+        # Modo seguro automatico flag
+        'state_mode_neumatic': ws_vars.MicroState.neumatic_safe_mode,
     }
     return data
 

@@ -20,6 +20,7 @@ from apps.ws.models import ChannelInfo
 
 from apps.control.utils.variables import COMMAND_DEFAULT_VALUES
 from apps.control.utils.routines import RoutineHandler, MasterHandler
+from apps.control.utils.functions import check_init_conditions_neumatic_test,check_init_conditions_neumatic_load,check_init_conditions_neumatic_unload,check_init_conditions_neumatic_cabezal
 from apps.control.utils import variables as ctrl_vars
 from apps.control.utils import functions as ctrl_func
 from apps.control.models import RoutineInfo
@@ -86,19 +87,36 @@ class ManualPneumatic(View):
 
     def post(self, request):
         post_req = request.POST
+        error_flag = False
+
         
         req_data = []
         
         for item in post_req.items():   # Item is in (key, value) format
             req_data.append(item)
 
-        command = int(req_data[0][1])
-        menu = req_data[1][1]
-        name = req_data[2][1]
-        btn = req_data[3][1]
-        send_msg = True
-        print('NOMBRE:', name)
-        print('BOTON:', btn)
+        if req_data[0][1] != 'exit_safe_mode' and req_data[0][1] != 'enter_safe_mode':
+            command = int(req_data[0][1])
+            menu = req_data[1][1]
+            name = req_data[2][1]
+            btn = req_data[3][1]
+            send_msg = True
+            print("COMANDO",command)
+            print("MENU",menu)
+            print('NOMBRE:', name)
+            print('BOTON:', btn)
+        else:
+            command = req_data[0][1]
+            menu = req_data[1][1]
+            name = req_data[2][1]
+            btn = req_data[3][1]
+            send_msg = True
+            print("COMANDO",command)
+            print("MENU",menu)
+            print('NOMBRE:', name)
+            print('BOTON:', btn)
+
+
         if menu == 'carga':
             if name == 'horizontalCarga':
                 keys = ['contraer_puntera_carga', 'expandir_puntera_carga']
@@ -110,6 +128,7 @@ class ManualPneumatic(View):
                 else:
                     bool_value_1  = 1
                     bool_value_2  = 0
+                    
                 
                 self.set_rem_do(command, keys[0], group, bool_value_1, keys[1], bool_value_2)
                 send_msg = False
@@ -134,9 +153,23 @@ class ManualPneumatic(View):
                 
                 else:
                     bool_value  = 0
-                
-                self.set_rem_do(command, key, group, bool_value)
-                send_msg = False
+                #chekear aca gripper de arriba
+
+                if MicroState.neumatic_safe_mode == True:
+                    if check_init_conditions_neumatic_test('contraer_boquilla_carga'):
+                        print('\nError en condiciones iniciales de carga')
+                        err_msg = 'Error en condiciones iniciales de carga'
+                        MicroState.err_messages.append(err_msg)
+                        for err in check_init_conditions_neumatic_test('contraer_boquilla_carga'):
+                            MicroState.err_messages.append(err)
+                            print(err)
+                            print("la lista es",MicroState.err_messages)
+                        error_flag = True
+
+                if error_flag != True: 
+                    self.set_rem_do(command, key, group, bool_value)
+                    send_msg = False
+
 
             elif name =='giroCarga':
                 keys = ['contraer_brazo_cargador', 'expandir_brazo_cargador']
@@ -359,7 +392,21 @@ class ManualPneumatic(View):
                 
                 self.set_rem_do(command, key, group, bool_value)
                 send_msg = False
-        
+
+        elif menu == 'exit_safe_mode':
+            if command == 'exit_safe_mode':
+                if name == 'exit_safe_mode':
+                    if btn == 'Off':
+                        MicroState.neumatic_safe_mode = False
+                        print(MicroState.neumatic_safe_mode)
+
+        elif menu == 'enter_safe_mode':
+            if command == 'enter_safe_mode':
+                if name == 'enter_safe_mode':
+                    if btn == 'On':
+                        MicroState.neumatic_safe_mode = True
+                        print(MicroState.neumatic_safe_mode)
+
         if send_msg:
             print("send_msg false")
         #     self.send_message(header, data)
@@ -474,6 +521,12 @@ def reset_cuplas_count(request):
     update_roscado_params()
     return JsonResponse({})
 
+
+# @csrf_exempt
+# def logout(request):
+#     MicroState.neumatic_safe_mode = True
+
+#     return JsonResponse({})
 
 
 @csrf_exempt

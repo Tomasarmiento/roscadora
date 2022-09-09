@@ -45,7 +45,12 @@ window.addEventListener("DOMContentLoaded", () => {                         //to
             ul.appendChild(li);
         }
     }
+
+    
 });
+
+
+
 
 function InsertarTexto(datosWs) {
   var ul = document.getElementById("cuadroMensajes");

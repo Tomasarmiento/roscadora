@@ -1,3 +1,5 @@
+var listaMensajesErrores = [];
+
 socket.onmessage = function (event) {
     const datosWs = JSON.parse(event.data);
 
@@ -267,11 +269,11 @@ socket.onmessage = function (event) {
 
           //CABEZAL//
           //Cerramiento
-          datosWs.remote_inputs[1].cerramiento_roscado_contraido == false
+          datosWs.remote_inputs[1].cerramiento_roscado_contraido == true
           ? (cerramientoSi.className = "led led-grey")
           : (cerramientoSi.className = "led led-green");
 
-          datosWs.remote_inputs[1].cerramiento_roscado_contraido == true
+          datosWs.remote_inputs[1].cerramiento_roscado_contraido == false
           ? (cerramientoNo.className = "led led-grey")
           : (cerramientoNo.className = "led led-green");
 
@@ -358,8 +360,13 @@ socket.onmessage = function (event) {
           datosWs.remote_outputs[1].encender_bomba_hidraulica == true
           ? (bombaHidraulicaOff.className = "led led-grey")
           : (bombaHidraulicaOff.className = "led led-green");
-        // console.log(datosWs.remote_inputs[1].cerramiento_roscado_contraido);
-          
+        console.log(datosWs.mensajes_error);
+
+        if (datosWs.mensajes_error.length > 0) {
+          listaMensajesErrores.push(datosWs.mensajes_error);
+          sessionStorage.setItem("mensajesError", listaMensajesErrores);
+          InsertarTextoErrores(datosWs.mensajes_error);
+        };
         }
     }
 
@@ -367,23 +374,66 @@ socket.onmessage = function (event) {
 
 
 document.addEventListener("DOMContentLoaded", (e) => {
-
+    let btn_logout = document.getElementById('exit_safe_modeXOff');
     let btns = document.getElementsByTagName('button');
-    
-    for(let i=0; i < btns.length; i++){
-        if(btns[i].hasAttribute('menu')){
-            btns[i].addEventListener('click', (e) => {
-                let menu = btns[i].getAttribute('menu');
-                let cmd = btns[i].getAttribute('cmd');
-                let name = btns[i].getAttribute('id');
-                let btn = name.slice(name.indexOf('X')+1)
-                name = name.slice(0, name.indexOf('X'));
-                sendCommand(cmd, menu, name, btn);
-            });
+    if (btns != btn_logout) {
+      for(let i=0; i < btns.length; i++){
+          if(btns[i].hasAttribute('menu')){
+
+              btns[i].addEventListener('click', (e) => {
+                  let menu = btns[i].getAttribute('menu');
+                  let cmd = btns[i].getAttribute('cmd');
+                  let name = btns[i].getAttribute('id');
+                  let btn = name.slice(name.indexOf('X')+1)
+                  name = name.slice(0, name.indexOf('X'));
+                  if (menu != 'exit_safe_mode') {
+                  sendCommand(cmd, menu, name, btn);
+                  }
+                  else{
+                    var answer = window.confirm("Al salir del modo seguro los accionamientos neumaticos no tomaran referencia del estado actual de la maquina.")
+                    if (answer) {
+                      sendCommand(cmd, menu, name, btn);
+                      console.log("si");
+                    }
+                    else{
+                      console.log("no");
+                    }
+                  }
+
+              });
+          }
+      }
+      
+    }
+    cuadroDeErrores = document.querySelector("#terminalDeTexto");
+    if (sessionStorage.getItem("mensajesError") && cuadroDeErrores) {
+        let ul = document.getElementById("cuadroMensajesErrores");
+        const listaMensajes = sessionStorage.getItem("mensajesError").split(",").reverse();
+        for (let i = 0; i < listaMensajes.length; i++) {
+            const li = document.createElement("li");
+            li.setAttribute("style", "list-style: none;");
+            li.innerHTML = listaMensajes[i];
+            ul.appendChild(li);
         }
     }
+
+    
 });
 
+function InsertarTextoErrores(datosWs) {
+  var ul = document.getElementById("cuadroMensajesErrores");
+  if (ul){
+    for (let i = 0; i < datosWs.length; i++) {
+        const li = document.createElement("li");
+        li.setAttribute("style", "list-style: none;" );
+        li.innerHTML = datosWs[i];
+        ul.prepend(li);
+    }
+  }
+  else{
+    console.log('No hay mensaje de error');
+  }
+}
 
 function sendCommand(cmd, menu, name, btn){
     let url = "http://localhost:8000/control/manual/neummatica/";

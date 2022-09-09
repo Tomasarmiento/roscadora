@@ -14,5 +14,6 @@ urlpatterns = [
     path('reset-cuplas-count/', views.reset_cuplas_count, name='reset_cuplas_count'),
     # path('referenciar-lineal/', views.referenciar_lineal, name='referenciar-lineal'),
     path('auto/', views.StartRoutine.as_view(), name='auto'),
-    path('safe/', views.enter_exit_safe, name='toggle-safe')
+    path('safe/', views.enter_exit_safe, name='toggle-safe'),
+    # path('logout/', views.logout, name="logout"),
 ]

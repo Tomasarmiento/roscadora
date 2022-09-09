@@ -64,6 +64,9 @@ class MicroState:
     turn_load_drv_off   = False
     turn_turn_drv_off   = False
 
+    # Nueumatic mode flags
+    neumatic_safe_mode  = True     # Flag para chequear condiciones inicales antes de mandar comando neumatico
+
 class WsCodes:
     states          = 0
     cmd_ok          = 1
