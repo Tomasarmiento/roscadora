@@ -2,12 +2,28 @@
 {% load static %}
 {% block content %}
 
+<!-- muestra boton -->
+{% if user.is_authenticated %}
+<div class="col-md-2 col-12 mb-5 float-right border shadow rounded bg-white  px-1 py-1" style="right: 10px;">
+    {% include 'monitorComponent.html' %}
+    <div id="component-monitor"></div>
+    <div class="py-2 d-flex justify-content-around" id="contenedor-enter-safe">
+        <button class="btn btn-warning text-center" id="exit_safe_modeXOff"  cmd="{{ exit_safe_mode }}" > Exit safe mode </button>
+        <button class="btn btn-success text-center"  id="enter_safe_modeXOn" cmd="{{ enter_safe_mode }}" > Enter safe mode </button>
+    </div>
+    <div class="led led-grey" id="mode_indicator"></div>
+</div>
 
+
+{% else %}
+
+<!-- no muestra boton -->
 <div class="col-md-2 col-12 mb-5 float-right border shadow rounded bg-white px-1 py-1" style="right: 10px;">
 	{% include 'monitorComponent.html' %}
 	<div id="component-monitor"></div>
 </div>
- 
+{% endif %}
+
 
 <div class="col-md-7 d-flex justify-content-around mx-auto my-3 px-0" style="color: black;">
 	<div id="contenedorEjeLineal" class="col-md-5 col-12 mb-5 float-left ml-md-2 border shadow rounded bg-white p-2" style="height: auto;">

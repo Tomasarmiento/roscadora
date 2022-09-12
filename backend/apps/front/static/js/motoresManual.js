@@ -25,6 +25,12 @@ document.addEventListener("DOMContentLoaded", (e) => {
 
     let btn_off_sync = document.getElementById('offSync');
 
+    //On Off safe mode buttons
+    let exit_safe_modeXOff = document.getElementById('exit_safe_modeXOff');
+    let exit_safe_modeXOn = document.getElementById('enter_safe_modeXOn');
+
+
+
 
     // Enables Motores Manual
     const enableLineal = document.querySelector("#linealEnable")
@@ -38,6 +44,7 @@ document.addEventListener("DOMContentLoaded", (e) => {
 
     socket.onmessage = function (event) {
         const datosWs = JSON.parse(event.data);
+        console.log(datosWs.state_mode_neumatic);
             
         //Cabezal
         const cabezal = document.querySelector("#statusHead")
@@ -79,6 +86,9 @@ document.addEventListener("DOMContentLoaded", (e) => {
             const contentAvance = document.querySelector("#avanceContent");
             const contentCarga = document.querySelector("#cargaContent");
             const contentHusillo = document.querySelector("#husilloContent");
+            
+            // Flag modo safe
+            const modeOperanding = document.querySelector("#mode_indicator");
     
                         
             //Monitor
@@ -181,6 +191,11 @@ document.addEventListener("DOMContentLoaded", (e) => {
             datosWs.sync_on_avance == true
                 ? (syncHusillo.className = "box box-green")
                 : (syncHusillo.className = "box box-grey");
+            
+            //Mode indicator
+            datosWs.state_mode_neumatic == true
+            ? (modeOperanding.className = "led led-green")
+            : (modeOperanding.className = "led led-yellow");
 
                 // console.log(datosWs);
         }
@@ -291,6 +306,27 @@ document.addEventListener("DOMContentLoaded", (e) => {
         cmd = btn_off_sync.getAttribute('cmd');
         sendSync(cmd);
     });
+
+    exit_safe_modeXOff.addEventListener("click", (e) => {
+        // cmd = exit_safe_modeXOff.getAttribute('cmd');
+        // console.log(cmd);
+        var answer = window.confirm("Al salir del modo seguro los accionamientos neumaticos no tomaran referencia del estado actual de la maquina.")
+        if (answer) {
+            enterSafeMode(1);
+            console.log("si");
+        }
+        else{
+            console.log("no");
+        }
+        
+    });
+
+    exit_safe_modeXOn.addEventListener("click", (e) => {
+        // cmd = exit_safe_modeXOff.getAttribute('cmd');
+        enterSafeMode(0);
+
+        
+    });
     
     for(let i=0; i < btns_stop.length; i++){
         btns_stop[i].addEventListener('click', (e) => {
@@ -354,6 +390,21 @@ function sendSync(cmd, paso=null){
     if(paso){
         params += "&paso=" + paso;
     }
+
+    let xhr = new XMLHttpRequest();
+    
+    xhr.open("POST", url, true);
+
+    //Send the proper header information along with the request
+    xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+    xhr.send(params);
+}
+
+
+function enterSafeMode(cmd){
+    let url = "http://localhost:8000/control/safe-mode/";
+    let params = "command=" + cmd;
 
     let xhr = new XMLHttpRequest();
     

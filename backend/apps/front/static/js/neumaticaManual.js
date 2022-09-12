@@ -128,6 +128,8 @@ socket.onmessage = function (event) {
         const bombaHidraulicaOn = document.querySelector("#bombaHidrOnOk");
         const bombaHidraulicaOff = document.querySelector("#bombaHidrOffOk");
 
+        const modeOperanding = document.querySelector("#mode_indicator");
+
             //Falla servo husillo
             if (datosWs.forward_drv_fault == true){
               contentHusillo.className = "card bg-danger text-white mt-3 p-1"
@@ -360,8 +362,15 @@ socket.onmessage = function (event) {
           datosWs.remote_outputs[1].encender_bomba_hidraulica == true
           ? (bombaHidraulicaOff.className = "led led-grey")
           : (bombaHidraulicaOff.className = "led led-green");
-        console.log(datosWs.mensajes_error);
 
+          //Mode indicator
+          datosWs.state_mode_neumatic == true
+          ? (modeOperanding.className = "led led-green")
+          : (modeOperanding.className = "led led-yellow");
+
+
+        console.log(datosWs.state_mode_neumatic);
+          //Pushea mensajes de error a la lista de errores
         if (datosWs.mensajes_error.length > 0) {
           listaMensajesErrores.push(datosWs.mensajes_error);
           sessionStorage.setItem("mensajesError", listaMensajesErrores);

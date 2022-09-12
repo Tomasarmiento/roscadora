@@ -378,7 +378,7 @@
                     </div>   
                 </div>  
             </div>
-
+        <!-- tiene none para poder pushiar los datos al hash de alarma -->
         <div id="contenedor-terminal-texto-errores" class="card col-md-12 text-left my-4 mx-auto border shadow rounded bg-white p-1" style="display: none;">
             <div id="salidaDeTextoErrores"></div>
             {% include 'cuadroDeErrores.html' %}
@@ -392,6 +392,7 @@
         <button class="btn btn-warning text-center" id="exit_safe_modeXOff" menu="exit_safe_mode" cmd="exit_safe_mode" > Exit safe mode </button>
         <button class="btn btn-success text-center"  id="enter_safe_modeXOn" menu="enter_safe_mode" cmd="enter_safe_mode" > Enter safe mode </button>
     </div>
+    <div class="led led-grey" id="mode_indicator"></div>
 </div>
 
 

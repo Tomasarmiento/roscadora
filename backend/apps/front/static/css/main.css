@@ -377,6 +377,16 @@ body {
       #89ff00 0 2px 12px;
   }
   
+  .led-yellow {
+    margin: 0 auto;
+    width: 24px;
+    height: 24px;
+    background-color: #f6fa22;
+    border-radius: 50%;
+    box-shadow: rgba(0, 0, 0, 0.2) 0 -1px 7px 1px, inset #304701 0 -1px 9px,
+      #f6fa22 0 2px 12px;
+  }
+  
   .led-blue {
     margin: 0 auto;
     width: 24px;

@@ -1,4 +1,5 @@
 from distutils import command
+from distutils.log import error
 import json
 import time
 
@@ -32,19 +33,24 @@ from apps.parameters.utils import variables as param_vars
 
 @csrf_exempt
 def manual_lineal(request):
+
     post_req = request.POST
+    print(post_req)
     ch_info = get_ch_info(ChannelInfo, 'micro')
     req_data = []
     params = {}
     MicroState.msg_id += 1
     msg_id = MicroState.msg_id
+    error_flag = False
     
     for item in post_req.items():   # Item is in (key, value) format
         req_data.append(item)
 
     command = int(req_data[0][1])
     axis = int(req_data[1][1])
+    print("axis", axis)
     ref_rate = None
+    print("ref rate", ref_rate)
     print(params)
     if command != Commands.stop:
         for item in req_data[2:]:
@@ -56,28 +62,44 @@ def manual_lineal(request):
                 params[key] = bool(value)
         
         if axis == AcdpAxisMovementEnums.ID_X_EJE_AVANCE:
-            if 'ref_rate' in params.keys():
+            if 'ref_rate' in params.keys() and params['ref_rate'] != 0 :
                 ref_rate = params['ref_rate']
             else:
                 ref_rate = COMMAND_DEFAULT_VALUES['vel_avance']
+
         elif axis == AcdpAxisMovementEnums.ID_X_EJE_CARGA:
-            if 'ref_rate' in params.keys():
+            if 'ref_rate' in params.keys() and params['ref_rate'] != 0 :
                 ref_rate = params['ref_rate']
             else:
                 ref_rate = COMMAND_DEFAULT_VALUES['vel_carga']
+                
         if ref_rate:
             params['ref_rate'] = ref_rate
             if not params['abs']:
                 pass
-        
-        header, data = service_handlers.build_msg(command, params=params, msg_id=msg_id, eje=axis)
+
+        #ACA CHECKEA
+        if MicroState.neumatic_safe_mode == True:
+            if ctrl_func.check_init_conditions_motores(axis):
+                print('\nError en condiciones iniciales de EJE')
+                error_flag = True
+                err_msg = 'Error en condiciones iniciales de EJE'
+                MicroState.err_messages.append(err_msg)
+                for err in ctrl_func.check_init_conditions_motores(axis):
+                    MicroState.err_messages.append(err)
+                    print(err)
+
+        if error_flag != True: 
+            header, data = service_handlers.build_msg(command, params=params, msg_id=msg_id, eje=axis)
+
+
     else:
         header = service_handlers.build_msg(command, msg_id=msg_id, eje=axis)
         data = None
-    print(command, axis, params)
 
     if ch_info:
-        send_message(header, ch_info, data)
+        if error_flag != True: 
+            send_message(header, ch_info, data)
     
     return JsonResponse({})
 
@@ -130,8 +152,29 @@ class ManualPneumatic(View):
                     bool_value_2  = 0
                     
                 
-                self.set_rem_do(command, keys[0], group, bool_value_1, keys[1], bool_value_2)
-                send_msg = False
+                if MicroState.neumatic_safe_mode == True:
+                    if bool_value_1 == 1 and bool_value_2 == 0:
+                        if check_init_conditions_neumatic_load('contraer_puntera_carga'):
+                            print('\nError en condiciones iniciales de carga')
+                            err_msg = 'Error en condiciones iniciales de carga'
+                            MicroState.err_messages.append(err_msg)
+                            for err in check_init_conditions_neumatic_load('contraer_puntera_carga'):
+                                MicroState.err_messages.append(err)
+                                print(err)
+                            error_flag = True
+                    if bool_value_1 == 0 and bool_value_2 == 1:
+                        if check_init_conditions_neumatic_load('expandir_puntera_carga'):
+                            print('\nError en condiciones iniciales de carga')
+                            err_msg = 'Error en condiciones iniciales de carga'
+                            MicroState.err_messages.append(err_msg)
+                            for err in check_init_conditions_neumatic_load('expandir_puntera_carga'):
+                                MicroState.err_messages.append(err)
+                                print(err)
+                            error_flag = True
+
+                if error_flag != True: 
+                    self.set_rem_do(command, keys[0], group, bool_value_1, keys[1], bool_value_2)
+                    send_msg = False
 
             elif name == 'verticalCarga':
                 key = 'expandir_vertical_carga'
@@ -142,8 +185,19 @@ class ManualPneumatic(View):
                 else:
                     bool_value  = 0
                 
-                self.set_rem_do(command, key, group, bool_value)
-                send_msg = False
+                if MicroState.neumatic_safe_mode == True:
+                    if check_init_conditions_neumatic_load('expandir_vertical_carga'):
+                        print('\nError en condiciones iniciales de carga')
+                        err_msg = 'Error en condiciones iniciales de carga'
+                        MicroState.err_messages.append(err_msg)
+                        for err in check_init_conditions_neumatic_load('expandir_vertical_carga'):
+                            MicroState.err_messages.append(err)
+                            print(err)
+                        error_flag = True
+
+                if error_flag != True: 
+                    self.set_rem_do(command, key, group, bool_value)
+                    send_msg = False
 
             elif name == 'BoquillaCarga':
                 key = 'contraer_boquilla_carga'
@@ -156,20 +210,18 @@ class ManualPneumatic(View):
                 #chekear aca gripper de arriba
 
                 if MicroState.neumatic_safe_mode == True:
-                    if check_init_conditions_neumatic_test('contraer_boquilla_carga'):
+                    if check_init_conditions_neumatic_load('contraer_boquilla_carga'):
                         print('\nError en condiciones iniciales de carga')
                         err_msg = 'Error en condiciones iniciales de carga'
                         MicroState.err_messages.append(err_msg)
-                        for err in check_init_conditions_neumatic_test('contraer_boquilla_carga'):
+                        for err in check_init_conditions_neumatic_load('contraer_boquilla_carga'):
                             MicroState.err_messages.append(err)
                             print(err)
-                            print("la lista es",MicroState.err_messages)
                         error_flag = True
 
                 if error_flag != True: 
                     self.set_rem_do(command, key, group, bool_value)
                     send_msg = False
-
 
             elif name =='giroCarga':
                 keys = ['contraer_brazo_cargador', 'expandir_brazo_cargador']
@@ -181,10 +233,33 @@ class ManualPneumatic(View):
                 else:
                     bool_value_1  = 0
                     bool_value_2  = 1
+
+
                 
-                self.set_rem_do(command, keys[0], group, bool_value_1, keys[1], bool_value_2)
-                send_msg = False
-        
+                if MicroState.neumatic_safe_mode == True:
+                    if bool_value_1 == 1 and bool_value_2 == 0:
+                        if check_init_conditions_neumatic_load('contraer_brazo_cargador'):
+                            print('\nError en condiciones iniciales de carga')
+                            err_msg = 'Error en condiciones iniciales de carga'
+                            MicroState.err_messages.append(err_msg)
+                            for err in check_init_conditions_neumatic_load('contraer_brazo_cargador'):
+                                MicroState.err_messages.append(err)
+                                print(err)
+                            error_flag = True
+                    if bool_value_1 == 0 and bool_value_2 == 1:
+                        if check_init_conditions_neumatic_load('expandir_brazo_cargador'):
+                            print('\nError en condiciones iniciales de carga')
+                            err_msg = 'Error en condiciones iniciales de carga'
+                            MicroState.err_messages.append(err_msg)
+                            for err in check_init_conditions_neumatic_load('expandir_brazo_cargador'):
+                                MicroState.err_messages.append(err)
+                                print(err)
+                            error_flag = True
+
+                if error_flag != True: 
+                    self.set_rem_do(command, keys[0], group, bool_value_1, keys[1], bool_value_2)
+                    send_msg = False
+                        
         elif menu == 'descarga':
             if name == 'horizontalDesc':
                 keys = ['contraer_puntera_descarga', 'expandir_puntera_descarga']
@@ -197,8 +272,29 @@ class ManualPneumatic(View):
                     bool_value_1  = 1
                     bool_value_2  = 0
                 
-                self.set_rem_do(command, keys[0], group, bool_value_1, keys[1], bool_value_2)
-                send_msg = False
+                if MicroState.neumatic_safe_mode == True:
+                    if bool_value_1 == 1 and bool_value_2 == 0:
+                        if check_init_conditions_neumatic_unload('contraer_puntera_descarga'):
+                            print('\nError en condiciones iniciales de carga')
+                            err_msg = 'Error en condiciones iniciales de carga'
+                            MicroState.err_messages.append(err_msg)
+                            for err in check_init_conditions_neumatic_unload('contraer_puntera_descarga'):
+                                MicroState.err_messages.append(err)
+                                print(err)
+                            error_flag = True
+                    if bool_value_1 == 0 and bool_value_2 == 1:
+                        if check_init_conditions_neumatic_unload('expandir_puntera_descarga'):
+                            print('\nError en condiciones iniciales de carga')
+                            err_msg = 'Error en condiciones iniciales de carga'
+                            MicroState.err_messages.append(err_msg)
+                            for err in check_init_conditions_neumatic_unload('expandir_puntera_descarga'):
+                                MicroState.err_messages.append(err)
+                                print(err)
+                            error_flag = True
+
+                if error_flag != True: 
+                    self.set_rem_do(command, keys[0], group, bool_value_1, keys[1], bool_value_2)
+                    send_msg = False
                 
             elif name == 'giroDesc':
                 keys = ['contraer_brazo_descargador', 'expandir_brazo_descargador']
@@ -211,8 +307,29 @@ class ManualPneumatic(View):
                     bool_value_1  = 0
                     bool_value_2  = 1
                 
-                self.set_rem_do(command, keys[0], group, bool_value_1, keys[1], bool_value_2)
-                send_msg = False
+                if MicroState.neumatic_safe_mode == True:
+                    if bool_value_1 == 1 and bool_value_2 == 0:
+                        if check_init_conditions_neumatic_unload('contraer_brazo_descargador'):
+                            print('\nError en condiciones iniciales de carga')
+                            err_msg = 'Error en condiciones iniciales de carga'
+                            MicroState.err_messages.append(err_msg)
+                            for err in check_init_conditions_neumatic_unload('contraer_brazo_descargador'):
+                                MicroState.err_messages.append(err)
+                                print(err)
+                            error_flag = True
+                    if bool_value_1 == 0 and bool_value_2 == 1:
+                        if check_init_conditions_neumatic_unload('expandir_brazo_descargador'):
+                            print('\nError en condiciones iniciales de carga')
+                            err_msg = 'Error en condiciones iniciales de carga'
+                            MicroState.err_messages.append(err_msg)
+                            for err in check_init_conditions_neumatic_unload('expandir_brazo_descargador'):
+                                MicroState.err_messages.append(err)
+                                print(err)
+                            error_flag = True
+
+                if error_flag != True: 
+                    self.set_rem_do(command, keys[0], group, bool_value_1, keys[1], bool_value_2)
+                    send_msg = False
 
             elif name == 'horizontalGr':
                 key = 'expandir_horiz_pinza_desc'
@@ -223,8 +340,19 @@ class ManualPneumatic(View):
                 else:
                     bool_value  = 0
                 
-                self.set_rem_do(command, key, group, bool_value)
-                send_msg = False
+                if MicroState.neumatic_safe_mode == True:
+                    if check_init_conditions_neumatic_unload('expandir_horiz_pinza_desc'):
+                        print('\nError en condiciones iniciales de carga')
+                        err_msg = 'Error en condiciones iniciales de carga'
+                        MicroState.err_messages.append(err_msg)
+                        for err in check_init_conditions_neumatic_unload('expandir_horiz_pinza_desc'):
+                            MicroState.err_messages.append(err)
+                            print(err)
+                        error_flag = True
+
+                if error_flag != True: 
+                    self.set_rem_do(command, key, group, bool_value)
+                    send_msg = False
 
             elif name == 'verticalGr':
                 key = 'expandir_vert_pinza_desc'
@@ -235,8 +363,19 @@ class ManualPneumatic(View):
                 else:
                     bool_value  = 0
                 
-                self.set_rem_do(command, key, group, bool_value)
-                send_msg = False
+                if MicroState.neumatic_safe_mode == True:
+                    if check_init_conditions_neumatic_unload('expandir_vert_pinza_desc'):
+                        print('\nError en condiciones iniciales de carga')
+                        err_msg = 'Error en condiciones iniciales de carga'
+                        MicroState.err_messages.append(err_msg)
+                        for err in check_init_conditions_neumatic_unload('expandir_vert_pinza_desc'):
+                            MicroState.err_messages.append(err)
+                            print(err)
+                        error_flag = True
+
+                if error_flag != True: 
+                    self.set_rem_do(command, key, group, bool_value)
+                    send_msg = False
 
             elif name == 'BoquillaDesc':
                 key = 'contraer_boquilla_descarga'
@@ -247,8 +386,19 @@ class ManualPneumatic(View):
                 else:
                     bool_value  = 0
                 
-                self.set_rem_do(command, key, group, bool_value)
-                send_msg = False
+                if MicroState.neumatic_safe_mode == True:
+                    if check_init_conditions_neumatic_unload('contraer_boquilla_descarga'):
+                        print('\nError en condiciones iniciales de carga')
+                        err_msg = 'Error en condiciones iniciales de carga'
+                        MicroState.err_messages.append(err_msg)
+                        for err in check_init_conditions_neumatic_unload('contraer_boquilla_descarga'):
+                            MicroState.err_messages.append(err)
+                            print(err)
+                        error_flag = True
+
+                if error_flag != True: 
+                    self.set_rem_do(command, key, group, bool_value)
+                    send_msg = False
 
             elif name == 'gripperDesc':
                 keys = ['cerrar_pinza_descargadora', 'abrir_pinza_descargadora']
@@ -261,8 +411,29 @@ class ManualPneumatic(View):
                     bool_value_1  = 0
                     bool_value_2  = 1
                 
-                self.set_rem_do(command, keys[0], group, bool_value_1, keys[1], bool_value_2)
-                send_msg = False
+                if MicroState.neumatic_safe_mode == True:
+                    if bool_value_1 == 1 and bool_value_2 == 0:
+                        if check_init_conditions_neumatic_unload('cerrar_pinza_descargadora'):
+                            print('\nError en condiciones iniciales de carga')
+                            err_msg = 'Error en condiciones iniciales de carga'
+                            MicroState.err_messages.append(err_msg)
+                            for err in check_init_conditions_neumatic_unload('cerrar_pinza_descargadora'):
+                                MicroState.err_messages.append(err)
+                                print(err)
+                            error_flag = True
+                    if bool_value_1 == 0 and bool_value_2 == 1:
+                        if check_init_conditions_neumatic_unload('abrir_pinza_descargadora'):
+                            print('\nError en condiciones iniciales de carga')
+                            err_msg = 'Error en condiciones iniciales de carga'
+                            MicroState.err_messages.append(err_msg)
+                            for err in check_init_conditions_neumatic_unload('abrir_pinza_descargadora'):
+                                MicroState.err_messages.append(err)
+                                print(err)
+                            error_flag = True
+
+                if error_flag != True: 
+                    self.set_rem_do(command, keys[0], group, bool_value_1, keys[1], bool_value_2)
+                    send_msg = False
         
         elif menu == 'cabezal':
             if name == 'cerramiento':
@@ -274,9 +445,20 @@ class ManualPneumatic(View):
                 else:
                     bool_value  = 0
                 
-                self.set_rem_do(command, key, group, bool_value)
-                send_msg = False
-                
+                if MicroState.neumatic_safe_mode == True:
+                    if check_init_conditions_neumatic_cabezal('expandir_cerramiento_roscado'):
+                        print('\nError en condiciones iniciales de carga')
+                        err_msg = 'Error en condiciones iniciales de carga'
+                        MicroState.err_messages.append(err_msg)
+                        for err in check_init_conditions_neumatic_cabezal('expandir_cerramiento_roscado'):
+                            MicroState.err_messages.append(err)
+                            print(err)
+                        error_flag = True
+
+                if error_flag != True: 
+                    self.set_rem_do(command, key, group, bool_value)
+                    send_msg = False
+                    
             elif name == 'clampeo':
                 keys = ['contraer_clampeo_plato', 'expandir_clampeo_plato']
                 group = 1
@@ -288,8 +470,29 @@ class ManualPneumatic(View):
                     bool_value_1  = 1
                     bool_value_2  = 0
                 
-                self.set_rem_do(command, keys[0], group, bool_value_1, keys[1], bool_value_2)
-                send_msg = False
+                if MicroState.neumatic_safe_mode == True:
+                    if bool_value_1 == 0 and bool_value_2 == 1:
+                        if check_init_conditions_neumatic_cabezal('contraer_clampeo_plato'):
+                            print('\nError en condiciones iniciales de carga')
+                            err_msg = 'Error en condiciones iniciales de carga'
+                            MicroState.err_messages.append(err_msg)
+                            for err in check_init_conditions_neumatic_cabezal('contraer_clampeo_plato'):
+                                MicroState.err_messages.append(err)
+                                print(err)
+                            error_flag = True
+                    if bool_value_1 == 1 and bool_value_2 == 0:
+                        if check_init_conditions_neumatic_cabezal('expandir_clampeo_plato'):
+                            print('\nError en condiciones iniciales de carga')
+                            err_msg = 'Error en condiciones iniciales de carga'
+                            MicroState.err_messages.append(err_msg)
+                            for err in check_init_conditions_neumatic_cabezal('expandir_clampeo_plato'):
+                                MicroState.err_messages.append(err)
+                                print(err)
+                            error_flag = True
+
+                if error_flag != True: 
+                    self.set_rem_do(command, keys[0], group, bool_value_1, keys[1], bool_value_2)
+                    send_msg = False
 
             elif name == 'presion':
                 key = 'presurizar'
@@ -300,8 +503,19 @@ class ManualPneumatic(View):
                 else:
                     bool_value  = 0
                 
-                self.set_rem_do(command, key, group, bool_value)
-                send_msg = False
+                if MicroState.neumatic_safe_mode == True:
+                    if check_init_conditions_neumatic_cabezal('presurizar'):
+                        print('\nError en condiciones iniciales de carga')
+                        err_msg = 'Error en condiciones iniciales de carga'
+                        MicroState.err_messages.append(err_msg)
+                        for err in check_init_conditions_neumatic_cabezal('presurizar'):
+                            MicroState.err_messages.append(err)
+                            print(err)
+                        error_flag = True
+
+                if error_flag != True: 
+                    self.set_rem_do(command, key, group, bool_value)
+                    send_msg = False
 
             elif name == 'boquilla1':
                 keys = ['cerrar_boquilla_1', 'abrir_boquilla_1']
@@ -309,6 +523,7 @@ class ManualPneumatic(View):
                 if btn == 'On':
                     bool_value_1  = 1
                     bool_value_2  = 0
+                    print(btn)
                 
                 elif btn == 'Off':
                     bool_value_1  = 0
@@ -318,8 +533,36 @@ class ManualPneumatic(View):
                     bool_value_1  = 0
                     bool_value_2  = 0
                 
-                self.set_rem_do(command, keys[0], group, bool_value_1, keys[1], bool_value_2)
-                send_msg = False
+                # self.set_rem_do(command, keys[0], group, bool_value_1, keys[1], bool_value_2)
+                # send_msg = False
+                
+                if MicroState.neumatic_safe_mode == True:
+                    if bool_value_1 == 1 and bool_value_2 == 0:
+                        if check_init_conditions_neumatic_cabezal('cerrar_boquilla_1'):
+                            print('\nError en condiciones iniciales de cabezal')
+                            err_msg = 'Error en condiciones iniciales de cabezal'
+                            MicroState.err_messages.append(err_msg)
+                            for err in check_init_conditions_neumatic_cabezal('cerrar_boquilla_1'):
+                                MicroState.err_messages.append(err)
+                                print(err)
+                            error_flag = True
+                    elif bool_value_1 == 0 and bool_value_2 == 1:
+                        if check_init_conditions_neumatic_cabezal('abrir_boquilla_1'):
+                            print('\nError en condiciones iniciales de cabezal')
+                            err_msg = 'Error en condiciones iniciales de cabezal'
+                            MicroState.err_messages.append(err_msg)
+                            for err in check_init_conditions_neumatic_cabezal('abrir_boquilla_1'):
+                                MicroState.err_messages.append(err)
+                                print(err)
+                            error_flag = True
+                    else:
+                        self.set_rem_do(command, keys[0], group, bool_value_1, keys[1], bool_value_2)
+                        send_msg = False
+                        error_flag = True #Para que no mande 2 veces el comando
+                        
+                if error_flag != True : #and (bool_value_1 !=0 or bool_value_2 != 0)
+                    self.set_rem_do(command, keys[0], group, bool_value_1, keys[1], bool_value_2)
+                    send_msg = False
 
             elif name == 'boquilla2':
                 keys = ['cerrar_boquilla_2', 'abrir_boquilla_2']
@@ -336,8 +579,33 @@ class ManualPneumatic(View):
                     bool_value_1  = 0
                     bool_value_2  = 0
                 
-                self.set_rem_do(command, keys[0], group, bool_value_1, keys[1], bool_value_2)
-                send_msg = False
+                if MicroState.neumatic_safe_mode == True:
+                    if bool_value_1 == 1 and bool_value_2 == 0:
+                        if check_init_conditions_neumatic_cabezal('cerrar_boquilla_2'):
+                            print('\nError en condiciones iniciales de cabezal')
+                            err_msg = 'Error en condiciones iniciales de cabezal'
+                            MicroState.err_messages.append(err_msg)
+                            for err in check_init_conditions_neumatic_cabezal('cerrar_boquilla_2'):
+                                MicroState.err_messages.append(err)
+                                print(err)
+                            error_flag = True
+                    elif bool_value_1 == 0 and bool_value_2 == 1:
+                        if check_init_conditions_neumatic_cabezal('abrir_boquilla_2'):
+                            print('\nError en condiciones iniciales de cabezal')
+                            err_msg = 'Error en condiciones iniciales de cabezal'
+                            MicroState.err_messages.append(err_msg)
+                            for err in check_init_conditions_neumatic_cabezal('abrir_boquilla_2'):
+                                MicroState.err_messages.append(err)
+                                print(err)
+                            error_flag = True
+                    else:
+                        self.set_rem_do(command, keys[0], group, bool_value_1, keys[1], bool_value_2)
+                        send_msg = False
+                        error_flag = True #Para que no mande 2 veces el comando
+                        
+                if error_flag != True:  #and (bool_value_1 !=0 or bool_value_2 != 0)
+                    self.set_rem_do(command, keys[0], group, bool_value_1, keys[1], bool_value_2)
+                    send_msg = False
 
             elif name == 'boquilla3':
                 keys = ['cerrar_boquilla_3', 'abrir_boquilla_3']
@@ -354,8 +622,34 @@ class ManualPneumatic(View):
                     bool_value_1  = 0
                     bool_value_2  = 0
                 
-                self.set_rem_do(command, keys[0], group, bool_value_1, keys[1], bool_value_2)
-                send_msg = False
+                if MicroState.neumatic_safe_mode == True:
+                    if bool_value_1 == 1 and bool_value_2 == 0:
+                        if check_init_conditions_neumatic_cabezal('cerrar_boquilla_3'):
+                            print('\nError en condiciones iniciales de cabezal')
+                            err_msg = 'Error en condiciones iniciales de cabezal'
+                            MicroState.err_messages.append(err_msg)
+                            for err in check_init_conditions_neumatic_cabezal('cerrar_boquilla_3'):
+                                MicroState.err_messages.append(err)
+                                print(err)
+                            error_flag = True
+                    elif bool_value_1 == 0 and bool_value_2 == 1:
+                        if check_init_conditions_neumatic_cabezal('abrir_boquilla_3'):
+                            print('\nError en condiciones iniciales de cabezal')
+                            err_msg = 'Error en condiciones iniciales de cabezal'
+                            MicroState.err_messages.append(err_msg)
+                            for err in check_init_conditions_neumatic_cabezal('abrir_boquilla_3'):
+                                MicroState.err_messages.append(err)
+                                print(err)
+                            error_flag = True
+                    else:
+                        self.set_rem_do(command, keys[0], group, bool_value_1, keys[1], bool_value_2)
+                        send_msg = False
+                        error_flag = True #Para que no mande 2 veces el comando
+                        
+                        
+                if error_flag != True:  #and (bool_value_1 !=0 or bool_value_2 != 0)
+                    self.set_rem_do(command, keys[0], group, bool_value_1, keys[1], bool_value_2)
+                    send_msg = False
 
             elif name == 'acoplaSol':
                 key = 'expandir_acople_lubric'
@@ -366,8 +660,19 @@ class ManualPneumatic(View):
                 else:
                     bool_value  = 0
                 
-                self.set_rem_do(command, key, group, bool_value)
-                send_msg = False
+                if MicroState.neumatic_safe_mode == True:
+                    if check_init_conditions_neumatic_cabezal('expandir_acople_lubric'):
+                        print('\nError en condiciones iniciales de carga')
+                        err_msg = 'Error en condiciones iniciales de carga'
+                        MicroState.err_messages.append(err_msg)
+                        for err in check_init_conditions_neumatic_cabezal('expandir_acople_lubric'):
+                            MicroState.err_messages.append(err)
+                            print(err)
+                        error_flag = True
+
+                if error_flag != True: 
+                    self.set_rem_do(command, key, group, bool_value)
+                    send_msg = False
 
             elif name == 'bombaSol':
                 key = 'encender_bomba_soluble'
@@ -378,8 +683,19 @@ class ManualPneumatic(View):
                 else:
                     bool_value  = 0
                 
-                self.set_rem_do(command, key, group, bool_value)
-                send_msg = False
+                if MicroState.neumatic_safe_mode == True:
+                    if check_init_conditions_neumatic_cabezal('encender_bomba_soluble'):
+                        print('\nError en condiciones iniciales de carga')
+                        err_msg = 'Error en condiciones iniciales de carga'
+                        MicroState.err_messages.append(err_msg)
+                        for err in check_init_conditions_neumatic_cabezal('encender_bomba_soluble'):
+                            MicroState.err_messages.append(err)
+                            print(err)
+                        error_flag = True
+
+                if error_flag != True: 
+                    self.set_rem_do(command, key, group, bool_value)
+                    send_msg = False
             
             elif name == 'bombaHidr':
                 key = 'encender_bomba_hidraulica'
@@ -390,8 +706,19 @@ class ManualPneumatic(View):
                 else:
                     bool_value  = 0
                 
-                self.set_rem_do(command, key, group, bool_value)
-                send_msg = False
+                if MicroState.neumatic_safe_mode == True:
+                    if check_init_conditions_neumatic_cabezal('encender_bomba_hidraulica'):
+                        print('\nError en condiciones iniciales de carga')
+                        err_msg = 'Error en condiciones iniciales de carga'
+                        MicroState.err_messages.append(err_msg)
+                        for err in check_init_conditions_neumatic_cabezal('encender_bomba_hidraulica'):
+                            MicroState.err_messages.append(err)
+                            print(err)
+                        error_flag = True
+
+                if error_flag != True: 
+                    self.set_rem_do(command, key, group, bool_value)
+                    send_msg = False
 
         elif menu == 'exit_safe_mode':
             if command == 'exit_safe_mode':
@@ -521,12 +848,15 @@ def reset_cuplas_count(request):
     update_roscado_params()
     return JsonResponse({})
 
-
-# @csrf_exempt
-# def logout(request):
-#     MicroState.neumatic_safe_mode = True
-
-#     return JsonResponse({})
+@csrf_exempt
+def safe_mode(request):
+    post_req = request.POST
+    cmd = post_req["command"]
+    if int(cmd) == 1:
+        MicroState.neumatic_safe_mode = False
+    else:
+        MicroState.neumatic_safe_mode = True
+    return JsonResponse({})
 
 
 @csrf_exempt

@@ -155,10 +155,12 @@ def check_init_conditions_homing():
     initial_state = msg_app.StateMachine.EST_INITIAL
     # Paso 0 - Chequear condiciones iniciales - Todos los valores deben ser True par que empiece la rutina
     init_flags = [
-        (ws_vars.MicroState.axis_flags[eje_carga]['estado'] != 'safe', 'Eje carga en safe'),      # Eje en safe
-        (ws_vars.MicroState.axis_flags[eje_giro]['estado'] != 'safe', 'Eje husillo en safe'),     # Eje en safe
-        (ws_vars.MicroState.axis_flags[eje_avance]['estado'] != 'safe', 'Eje avance en safe'),    # Eje en safe
-        (ws_vars.MicroState.rem_i_states[1]['presion_normal'], 'Baja presión'),                 # Presión normal
+        (ws_vars.MicroState.axis_flags[eje_carga]['estado'] != 'safe', 'Eje carga en safe'),                    # Eje NO en safe
+        (ws_vars.MicroState.axis_flags[eje_giro]['estado'] != 'safe', 'Eje husillo en safe'),                   # Eje NO en safe
+        (ws_vars.MicroState.axis_flags[eje_avance]['estado'] != 'safe', 'Eje avance en safe'),                  # Eje NO en safe
+        (ws_vars.MicroState.rem_i_states[1]['presion_normal'], 'Baja presión'),                                 # Presión normal
+
+        (ws_vars.MicroState.rem_o_states[1]['presurizar'] == False, 'Presurizar en ON'),                        # Presurizar OFF
 
         (ws_vars.MicroState.axis_flags[eje_avance]['maq_est_val'] == initial_state, 'Eje lineal apagado'),      # eje avance encendido
         (ws_vars.MicroState.rem_i_states[1]['acople_lubric_contraido'], 'Acople lubricante afuera'),            # acople_lubricante_contraido
@@ -182,16 +184,17 @@ def check_init_conditions_index():
     eje_carga = ctrl_vars.AXIS_IDS['carga']
     eje_giro = ctrl_vars.AXIS_IDS['giro']
     error_messages = []
-    eje_avance = ctrl_vars.AXIS_IDS['avance']
     init_flags = [
         (pos in ctrl_vars.LOAD_STEPS, 'Posición de plato errónea'),                                                                     # Plato alineado
         (ws_vars.MicroState.axis_flags[ctrl_vars.AXIS_IDS['avance']]['cero_desconocido'] == False, 'Cero desconocido en eje lineal'),   # Eje lineal cerado
         (ws_vars.MicroState.axis_flags[ctrl_vars.AXIS_IDS['carga']]['cero_desconocido'] == False, 'Cero desconocido en eje lineal'),    # Cabezal cerado
         
-        (ws_vars.MicroState.axis_flags[eje_carga]['estado'] != 'safe', 'Eje carga en safe'),                                            # Eje en safe
-        (ws_vars.MicroState.axis_flags[eje_giro]['estado'] != 'safe', 'Eje husillo en safe'),                                           # Eje en safe
-        (ws_vars.MicroState.axis_flags[eje_avance]['estado'] != 'safe', 'Eje avance en safe'),                                          # Eje en safe
+        (ws_vars.MicroState.axis_flags[eje_carga]['estado'] != 'safe', 'Eje carga en safe'),                                            # Eje NO en safe
+        (ws_vars.MicroState.axis_flags[eje_giro]['estado'] != 'safe', 'Eje husillo en safe'),                                           # Eje NO en safe
+        (ws_vars.MicroState.axis_flags[eje_avance]['estado'] != 'safe', 'Eje avance en safe'),                                          # Eje NO en safe
         (ws_vars.MicroState.rem_i_states[1]['presion_normal'], 'Baja presión'),                                                         # Presión normal
+
+        (ws_vars.MicroState.rem_o_states[1]['presurizar'] == False, 'Presurizar en ON'),                                                # Presurizar OFF
 
         (ws_vars.MicroState.rem_i_states[1]['clampeo_plato_expandido'], 'Plato no clampeado'),                                          # plato_clampeado
         (ws_vars.MicroState.rem_i_states[1]['acople_lubric_contraido'], 'Acople lubricante expandido'),                                 # acople_lubricante_contraido
@@ -221,9 +224,9 @@ def check_init_conditions_load():
         (ws_vars.MicroState.axis_flags[ctrl_vars.AXIS_IDS['carga']]['cero_desconocido'] == False, 'Cero desconocido en eje lineal'),    # Cabezal cerado
 
         (ws_vars.MicroState.rem_i_states[1]['presion_normal'], 'Baja presión'),                                                         # Presión normal
-        (ws_vars.MicroState.axis_flags[eje_carga]['estado'] != 'safe', 'Eje carga en safe'),                                              # Eje en safe
-        (ws_vars.MicroState.axis_flags[eje_giro]['estado'] != 'safe', 'Eje husillo en safe'),                                             # Eje en safe
-        (ws_vars.MicroState.axis_flags[eje_avance]['estado'] != 'safe', 'Eje avance en safe'),                                            # Eje en safe
+        (ws_vars.MicroState.axis_flags[eje_carga]['estado'] != 'safe', 'Eje carga en safe'),                                            # Eje NO en safe
+        (ws_vars.MicroState.axis_flags[eje_giro]['estado'] != 'safe', 'Eje husillo en safe'),                                           # Eje NO en safe
+        (ws_vars.MicroState.axis_flags[eje_avance]['estado'] != 'safe', 'Eje avance en safe'),                                          # Eje NO en safe
 
         (ws_vars.MicroState.rem_o_states[1]['encender_bomba_hidraulica'], 'Bomba hidráulica apagada'),              # hidráulica ON
         (ws_vars.MicroState.rem_i_states[1]['clampeo_plato_expandido'], 'Plato no clampeado'),                      # Plato clampeado
@@ -231,7 +234,7 @@ def check_init_conditions_load():
         (ws_vars.MicroState.rem_i_states[0]['puntera_carga_contraida'], 'Puntera carga expandida'),                 # puntera_carga_contraida
         (ws_vars.MicroState.rem_i_states[0]['brazo_cargador_expandido'], 'Brazo cargador cntraído'),                # brazo_cargador_expandido
         (ws_vars.MicroState.rem_i_states[0]['boquilla_carga_expandida'], 'Boquilla de carga contraída'),            # boquilla de carga  liberada - ws_vars.MicroState.rem_i_states[0]
-        #(ws_vars.MicroState.rem_i_states[1]['presencia_cupla_en_cargador'], 'Cupla en cargador no presente'),       # presencia_cupla_en_cargador
+        #(ws_vars.MicroState.rem_i_states[1]['presencia_cupla_en_cargador'], 'Cupla en cargador no presente'),       # presencia_cupla_en_cargador, comentado porque espera que haya presencia
         (not ws_vars.MicroState.rem_i_states[1]['pieza_en_boquilla_carga'], 'Pieza en boquilla de carga presente')  # pieza no presente en boquilla de carga
     ]
 
@@ -256,9 +259,9 @@ def check_init_conditions_unload():
         (ws_vars.MicroState.axis_flags[ctrl_vars.AXIS_IDS['carga']]['cero_desconocido'] == False, 'Cero desconocido en eje lineal'),    # Cabezal cerado
 
         (ws_vars.MicroState.rem_i_states[1]['presion_normal'], 'Baja presión'),                                                         # Presión normal
-        (ws_vars.MicroState.axis_flags[eje_carga]['estado'] != 'safe', 'Eje carga en safe'),                                              # Eje en safe
-        (ws_vars.MicroState.axis_flags[eje_giro]['estado'] != 'safe', 'Eje husillo en safe'),                                             # Eje en safe
-        (ws_vars.MicroState.axis_flags[eje_avance]['estado'] != 'safe', 'Eje avance en safe'),                                            # Eje en safe
+        (ws_vars.MicroState.axis_flags[eje_carga]['estado'] != 'safe', 'Eje carga en safe'),                                            # Eje NO en safe
+        (ws_vars.MicroState.axis_flags[eje_giro]['estado'] != 'safe', 'Eje husillo en safe'),                                           # Eje NO en safe
+        (ws_vars.MicroState.axis_flags[eje_avance]['estado'] != 'safe', 'Eje avance en safe'),                                          # Eje NO en safe
 
         (ws_vars.MicroState.rem_o_states[1]['encender_bomba_hidraulica'], 'Bomba hidráulica apagada'),                      # hidráulica ON
         (ws_vars.MicroState.rem_i_states[1]['clampeo_plato_expandido'], 'Plato no clampeado'),                              # Plato clampeado
@@ -305,13 +308,16 @@ def check_init_conditions_tapping():
         (ws_vars.MicroState.axis_flags[ctrl_vars.AXIS_IDS['carga']]['cero_desconocido'] == False, 'Cero desconocido en eje lineal'),    # Cabezal cerado
 
         (ws_vars.MicroState.rem_i_states[1]['presion_normal'], 'Baja presión'),                                                         # Presión normal
-        (ws_vars.MicroState.axis_flags[eje_carga]['estado'] != 'safe', 'Eje carga en safe'),                                              # Eje en safe
-        (ws_vars.MicroState.axis_flags[eje_giro]['estado'] != 'safe', 'Eje husillo en safe'),                                             # Eje en safe
-        (ws_vars.MicroState.axis_flags[eje_avance]['estado'] != 'safe', 'Eje avance en safe'),                                            # Eje en safe
+        (ws_vars.MicroState.axis_flags[eje_carga]['estado'] != 'safe', 'Eje carga en safe'),                                            # Eje NO en safe
+        (ws_vars.MicroState.axis_flags[eje_giro]['estado'] != 'safe', 'Eje husillo en safe'),                                           # Eje NO en safe
+        (ws_vars.MicroState.axis_flags[eje_avance]['estado'] != 'safe', 'Eje avance en safe'),                                          # Eje NO en safe
 
         (ws_vars.MicroState.rem_o_states[1]['encender_bomba_hidraulica'], 'Bomba hidráulica apagada'),                                  # hidráulica ON
+        (ws_vars.MicroState.rem_o_states[1]['presurizar'] == False, 'Presurizar en ON'),                                                # Presurizar OFF
+
         (ws_vars.MicroState.rem_i_states[1]['clampeo_plato_expandido'], 'Plato no clampeado'),                                          # Plato clampeado
         (ws_vars.MicroState.rem_i_states[1]['acople_lubric_contraido'], 'Acople lubricante afuera'),                                    # acople_lubricante_contraido
+        (ws_vars.MicroState.rem_i_states[1]['cerramiento_roscado_contraido'], 'Cerramiento roscado expandido'),                         # cerramiento_roscado_contraido
         (ws_vars.MicroState.axis_flags[eje_avance]['maq_est_val'] == initial_state, 'Eje de avance apagado'),                           # eje avance ON
         (ws_vars.MicroState.axis_flags[eje_carga]['drv_flags'] & msg_base.DrvFbkDataFlags.ENABLED == 0, 'Eje de carga encendido'),      # eje carga OFF
         (sync_flag, sync_err_msg),                                                                                                      # Sincronismo
@@ -392,14 +398,40 @@ def check_init_conditions_neumatic_test(param_name):
                 error_messages.append(error)
         
         return error_messages
+    
+    if param_name == 'contraer_brazo_cargador':
+        #checkea
+        init_flags = [
+            (ws_vars.MicroState.rem_i_states[0]['boquilla_descarga_expandida'], 'Boquilla descarga contraída'),
+        ]
+
+        for flag, error in init_flags:
+            if flag == False:
+                error_messages.append(error)
+        
+        return error_messages
+    
+    if param_name == 'expandir_brazo_cargador':
+        #checkea
+        init_flags = [
+            (ws_vars.MicroState.rem_i_states[0]['boquilla_descarga_expandida'], 'Boquilla descarga contraída'),     
+        ]
+
+        for flag, error in init_flags:
+            if flag == False:
+                error_messages.append(error)
+        
+        return error_messages
 
 
 def check_init_conditions_neumatic_load(param_name):
+    pos = round(ws_vars.MicroState.axis_measures[ctrl_vars.AXIS_IDS['carga']]['pos_fil'], 0)
     error_messages = []
-    if param_name == 'contraer_puntera_carga':
+    if param_name == 'contraer_puntera_carga': # revisado
         #checkea
+        print("Checkeo condiciones iniciales de contraer_puntera_carga")
         init_flags = [
-            (ws_vars.MicroState.rem_i_states[1]['clampeo_plato_expandido'],  'Plato no clampeado')    
+            (ws_vars.MicroState.rem_i_states[1]['presion_normal'], 'Baja presión'),                                                         # Presión normal
         ]
 
         for flag, error in init_flags:
@@ -408,10 +440,14 @@ def check_init_conditions_neumatic_load(param_name):
         
         return error_messages
 
-    elif param_name == 'expandir_puntera_carga':
+    elif param_name == 'expandir_puntera_carga': # revisado
         #checkea
+        print("Checkeo condiciones iniciales de expandir_puntera_carga")
         init_flags = [
-            (ws_vars.MicroState.rem_i_states[1]['clampeo_plato_expandido'],  'Plato no clampeado')    
+            (ws_vars.MicroState.rem_i_states[1]['presion_normal'], 'Baja presión'),                                                         # Presión normal
+            (pos in ctrl_vars.LOAD_STEPS, 'Posición de plato errónea'),                                                                     # Plato alineado
+            (ws_vars.MicroState.axis_flags[ctrl_vars.AXIS_IDS['carga']]['cero_desconocido'] == False, 'Cero desconocido en eje lineal'),    # Cabezal cerado
+            (ws_vars.MicroState.rem_i_states[1]['clampeo_plato_expandido'], 'Plato no clampeado'),                                          # Plato clampeado
         ]
 
         for flag, error in init_flags:
@@ -420,10 +456,12 @@ def check_init_conditions_neumatic_load(param_name):
         
         return error_messages
 
-    elif param_name == 'expandir_vertical_carga':
+    elif param_name == 'expandir_vertical_carga': # revisado
         #checkea
+        print("Checkeo condiciones iniciales de expandir_vertical_carga (y contraer - MONOESTABLE)")
         init_flags = [
-            (ws_vars.MicroState.rem_i_states[1]['clampeo_plato_expandido'],  'Plato no clampeado')    
+            (ws_vars.MicroState.rem_i_states[1]['presion_normal'], 'Baja presión'),                                                         # Presión normal
+            (ws_vars.MicroState.rem_i_states[0]['puntera_carga_contraida'], 'Puntera carga expandida'),                                     # puntera_carga_contraida
         ]
 
         for flag, error in init_flags:
@@ -432,10 +470,11 @@ def check_init_conditions_neumatic_load(param_name):
         
         return error_messages
 
-    elif param_name == 'contraer_boquilla_carga':
+    elif param_name == 'contraer_boquilla_carga': # revisado
         #checkea
+        print("Checkeo condiciones iniciales de contraer_boquilla_carga (y expandir - MONOESTABLE)")
         init_flags = [
-            (ws_vars.MicroState.rem_i_states[1]['clampeo_plato_expandido'],  'Plato no clampeado')    
+            (ws_vars.MicroState.rem_i_states[1]['presion_normal'], 'Baja presión'),                                                         # Presión normal
         ]
 
         for flag, error in init_flags:
@@ -444,10 +483,13 @@ def check_init_conditions_neumatic_load(param_name):
         
         return error_messages
 
-    elif param_name == 'contraer_brazo_cargador':
+    elif param_name == 'contraer_brazo_cargador': # revisado
         #checkea
+        print("Checkeo condiciones iniciales de contraer_brazo_cargador")
         init_flags = [
-            (ws_vars.MicroState.rem_i_states[1]['clampeo_plato_expandido'],  'Plato no clampeado')    
+            (ws_vars.MicroState.rem_i_states[1]['presion_normal'], 'Baja presión'),                                                         # Presión normal
+            (ws_vars.MicroState.rem_i_states[0]['puntera_carga_contraida'], 'Puntera carga expandida'),                                     # puntera_carga_contraida
+            (ws_vars.MicroState.rem_i_states[1]['clampeo_plato_expandido'], 'Plato no clampeado'),                                          # Plato clampeado
         ]
 
         for flag, error in init_flags:
@@ -456,10 +498,13 @@ def check_init_conditions_neumatic_load(param_name):
         
         return error_messages
 
-    elif param_name == 'expandir_brazo_cargador':
+    elif param_name == 'expandir_brazo_cargador': # revisado
         #checkea
+        print("Checkeo condiciones iniciales de expandir_brazo_cargador")
         init_flags = [
-            (ws_vars.MicroState.rem_i_states[1]['clampeo_plato_expandido'],  'Plato no clampeado')    
+            (ws_vars.MicroState.rem_i_states[1]['presion_normal'], 'Baja presión'),                                                         # Presión normal
+            (ws_vars.MicroState.rem_i_states[0]['puntera_carga_contraida'], 'Puntera carga expandida'),                                     # puntera_carga_contraida
+            (ws_vars.MicroState.rem_i_states[1]['clampeo_plato_expandido'], 'Plato no clampeado'),                                          # Plato clampeado
         ]
 
         for flag, error in init_flags:
@@ -470,11 +515,13 @@ def check_init_conditions_neumatic_load(param_name):
     
 
 def check_init_conditions_neumatic_unload(param_name):
+    pos = round(ws_vars.MicroState.axis_measures[ctrl_vars.AXIS_IDS['carga']]['pos_fil'], 0)
     error_messages = []
-    if param_name == 'contraer_puntera_descarga':
+    if param_name == 'contraer_puntera_descarga': # revisado
         #checkea
+        print("Checkeo condiciones iniciales de contraer_puntera_descarga")
         init_flags = [
-            (ws_vars.MicroState.rem_i_states[1]['clampeo_plato_expandido'],  'Plato no clampeado')    
+            (ws_vars.MicroState.rem_i_states[1]['presion_normal'], 'Baja presión'),                                                         # Presión normal
         ]
 
         for flag, error in init_flags:
@@ -483,10 +530,15 @@ def check_init_conditions_neumatic_unload(param_name):
         
         return error_messages
 
-    elif param_name == 'expandir_puntera_descarga':
+    elif param_name == 'expandir_puntera_descarga': # revisado
         #checkea
+        print("Checkeo condiciones iniciales de expandir_puntera_descarga")
         init_flags = [
-            (ws_vars.MicroState.rem_i_states[1]['clampeo_plato_expandido'],  'Plato no clampeado')    
+            (ws_vars.MicroState.rem_i_states[1]['presion_normal'], 'Baja presión'),                                                         # Presión normal
+            (ws_vars.MicroState.axis_flags[ctrl_vars.AXIS_IDS['carga']]['cero_desconocido'] == False, 'Cero desconocido en eje lineal'),    # Cabezal cerado
+            (pos in ctrl_vars.LOAD_STEPS, 'Posición de plato errónea'),                                                                     # Plato alineado
+            (ws_vars.MicroState.rem_i_states[1]['clampeo_plato_expandido'], 'Plato no clampeado'),                                          # Plato clampeado
+            (ws_vars.MicroState.rem_i_states[0]['pinza_descargadora_abierta'], 'Pinza descargadora cerrada')                                # pinza_descargadora_abierta
         ]
 
         for flag, error in init_flags:
@@ -495,10 +547,13 @@ def check_init_conditions_neumatic_unload(param_name):
         
         return error_messages
 
-    elif param_name == 'contraer_brazo_descargador':
+    elif param_name == 'contraer_brazo_descargador': # revisado
         #checkea
+        print("Checkeo condiciones iniciales de contraer_brazo_descargador")
         init_flags = [
-            (ws_vars.MicroState.rem_i_states[1]['clampeo_plato_expandido'],  'Plato no clampeado')    
+            (ws_vars.MicroState.rem_i_states[1]['presion_normal'], 'Baja presión'),                                                         # Presión normal
+            (ws_vars.MicroState.rem_i_states[0]['puntera_descarga_contraida'], 'Puntera descarga expandida'),                               # puntera_descarga_contraida
+            (ws_vars.MicroState.rem_i_states[1]['clampeo_plato_expandido'], 'Plato no clampeado'),                                          # Plato clampeado
         ]
 
         for flag, error in init_flags:
@@ -507,10 +562,13 @@ def check_init_conditions_neumatic_unload(param_name):
         
         return error_messages
 
-    elif param_name == 'expandir_brazo_descargador':
+    elif param_name == 'expandir_brazo_descargador': # revisado
         #checkea
+        print("Checkeo condiciones iniciales de expandir_brazo_descargador")
         init_flags = [
-            (ws_vars.MicroState.rem_i_states[1]['clampeo_plato_expandido'],  'Plato no clampeado')    
+            (ws_vars.MicroState.rem_i_states[1]['presion_normal'], 'Baja presión'),                                                         # Presión normal
+            (ws_vars.MicroState.rem_i_states[0]['puntera_descarga_contraida'], 'Puntera descarga expandida'),                               # puntera_descarga_contraida
+            (ws_vars.MicroState.rem_i_states[1]['clampeo_plato_expandido'], 'Plato no clampeado'),                                          # Plato clampeado
         ]
 
         for flag, error in init_flags:
@@ -519,10 +577,12 @@ def check_init_conditions_neumatic_unload(param_name):
         
         return error_messages
 
-    elif param_name == 'expandir_horiz_pinza_desc':
+    elif param_name == 'expandir_horiz_pinza_desc': # revisado
         #checkea
+        print("Checkeo condiciones iniciales de expandir_horiz_pinza_desc (y contraer - MONOESTABLE)")
         init_flags = [
-            (ws_vars.MicroState.rem_i_states[1]['clampeo_plato_expandido'],  'Plato no clampeado')    
+            (ws_vars.MicroState.rem_i_states[1]['presion_normal'], 'Baja presión'),                                                         # Presión normal
+            (ws_vars.MicroState.rem_i_states[1]['vert_pinza_desc_contraido'], 'Vertical pinza de descarga expandida'),                      # vert_pinza_desc_contraido
         ]
 
         for flag, error in init_flags:
@@ -531,10 +591,12 @@ def check_init_conditions_neumatic_unload(param_name):
         
         return error_messages
 
-    elif param_name == 'expandir_vert_pinza_desc':
+    elif param_name == 'expandir_vert_pinza_desc': # revisado
         #checkea
+        print("Checkeo condiciones iniciales de expandir_vert_pinza_desc (y contraer - MONOESTABLE)")
         init_flags = [
-            (ws_vars.MicroState.rem_i_states[1]['clampeo_plato_expandido'],  'Plato no clampeado')    
+            (ws_vars.MicroState.rem_i_states[1]['presion_normal'], 'Baja presión'),                                                         # Presión normal
+            (ws_vars.MicroState.rem_i_states[0]['puntera_descarga_contraida'], 'Puntera descarga expandida'),                               # puntera_descarga_contraida
         ]
 
         for flag, error in init_flags:
@@ -543,10 +605,11 @@ def check_init_conditions_neumatic_unload(param_name):
         
         return error_messages
 
-    elif param_name == 'contraer_boquilla_descarga':
+    elif param_name == 'contraer_boquilla_descarga': # revisado
         #checkea
+        print("Checkeo condiciones iniciales de contraer_boquilla_descarga (y expandir - MONOESTABLE)")
         init_flags = [
-            (ws_vars.MicroState.rem_i_states[1]['clampeo_plato_expandido'],  'Plato no clampeado')    
+            (ws_vars.MicroState.rem_i_states[1]['presion_normal'], 'Baja presión'),                                                         # Presión normal
         ]
 
         for flag, error in init_flags:
@@ -555,10 +618,11 @@ def check_init_conditions_neumatic_unload(param_name):
         
         return error_messages
 
-    elif param_name == 'cerrar_pinza_descargadora':
+    elif param_name == 'cerrar_pinza_descargadora': # revisado
         #checkea
+        print("Checkeo condiciones iniciales de cerrar_pinza_descargadora")
         init_flags = [
-            (ws_vars.MicroState.rem_i_states[1]['clampeo_plato_expandido'],  'Plato no clampeado')    
+            (ws_vars.MicroState.rem_i_states[1]['presion_normal'], 'Baja presión'),                                                         # Presión normal
         ]
 
         for flag, error in init_flags:
@@ -567,10 +631,11 @@ def check_init_conditions_neumatic_unload(param_name):
         
         return error_messages
 
-    elif param_name == 'abrir_pinza_descargadora':
+    elif param_name == 'abrir_pinza_descargadora': # revisado
         #checkea
+        print("Checkeo condiciones iniciales de abrir_pinza_descargadora")
         init_flags = [
-            (ws_vars.MicroState.rem_i_states[1]['clampeo_plato_expandido'],  'Plato no clampeado')    
+            (ws_vars.MicroState.rem_i_states[1]['presion_normal'], 'Baja presión'),                                                         # Presión normal
         ]
 
         for flag, error in init_flags:
@@ -581,11 +646,19 @@ def check_init_conditions_neumatic_unload(param_name):
 
 
 def check_init_conditions_neumatic_cabezal(param_name):
+    pos = round(ws_vars.MicroState.axis_measures[ctrl_vars.AXIS_IDS['carga']]['pos_fil'], 0)
+    eje_avance = ctrl_vars.AXIS_IDS['avance']
     error_messages = []
-    if param_name == 'expandir_cerramiento_roscado':
+
+    if param_name == 'expandir_cerramiento_roscado': # revisado
         #checkea
+        print("Checkeo condiciones iniciales de expandir_cerramiento_roscado (y contraer - MONOESTABLE)")
         init_flags = [
-            (ws_vars.MicroState.rem_i_states[1]['clampeo_plato_expandido'],  'Plato no clampeado')    
+            (ws_vars.MicroState.rem_i_states[1]['presion_normal'], 'Baja presión'),                                                         # Presión normal
+            (ws_vars.MicroState.axis_flags[ctrl_vars.AXIS_IDS['carga']]['cero_desconocido'] == False, 'Cero desconocido en eje lineal'),    # Cabezal cerado
+            (ws_vars.MicroState.rem_i_states[1]['clampeo_plato_expandido'], 'Plato no clampeado'),                                          # Plato clampeado
+            (pos in ctrl_vars.LOAD_STEPS, 'Posición de plato errónea'),                                                                     # Plato alineado
+            (ws_vars.MicroState.rem_o_states[1]['encender_bomba_soluble'] == False, 'Bomba Soluble encendida'),                             # Bomba Soluble apagada
         ]
 
         for flag, error in init_flags:
@@ -594,10 +667,60 @@ def check_init_conditions_neumatic_cabezal(param_name):
         
         return error_messages
 
-    elif param_name == 'contraer_clampeo_plato':
+    elif param_name == 'contraer_clampeo_plato': # revisado 
         #checkea
+        print("Checkeo condiciones iniciales de contraer_clampeo_plato")
         init_flags = [
-            (ws_vars.MicroState.rem_i_states[1]['clampeo_plato_expandido'],  'Plato no clampeado')    
+            (ws_vars.MicroState.axis_flags[ctrl_vars.AXIS_IDS['avance']]['cero_desconocido'] == False, 'Cero desconocido en eje lineal'),   # Eje lineal cerado
+            (ws_vars.MicroState.axis_flags[ctrl_vars.AXIS_IDS['carga']]['cero_desconocido'] == False, 'Cero desconocido en eje lineal'),    # Cabezal cerado
+        
+            (ws_vars.MicroState.rem_i_states[1]['presion_normal'], 'Baja presión'),                                                         # Presión normal
+            (ws_vars.MicroState.rem_i_states[1]['acople_lubric_contraido'], 'Acople lubricante expandido'),                                 # acople_lubricante_contraido
+            (ws_vars.MicroState.rem_i_states[0]['puntera_descarga_contraida'], 'Puntera descarga expandida'),                               # puntera_descarga_contraida
+            (ws_vars.MicroState.rem_i_states[0]['puntera_carga_contraida'], 'Puntera carga expandida'),                                     # puntera_carga_contraida
+            (ws_vars.MicroState.rem_i_states[1]['cerramiento_roscado_contraido'], 'Cerramiento roscado expandido'),                         # cerramiento_roscado_contraido
+        
+            (pos in ctrl_vars.LOAD_STEPS, 'Posición de plato errónea'),                                                                     # Plato alineado
+            (round(ws_vars.MicroState.axis_measures[eje_avance]['pos_fil'], 0) >= round(ctrl_vars.ROSCADO_CONSTANTES['posicion_de_inicio'], 0), 'Posición de eje avance erróneo'),   # Eje avance en posición de inicio
+        ]           
+
+        for flag, error in init_flags:
+            if flag == False:
+                error_messages.append(error)
+        
+        return error_messages
+
+    elif param_name == 'expandir_clampeo_plato': # revisado
+        #checkea
+        print("Checkeo condiciones iniciales de expandir_clampeo_plato")
+        init_flags = [
+            (ws_vars.MicroState.axis_flags[ctrl_vars.AXIS_IDS['avance']]['cero_desconocido'] == False, 'Cero desconocido en eje lineal'),   # Eje lineal cerado
+            (ws_vars.MicroState.axis_flags[ctrl_vars.AXIS_IDS['carga']]['cero_desconocido'] == False, 'Cero desconocido en eje lineal'),    # Cabezal cerado
+        
+            (ws_vars.MicroState.rem_i_states[1]['presion_normal'], 'Baja presión'),                                                         # Presión normal
+            (ws_vars.MicroState.rem_i_states[1]['acople_lubric_contraido'], 'Acople lubricante expandido'),                                 # acople_lubricante_contraido
+            (ws_vars.MicroState.rem_i_states[0]['puntera_descarga_contraida'], 'Puntera descarga expandida'),                               # puntera_descarga_contraida
+            (ws_vars.MicroState.rem_i_states[0]['puntera_carga_contraida'], 'Puntera carga expandida'),                                     # puntera_carga_contraida
+            (ws_vars.MicroState.rem_i_states[1]['cerramiento_roscado_contraido'], 'Cerramiento roscado expandido'),                         # cerramiento_roscado_contraido
+        
+            (pos in ctrl_vars.LOAD_STEPS, 'Posición de plato errónea'),                                                                     # Plato alineado
+            (round(ws_vars.MicroState.axis_measures[eje_avance]['pos_fil'], 0) >= round(ctrl_vars.ROSCADO_CONSTANTES['posicion_de_inicio'], 0), 'Posición de eje avance erróneo'),   # Eje avance en posición de inicio
+        ]   
+
+        for flag, error in init_flags:
+            if flag == False:
+                error_messages.append(error)
+        
+        return error_messages
+
+    elif param_name == 'presurizar': # revisado
+        #checkea
+        print("Checkeo condiciones iniciales de presurizar ON  (y OFF - MONOESTABLE)")
+        init_flags = [
+            (ws_vars.MicroState.rem_o_states[1]['encender_bomba_hidraulica'], 'Bomba hidráulica apagada'),                                  # hidráulica ON
+            (ws_vars.MicroState.rem_o_states[1]['cerrar_boquilla_1'] == False, 'Boquilla 1 Cerrar ON'),                                     # Boquilla 1 Cerrar OFF
+            (ws_vars.MicroState.rem_o_states[1]['cerrar_boquilla_2'] == False, 'Boquilla 2 Cerrar ON'),                                     # Boquilla 2 Cerrar OFF
+            (ws_vars.MicroState.rem_o_states[1]['cerrar_boquilla_3'] == False, 'Boquilla 3 Cerrar ON'),                                     # Boquilla 3 Cerrar OFF
         ]
 
         for flag, error in init_flags:
@@ -606,10 +729,13 @@ def check_init_conditions_neumatic_cabezal(param_name):
         
         return error_messages
 
-    elif param_name == 'expandir_clampeo_plato':
+    elif param_name == 'cerrar_boquilla_1': # revisado
         #checkea
+        print("Checkeo condiciones iniciales de cerrar_boquilla_1")
         init_flags = [
-            (ws_vars.MicroState.rem_i_states[1]['clampeo_plato_expandido'],  'Plato no clampeado')    
+            (ws_vars.MicroState.rem_o_states[1]['encender_bomba_hidraulica'], 'Bomba hidráulica apagada'),                                  # hidráulica ON
+            (ws_vars.MicroState.rem_o_states[1]['presurizar'], 'Presurizar en OFF'),                                                        # Presurizar ON
+            (ws_vars.MicroState.rem_o_states[1]['abrir_boquilla_1'] == False, 'Boquilla 1 Abrir ON'),                                       # Boquilla 1 Abrir OFF
         ]
 
         for flag, error in init_flags:
@@ -618,10 +744,14 @@ def check_init_conditions_neumatic_cabezal(param_name):
         
         return error_messages
 
-    elif param_name == 'presurizar':
+    elif param_name == 'abrir_boquilla_1': # revisado
         #checkea
+        print("Checkeo condiciones iniciales de abrir_boquilla_1")
         init_flags = [
-            (ws_vars.MicroState.rem_i_states[1]['clampeo_plato_expandido'],  'Plato no clampeado')    
+            # (ws_vars.MicroState.rem_i_states[0]['boquilla_descarga_expandida'], 'Boquilla descarga contraída'),
+            (ws_vars.MicroState.rem_o_states[1]['encender_bomba_hidraulica'], 'Bomba hidráulica apagada'),                                  # hidráulica ON
+            (ws_vars.MicroState.rem_o_states[1]['presurizar'] == False, 'Presurizar en ON'),                                                # Presurizar OFF
+            (ws_vars.MicroState.rem_o_states[1]['cerrar_boquilla_1'] == False, 'Boquilla 1 Cerrar ON'),                                     # Boquilla 1 Cerrar OFF
         ]
 
         for flag, error in init_flags:
@@ -630,10 +760,13 @@ def check_init_conditions_neumatic_cabezal(param_name):
         
         return error_messages
 
-    elif param_name == 'cerrar_boquilla_1':
+    elif param_name == 'cerrar_boquilla_2': # revisado
         #checkea
+        print("Checkeo condiciones iniciales de cerrar_boquilla_2")
         init_flags = [
-            (ws_vars.MicroState.rem_i_states[1]['clampeo_plato_expandido'],  'Plato no clampeado')    
+            (ws_vars.MicroState.rem_o_states[1]['encender_bomba_hidraulica'], 'Bomba hidráulica apagada'),                                  # hidráulica ON
+            (ws_vars.MicroState.rem_o_states[1]['presurizar'], 'Presurizar en OFF'),                                                        # Presurizar ON
+            (ws_vars.MicroState.rem_o_states[1]['abrir_boquilla_2'] == False, 'Boquilla 2 Abrir ON'),                                       # Boquilla 2 Abrir OFF
         ]
 
         for flag, error in init_flags:
@@ -642,10 +775,13 @@ def check_init_conditions_neumatic_cabezal(param_name):
         
         return error_messages
 
-    elif param_name == 'abrir_boquilla_1':
+    elif param_name == 'abrir_boquilla_2': # revisado
         #checkea
+        print("Checkeo condiciones iniciales de abrir_boquilla_2")
         init_flags = [
-            (ws_vars.MicroState.rem_i_states[1]['clampeo_plato_expandido'],  'Plato no clampeado')    
+            (ws_vars.MicroState.rem_o_states[1]['encender_bomba_hidraulica'], 'Bomba hidráulica apagada'),                                  # hidráulica ON
+            (ws_vars.MicroState.rem_o_states[1]['presurizar'] == False, 'Presurizar en ON'),                                                # Presurizar OFF
+            (ws_vars.MicroState.rem_o_states[1]['cerrar_boquilla_2'] == False, 'Boquilla 2 Cerrar ON'),                                     # Boquilla 2 Cerrar OFF
         ]
 
         for flag, error in init_flags:
@@ -654,10 +790,13 @@ def check_init_conditions_neumatic_cabezal(param_name):
         
         return error_messages
 
-    elif param_name == 'cerrar_boquilla_2':
+    elif param_name == 'cerrar_boquilla_3': # revisado
         #checkea
+        print("Checkeo condiciones iniciales de cerrar_boquilla_3")
         init_flags = [
-            (ws_vars.MicroState.rem_i_states[1]['clampeo_plato_expandido'],  'Plato no clampeado')    
+            (ws_vars.MicroState.rem_o_states[1]['encender_bomba_hidraulica'], 'Bomba hidráulica apagada'),                                  # hidráulica ON
+            (ws_vars.MicroState.rem_o_states[1]['presurizar'], 'Presurizar en OFF'),                                                        # Presurizar ON
+            (ws_vars.MicroState.rem_o_states[1]['abrir_boquilla_3'] == False, 'Boquilla 3 Abrir ON'),                                       # Boquilla 3 Abrir OFF
         ]
 
         for flag, error in init_flags:
@@ -666,10 +805,13 @@ def check_init_conditions_neumatic_cabezal(param_name):
         
         return error_messages
 
-    elif param_name == 'abrir_boquilla_2':
+    elif param_name == 'abrir_boquilla_3': # revisado
         #checkea
+        print("Checkeo condiciones iniciales de abrir_boquilla_3")
         init_flags = [
-            (ws_vars.MicroState.rem_i_states[1]['clampeo_plato_expandido'],  'Plato no clampeado')    
+            (ws_vars.MicroState.rem_o_states[1]['encender_bomba_hidraulica'], 'Bomba hidráulica apagada'),                                  # hidráulica ON
+            (ws_vars.MicroState.rem_o_states[1]['presurizar'] == False, 'Presurizar en ON'),                                                # Presurizar OFF
+            (ws_vars.MicroState.rem_o_states[1]['cerrar_boquilla_3'] == False, 'Boquilla 3 Cerrar ON'),                                     # Boquilla 3 Cerrar OFF
         ]
 
         for flag, error in init_flags:
@@ -678,10 +820,14 @@ def check_init_conditions_neumatic_cabezal(param_name):
         
         return error_messages
 
-    elif param_name == 'cerrar_boquilla_3':
+    elif param_name == 'expandir_acople_lubric': # revisado
         #checkea
+        print("Checkeo condiciones iniciales de expandir_acople_lubric (y contraer - MONOESTABLE)")
         init_flags = [
-            (ws_vars.MicroState.rem_i_states[1]['clampeo_plato_expandido'],  'Plato no clampeado')    
+            (ws_vars.MicroState.rem_i_states[1]['presion_normal'], 'Baja presión'),                                                         # Presión normal
+            (ws_vars.MicroState.axis_flags[ctrl_vars.AXIS_IDS['carga']]['cero_desconocido'] == False, 'Cero desconocido en eje lineal'),    # Cabezal cerado
+            (pos in ctrl_vars.LOAD_STEPS, 'Posición de plato errónea'),                                                                     # Plato alineado
+            (ws_vars.MicroState.rem_i_states[1]['clampeo_plato_expandido'], 'Plato no clampeado'),                                          # Plato clampeado
         ]
 
         for flag, error in init_flags:
@@ -690,10 +836,11 @@ def check_init_conditions_neumatic_cabezal(param_name):
         
         return error_messages
 
-    elif param_name == 'abrir_boquilla_3':
+    elif param_name == 'encender_bomba_soluble': # revisado
         #checkea
+        print("Checkeo condiciones iniciales de encender_bomba_soluble (y apagar - MONOESTABLE)")
         init_flags = [
-            (ws_vars.MicroState.rem_i_states[1]['clampeo_plato_expandido'],  'Plato no clampeado')    
+            (ws_vars.MicroState.rem_i_states[1]['cerramiento_roscado_contraido'] == False, 'Cerramiento roscado NO expandido'),                         # cerramiento_roscado_al_menos_NO_contraido
         ]
 
         for flag, error in init_flags:
@@ -702,10 +849,11 @@ def check_init_conditions_neumatic_cabezal(param_name):
         
         return error_messages
 
-    elif param_name == 'expandir_acople_lubric':
+    elif param_name == 'encender_bomba_hidraulica': # revisado
         #checkea
+        print("Checkeo condiciones iniciales de encender_bomba_hidraulica (y apagar - MONOESTABLE)")
         init_flags = [
-            (ws_vars.MicroState.rem_i_states[1]['clampeo_plato_expandido'],  'Plato no clampeado')    
+            (ws_vars.MicroState.rem_o_states[1]['presurizar'] == False, 'Presurizar en ON'),                                                # Presurizar OFF
         ]
 
         for flag, error in init_flags:
@@ -714,10 +862,34 @@ def check_init_conditions_neumatic_cabezal(param_name):
         
         return error_messages
 
-    elif param_name == 'encender_bomba_soluble':
-        #checkea
+# -------------------------------------------------------------------------------------------- #
+# ---------------- Chequeo de condiciones iniciales manual-motores(safe-mode) ---------------- #
+# -------------------------------------------------------------------------------------------- #
+
+
+def check_init_conditions_motores(axis):
+    eje_avance = ctrl_vars.AXIS_IDS['avance']
+    eje_carga = ctrl_vars.AXIS_IDS['carga']
+    eje_giro = ctrl_vars.AXIS_IDS['giro']
+    error_messages = []
+    #CABEZAL
+    if axis == 2: # eje de INDEXADO revisado
+        print("Checkeo condiciones iniciales de eje INDEXADO")
+        #checkea CABEZAL
         init_flags = [
-            (ws_vars.MicroState.rem_i_states[1]['clampeo_plato_expandido'],  'Plato no clampeado')    
+            (ws_vars.MicroState.axis_flags[eje_carga]['cero_desconocido'] == False, 'Cero desconocido en eje lineal'),                      # Cabezal cerado
+            (ws_vars.MicroState.axis_flags[eje_carga]['estado'] != 'safe', 'Eje carga en safe'),                                            # Eje NO en safe
+
+            (ws_vars.MicroState.rem_i_states[1]['presion_normal'], 'Baja presión'),                                                         # Presión normal
+
+            (ws_vars.MicroState.rem_o_states[1]['presurizar'] == False, 'Presurizar en ON'),                                                # Presurizar OFF
+
+            (ws_vars.MicroState.rem_i_states[1]['clampeo_plato_contraido'], 'Plato clampeado'),                                             # plato_NO_clampeado
+            (ws_vars.MicroState.rem_i_states[1]['acople_lubric_contraido'], 'Acople lubricante expandido'),                                 # acople_lubricante_contraido
+            (ws_vars.MicroState.rem_i_states[0]['puntera_descarga_contraida'], 'Puntera descarga expandida'),                               # puntera_descarga_contraida
+            (ws_vars.MicroState.rem_i_states[0]['puntera_carga_contraida'], 'Puntera carga expandida'),                                     # puntera_carga_contraida
+            (ws_vars.MicroState.rem_i_states[1]['cerramiento_roscado_contraido'], 'Cerramiento roscado expandido'),                         # cerramiento_roscado_contraido
+            (round(ws_vars.MicroState.axis_measures[eje_avance]['pos_fil'], 0) >= round(ctrl_vars.ROSCADO_CONSTANTES['posicion_de_inicio'], 0), 'Posición de eje avance erróneo'),   # Eje avance en posición de inicio o mayor
         ]
 
         for flag, error in init_flags:
@@ -726,10 +898,28 @@ def check_init_conditions_neumatic_cabezal(param_name):
         
         return error_messages
 
-    elif param_name == 'encender_bomba_hidraulica':
-        #checkea
+    #LINEAL
+    elif axis == 1: # eje LINEAL revisado
+        print("Checkeo condiciones iniciales de eje LINEAL")
+        #checkea LINEAL
         init_flags = [
-            (ws_vars.MicroState.rem_i_states[1]['clampeo_plato_expandido'],  'Plato no clampeado')    
+            (ws_vars.MicroState.axis_flags[eje_avance]['cero_desconocido'] == False, 'Cero desconocido en eje lineal'),                     # Eje lineal cerado
+            (ws_vars.MicroState.axis_flags[eje_avance]['estado'] != 'safe', 'Eje avance en safe'),                                          # Eje NO en safe
+        ]
+
+        for flag, error in init_flags:
+            if flag == False:
+                error_messages.append(error)
+        
+        return error_messages
+
+
+    #HUSILLO
+    elif axis == 0: # eje HUSILLO revisado
+        print("Checkeo condiciones iniciales de eje HUSILLO")
+        #checkea HUSILLO
+        init_flags = [
+            (ws_vars.MicroState.axis_flags[eje_giro]['estado'] != 'safe', 'Eje husillo en safe'),                                           # Eje NO en safe
         ]
 
         for flag, error in init_flags:
