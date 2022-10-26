@@ -332,8 +332,6 @@ document.addEventListener("DOMContentLoaded", (e) => {
         exit_safe_modeXOn.addEventListener("click", (e) => {
             // cmd = exit_safe_modeXOff.getAttribute('cmd');
             enterSafeMode(0);
-    
-            
         });
         
     }
