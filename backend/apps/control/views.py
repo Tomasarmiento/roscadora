@@ -761,6 +761,7 @@ class ManualPneumatic(View):
 @csrf_exempt
 def stop_axis(request):
     post_req = request.POST
+    print("la post request",post_req)
     ch_info = get_ch_info(ChannelInfo, 'micro')
     req_data = []
     MicroState.msg_id += 1

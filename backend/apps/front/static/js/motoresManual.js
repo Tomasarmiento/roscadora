@@ -92,7 +92,8 @@ document.addEventListener("DOMContentLoaded", (e) => {
     
                         
             //Monitor
-            rpmActual.innerHTML = datosWs.husillo_rpm.toFixed(1);
+            // rpmActual.innerHTML = datosWs.husillo_rpm.toFixed(1);
+            rpmActual.innerHTML = datosWs.husillo_rpm.toFixed(1)/6;
             torqueActual.innerHTML = datosWs.husillo_torque.toFixed(1);
             estadoActualHusillo.innerHTML = datosWs.estado_eje_giro;
 
@@ -193,11 +194,14 @@ document.addEventListener("DOMContentLoaded", (e) => {
                 : (syncHusillo.className = "box box-grey");
             
             //Mode indicator
-            datosWs.state_mode_neumatic == true
-            ? (modeOperanding.className = "led led-green")
-            : (modeOperanding.className = "led led-yellow");
-
-                // console.log(datosWs);
+            if (modeOperanding) {
+                datosWs.state_mode_neumatic == true
+                ? (modeOperanding.className = "led led-green")
+                : (modeOperanding.className = "led led-yellow");
+    
+                    // console.log(datosWs);
+                
+            }
         }
     }
 
@@ -307,26 +311,32 @@ document.addEventListener("DOMContentLoaded", (e) => {
         sendSync(cmd);
     });
 
-    exit_safe_modeXOff.addEventListener("click", (e) => {
-        // cmd = exit_safe_modeXOff.getAttribute('cmd');
-        // console.log(cmd);
-        var answer = window.confirm("Al salir del modo seguro los accionamientos neumaticos no tomaran referencia del estado actual de la maquina.")
-        if (answer) {
-            enterSafeMode(1);
-            console.log("si");
-        }
-        else{
-            console.log("no");
-        }
-        
-    });
 
-    exit_safe_modeXOn.addEventListener("click", (e) => {
-        // cmd = exit_safe_modeXOff.getAttribute('cmd');
-        enterSafeMode(0);
-
+    if (exit_safe_modeXOff ) {
+        exit_safe_modeXOff.addEventListener("click", (e) => {
+            // cmd = exit_safe_modeXOff.getAttribute('cmd');
+            // console.log(cmd);
+            var answer = window.confirm("Al salir del modo seguro los accionamientos neumaticos no tomaran referencia del estado actual de la maquina.")
+            if (answer) {
+                enterSafeMode(1);
+                console.log("si");
+            }
+            else{
+                console.log("no");
+            }
+            
+        });
         
-    });
+    }
+    if (exit_safe_modeXOn) {
+        exit_safe_modeXOn.addEventListener("click", (e) => {
+            // cmd = exit_safe_modeXOff.getAttribute('cmd');
+            enterSafeMode(0);
+    
+            
+        });
+        
+    }
     
     for(let i=0; i < btns_stop.length; i++){
         btns_stop[i].addEventListener('click', (e) => {

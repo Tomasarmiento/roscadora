@@ -364,9 +364,12 @@ socket.onmessage = function (event) {
           : (bombaHidraulicaOff.className = "led led-green");
 
           //Mode indicator
-          datosWs.state_mode_neumatic == true
-          ? (modeOperanding.className = "led led-green")
-          : (modeOperanding.className = "led led-yellow");
+          if (modeOperanding) {
+            datosWs.state_mode_neumatic == true
+            ? (modeOperanding.className = "led led-green")
+            : (modeOperanding.className = "led led-yellow");
+            
+          }
 
 
         console.log(datosWs.state_mode_neumatic);
